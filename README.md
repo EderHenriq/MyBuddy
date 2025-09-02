@@ -7,8 +7,8 @@ O projeto ataca um problema central: Atualmente, ONGs e protetores lutam por vis
 MyBuddy conecta essas pontas, oferecendo uma solução única que serve como vitrine para animais que precisam de um lar e como um guia de serviços confiável para quem já encontrou seu companheiro.
 
 
-<div>
-  <img src="https://ww2.kqed.org/pop/wp-content/uploads/sites/12/2016/11/unusual-animal-friendships-cute-gifs-8__605.gif" alt="gifpet" width="300"/>
+<div align="center" >
+  <img src="https://ww2.kqed.org/pop/wp-content/uploads/sites/12/2016/11/unusual-animal-friendships-cute-gifs-8__605.gif" alt="gifpet" width="300" />
 </div>
 
 
@@ -24,7 +24,7 @@ Tecnologias Utilizadas:
 O sistema é construído sobre uma base de tecnologias robustas e escaláveis, garantindo performance e segurança.
 
 
-<div>
+<div align="center">
   <img src="https://media.giphy.com/media/2IudUHdI075HL02Pkk/giphy.gif"alt="gifprog" width="250"/>
 </div>
 
