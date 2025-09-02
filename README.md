@@ -1,4 +1,4 @@
-# MyBuddy
+# MyBuddy 🐾
 
 MyBuddy é uma plataforma web Restful projetada para centralizar o ecossistema de adoção e cuidados para animais de estimação em nível local.
 
