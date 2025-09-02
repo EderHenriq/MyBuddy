@@ -1,11 +1,12 @@
-#MyBuddy
+MyBuddy 
+
 MyBuddy é uma plataforma web Restful projetada para centralizar o ecossistema de adoção e cuidados para animais de estimação em nível local.
 
 O projeto ataca um problema central: a fragmentação. Atualmente, ONGs e protetores lutam por visibilidade em redes sociais desordenadas, enquanto potenciais adotantes e tutores se perdem em buscas ineficientes por animais e serviços locais de confiança.
 
 MyBuddy conecta essas pontas, oferecendo uma solução única que serve como vitrine para animais que precisam de um lar e como um guia de serviços confiável para quem já encontrou seu companheiro.
 
-![Imagem](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.petz.com.br%2Fblog%2Fdicas-pet%2F&psig=AOvVaw2Xr3CuBEcZgNE4Sgk2o61n&ust=1756902925983000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCMCm1b-Luo8DFQAAAAAdAAAAABAL)
+![Imagem]([https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.petz.com.br%2Fblog%2Fdicas-pet%2F&psig=AOvVaw2Xr3CuBEcZgNE4Sgk2o61n&ust=1756902925983000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCMCm1b-Luo8DFQAAAAAdAAAAABAL](https://t3.ftcdn.net/jpg/04/81/85/46/240_F_481854656_gHGTnBscKXpFEgVTwAT4DL4NXXNhDKU9.jpg))
 
 Funcionalidades Essenciais:
 
