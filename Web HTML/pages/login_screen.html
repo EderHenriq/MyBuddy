@@ -1,11 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - MyBuddy</title>
+    <link rel="stylesheet" href="../css/login-screen.css">
 </head>
 <body>
-    
+    <div class="login-container">
+        <div class="branding-logo">
+            <img src="/Web HTML/src/assets/icons/logo-provisoria.png" alt="Logo MyBuddy" class="login-logo">
+            <h1>MyBuddy</h1>
+        </div>
+
+        <div class="buttons-login">
+            <div class="glider"></div>
+            <button type="button" class="sign-in active">Entrar</button>
+            <button type="button" class="sign-up">Registrar-se</button>
+        </div>
+
+        <div class="login-inputs">
+            <form>
+                <input type="email" placeholder="Digite seu Email" required>
+                <input type="password" placeholder="Digite sua Senha" required>
+                <button type="submit">Login</button>
+
+                <label>
+                    <input type="checkbox">
+                    Lembrar-me
+                </label>
+
+                <a href="#">Esqueceu sua Senha?</a>
+            </form>
+        </div>
+
+        <div class="divider"><span>ou</span></div>
+
+        <div class="other-logins">
+            <button type="button" class="apple-login">Entrar com Apple</button>
+            <button type="button" class="google-login">Entrar com Google</button>
+        </div>
+    </div>
+
+    <script src="../js/login.js"></script>
 </body>
 </html>
