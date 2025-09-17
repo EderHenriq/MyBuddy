@@ -1,4 +1,4 @@
-/* Linha de código para resetar os CSS pré-existentes do navegador */
+/* Reset básico */
 * {
   margin: 0;
   padding: 0;
@@ -8,31 +8,52 @@
 body {
   width: 100%;
   height: 100vh;
-  flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(180deg, #4285f4 0%, #103a80 73.08%);
+  font-family: Arial, sans-serif;
 }
 
 .login-container {
   width: 90%;
   height: 90%;
+  flex-shrink: 0;
   background-color: white;
-  border-radius: 100px;
-  box-shadow: 0px 10px 24.7px 15px rgba(0, 0, 0, 0.25);
-  position: relative;
+  border-radius: 50px;
+  box-shadow: 0px 10px 25px rgba(0,0,0,0.25);
+  padding: 40px 30px;
+}
+
+.login-container2 {
+  width: 50%;
+  height: 100%;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .branding-logo {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
+.branding-logo img {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+.branding-logo h1 {
+  font-size: 28px;
+  color: #272728;
+}
+
+/* Botões Entrar / Registrar */
 .buttons-login {
   display: flex;
   position: relative;
-  width: 385px;
-  padding: 0;
   gap: 12px;
   justify-content: center;
   align-items: center;
@@ -40,39 +61,161 @@ body {
   border: 1px solid #000;
   background-color: #fff;
   height: 54px;
+  margin-bottom: 30px;
   overflow: hidden;
 }
 
 .buttons-login button {
-  display: flex;
-  padding: 12px 20px;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
   flex: 1;
-  border-radius: 24px;
   border: none;
-  cursor: pointer;
+  border-radius: 24px;
   background: transparent;
-  color: #000;
+  cursor: pointer;
   font-weight: bold;
   z-index: 2;
   transition: color 0.3s ease;
-  height: 100;
+  height: 100%;
+}
+
+.buttons-login button.active {
+  color: #fff;
 }
 
 .glider {
   position: absolute;
   top: 2px;
   left: 2px;
-  right: 2px;
   height: 90%;
+  width: 50%;
   background: #2c2c2c;
   border-radius: 24px;
   z-index: 1;
   transition: transform 0.3s ease-in-out;
 }
 
-.buttons-login button.active {
-  color: #fff;
+.login-inputs {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Forms (Login e Cadastro compartilham posição) */
+.sign-in-form,
+.sign-up-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  opacity: 0; /* invisível por padrão */
+  pointer-events: none; /* não clicável quando invisível */
+  transition: opacity 0.3s ease;
+}
+
+.sign-in-form.active,
+.sign-up-form.active {
+  opacity: 1; /* visível quando ativo */
+  pointer-events: all; /* clicável quando ativo */
+}
+
+/* Inputs wrapper - igual para login e cadastro */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  padding: 12px 16px;
+  background-color: #f8f8f8;
+  transition: 0.3s;
+}
+
+.input-wrapper:focus-within {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(43,43,43,0.3);
+}
+
+.input-wrapper input {
+  border: none;
+  flex: 1;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+}
+
+/* Material icon - igual para login e cadastro */
+.material-symbols-outlined {
+  font-size: 24px;
+  color: #007bff;
+}
+
+/* Botões Login / Cadastro - mesmos estilos */
+.login-inputs button[type="submit"],
+.sign-up-form button[type="submit"] {
+  padding: 12px;
+  border: none;
+  border-radius: 24px;
+  background-color: #FD7915;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-inputs button[type="submit"]:hover,
+.sign-up-form button[type="submit"]:hover {
+  background-color: #b5550b;
+}
+
+/* Labels e links - mesmo estilo */
+.login-inputs label,
+.sign-up-form label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.login-inputs a,
+.sign-up-form a {
+  text-decoration: none;
+  color: #272728;
+  font-size: 14px;
+  margin-top: -30px;
+  transition: 0.2s;
+}
+
+.login-inputs a:hover,
+.sign-up-form a:hover {
+  text-decoration: underline;
+}
+
+/* Botões sociais */
+.other-logins {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.other-logins button {
+  padding: 12px;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+/* Inputs do form de cadastro agora iguais ao de login */
+.sign-up-form input {
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+  font-size: 16px;
+  outline: none;
+  background-color: #f8f8f8;
+  transition: 0.3s;
+}
+
+.sign-up-form input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(43,43,43,0.3);
 }
