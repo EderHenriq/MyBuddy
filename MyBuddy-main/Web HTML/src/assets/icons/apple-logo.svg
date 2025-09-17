@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 700 700"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="apple-logo.svg"
+   width="700"
+   height="700"
+   inkscape:export-filename="C:\Users\suitedoalex\sites\apple-logo-0.png"
+   inkscape:export-xdpi="561.73712"
+   inkscape:export-ydpi="561.73712"
+   inkscape:version="0.92.0 r15299">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="0.47408296"
+     inkscape:cx="227.80914"
+     inkscape:cy="219.41609"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <path
+     d="m 539.35231,256.93093 a 112.55937,112.55937 0 0 0 -53.77906,94.67772 109.54116,109.54116 0 0 0 66.65946,100.47093 261.72393,261.72393 0 0 1 -34.13573,70.52265 c -21.2522,30.5937 -43.4741,61.18429 -77.28557,61.18429 -33.81146,0 -42.50753,-19.64333 -81.47304,-19.64333 -37.99892,0 -51.52475,20.28875 -82.43959,20.28875 -30.91486,0 -52.48822,-28.3394 -77.28558,-63.11742 A 305.0702,305.0702 0 0 1 147.76729,356.75957 c 0,-96.60775 62.79628,-147.80823 124.62287,-147.80823 32.848,0 60.22082,21.57335 80.83073,21.57335 19.64332,0 50.23702,-22.86421 87.59052,-22.86421 a 117.17087,117.17087 0 0 1 98.5409,49.27045 z M 423.10124,166.76495 a 111.04715,111.04715 0 0 0 26.40624,-69.21934 47.870473,47.870473 0 0 0 -0.96658,-9.97755 111.26853,111.26853 0 0 0 -73.10123,37.67776 107.97281,107.97281 0 0 0 -27.37282,67.30178 44.244252,44.244252 0 0 0 0.96658,9.01722 37.10406,37.10406 0 0 0 6.76292,0.64542 96.454965,96.454965 0 0 0 67.30489,-35.44529 z"
+     id="path2"
+     inkscape:connector-curvature="0"
+     style="stroke-width:31.17988205"
+     inkscape:export-filename="C:\Users\suitedoalex\sites\apple-logo-4.png"
+     inkscape:export-xdpi="94.940125"
+     inkscape:export-ydpi="94.940125" />
+</svg>
