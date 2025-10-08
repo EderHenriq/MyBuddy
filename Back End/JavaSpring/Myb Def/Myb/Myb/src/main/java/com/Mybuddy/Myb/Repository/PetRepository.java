@@ -1,4 +1,11 @@
 package com.Mybuddy.Myb.Repository;
 
-public interface PetRepository {
+import com.Mybuddy.Myb.Model.Pet;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface PetRepository extends JpaRepository<Pet, Long> {
+    // Métodos customizados (se precisar) entram aqui
 }
+
