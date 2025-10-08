@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+
 @Service
 public class PetService {
 
@@ -53,6 +57,10 @@ public class PetService {
             throw new IllegalStateException("Pet com ID " + id + " não encontrado.");
         }
         petRepository.deleteById(id);
+    }
+
+    public Page<Pet> buscarComFiltros(PetFiltro filtro, Pageable pageable) {
+        return petRepository.findAll(PetSpecification.comFiltros(filtro), pageable);
     }
 }
 
