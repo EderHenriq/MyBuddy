@@ -1,4 +1,3 @@
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
@@ -98,7 +97,6 @@ body {
   margin-bottom: 20px;
 }
 
-/* Forms (Login e Cadastro compartilham posição) */
 .sign-in-form,
 .sign-up-form {
   display: flex;
