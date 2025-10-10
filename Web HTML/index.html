@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +8,36 @@
 </head>
 <body>
     <header class="main-header">
-        <h1>MyBuddy</h1>
-        <img src="/Web HTML/src/assets/icons/logo-provisoria.png" alt="logo-mybuddy" width="100" height="100">
-        <nav class="main-nav">
-            <ul>
+        <div class="logo-mybuddy">
+            <img src="./src/assets/icons/logo-provisoria.png" alt="logo-mybuddy" width="150" height="150">
+            <h1>MyBuddy</h1>
+        </div>
+
+        <nav class="main-nav" aria-label="Main Navigation">
+            <ul class="nav-links">
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Sobre o Projeto</a></li>
                 <li><a href="#">Contatos</a></li>
             </ul>
-            <button>Login</button>
         </nav>
+
+        <div class="header-buttons">
+            <a href="/Web HTML/pages/login_screen.html" class="btn-text">Registrar-se</a>
+            <a href="/Web HTML/pages/login_screen.html" class="btn">Login</a>
+        </div>
     </header>
+
+    <main>
+        <section class="pet-page">
+            <img src="/Web HTML/src/assets/imgs/colagem-de-animal-de-estimacao-bonito-isolada.png" alt="imagem de animais">
+            <div class="hero-text">
+                <h2>Ache seu novo Pet aqui!!!</h2> <!--Frase temporaria-->
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                <br>Corporis laborum recusandae ut reprehenderit possimus, eligendi voluptate. Quia iure excepturi magnam. 
+                <br>Ea ipsam sed doloremque reiciendis aperiam natus beatae ut rerum?</p>
+                <button class="btn">Comece agora</button>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
