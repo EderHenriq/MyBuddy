@@ -6,47 +6,53 @@
 }
 
 body {
-  width: 100vw; /* Usa a largura da viewport */
-  height: 100vh; /* Usa a altura da viewport */
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(180deg, #4285f4 0%, #103a80 73.08%);
   font-family: Arial, sans-serif;
-  overflow: hidden; /* Evita scroll desnecessário */
+  overflow: hidden;
 }
 
 /* Container principal branco com borda arredondada */
 .main-container {
-    width: 90%;
-    max-width: 1200px; /* Largura máxima para telas grandes */
-    height: 90%;
-    max-height: 700px; /* Altura máxima */
-    background-color: white; 
-    border-radius: 50px;
-    box-shadow: 0px 10px 25px rgba(0,0,0,0.25);
-    display: flex; /* Para centralizar o painel de login */
-    padding: 0; /* O controle de espaço será interno */
-    overflow: hidden; /* Garante que os filhos respeitem a borda arredondada */
+  width: 90%;
+  max-width: 1400px;
+  height: 90%;
+  max-height: 800px;
+  background-color: white;
+  border-radius: 50px;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
+  display: flex;
+  padding: 0;
+  overflow: hidden;
 }
 
 /* Painel que divide a tela entre login/cadastro e imagem */
-.login-panel { 
-    display: flex; /* Para alinhar login e imagem lado a lado */
-    width: 100%;
-    height: 100%;
+.login-panel {
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
 
 /* Seção apenas para a parte de login/cadastro */
-.form-section { 
-  width: 50%; 
-  min-width: 380px; /* Largura mínima para o formulário não espremer */
-  display: flex; 
+.form-section {
+  /* ALTERADO: Define largura flexível, mas com limite máximo */
+  width: auto; 
+  max-width: 500px; /* Limita a largura máxima da área do formulário */
+  flex-grow: 0; /* Não cresce */
+  flex-shrink: 0; /* Não encolhe (mas o max-width ainda limita) */
+  display: flex;
   flex-direction: column;
-  align-items: center; 
-  justify-content: center; 
-  padding: 20px 40px; /* Padding interno da seção do formulário */
-  gap: 25px; /* Espaçamento entre os blocos (logo, botões, form) */
+  align-items: center;
+  justify-content: center;
+  padding: 30px 40px; 
+  /* ALTERADO: Ajusta o gap entre logo, botões e form-wrapper */
+  gap: 20px; 
+  /* ADICIONADO: Remove min-width daqui, o max-width e o conteúdo definirão a largura */
+  /* min-width: 400px; */ 
 }
 
 .branding-logo {
@@ -72,9 +78,10 @@ body {
   border-radius: 24px;
   border: 1px solid #000;
   background-color: #fff;
-  height: 54px;
+  /* ALTERADO: Altura padrão para os botões */
+  height: 60px; 
   width: 100%;
-  max-width: 350px;
+  max-width: 400px; /* Mantém a largura máxima */
   overflow: hidden;
 }
 
@@ -87,7 +94,7 @@ body {
   z-index: 2;
   transition: color 0.3s ease;
   height: 100%;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .buttons-login button.active {
@@ -107,77 +114,94 @@ body {
 }
 
 /* Wrapper para os formulários */
-.form-wrapper { 
-    position: relative;
-    width: 100%; 
-    max-width: 350px;
-    height: 280px; /* Altura fixa para ambos os formulários */
+.form-wrapper {
+  position: relative; /* Mantido relative para os forms internos */
+  width: 100%;
+  max-width: 400px; /* Alinha com os botões de alternância */
+  height: auto; /* Deixa a altura ser determinada pelo conteúdo */
+  min-height: 0; /* Remove a altura mínima forçada */
+  max-height: 100%; /* Permite que o wrapper use 100% da altura disponível no form-section */
+  overflow-y: auto; /* Mantém a rolagem, se necessária */
+  display: block;
+
+  /* Esconde a barra de rolagem */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+.form-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 /* Forms (Login e Cadastro sobrepostos) */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  /* ALTERADO: Gap entre os inputs */
+  gap: 15px; 
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
-  position: absolute; 
+  position: absolute; /* Mantido absolute para sobreposição */
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  justify-content: center; 
-  align-items: center; 
+  height: auto; /* Altura do formulário pelo conteúdo */
+  justify-content: center;
+  align-items: center;
+  /* REMOVIDO: Padrões desnecessários aqui, o gap do form-section gerencia */
+  padding-bottom: 0; 
+  padding-top: 0;
 }
 
 .form.active {
   opacity: 1;
   pointer-events: all;
+  display: flex;
+  /* ALTERADO: Volta para relative para que ele ocupe espaço no fluxo do form-wrapper */
+  position: relative; 
 }
 
 /* Estilos gerais para inputs */
-.input-wrapper,
-.sign-up-form input { 
-  display: flex; 
+.input-wrapper {
+  display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   border: 1px solid #ccc;
-  border-radius: 24px;
-  padding: 12px 16px;
+  border-radius: 28px;
+  padding: 14px 20px;
   background-color: #f8f8f8;
   transition: 0.3s;
-  width: 100%; 
+  width: 100%;
 }
 
-.input-wrapper:focus-within,
-.sign-up-form input:focus {
+.input-wrapper:focus-within {
   border-color: #007bff;
-  box-shadow: 0 0 5px rgba(43,43,43,0.3);
+  box-shadow: 0 0 5px rgba(43, 43, 43, 0.3);
 }
 
 .input-wrapper input {
   border: none;
   flex: 1;
   outline: none;
-  font-size: 16px;
+  font-size: 17px;
   background: transparent;
-  width: 100%; 
+  width: 100%;
 }
 
 .material-symbols-outlined {
-  font-size: 24px;
-  color: #FD7915;
+  font-size: 26px;
+  color: #fd7915;
 }
 
 /* Botões de Submit */
 .form button[type="submit"] {
-  padding: 12px;
+  padding: 15px;
   border: none;
-  border-radius: 24px;
-  background-color: #FD7915;
+  border-radius: 28px;
+  background-color: #fd7915;
   color: white;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
@@ -190,27 +214,27 @@ body {
 
 /* Opções de Login */
 .login-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 14px;
 }
 
 .login-options label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .login-options a {
-    text-decoration: none;
-    color: #272728;
-    transition: 0.2s;
+  text-decoration: none;
+  color: #272728;
+  transition: 0.2s;
 }
 
 .login-options a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Estilos para as mensagens de feedback */
@@ -222,7 +246,7 @@ body {
   text-align: center;
   font-weight: bold;
   width: 100%;
-  min-height: 40px; /* Garante que a mensagem não "pule" o layout */
+  min-height: 40px;
 }
 
 .mensagem-sucesso {
@@ -236,23 +260,85 @@ body {
 }
 
 .mensagem-info {
-    background-color: #bee5eb;
-    color: #0c5460;
+  background-color: #bee5eb;
+  color: #0c5460;
 }
 
 /* Seção de Imagem Lateral */
 .image-section {
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    background-color: #f0f0f0;
+  width: auto; /* A largura será automática */
+  flex-grow: 1; /* Esta seção preenche o espaço restante */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  border-radius: 0 50px 50px 0;
 }
 
 .image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.input-wrapper select.select-field {
+  border: none;
+  flex: 1;
+  outline: none;
+  font-size: 17px;
+  background: transparent;
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  color: #272728;
+}
+
+.input-wrapper select.select-field option:first-child {
+  color: #888;
+}
+
+/* MEDIA QUERIES para responsividade */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    height: auto;
+    max-height: none;
+    width: 95%;
+    border-radius: 25px;
+  }
+
+  .login-panel {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .form-section {
     width: 100%;
-    height: 100%;
-    object-fit: cover; /* Cobre o espaço sem distorcer */
-    display: block; 
+    max-width: none; /* Remove a largura máxima para preencher 100% */
+    min-width: unset;
+    padding: 20px;
+    order: 2;
+  }
+
+  .image-section {
+    width: 100%;
+    height: 200px;
+    order: 1;
+    border-radius: 25px 25px 0 0;
+  }
+
+  .image-section img {
+    border-radius: 25px 25px 0 0;
+  }
+
+  .buttons-login,
+  .form-wrapper {
+    max-width: 100%;
+  }
 }

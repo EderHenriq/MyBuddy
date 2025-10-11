@@ -1,6 +1,7 @@
 package com.Mybuddy.Myb.Security.jwt;
 
-import com.Mybuddy.Myb.Security.User;
+import com.Mybuddy.Myb.Model.Usuario; // Seu modelo Usuario está em 'Model'
+import com.Mybuddy.Myb.Security.Role; // <<--- CORRIGIDO: Este é o import CORRETO para sua entidade Role
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,40 +12,37 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-
-    private String username;
-
+    private String nome; // Campo de nome em Usuario é 'nome'
     private String email;
 
     @JsonIgnore
-    private String password;
+    private String telefone;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password,
+    public UserDetailsImpl(Long id, String nome, String email, String telefone,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
-        this.username = username;
+        this.nome = nome;
         this.email = email;
-        this.password = password;
+        this.telefone = telefone;
         this.authorities = authorities;
     }
 
-    public static UserDetailsImpl build(User user) {
+    public static UserDetailsImpl build(Usuario user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
 
         return new UserDetailsImpl(
                 user.getId(),
-                user.getUsername(),
+                user.getNome(), // Chamando getNome()
                 user.getEmail(),
-                user.getPassword(),
+                user.getTelefone(),
                 authorities);
     }
 
@@ -61,14 +59,18 @@ public class UserDetailsImpl implements UserDetails {
         return email;
     }
 
+    public String getNome() { // Getter para 'nome'
+        return nome;
+    }
+
     @Override
     public String getPassword() {
-        return password;
+        return telefone;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

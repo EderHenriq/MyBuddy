@@ -9,21 +9,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const formSignUp = document.getElementById('formSignUp');
     const signUpNome = document.getElementById('signUpNome');
     const signUpEmail = document.getElementById('signUpEmail');
-    // REMOVIDO: const signUpSenha = document.getElementById('signUpSenha'); // Este campo não existe mais no HTML
-    const signUpTelefone = document.getElementById('signUpTelefone'); // Campo Telefone (que é a 'senha' para registro)
+    const signUpTelefone = document.getElementById('signUpTelefone');
+    const signUpRole = document.getElementById('signUpRole'); // <<--- NOVO: Pegar o elemento select da role
     const mensagemRegistro = document.getElementById('mensagemRegistro');
 
     // Elementos do formulário de login
     const formSignIn = document.getElementById('formSignIn');
     const signInEmail = document.getElementById('signInEmail');
-    const signInTelefone = document.getElementById('signInTelefone'); // Campo Telefone (que é a 'senha' para login)
+    const signInTelefone = document.getElementById('signInTelefone');
     const mensagemLogin = document.getElementById('mensagemLogin');
 
     // Constante para a URL base da sua API
-    const API_BASE_URL_REGISTRO = 'http://localhost:8080/api/usuarios'; // Endpoint para registrar usuários
-    // Você precisará de um endpoint de LOGIN separado no seu backend
-    const API_BASE_URL_LOGIN = 'http://localhost:8080/api/auth/login'; // Exemplo de endpoint de login
-
+    const API_BASE_URL_REGISTRO = 'http://localhost:8080/api/auth/cadastro'; 
+    const API_BASE_URL_LOGIN = 'http://localhost:8080/api/auth/login';
 
     // --- Funções Auxiliares para Mensagens ---
     function exibirMensagem(elemento, mensagem, tipo = 'info') {
@@ -44,8 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         signInForm.classList.add("active");
         signUpForm.classList.remove("active");
-        limparMensagem(mensagemRegistro); // Limpa mensagem de registro
-        limparMensagem(mensagemLogin); // Limpa mensagem de login
+        limparMensagem(mensagemRegistro);
+        limparMensagem(mensagemLogin);
     });
 
     signUpBtn.addEventListener("click", () => {
@@ -55,9 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         signUpForm.classList.add("active");
         signInForm.classList.remove("active");
-        limparMensagem(mensagemRegistro); // Limpa mensagem de registro
-        limparMensagem(mensagemLogin); // Limpa mensagem de login
-        // Opcional: Limpar campos do login ao trocar para registro
+        limparMensagem(mensagemRegistro);
+        limparMensagem(mensagemLogin);
         signInEmail.value = '';
         signInTelefone.value = '';
     });
@@ -70,20 +67,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const nome = signUpNome.value.trim();
         const email = signUpEmail.value.trim();
-        const telefone = signUpTelefone.value.trim(); // O telefone é agora o que a API vai receber como 'senha'
+        const telefone = signUpTelefone.value.trim();
+        const role = signUpRole.value; // <<--- NOVO: Pegar o valor da role selecionada
 
-        // Validação básica no frontend
-        if (!nome || !email || !telefone) { // Removida 'senha' da validação
-            exibirMensagem(mensagemRegistro, 'Por favor, preencha todos os campos: Nome, Email e Telefone.', 'erro');
+        if (!nome || !email || !telefone || !role) { // <<--- NOVO: Validar se a role foi selecionada
+            exibirMensagem(mensagemRegistro, 'Por favor, preencha todos os campos e selecione seu tipo de usuário.', 'erro');
             return;
         }
 
         // Objeto com os dados a serem enviados para a API de REGISTRO
-        // Assumimos que sua API no backend espera 'nome', 'email' e 'telefone' para criar o usuário
-        const novoUsuario = { nome, email, telefone }; 
+        // <<--- NOVO: Incluir a role no objeto novoUsuario
+        const novoUsuario = { nome, email, telefone, role: [role] }; // O backend espera um array de roles, ex: { "role": ["adotante"] }
 
         try {
-            const response = await fetch(API_BASE_URL_REGISTRO, { // Usa o endpoint de registro
+            const response = await fetch(API_BASE_URL_REGISTRO, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -91,13 +88,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify(novoUsuario)
             });
 
-            if (response.status === 201) {
+            if (response.status === 200) { 
                 const usuarioCriado = await response.json();
-                exibirMensagem(mensagemRegistro, `Usuário "${usuarioCriado.nome}" cadastrado com sucesso!`, 'sucesso');
+                exibirMensagem(mensagemRegistro, `Usuário "${novoUsuario.nome}" cadastrado com sucesso!`, 'sucesso');
                 formSignUp.reset();
                 // Opcional: Mudar para a tela de login após o registro
                 // signInBtn.click();
 
+            } else if (response.status === 400 && response.text().includes("Role is not found")) { // Tratamento específico para role não encontrada
+                exibirMensagem(mensagemRegistro, 'Erro: Tipo de usuário inválido.', 'erro');
             } else if (response.status === 409) {
                 exibirMensagem(mensagemRegistro, 'Erro: O e-mail informado já está em uso.', 'erro');
             } else {
@@ -116,41 +115,37 @@ document.addEventListener("DOMContentLoaded", () => {
         limparMensagem(mensagemLogin);
         
         const email = signInEmail.value.trim();
-        const telefone = signInTelefone.value.trim(); // Pega o telefone do campo de login
+        const telefone = signInTelefone.value.trim();
 
         if (!email || !telefone) {
             exibirMensagem(mensagemLogin, 'Por favor, preencha email e telefone (senha).', 'erro');
             return;
         }
 
-        // Objeto com os dados a serem enviados para a API de LOGIN
-        // Sua API de login (ex: /api/auth/login) provavelmente espera 'email' e 'senha'
-        // Neste caso, estamos usando 'telefone' como 'senha'.
-        const loginData = { email, senha: telefone }; 
+        const loginData = { email, telefone: telefone }; 
 
         try {
-            // AQUI VOCÊ CONECTARIA COM O ENDPOINT DE LOGIN DA SUA API
-            const response = await fetch(API_BASE_URL_LOGIN, { // Usa o endpoint de login
+            const response = await fetch(API_BASE_URL_LOGIN, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(loginData)
             });
 
-            if (response.ok) { // Status 200 OK indica sucesso no login
+            if (response.ok) {
                 const data = await response.json();
-                // Sucesso no login, provavelmente você receberia um JWT aqui
-                // localStorage.setItem('jwt_token', data.token); // Exemplo de como salvar um token
+                
+                localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('userId', data.id);
+                localStorage.setItem('userEmail', data.email);
+                localStorage.setItem('userName', data.username);
+                localStorage.setItem('userRoles', JSON.stringify(data.roles));
 
                 exibirMensagem(mensagemLogin, 'Login realizado com sucesso! Redirecionando...', 'sucesso');
-                // Redirecionar para a página principal
+                
                 setTimeout(() => {
-                    // CUIDADO: Ajuste este caminho para o seu index.html real
-                    // Ex: './index.html' se estiver na mesma pasta
-                    // Ex: '../../index.html' se estiver duas pastas acima (como na estrutura que você usou com ../js/login.js)
-                    window.location.href = '../../index.html'; 
-                }, 1000); // Redireciona após 1 segundo
+                    window.location.href = 'C:\Users\edinh\OneDrive\Área de Trabalho\Unicesumar - Análise e desenvolvimento de sistemas\MyBuddy\Repositorio Git\MyBuddy\Web HTML\GestaoPet.html'; 
+                }, 1000); 
             } else {
-                // Para outros erros (401 Unauthorized, 400 Bad Request, etc.)
                 const errorData = await response.json().catch(() => ({ message: response.statusText }));
                 exibirMensagem(mensagemLogin, `Erro no login: ${errorData.message || 'Credenciais inválidas'}`, 'erro');
             }

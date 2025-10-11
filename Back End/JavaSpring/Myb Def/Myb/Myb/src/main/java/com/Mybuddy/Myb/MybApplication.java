@@ -23,25 +23,43 @@ public class MybApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				// PRIMEIRO MAPEAMENTO: Geral para /api/**
+				// Mapeamento abrangente para /api/**, incluindo "null"
 				registry.addMapping("/api/**")
-						.allowedOrigins("http://localhost:5500", "http://127.0.0.1:5500", "null") // <-- CORRIGIDO!
+						.allowedOrigins(
+								"null", // <<--- ADICIONADO DE VOLTA
+								"http://localhost:5500",
+								"http://127.0.0.1:5500",
+								"http://localhost:8080" // Boa prática incluir sua própria origem também
+						)
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 						.allowedHeaders("*")
 						.allowCredentials(true);
 
-				// SEGUNDO MAPEAMENTO: Para uploads
+				// Mapeamento para uploads - Se /uploads/** não exige autenticação/credenciais,
+				// allowedCredentials(true) pode não ser necessário, mas se o navegador envia cookies, mantenha.
+				// Se este endpoint também pode ser acessado de arquivo local, adicione "null" aqui também.
 				registry.addMapping("/uploads/**")
-						.allowedOrigins("http://localhost:5500", "http://127.0.0.1:5500", "null") // <-- CORRIGIDO!
+						.allowedOrigins(
+								"null", // <<--- ADICIONADO DE VOLTA SE FOR O CASO
+								"http://localhost:5500",
+								"http://127.0.0.1:5500",
+								"http://localhost:8080"
+						)
 						.allowedMethods("GET", "HEAD")
-						.allowedHeaders("*");
-
-				// TERCEIRO MAPEAMENTO: Para /api/auth/** (Este já estava corrigido no nosso último ajuste)
-				registry.addMapping("/api/auth/**")
-						.allowedOrigins("http://localhost:5500", "http://127.0.0.1:5500", "null") // <-- CORRIGIDO!
-						.allowedMethods("POST", "OPTIONS")
 						.allowedHeaders("*")
-						.allowCredentials(true);
+						.allowCredentials(false); // Geralmente uploads não precisam de credenciais para serem *acessados* publicamente
+
+				// O mapeamento para /api/auth/** agora é redundante se o /api/** já o cobre.
+				// Se você tem requisitos MUITO específicos para auth, pode mantê-lo,
+				// mas certifique-se de que "null" esteja lá também.
+				// Vou comentar esta parte para simplificar, já que /api/** já a cobre.
+             /*
+             registry.addMapping("/api/auth/**")
+                   .allowedOrigins("null", "http://localhost:5500", "http://127.0.0.1:5500", "http://localhost:8080") // <<--- ADICIONADO DE VOLTA
+                   .allowedMethods("POST", "OPTIONS")
+                   .allowedHeaders("*")
+                   .allowCredentials(true);
+             */
 			}
 
 			@Override

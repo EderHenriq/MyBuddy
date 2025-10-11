@@ -1,27 +1,27 @@
-package com.Mybuddy.Myb.Payload.Request; // Crie este pacote
+package com.Mybuddy.Myb.Payload.Request;
 
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginRequest {
     @NotBlank
-    private String username;
+    private String email; // Renomeado de username para email
 
     @NotBlank
-    private String password;
+    private String telefone; // Renomeado de password para telefone
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getTelefone() {
+        return telefone;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 }
