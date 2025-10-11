@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Config;
 
 import com.Mybuddy.Myb.Security.jwt.AuthEntryPointJwt;
-import com.Mybuddy.Myb.Security.jwt.AuthTokenFilter; // Importe
+import com.Mybuddy.Myb.Security.jwt.AuthTokenFilter;
 import com.Mybuddy.Myb.Security.jwt.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
 
-    // CONSTRUTOR SEM AUTH_TOKEN_FILTER AQUI
+
     public SecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
@@ -50,17 +50,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthTokenFilter authTokenFilter) throws Exception { // <-- AUTH_TOKEN_FILTER INJETADO AQUI
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthTokenFilter authTokenFilter) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**").permitAll() // <--- ESTA LINHA É CRÍTICA!
+                        auth.requestMatchers("/api/auth/**").permitAll()
+                                // --- ADIÇÃO PARA H2 CONSOLE ---
+                                .requestMatchers("/h2-console/**").permitAll() // Permite acesso público ao H2 Console
+                                // -----------------------------
                                 .anyRequest().authenticated()
                 );
 
+        // --- ADIÇÃO PARA H2 CONSOLE (se houver problemas de iframe) ---
+        // Se a interface do H2 Console não carregar (tela em branco), descomente a linha abaixo.
+        // Isso é necessário porque o H2 Console roda em um iframe e o Spring Security
+        // pode bloquear isso por padrão com as X-Frame-Options.
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
+        // -----------------------------------------------------------
+
         http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class); // USANDO O FILTRO INJETADO AQUI
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
