@@ -30,7 +30,18 @@ public class Pet {
     @Column(length = 10)
     private String sexo;
 
-    public Pet() {}
+    @Column(length = 255) // Campo para armazenar a URL da imagem
+    private String imageUrl;
+
+    // --- NOVAS MODIFICAÇÕES PARA O STATUS DE ADOÇÃO ---
+    @Enumerated(EnumType.STRING) // Armazena o nome da enum (EM_ADOCAO, ADOTADO)
+    @Column(length = 20, nullable = false)
+    private StatusAdocao statusAdocao; // NOVO CAMPO PARA O STATUS
+    // --- FIM NOVAS MODIFICAÇÕES ---
+
+    public Pet() {
+        this.statusAdocao = StatusAdocao.EM_ADOCAO; // Define um status padrão ao criar
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -55,5 +66,12 @@ public class Pet {
 
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
-}
 
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    // --- NOVOS: Getter e Setter para statusAdocao ---
+    public StatusAdocao getStatusAdocao() { return statusAdocao; }
+    public void setStatusAdocao(StatusAdocao statusAdocao) { this.statusAdocao = statusAdocao; }
+    // --- FIM NOVOS GETTER E SETTER ---
+}

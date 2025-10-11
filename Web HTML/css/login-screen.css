@@ -1,3 +1,4 @@
+/* Reset básico */
 * {
   margin: 0;
   padding: 0;
@@ -5,38 +6,53 @@
 }
 
 body {
-  width: 100%;
-  height: 100vh;
+  width: 100vw; /* Usa a largura da viewport */
+  height: 100vh; /* Usa a altura da viewport */
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(180deg, #4285f4 0%, #103a80 73.08%);
   font-family: Arial, sans-serif;
+  overflow: hidden; /* Evita scroll desnecessário */
 }
 
-.login-container {
-  width: 90%;
-  height: 90%;
-  flex-shrink: 0;
-  background-color: white;
-  border-radius: 50px;
-  box-shadow: 0px 10px 25px rgba(0,0,0,0.25);
-  padding: 40px 30px;
+/* Container principal branco com borda arredondada */
+.main-container {
+    width: 90%;
+    max-width: 1200px; /* Largura máxima para telas grandes */
+    height: 90%;
+    max-height: 700px; /* Altura máxima */
+    background-color: white; 
+    border-radius: 50px;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.25);
+    display: flex; /* Para centralizar o painel de login */
+    padding: 0; /* O controle de espaço será interno */
+    overflow: hidden; /* Garante que os filhos respeitem a borda arredondada */
 }
 
-.login-container2 {
-  width: 50%;
-  height: 100%;
-  flex-shrink: 0;
-  margin: 0;
-  padding: 0;
+/* Painel que divide a tela entre login/cadastro e imagem */
+.login-panel { 
+    display: flex; /* Para alinhar login e imagem lado a lado */
+    width: 100%;
+    height: 100%;
+}
+
+/* Seção apenas para a parte de login/cadastro */
+.form-section { 
+  width: 50%; 
+  min-width: 380px; /* Largura mínima para o formulário não espremer */
+  display: flex; 
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center; 
+  padding: 20px 40px; /* Padding interno da seção do formulário */
+  gap: 25px; /* Espaçamento entre os blocos (logo, botões, form) */
 }
 
 .branding-logo {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 30px;
 }
 
 .branding-logo img {
@@ -53,27 +69,25 @@ body {
 .buttons-login {
   display: flex;
   position: relative;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
   border-radius: 24px;
   border: 1px solid #000;
   background-color: #fff;
   height: 54px;
-  margin-bottom: 30px;
+  width: 100%;
+  max-width: 350px;
   overflow: hidden;
 }
 
 .buttons-login button {
   flex: 1;
   border: none;
-  border-radius: 24px;
   background: transparent;
   cursor: pointer;
   font-weight: bold;
   z-index: 2;
   transition: color 0.3s ease;
   height: 100%;
+  font-size: 16px;
 }
 
 .buttons-login button.active {
@@ -84,38 +98,48 @@ body {
   position: absolute;
   top: 2px;
   left: 2px;
-  height: 90%;
-  width: 50%;
+  height: calc(100% - 4px);
+  width: calc(50% - 2px);
   background: #2c2c2c;
-  border-radius: 24px;
+  border-radius: 22px;
   z-index: 1;
   transition: transform 0.3s ease-in-out;
 }
 
-.login-inputs {
-  width: 100%;
-  margin-bottom: 20px;
+/* Wrapper para os formulários */
+.form-wrapper { 
+    position: relative;
+    width: 100%; 
+    max-width: 350px;
+    height: 280px; /* Altura fixa para ambos os formulários */
 }
 
-.sign-in-form,
-.sign-up-form {
+/* Forms (Login e Cadastro sobrepostos) */
+.form {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  opacity: 0; /* invisível por padrão */
-  pointer-events: none; /* não clicável quando invisível */
+  opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s ease;
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center; 
+  align-items: center; 
 }
 
-.sign-in-form.active,
-.sign-up-form.active {
-  opacity: 1; /* visível quando ativo */
-  pointer-events: all; /* clicável quando ativo */
+.form.active {
+  opacity: 1;
+  pointer-events: all;
 }
 
-/* Inputs wrapper - igual para login e cadastro */
-.input-wrapper {
-  display: flex;
+/* Estilos gerais para inputs */
+.input-wrapper,
+.sign-up-form input { 
+  display: flex; 
   align-items: center;
   gap: 12px;
   border: 1px solid #ccc;
@@ -123,9 +147,11 @@ body {
   padding: 12px 16px;
   background-color: #f8f8f8;
   transition: 0.3s;
+  width: 100%; 
 }
 
-.input-wrapper:focus-within {
+.input-wrapper:focus-within,
+.sign-up-form input:focus {
   border-color: #007bff;
   box-shadow: 0 0 5px rgba(43,43,43,0.3);
 }
@@ -136,17 +162,16 @@ body {
   outline: none;
   font-size: 16px;
   background: transparent;
+  width: 100%; 
 }
 
-/* Material icon - igual para login e cadastro */
 .material-symbols-outlined {
   font-size: 24px;
-  color: #007bff;
+  color: #FD7915;
 }
 
-/* Botões Login / Cadastro - mesmos estilos */
-.login-inputs button[type="submit"],
-.sign-up-form button[type="submit"] {
+/* Botões de Submit */
+.form button[type="submit"] {
   padding: 12px;
   border: none;
   border-radius: 24px;
@@ -156,64 +181,78 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
+  width: 100%;
 }
 
-.login-inputs button[type="submit"]:hover,
-.sign-up-form button[type="submit"]:hover {
+.form button[type="submit"]:hover {
   background-color: #b5550b;
 }
 
-/* Labels e links - mesmo estilo */
-.login-inputs label,
-.sign-up-form label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* Opções de Login */
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 14px;
+}
+
+.login-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-options a {
+    text-decoration: none;
+    color: #272728;
+    transition: 0.2s;
+}
+
+.login-options a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para as mensagens de feedback */
+.mensagem-area {
+  margin-top: 5px;
+  padding: 8px 12px;
+  border-radius: 5px;
   font-size: 14px;
+  text-align: center;
+  font-weight: bold;
+  width: 100%;
+  min-height: 40px; /* Garante que a mensagem não "pule" o layout */
 }
 
-.login-inputs a,
-.sign-up-form a {
-  text-decoration: none;
-  color: #272728;
-  font-size: 14px;
-  margin-top: -30px;
-  transition: 0.2s;
+.mensagem-sucesso {
+  background-color: #d4edda;
+  color: #155724;
 }
 
-.login-inputs a:hover,
-.sign-up-form a:hover {
-  text-decoration: underline;
+.mensagem-erro {
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
-/* Botões sociais */
-.other-logins {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.mensagem-info {
+    background-color: #bee5eb;
+    color: #0c5460;
 }
 
-.other-logins button {
-  padding: 12px;
-  border: none;
-  border-radius: 24px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: 0.3s;
+/* Seção de Imagem Lateral */
+.image-section {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #f0f0f0;
 }
 
-/* Inputs do form de cadastro agora iguais ao de login */
-.sign-up-form input {
-  padding: 12px 16px;
-  border: 1px solid #ccc;
-  border-radius: 24px;
-  font-size: 16px;
-  outline: none;
-  background-color: #f8f8f8;
-  transition: 0.3s;
-}
-
-.sign-up-form input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(43,43,43,0.3);
+.image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cobre o espaço sem distorcer */
+    display: block; 
 }
