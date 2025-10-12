@@ -52,14 +52,57 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
         return InteresseAdoacaoMapper.toResponse(salvo); // Converte a entidade salva para um DTO de resposta e o retorna.
     }
 
-    @Transactional // Indica que este método deve ser executado dentro de uma transação.
+    // Anotação @Transactional indica que este método deve ser executado dentro de uma transação.
+// Método da BUDDY-95: Permite atualizar o status de um interesse de adoção (PENDENTE → APROVADO/REJEITADO).
+// Inclui validações de negócio para garantir integridade do fluxo de adoção.
+// Normalmente usado por usuários com permissões de ONG ou ADMIN.
+    @Transactional
     public InteresseResponse atualizarStatus(Long interesseId, StatusInteresse novoStatus) {
-        // Busca o interesse de adoção pelo ID. Se não encontrado, lança uma exceção.
+        // Busca o interesse de adoção pelo ID. Se não encontrado, lança uma exceção IllegalArgumentException.
         InteresseAdoacao interesse = interesseRepo.findById(interesseId)
                 .orElseThrow(() -> new IllegalArgumentException("Interesse não encontrado: " + interesseId));
-        interesse.setStatus(novoStatus); // Atualiza o status do interesse com o novo status fornecido.
-        var salvo = interesseRepo.save(interesse); // Salva as alterações no interesse de adoção no banco de dados.
-        return InteresseAdoacaoMapper.toResponse(salvo); // Converte a entidade atualizada para um DTO de resposta e o retorna.
+
+        // VALIDAÇÃO 1: Não permitir voltar de APROVADO/REJEITADO para PENDENTE (irreversível)
+        // Uma vez que um interesse foi processado (aprovado ou rejeitado), não pode voltar a pendente.
+        // Isso garante rastreabilidade e evita manipulação de decisões já tomadas.
+        if (interesse.getStatus() != StatusInteresse.PENDENTE && novoStatus == StatusInteresse.PENDENTE) {
+            throw new IllegalStateException("Não é possível reverter status de interesse já processado para PENDENTE");
+        }
+
+        // VALIDAÇÃO 2: Se estiver aprovando o interesse, verificar se o pet ainda está disponível
+        // Previne aprovação de interesse quando o pet já foi adotado por outro usuário ou ficou indisponível.
+        if (novoStatus == StatusInteresse.APROVADO) {
+            Pet pet = interesse.getPet(); // Obtém o pet associado ao interesse
+            // Verifica se o pet está no status EM_ADOCAO (disponível para adoção)
+            if (!pet.getStatusAdocao().equals(StatusAdocao.EM_ADOCAO)) {
+                throw new IllegalStateException("Pet não está mais disponível para adoção. Status atual: " + pet.getStatusAdocao());
+            }
+        }
+
+        // VALIDAÇÃO 3 (OPCIONAL): Rejeitar outros interesses automaticamente ao aprovar um
+        // Quando um interesse é aprovado, pode-se considerar rejeitar automaticamente os demais interesses no mesmo pet.
+        // Esta lógica está comentada, mas pode ser ativada conforme regra de negócio:
+    /*
+    if (novoStatus == StatusInteresse.APROVADO) {
+        List<InteresseAdoacao> outrosInteresses = interesseRepo.findByPetIdAndStatusNot(
+            interesse.getPet().getId(),
+            StatusInteresse.APROVADO
+        );
+        outrosInteresses.forEach(outro -> {
+            if (!outro.getId().equals(interesseId)) {
+                outro.setStatus(StatusInteresse.REJEITADO);
+                interesseRepo.save(outro);
+            }
+        });
+    }
+    */
+
+        interesse.setStatus(novoStatus); // Atualiza o status do interesse com o novo status fornecido
+
+        // Salva as alterações no interesse de adoção no banco de dados através do repositório
+        var salvo = interesseRepo.save(interesse);
+        // Converte a entidade atualizada para um DTO de resposta e o retorna ao controlador
+        return InteresseAdoacaoMapper.toResponse(salvo);
     }
 
     // Anotação @Transactional(readOnly = true) indica que este método é somente de leitura.
