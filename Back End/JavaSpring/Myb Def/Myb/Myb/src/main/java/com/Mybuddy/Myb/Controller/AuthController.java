@@ -6,8 +6,9 @@ import com.Mybuddy.Myb.Payload.Request.LoginRequest;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
 import com.Mybuddy.Myb.Payload.Response.JwtResponse;
 import com.Mybuddy.Myb.Repository.RoleRepository;
-import com.Mybuddy.Myb.Repository.UserRepository;
-import com.Mybuddy.Myb.Security.User;
+import com.Mybuddy.Myb.Repository.UsuarioRepository;
+import com.Mybuddy.Myb.Repository.UsuarioRepository;
+import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
 import com.Mybuddy.Myb.Security.Role; // Entidade que representa um papel (role) no sistema
 import com.Mybuddy.Myb.Security.ERole; // Enum que define os tipos de roles disponíveis
@@ -34,13 +35,13 @@ public class AuthController {
 
     // --- Injeções de dependência ---
     private final AuthenticationManager authenticationManager; // Gerencia a autenticação do Spring Security
-    private final UserRepository userRepository; // Acesso ao banco de dados dos usuários
+    private final UsuarioRepository userRepository; // Acesso ao banco de dados dos usuários
     private final RoleRepository roleRepository; // Acesso ao banco de dados das roles
     private final PasswordEncoder encoder; // Responsável por codificar senhas
     private final JwtUtils jwtUtils; // Utilitário para geração e validação de tokens JWT
 
     // Construtor para injeção de dependências via construtor
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository,
+    public AuthController(AuthenticationManager authenticationManager, UsuarioRepository userRepository,
                           RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;

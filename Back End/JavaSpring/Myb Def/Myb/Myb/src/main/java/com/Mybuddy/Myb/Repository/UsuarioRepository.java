@@ -23,4 +23,12 @@ public interface UsuarioRepository extends JpaRepository <Usuario, Long> {
     // O método retorna um Optional<Usuario> para indicar que o usuário pode ser encontrado ou não.
     // O nome 'findByEmail' segue a convenção de nomeação de métodos do Spring Data JPA para criar consultas.
     Optional<Usuario> findByEmail(String email);
+
+    Boolean existsByEmail(String email);
+    // Método para verificar se um email já está cadastrado no banco
+    // Retorna true se existir algum registro com esse email, false caso contrário
+
+    Boolean existsByTelefone(String telefone);
+    // Método opcional para verificar se um telefone já está cadastrado
+    // Retorna true se existir algum registro com esse telefone, false caso contrário
 }

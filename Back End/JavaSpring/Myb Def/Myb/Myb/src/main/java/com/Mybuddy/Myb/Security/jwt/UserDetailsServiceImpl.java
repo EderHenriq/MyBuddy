@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Security.jwt;
 // Pacote onde a classe de serviço de usuários para autenticação JWT está localizada
 
-import com.Mybuddy.Myb.Repository.UserRepository;
+import com.Mybuddy.Myb.Repository.UsuarioRepository;
 // Importa o repositório de usuários para buscar usuários no banco de dados
 import com.Mybuddy.Myb.Model.Usuario;
 // Importa a entidade Usuario, que representa os dados do usuário
@@ -21,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailsServiceImpl implements UserDetailsService {
     // Implementa UserDetailsService, necessário para autenticação com Spring Security
 
-    private final UserRepository userRepository;
+    private final UsuarioRepository userRepository;
     // Repositório para buscar usuários no banco de dados
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
+    public UserDetailsServiceImpl(UsuarioRepository userRepository) {
         this.userRepository = userRepository;
     }
     // Construtor que injeta o UserRepository (injeção de dependência)
