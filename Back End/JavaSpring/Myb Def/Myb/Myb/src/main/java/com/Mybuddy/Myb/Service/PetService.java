@@ -5,6 +5,8 @@ import com.Mybuddy.Myb.Model.Pet; // Importa a entidade Pet.
 import com.Mybuddy.Myb.Model.StatusAdocao; // Importa a enumeração StatusAdocao.
 import com.Mybuddy.Myb.Repository.PetRepository; // Importa o repositório para a entidade Pet.
 import org.springframework.stereotype.Service; // Importa a anotação @Service do Spring.
+import com.Mybuddy.Myb.Repository.InteresseAdoacaoRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List; // Importa a interface List para lidar com coleções de objetos.
 import java.util.Optional; // Importa a classe Optional para lidar com resultados que podem estar ausentes.
@@ -19,10 +21,12 @@ import org.springframework.data.domain.Pageable; // Importa a interface Pageable
 public class PetService { // Declara a classe de serviço para Pets.
 
     private final PetRepository petRepository; // Declara uma instância do repositório de pets, marcada como 'final'.
+    private final InteresseAdoacaoRepository interesseRepo; //
 
     // Construtor da classe. O Spring injeta automaticamente uma instância de PetRepository aqui (Injeção por construtor).
-    public PetService(PetRepository petRepository) {
+    public PetService(PetRepository petRepository, InteresseAdoacaoRepository interesseRepo) {
         this.petRepository = petRepository; // Inicializa o repositório de pets.
+        this.interesseRepo = interesseRepo; // <<-- ADICIONAR
     }
 
     // Método para criar um novo pet.
@@ -79,16 +83,34 @@ public class PetService { // Declara a classe de serviço para Pets.
         return petRepository.save(petExistente);
     }
 
-    // Método para deletar um pet por seu ID.
+    // Anotação @Transactional do Spring. Indica que este método deve ser executado dentro de uma transação.
+// Método da BUDDY-98: Permite exclusão de pets do sistema com validações de segurança.
+// Garante que apenas pets sem histórico relevante possam ser removidos.
+    @Transactional
     public void deletarPet(Long id) {
-        // Verifica se o pet com o ID fornecido existe.
-        if (!petRepository.existsById(id)) {
-            // Se não existir, lança uma exceção.
-            throw new IllegalStateException("Pet com ID " + id + " não encontrado.");
+        // Busca o pet pelo ID. Se não encontrado, lança uma exceção IllegalStateException.
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Pet com ID " + id + " não encontrado."));
+
+        // VALIDAÇÃO 1: Não permitir exclusão de pet com status ADOTADO (histórico importante)
+        // Pets adotados devem ser mantidos no sistema para fins de auditoria e histórico.
+        // Sugestão: alterar status para INDISPONIVEL em vez de excluir.
+        if (pet.getStatusAdocao().equals(StatusAdocao.ADOTADO)) {
+            throw new IllegalStateException("Não é possível excluir pet já adotado. Altere o status para INDISPONIVEL.");
         }
-        // Se existir, deleta o pet do banco de dados.
+
+        // VALIDAÇÃO 2: Verificar se existem interesses associados ao pet
+        // Antes de excluir, verifica se há registros de interesse de adoção vinculados ao pet.
+        // Se houver, a exclusão é bloqueada para manter integridade referencial e histórico.
+        long countInteresses = interesseRepo.countByPetId(id);
+        if (countInteresses > 0) {
+            throw new IllegalStateException("Não é possível excluir pet com interesses registrados. Total: " + countInteresses);
+        }
+
+        // Se passou pelas validações, exclui o pet do banco de dados através do repositório.
         petRepository.deleteById(id);
     }
+
 
     // Método para buscar pets com filtros e paginação.
     // Recebe um objeto PetFiltro (contendo os critérios de busca) e um objeto Pageable (para informações de paginação).
