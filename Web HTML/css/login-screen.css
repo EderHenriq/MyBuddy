@@ -5,29 +5,32 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
-  width: 100vw;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(180deg, #4285f4 0%, #103a80 73.08%);
   font-family: Arial, sans-serif;
-  overflow: hidden;
+  /* permitir scroll da página se necessário */
+  overflow: auto;
+  padding: 20px;
 }
 
-/* Container principal branco com borda arredondada */
+/* Container principal branco com bordas arredondadas */
 .main-container {
-  width: 90%;
-  max-width: 1400px;
-  height: 90%;
-  max-height: 800px;
-  background-color: white;
-  border-radius: 50px;
+  width: 100%;
+  max-width: 1200px;
+  height: 80vh;
+  min-height: 600px;
+  background-color: #fff;
+  border-radius: 32px;
   box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
   display: flex;
-  padding: 0;
-  overflow: hidden;
+  overflow: hidden; /* importante para que a imagem "corte" junto com o container */
 }
 
 /* Painel que divide a tela entre login/cadastro e imagem */
@@ -39,49 +42,49 @@ body {
 
 /* Seção apenas para a parte de login/cadastro */
 .form-section {
-  /* ALTERADO: Define largura flexível, mas com limite máximo */
-  width: auto; 
-  max-width: 500px; /* Limita a largura máxima da área do formulário */
-  flex-grow: 0; /* Não cresce */
-  flex-shrink: 0; /* Não encolhe (mas o max-width ainda limita) */
+  flex: 0 0 55%; /* ocupar 55% do espaço (ajuste se quiser mais/menos) */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 30px 40px; 
-  /* ALTERADO: Ajusta o gap entre logo, botões e form-wrapper */
-  gap: 20px; 
-  /* ADICIONADO: Remove min-width daqui, o max-width e o conteúdo definirão a largura */
-  /* min-width: 400px; */ 
+  justify-content: flex-start;
+  padding: 36px 48px;
+  gap: 18px;
+  background: transparent;
+  min-width: 320px;
 }
 
+/* Logo e título */
 .branding-logo {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 6px; /* empurra a logo um pouco para o topo do painel branco */
+  margin-bottom: 6px;
 }
 
-.branding-logo img {
-  width: 80px;
-  margin-bottom: 10px;
+.branding-logo img.login-logo {
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 6px;
 }
 
 .branding-logo h1 {
-  font-size: 28px;
+  font-size: 18px;
   color: #272728;
+  letter-spacing: 0.2px;
 }
 
 /* Botões Entrar / Registrar */
 .buttons-login {
   display: flex;
   position: relative;
-  border-radius: 24px;
-  border: 1px solid #000;
+  border-radius: 28px;
+  border: 2px solid #000;
   background-color: #fff;
-  /* ALTERADO: Altura padrão para os botões */
-  height: 60px; 
+  height: 46px;
   width: 100%;
-  max-width: 400px; /* Mantém a largura máxima */
+  max-width: 360px;
   overflow: hidden;
 }
 
@@ -90,11 +93,10 @@ body {
   border: none;
   background: transparent;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 700;
   z-index: 2;
-  transition: color 0.3s ease;
-  height: 100%;
-  font-size: 18px;
+  transition: color 0.25s ease;
+  font-size: 15px;
 }
 
 .buttons-login button.active {
@@ -106,239 +108,176 @@ body {
   top: 2px;
   left: 2px;
   height: calc(100% - 4px);
-  width: calc(50% - 2px);
+  width: calc(50% - 4px);
   background: #2c2c2c;
-  border-radius: 22px;
+  border-radius: 26px;
   z-index: 1;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.25s ease-in-out;
 }
 
-/* Wrapper para os formulários */
+/* Wrapper dos formulários - ESSENCIAL: scroll aqui */
 .form-wrapper {
-  position: relative; /* Mantido relative para os forms internos */
   width: 100%;
-  max-width: 400px; /* Alinha com os botões de alternância */
-  height: auto; /* Deixa a altura ser determinada pelo conteúdo */
-  min-height: 0; /* Remove a altura mínima forçada */
-  max-height: 100%; /* Permite que o wrapper use 100% da altura disponível no form-section */
-  overflow-y: auto; /* Mantém a rolagem, se necessária */
-  display: block;
-
-  /* Esconde a barra de rolagem */
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  max-width: 420px;
+  /* calcular altura disponível: container menos espaço usado por logo + botões (aprox) */
+  max-height: calc(100% - 170px); /* ajustar caso precise */
+  overflow-y: auto;
+  padding-right: 8px; /* pequeno espaço para scrollbar */
 }
 
+/* mostrar scrollbar nativa quando necessário */
 .form-wrapper::-webkit-scrollbar {
-  display: none;
+  width: 10px;
+}
+.form-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.12);
+  border-radius: 8px;
 }
 
-/* Forms (Login e Cadastro sobrepostos) */
+/* Forms: controlar exibição via classes (não usar posicionamento absoluto) */
 .form {
-  display: flex;
+  display: none;
   flex-direction: column;
-  /* ALTERADO: Gap entre os inputs */
-  gap: 15px; 
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  position: absolute; /* Mantido absolute para sobreposição */
-  top: 0;
-  left: 0;
+  gap: 14px;
   width: 100%;
-  height: auto; /* Altura do formulário pelo conteúdo */
-  justify-content: center;
   align-items: center;
-  /* REMOVIDO: Padrões desnecessários aqui, o gap do form-section gerencia */
-  padding-bottom: 0; 
-  padding-top: 0;
+  margin-top: 18px;
 }
 
 .form.active {
-  opacity: 1;
-  pointer-events: all;
   display: flex;
-  /* ALTERADO: Volta para relative para que ele ocupe espaço no fluxo do form-wrapper */
-  position: relative; 
 }
 
-/* Estilos gerais para inputs */
+/* Estilos para inputs */
 .input-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
-  border: 1px solid #ccc;
-  border-radius: 28px;
-  padding: 14px 20px;
-  background-color: #f8f8f8;
-  transition: 0.3s;
+  gap: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  padding: 12px 18px;
+  background-color: #fafafa;
   width: 100%;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .input-wrapper:focus-within {
   border-color: #007bff;
-  box-shadow: 0 0 5px rgba(43, 43, 43, 0.3);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
 }
 
-.input-wrapper input {
+.input-wrapper input,
+.input-wrapper select {
   border: none;
-  flex: 1;
   outline: none;
-  font-size: 17px;
+  flex: 1;
+  font-size: 15px;
   background: transparent;
-  width: 100%;
+  color: #222;
 }
 
+/* icon */
 .material-symbols-outlined {
-  font-size: 26px;
+  font-size: 20px;
   color: #fd7915;
 }
 
-/* Botões de Submit */
+/* botão submit */
 .form button[type="submit"] {
-  padding: 15px;
+  padding: 13px;
   border: none;
   border-radius: 28px;
   background-color: #fd7915;
   color: white;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.3s;
   width: 100%;
+  margin-top: 6px;
 }
 
 .form button[type="submit"]:hover {
-  background-color: #b5550b;
+  filter: brightness(0.92);
 }
 
-/* Opções de Login */
+/* opções de login (lembrar / esqueceu) */
 .login-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  font-size: 14px;
+  font-size: 13px;
+  margin-top: 6px;
 }
 
-.login-options label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.login-options a {
-  text-decoration: none;
-  color: #272728;
-  transition: 0.2s;
-}
-
-.login-options a:hover {
-  text-decoration: underline;
-}
-
-/* Estilos para as mensagens de feedback */
+/* Mensagens (seu JS altera classes) */
 .mensagem-area {
-  margin-top: 5px;
-  padding: 8px 12px;
-  border-radius: 5px;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
   font-size: 14px;
   text-align: center;
-  font-weight: bold;
+  font-weight: 700;
   width: 100%;
-  min-height: 40px;
+  min-height: 28px;
 }
 
-.mensagem-sucesso {
-  background-color: #d4edda;
-  color: #155724;
-}
+/* cores de exemplo */
+.mensagem-sucesso { background-color: #d4edda; color: #155724; }
+.mensagem-erro    { background-color: #f8d7da; color: #721c24; }
+.mensagem-info    { background-color: #bee5eb; color: #0c5460; }
 
-.mensagem-erro {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-.mensagem-info {
-  background-color: #bee5eb;
-  color: #0c5460;
-}
-
-/* Seção de Imagem Lateral */
+/* Seção de Imagem Lateral (preencher totalmente a direita) */
 .image-section {
-  width: auto; /* A largura será automática */
-  flex-grow: 1; /* Esta seção preenche o espaço restante */
+  flex: 0 0 45%; /* ocupa 45% do espaço */
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   overflow: hidden;
-  background-color: #f0f0f0;
-  border-radius: 0 50px 50px 0;
+  background: transparent; /* sem branco por trás */
 }
 
+/* A imagem preenche toda a área, sem gaps */
 .image-section img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  margin: 0;
-  padding: 0;
 }
 
-.input-wrapper select.select-field {
-  border: none;
-  flex: 1;
-  outline: none;
-  font-size: 17px;
-  background: transparent;
-  width: 100%;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  color: #272728;
-}
-
-.input-wrapper select.select-field option:first-child {
-  color: #888;
-}
-
-/* MEDIA QUERIES para responsividade */
-@media (max-width: 768px) {
+/* Responsividade */
+@media (max-width: 900px) {
   .main-container {
     flex-direction: column;
     height: auto;
     max-height: none;
-    width: 95%;
-    border-radius: 25px;
-  }
-
-  .login-panel {
-    flex-direction: column;
-    height: auto;
+    min-height: 0;
+    border-radius: 18px;
   }
 
   .form-section {
-    width: 100%;
-    max-width: none; /* Remove a largura máxima para preencher 100% */
-    min-width: unset;
-    padding: 20px;
     order: 2;
+    width: 100%;
+    padding: 20px;
+    flex: none;
   }
 
   .image-section {
-    width: 100%;
-    height: 200px;
     order: 1;
-    border-radius: 25px 25px 0 0;
+    width: 100%;
+    height: 220px;
+    flex: none;
   }
 
   .image-section img {
-    border-radius: 25px 25px 0 0;
+    border-radius: 18px 18px 0 0;
   }
 
-  .buttons-login,
   .form-wrapper {
-    max-width: 100%;
+    max-height: 360px;
+  }
+
+  .branding-logo img.login-logo {
+    width: 120px;
   }
 }

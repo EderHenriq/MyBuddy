@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 exibirMensagem(mensagemLogin, 'Login realizado com sucesso! Redirecionando...', 'sucesso');
                 
                 setTimeout(() => {
-                    window.location.href = 'C:\Users\edinh\OneDrive\Área de Trabalho\Unicesumar - Análise e desenvolvimento de sistemas\MyBuddy\Repositorio Git\MyBuddy\Web HTML\GestaoPet.html'; 
+                    window.location.href = '../index.html'; 
                 }, 1000); 
             } else {
                 const errorData = await response.json().catch(() => ({ message: response.statusText }));
