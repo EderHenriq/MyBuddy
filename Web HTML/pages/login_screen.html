@@ -11,56 +11,86 @@
     />
   </head>
   <body>
-    <div class="login-container">
-      <div class="login-container2">
-        <div class="branding-logo">
-          <img
-            src="/Web HTML/src/assets/icons/logo-provisoria.png"
-            alt="Logo MyBuddy"
-            class="login-logo"
-          />
-          <h1>MyBuddy</h1>
-        </div>
+    <div class="main-container">
+      <div class="login-panel">
+        <div class="form-section">
+          <div class="branding-logo">
+            <img
+              src="../src/assets/icons/logo-provisoria.png"
+              alt="Logo MyBuddy"
+              class="login-logo"
+            />
+            <h1>MyBuddy</h1>
+          </div>
 
-        <div class="buttons-login">
-          <div class="glider"></div>
-          <button type="button" class="sign-in active">Entrar</button>
-          <button type="button" class="sign-up">Registrar-se</button>
-        </div>
+          <div class="buttons-login">
+            <div class="glider"></div>
+            <button type="button" class="sign-in active">Entrar</button>
+            <button type="button" class="sign-up">Registrar-se</button>
+          </div>
 
-        <div class="login-inputs">
-          <form class="form sign-in-form active">
+          <div class="form-wrapper" id="formWrapper">
+                    <form class="form sign-in-form active" id="formSignIn">
             <div class="input-wrapper">
               <span class="material-symbols-outlined">mail</span>
-              <input type="email" placeholder="Email" required />
+              <input type="email" id="signInEmail" placeholder="Email" required />
             </div>
 
             <div class="input-wrapper">
               <span class="material-symbols-outlined">lock</span>
-              <input type="password" placeholder="Senha" required />
+              <input type="password" id="signInTelefone" placeholder="Telefone (senha)" required />
             </div>
 
             <button type="submit">Login</button>
 
-            <label>
-              <input type="checkbox" />
-              Lembrar-me
-            </label>
+            <div class="login-options"> 
+              <label>
+                <input type="checkbox" />
+                Lembrar-me
+              </label>
+              <a href="#">Esqueceu seu Telefone?</a> 
+            </div>
 
-            <a href="#">Esqueceu sua Senha?</a>
+            <p id="mensagemLogin" class="mensagem-area"></p>
           </form>
 
-          
-          <form class="form sign-up-form">
-            <input type="text" placeholder="Nome completo" required />
-            <input type="email" placeholder="Email" required />
-            <input type="password" placeholder="Senha" required />
-            <input type="password" placeholder="Confirmar senha" required />
+                    <form class="form sign-up-form" id="formSignUp">
+            <div class="input-wrapper">
+              <span class="material-symbols-outlined">person</span>
+              <input type="text" id="signUpNome" placeholder="Nome completo" required />
+            </div>
+
+            <div class="input-wrapper">
+              <span class="material-symbols-outlined">mail</span>
+              <input type="email" id="signUpEmail" placeholder="Email" required />
+            </div>
+
+            <div class="input-wrapper">
+              <span class="material-symbols-outlined">phone</span>
+              <input type="text" id="signUpTelefone" placeholder="Telefone (será sua senha)" required />
+            </div>
+
+            <div class="input-wrapper">
+              <span class="material-symbols-outlined">group</span>
+              <select id="signUpRole" required class="select-field">
+                <option value="" disabled selected>Escolha seu tipo de usuário</option>
+                <option value="adotante">Adotante</option>
+                <option value="ong">ONG</option>
+              </select>
+            </div>
+
             <button type="submit">Registrar</button>
+            <p id="mensagemRegistro" class="mensagem-area"></p>
           </form>
+          </div>
         </div>
-      </div>
-    </div>
+        
+        <div class="image-section">
+          <img src="../src/assets/imgs/adotar-cachorro-pet.jpg" alt="Imagem de fundo" />
+        </div>
+      </div> 
+    </div> 
+
     <script src="../js/login.js"></script>
   </body>
 </html>

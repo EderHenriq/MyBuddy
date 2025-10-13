@@ -5,76 +5,98 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
-  width: 100%;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(180deg, #4285f4 0%, #103a80 73.08%);
   font-family: Arial, sans-serif;
+  /* permitir scroll da página se necessário */
+  overflow: auto;
+  padding: 20px;
 }
 
-.login-container {
-  width: 90%;
-  height: 90%;
-  flex-shrink: 0;
-  background-color: white;
-  border-radius: 50px;
-  box-shadow: 0px 10px 25px rgba(0,0,0,0.25);
-  padding: 40px 30px;
+/* Container principal branco com bordas arredondadas */
+.main-container {
+  width: 100%;
+  max-width: 1200px;
+  height: 80vh;
+  min-height: 600px;
+  background-color: #fff;
+  border-radius: 32px;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
+  display: flex;
+  overflow: hidden; /* importante para que a imagem "corte" junto com o container */
 }
 
-.login-container2 {
-  width: 50%;
+/* Painel que divide a tela entre login/cadastro e imagem */
+.login-panel {
+  display: flex;
+  width: 100%;
   height: 100%;
-  flex-shrink: 0;
-  margin: 0;
-  padding: 0;
 }
 
+/* Seção apenas para a parte de login/cadastro */
+.form-section {
+  flex: 0 0 55%; /* ocupar 55% do espaço (ajuste se quiser mais/menos) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 36px 48px;
+  gap: 18px;
+  background: transparent;
+  min-width: 320px;
+}
+
+/* Logo e título */
 .branding-logo {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 30px;
+  margin-top: 6px; /* empurra a logo um pouco para o topo do painel branco */
+  margin-bottom: 6px;
 }
 
-.branding-logo img {
-  width: 80px;
-  margin-bottom: 10px;
+.branding-logo img.login-logo {
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 6px;
 }
 
 .branding-logo h1 {
-  font-size: 28px;
+  font-size: 18px;
   color: #272728;
+  letter-spacing: 0.2px;
 }
 
 /* Botões Entrar / Registrar */
 .buttons-login {
   display: flex;
   position: relative;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 24px;
-  border: 1px solid #000;
+  border-radius: 28px;
+  border: 2px solid #000;
   background-color: #fff;
-  height: 54px;
-  margin-bottom: 30px;
+  height: 46px;
+  width: 100%;
+  max-width: 360px;
   overflow: hidden;
 }
 
 .buttons-login button {
   flex: 1;
   border: none;
-  border-radius: 24px;
   background: transparent;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 700;
   z-index: 2;
-  transition: color 0.3s ease;
-  height: 100%;
+  transition: color 0.25s ease;
+  font-size: 15px;
 }
 
 .buttons-login button.active {
@@ -85,137 +107,179 @@ body {
   position: absolute;
   top: 2px;
   left: 2px;
-  height: 90%;
-  width: 50%;
+  height: calc(100% - 4px);
+  width: calc(50% - 4px);
   background: #2c2c2c;
-  border-radius: 24px;
+  border-radius: 26px;
   z-index: 1;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.25s ease-in-out;
 }
 
-.login-inputs {
+/* Wrapper dos formulários - scroll invisível */
+.form-wrapper {
   width: 100%;
-  margin-bottom: 20px;
+  max-width: 420px;
+  max-height: calc(100% - 170px);
+  overflow-y: auto;
+  padding-right: 8px;
+
+  /* ===== Scroll invisível ===== */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
 }
 
-/* Forms (Login e Cadastro compartilham posição) */
-.sign-in-form,
-.sign-up-form {
-  display: flex;
+.form-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari e Edge */
+}
+.form-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.12);
+  border-radius: 8px;
+}
+
+/* Forms: controlar exibição via classes (não usar posicionamento absoluto) */
+.form {
+  display: none;
   flex-direction: column;
-  gap: 15px;
-  opacity: 0; /* invisível por padrão */
-  pointer-events: none; /* não clicável quando invisível */
-  transition: opacity 0.3s ease;
+  gap: 14px;
+  width: 100%;
+  align-items: center;
+  margin-top: 18px;
 }
 
-.sign-in-form.active,
-.sign-up-form.active {
-  opacity: 1; /* visível quando ativo */
-  pointer-events: all; /* clicável quando ativo */
+.form.active {
+  display: flex;
 }
 
-/* Inputs wrapper - igual para login e cadastro */
+/* Estilos para inputs */
 .input-wrapper {
   display: flex;
   align-items: center;
   gap: 12px;
-  border: 1px solid #ccc;
-  border-radius: 24px;
-  padding: 12px 16px;
-  background-color: #f8f8f8;
-  transition: 0.3s;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  padding: 12px 18px;
+  background-color: #fafafa;
+  width: 100%;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .input-wrapper:focus-within {
   border-color: #007bff;
-  box-shadow: 0 0 5px rgba(43,43,43,0.3);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
 }
 
-.input-wrapper input {
+.input-wrapper input,
+.input-wrapper select {
   border: none;
-  flex: 1;
   outline: none;
-  font-size: 16px;
+  flex: 1;
+  font-size: 15px;
   background: transparent;
+  color: #222;
 }
 
-/* Material icon - igual para login e cadastro */
+/* icon */
 .material-symbols-outlined {
-  font-size: 24px;
-  color: #007bff;
+  font-size: 20px;
+  color: #fd7915;
 }
 
-/* Botões Login / Cadastro - mesmos estilos */
-.login-inputs button[type="submit"],
-.sign-up-form button[type="submit"] {
-  padding: 12px;
+/* botão submit */
+.form button[type="submit"] {
+  padding: 13px;
   border: none;
-  border-radius: 24px;
-  background-color: #FD7915;
+  border-radius: 28px;
+  background-color: #fd7915;
   color: white;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.3s;
+  width: 100%;
+  margin-top: 6px;
 }
 
-.login-inputs button[type="submit"]:hover,
-.sign-up-form button[type="submit"]:hover {
-  background-color: #b5550b;
+.form button[type="submit"]:hover {
+  filter: brightness(0.92);
 }
 
-/* Labels e links - mesmo estilo */
-.login-inputs label,
-.sign-up-form label {
+/* opções de login (lembrar / esqueceu) */
+.login-options {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  width: 100%;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+/* Mensagens (seu JS altera classes) */
+.mensagem-area {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
   font-size: 14px;
+  text-align: center;
+  font-weight: 700;
+  width: 100%;
+  min-height: 28px;
 }
 
-.login-inputs a,
-.sign-up-form a {
-  text-decoration: none;
-  color: #272728;
-  font-size: 14px;
-  margin-top: -30px;
-  transition: 0.2s;
-}
+/* cores de exemplo */
+.mensagem-sucesso { background-color: #d4edda; color: #155724; }
+.mensagem-erro    { background-color: #f8d7da; color: #721c24; }
+.mensagem-info    { background-color: #bee5eb; color: #0c5460; }
 
-.login-inputs a:hover,
-.sign-up-form a:hover {
-  text-decoration: underline;
-}
-
-/* Botões sociais */
-.other-logins {
+/* Seção de Imagem Lateral (preencher totalmente a direita) */
+.image-section {
+  flex: 0 0 45%; /* ocupa 45% do espaço */
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  justify-content: center;
+  align-items: stretch;
+  overflow: hidden;
+  background: transparent; /* sem branco por trás */
 }
 
-.other-logins button {
-  padding: 12px;
-  border: none;
-  border-radius: 24px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: 0.3s;
+/* A imagem preenche toda a área, sem gaps */
+.image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-/* Inputs do form de cadastro agora iguais ao de login */
-.sign-up-form input {
-  padding: 12px 16px;
-  border: 1px solid #ccc;
-  border-radius: 24px;
-  font-size: 16px;
-  outline: none;
-  background-color: #f8f8f8;
-  transition: 0.3s;
-}
+/* Responsividade */
+@media (max-width: 900px) {
+  .main-container {
+    flex-direction: column;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    border-radius: 18px;
+  }
 
-.sign-up-form input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(43,43,43,0.3);
+  .form-section {
+    order: 2;
+    width: 100%;
+    padding: 20px;
+    flex: none;
+  }
+
+  .image-section {
+    order: 1;
+    width: 100%;
+    height: 220px;
+    flex: none;
+  }
+
+  .image-section img {
+    border-radius: 18px 18px 0 0;
+  }
+
+  .form-wrapper {
+    max-height: 360px;
+  }
+
+  .branding-logo img.login-logo {
+    width: 120px;
+  }
 }

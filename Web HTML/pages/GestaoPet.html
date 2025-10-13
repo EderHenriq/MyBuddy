@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Pets - MyBuddy</title>
+    <link rel="stylesheet" href="../css/GestaoPet.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-logo">
+            <img src="../Web HTML/src/assets/icons/logo-provisoria.png" alt="Logo" />
+            <span>MyBuddy</span>
+        </div>
+        <nav class="main-nav">
+            <a href="../../index.html">Home</a>
+            <a href="GestaoPet.html" class="active">Pets</a>
+            <a href="PerfilUsuario.html">Meu Perfil</a>
+            <a href="../auth/login.html">Sair</a>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="pet-management-container">
+            <div class="header-section">
+                <h2>Gestão de Pets</h2>
+                <button id="addPetBtn" class="primary-btn">
+                    <span class="material-symbols-outlined">add</span>
+                    Adicionar Novo Pet
+                </button>
+            </div>
+
+            <div class="filter-search-section">
+                <div class="search-bar">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" id="petSearchInput" placeholder="Buscar pet por nome ou raça..." />
+                </div>
+                <div class="filters">
+                    <select id="speciesFilter">
+                        <option value="">Espécie</option>
+                        <option value="cachorro">Cachorro</option>
+                        <option value="gato">Gato</option>
+                        <option value="passaro">Pássaro</option>
+                        <option value="roedor">Roedor</option>
+                        <option value="peixe">Peixe</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                    <select id="sizeFilter">
+                        <option value="">Porte</option>
+                        <option value="pequeno">Pequeno</option>
+                        <option value="medio">Médio</option>
+                        <option value="grande">Grande</option>
+                    </select>
+                    <select id="genderFilter">
+                        <option value="">Sexo</option>
+                        <option value="M">Macho</option>
+                        <option value="F">Fêmea</option>
+                    </select>
+                    <select id="colorFilter">
+                        <option value="">Cor</option>
+                        <option value="preto">Preto</option>
+                        <option value="branco">Branco</option>
+                        <option value="marrom">Marrom</option>
+                        <option value="cinza">Cinza</option>
+                        <option value="caramelo">Caramelo</option>
+                        <option value="varias">Várias</option>
+                        <option value="outra">Outra</option>
+                    </select>
+                    </div>
+            </div>
+
+            <div class="pet-list-section">
+                <p id="noPetsMessage" style="text-align: center; color: #666; display: none;">Nenhum pet encontrado.</p>
+                <div id="petsContainer" class="pets-grid">
+                    </div>
+            </div>
+        </div>
+    </div>
+      <div id="petRegisterModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Cadastrar Novo Pet</h2>
+            <form id="petRegisterForm">
+                 <div class="form-group">
+                    <label for="petImage">Foto do Pet:</label>
+                    <input type="file" id="petImage" name="petImage" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="especie">Espécie:</label>
+                    <select id="especie" name="especie" required>
+                        <option value="">Selecione</option>
+                        <option value="cachorro">Cachorro</option>
+                        <option value="gato">Gato</option>
+                        <option value="passaro">Pássaro</option>
+                        <option value="roedor">Roedor</option>
+                        <option value="peixe">Peixe</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="raca">Raça:</label>
+                    <input type="text" id="raca" name="raca">
+                </div>
+                <div class="form-group">
+                    <label for="idade">Idade (anos):</label>
+                    <input type="number" id="idade" name="idade" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="porte">Porte:</label>
+                    <select id="porte" name="porte" required>
+                        <option value="">Selecione</option>
+                        <option value="pequeno">Pequeno</option>
+                        <option value="medio">Médio</option>
+                        <option value="grande">Grande</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cor">Cor:</label>
+                    <input type="text" id="cor" name="cor">
+                </div>
+                <div class="form-group">
+                    <label for="sexo">Sexo:</label>
+                    <select id="sexo" name="sexo" required>
+                        <option value="">Selecione</option>
+                        <option value="M">Macho</option>
+                        <option value="F">Fêmea</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="primary-btn submit-btn">Cadastrar Pet</button>
+            </form>
+            <p id="registerMessage" style="color: green; text-align: center; margin-top: 15px; display: none;"></p>
+        </div>
+    </div>
+
+      <div id="petDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeDetailsModal">&times;</span>
+            <div class="pet-details-content">
+                <img id="detailsPetImage" src="https://via.placeholder.com/300x300?text=Foto+do+Pet" alt="Foto do Pet" class="details-pet-image">
+                <h2 id="detailsPetName">Nome do Pet</h2>
+                <div class="details-info-grid">
+                    <p><strong>Espécie:</strong> <span id="detailsPetSpecies"></span></p>
+                    <p><strong>Raça:</strong> <span id="detailsPetBreed"></span></p>
+                    <p><strong>Idade:</strong> <span id="detailsPetAge"></span> anos</p>
+                    <p><strong>Porte:</strong> <span id="detailsPetSize"></span></p>
+                    <p><strong>Cor:</strong> <span id="detailsPetColor"></span></p>
+                    <p><strong>Sexo:</strong> <span id="detailsPetGender"></span></p>
+                </div>
+                <button id="interestBtn" class="primary-btn interest-btn">
+                    <span class="material-symbols-outlined">favorite</span>
+                    Tenho Interesse em Adoção
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/GestaoPet.js"></script>
+</body>
+</html>

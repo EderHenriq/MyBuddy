@@ -6,20 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize; // <<< ADICIONADO
+import org.springframework.security.core.Authentication; // <<< ADICIONADO
+import org.springframework.security.core.context.SecurityContextHolder; // <<< ADICIONADO
+import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl; // <<< ADICIONADO
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
 
-    //ENDPOINT DE CRIAÇÃO (CREATE) ---
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')") // <<< ADICIONADO: Apenas ADMIN pode criar usuários diretamente
     public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
         try {
             Usuario novoUsuario = usuarioService.criarUsuario(usuario);
@@ -29,41 +32,54 @@ public class UsuarioController {
         }
     }
 
-    //ENDPOINTS DE LEITURA (READ) ---
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')") // <<< ADICIONADO: Apenas ADMIN pode listar todos os usuários
     public List<Usuario> listarUsuarios() {
         return usuarioService.buscarTodosUsuarios();
     }
 
+    // --- NOVO ENDPOINT ADICIONADO: Para que qualquer usuário autenticado veja seu próprio perfil ---
+    @GetMapping("/meu-perfil")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Usuario> getMeuPerfil() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+        return usuarioService.buscarUsuarioPorId(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Long id) { // 11. @PathVariable extrai o valor do {id} da URL e o passa como parâmetro.
+    @PreAuthorize("hasRole('ADMIN')") // <<< ADICIONADO: Apenas ADMIN pode buscar qualquer usuário por ID
+    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Long id) {
         Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
-        // Se o usuário for encontrado (isPresent), retorna status 200 (OK) e os dados do usuário.
-        // Se não for encontrado, retorna status 404 (Not Found).
         return usuario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    //ENDPOINT DE ATUALIZAÇÃO (UPDATE) ---
     @PutMapping("/{id}")
+    // Apenas ADMINS podem atualizar qualquer usuário, ou o próprio usuário pode atualizar seu perfil
+    @PreAuthorize("hasRole('ADMIN') or (#id == authentication.principal.id)") // <<< ADICIONADO
     public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario dadosUsuario) {
         try {
-            Usuario usuarioAtualizado = usuarioService.atualizarUsuario(id, dadosUsuario);
-            //Retorna status 200 (OK) e o usuário com os dados atualizados.
+            // --- ALTERADO: Pode ser necessário passar o ID do usuário logado para o serviço ---
+            // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            // UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            // Usuario usuarioAtualizado = usuarioService.atualizarUsuario(id, dadosUsuario, userDetails.getId());
+            Usuario usuarioAtualizado = usuarioService.atualizarUsuario(id, dadosUsuario); // Mantendo sua chamada original por enquanto
             return ResponseEntity.ok(usuarioAtualizado);
         } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    //ENDPOINT DE DELEÇÃO (DELETE) ---
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')") // <<< ADICIONADO: Apenas ADMIN pode deletar qualquer usuário
     public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
         try {
             usuarioService.deletarUsuario(id);
-            // Retorna status 204, que é o padrão para uma deleção bem-sucedida. Não há corpo na resposta.
             return ResponseEntity.noContent().build();
         } catch (IllegalStateException e) {
-            // Se o usuário não for encontrado, retorna 404 (Not Found).
             return ResponseEntity.notFound().build();
         }
     }
