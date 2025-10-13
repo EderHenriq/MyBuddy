@@ -115,19 +115,21 @@ body {
   transition: transform 0.25s ease-in-out;
 }
 
-/* Wrapper dos formulários - ESSENCIAL: scroll aqui */
+/* Wrapper dos formulários - scroll invisível */
 .form-wrapper {
   width: 100%;
   max-width: 420px;
-  /* calcular altura disponível: container menos espaço usado por logo + botões (aprox) */
-  max-height: calc(100% - 170px); /* ajustar caso precise */
+  max-height: calc(100% - 170px);
   overflow-y: auto;
-  padding-right: 8px; /* pequeno espaço para scrollbar */
+  padding-right: 8px;
+
+  /* ===== Scroll invisível ===== */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
 }
 
-/* mostrar scrollbar nativa quando necessário */
 .form-wrapper::-webkit-scrollbar {
-  width: 10px;
+  display: none; /* Chrome, Safari e Edge */
 }
 .form-wrapper::-webkit-scrollbar-thumb {
   background: rgba(0,0,0,0.12);

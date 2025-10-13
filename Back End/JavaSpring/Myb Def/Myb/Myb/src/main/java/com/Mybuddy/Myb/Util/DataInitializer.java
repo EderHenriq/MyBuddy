@@ -1,64 +1,57 @@
-package com.Mybuddy.Myb.Util;
+package com.Mybuddy.Myb.Util; // Mantenha no pacote 'Util' ou mova para 'Config' se preferir
 
 import com.Mybuddy.Myb.Security.ERole;
-// Assumindo que sua entidade Role está em 'Entity' ou 'Security' (confirme o caminho correto!)
-import com.Mybuddy.Myb.Security.Role; // <<--- CONFIRME este import
+import com.Mybuddy.Myb.Security.Role;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Repository.RoleRepository;
-import com.Mybuddy.Myb.Repository.UserRepository;
+import com.Mybuddy.Myb.Repository.UsuarioRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional; // <<--- NOVO IMPORT
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Configuration
-public class DataInitializer {
+@Configuration // Ainda @Configuration, para ser escaneado pelo Spring
+public class DataInitializer { // Renomeado para 'DatabaseInitializer' (ou InitialDataLoader)
 
-    private final UserRepository userRepository;
+    private final UsuarioRepository usuarioRepository; // Renomeado para 'usuarioRepository' para consistência
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
-    public DataInitializer(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder) {
-        this.userRepository = userRepository;
+    public DataInitializer(UsuarioRepository usuarioRepository, RoleRepository roleRepository, PasswordEncoder encoder) {
+        this.usuarioRepository = usuarioRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
     }
 
     @PostConstruct
-    @Transactional // <<--- ADICIONADO: Garante que tudo abaixo execute em uma única transação
+    @Transactional
     public void initData() {
-        // 1. Garante que as Roles existam e as obtém do banco de dados
-        Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
-                .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_ADOTANTE)));
-        Role ongRole = roleRepository.findByName(ERole.ROLE_ONG)
-                .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_ONG)));
+        System.out.println("Iniciando inicialização de dados...");
 
-        // <<--- Se as roles foram criadas agora, imprima
-        if (roleRepository.count() == 0) { // Verifica novamente se estavam vazias
-            System.out.println("Roles ROLE_ADOTANTE e ROLE_ONG criadas!");
-        }
+        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN) // ADICIONADO: Role ADMIN
+                .orElseGet(() -> {
+                    System.out.println("Criando ROLE_ADMIN...");
+                    return roleRepository.save(new Role(ERole.ROLE_ADMIN));
+                });
 
 
         // 2. Cria Usuários de teste se não existirem
-        if (userRepository.count() == 0) {
-            // Cria usuário ONG
-            Usuario ongUser = new Usuario("onguser", "ong@mybuddy.com", encoder.encode("123456"));
-            Set<Role> ongRoles = new HashSet<>();
-            ongRoles.add(ongRole); // Adiciona a role já persistida
-            ongUser.setRoles(ongRoles);
-            userRepository.save(ongUser); // Salva o Usuario com suas roles
-
-            // Cria usuário ADOTANTE
-            Usuario adotanteUser = new Usuario("adotanteuser", "adotante@mybuddy.com", encoder.encode("123456"));
-            Set<Role> adotanteRoles = new HashSet<>();
-            adotanteRoles.add(adotanteRole); // Adiciona a role já persistida
-            adotanteUser.setRoles(adotanteRoles);
-            userRepository.save(adotanteUser); // Salva o Usuario com suas roles
-
-            System.out.println("Usuários de teste (onguser, adotanteuser) criados com sucesso!");
+        // Cria usuário ADMIN
+        if (usuarioRepository.findByEmail("admin@mybuddy.com").isEmpty()) {
+            Usuario adminUser = new Usuario("Administrador MyBuddy", "admin@mybuddy.com", encoder.encode("123456789")); // Telefone/Senha do Admin
+            Set<Role> adminRoles = new HashSet<>();
+            adminRoles.add(adminRole);
+            adminUser.setRoles(adminRoles);
+            usuarioRepository.save(adminUser);
+            System.out.println("Usuário Admin (admin@mybuddy.com) criado com sucesso!");
+        } else {
+            System.out.println("Usuário Admin (admin@mybuddy.com) já existe.");
         }
+
+
+        System.out.println("Finalizada inicialização de dados.");
     }
 }

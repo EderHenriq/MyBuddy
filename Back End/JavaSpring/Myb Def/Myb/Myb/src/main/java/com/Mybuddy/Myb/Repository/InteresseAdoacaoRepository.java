@@ -34,3 +34,17 @@ public interface InteresseAdoacaoRepository extends JpaRepository<InteresseAdoac
     // Equivalente SQL: SELECT COUNT(*) > 0 FROM interesses_adoacao WHERE usuario_id = ? AND pet_id = ?
     boolean existsByUsuarioAndPet(Usuario usuario, Pet pet);
 }
+    // Declara outro método de consulta personalizado.
+    // Similar ao anterior, o Spring Data JPA gerará a implementação para buscar
+    // todos os interesses de adoção associados a um determinado objeto Pet.
+    // O nome 'findByPet' segue a mesma convenção.
+    List<InteresseAdoacao> findByPet(Pet pet);
+
+    // Declara um método de contagem para verificar se existem interesses associados a um pet específico.
+// O Spring Data JPA gerará automaticamente a implementação para contar registros.
+// Usado na BUDDY-98 para validação antes de excluir um pet: se houver interesses, não pode excluir.
+// Equivalente SQL: SELECT COUNT(*) FROM interesses_adoacao WHERE pet_id = ?
+    default long countByPetId(Long petId) {
+        return 0;
+    }
+}

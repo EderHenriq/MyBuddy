@@ -74,8 +74,9 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
     }
 
     // Anotação @Transactional indica que este método deve ser executado dentro de uma transação.
-    // Método da BUDDY-87: Permite atualizar o status de um interesse de adoção (ex: PENDENTE → APROVADO/REJEITADO).
-    // Normalmente usado por usuários com permissões de ONG ou ADMIN.
+// Método da BUDDY-95: Permite atualizar o status de um interesse de adoção (PENDENTE → APROVADO/REJEITADO).
+// Inclui validações de negócio para garantir integridade do fluxo de adoção.
+// Normalmente usado por usuários com permissões de ONG ou ADMIN.
     @Transactional
     public InteresseResponse atualizarStatus(Long interesseId, StatusInteresse novoStatus) {
         // Busca o interesse de adoção pelo ID. Se não encontrado, lança uma exceção IllegalArgumentException.

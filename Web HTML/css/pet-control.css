@@ -1,0 +1,164 @@
+/* Ajustes para zerar o CSS */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+}
+
+/*Estilização do Header*/
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 40px;
+    background-color: #fff;
+}
+
+.logo-mybuddy {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-mybuddy img {
+    width: 70px;
+    height: 70px;
+}
+
+.logo-mybuddy h1 {
+    font-size: 22px;
+    color: #333;
+}
+
+.header-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    background-color: #f0f0f0;
+    border: 10px solid transparent;
+    border-radius: 50px;
+    position: relative;
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    padding: 4px 18px;
+    display: inline-block;
+    position: relative;
+    border-radius: 50px;
+    z-index: 1;
+    transition: color 0.3s;
+}
+
+.nav-links a.active {
+    color: #ffffff;
+}
+
+.nav-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #ff7b00;
+    border-radius: 50px;
+    z-index: 0;
+    transition: 
+        left 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+        width 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+        height 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.header-nav ul {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.header-nav a {
+    text-decoration: none;
+    color: #333;;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 20px;
+}
+
+.notification-btn, .profile-btn {
+    position: relative;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #333;
+}
+
+.notification-menu, .profile-menu {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+    width: 200px;
+    flex-direction: column;
+    z-index: 10;
+}
+
+/* Estilização do Menu de Notificações e Perfil */
+
+.notification-menu ul, .profile-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-menu li, .profile-menu li {
+    padding: 8px 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-menu li:last-child, .profile-menu li:last-child {
+    border-bottom: none;
+}
+
+.profile-menu li a{
+    text-decoration: none;
+    color: #333;
+    display: block;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.profile-menu li a:hover{
+    background-color: #ff7b00;
+    border-radius: 5px;
+}
+
+/*Estilização da main section*/
+
