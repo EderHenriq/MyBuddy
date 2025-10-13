@@ -105,7 +105,7 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
         return AtuaziladoEm;
     }
 
-    public void setAtuazilado_em(LocalDateTime atuaziladoEm) { // Método setter para a data de atualização.
-        AtuaziladoEm = atuaziladoEm;
+    public void setAtualizadoEm(LocalDateTime atuaziladoEm) { // Método setter para a data de atualização.
+        this.AtuaziladoEm = atuaziladoEm;
     }
 }
