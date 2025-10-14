@@ -1,58 +1,284 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Pets | MyBuddy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    <link rel="icon" href="/Web HTML/src/assets/icons/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="../css/pet-control.css">
-</head>
-<body>
-    <header class="main-header">
-        <div class="logo-mybuddy">
-            <img src="../src/assets/icons/logo-provisoria.png" alt="logo-mybuddy" width="150" height="150">
-            <h1>MyBuddy</h1>
-        </div>
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestão de Pets | MyBuddy</title>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link rel="icon" href="/Web HTML/src/assets/icons/favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" href="../css/pet-control.css">
+    </head>
+    <body>
+        <header class="main-header">
+            <div class="logo-mybuddy">
+                <img src="../src/assets/icons/logo-provisoria.png" alt="logo-mybuddy" width="150" height="150">
+                <h1>MyBuddy</h1>
+            </div>
 
-        <nav class="header-nav" aria-label="Menu Principal">
-            <ul class="nav-links">
-                <li><a href="#" class="active">Home</a></li>
-                <li><a href="#">Meus Pets</a></li>
-                <li><a href="#">Favoritos</a></li>
-                <li><a href="#">Fale Conosco</a></li>
-            </ul>
-            <div class="nav-slider"></div>
-        </nav>
+            <nav class="header-nav" aria-label="Menu Principal">
+                <ul class="nav-links">
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#">Meus Pets</a></li>
+                    <li><a href="#">Favoritos</a></li>
+                    <li><a href="#">Fale Conosco</a></li>
+                </ul>
+                <div class="nav-slider"></div>
+            </nav>
 
-        <div class="user-actions">
-            <button class="notification-btn" aria-label="Notificações" aria-haspopup="true">
-                <span class="material-symbols-outlined">notifications</span>
-                <div class="notification-menu">
-                    <ul>
-                        <li>Mensagem da ONG!</li>
-                        <li>Novo Pet disponível!</li>
-                        <li>O pet que você favoritou foi adotado!</li>
-                    </ul>
-                </div>
+            <div class="user-actions">
+                <button class="notification-btn" aria-label="Notificações" aria-haspopup="true">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <div class="notification-menu">
+                        <ul>
+                            <li>Mensagem da ONG!</li>
+                            <li>Novo Pet disponível!</li>
+                            <li>O pet que você favoritou foi adotado!</li>
+                        </ul>
+                    </div>
+                </button>
+
+            <button class="profile-btn" aria-label="Perfil" aria-haspopup="true">
+                <span class="material-symbols-outlined">account_circle</span>
+                <ul class="profile-menu">
+                    <li><a href="#">Meu Perfil</a></li>
+                    <li><a href="#">Configurações</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
             </button>
+            </div>
+        </header>
 
-        <button class="profile-btn" aria-label="Perfil" aria-haspopup="true">
-            <span class="material-symbols-outlined">account_circle</span>
-            <ul class="profile-menu">
-                <li><a href="#">Meu Perfil</a></li>
-                <li><a href="#">Configurações</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </button>
-        </div>
-    </header>
+        <main class="main-container">  
+            <section class="pet-management-container">
+            <form class="search-form" role="search">
+                    <div class="search-wrapper">
+                        <input type="search" class="search-input" placeholder="Busque por Pet ou Raça" aria-label="Buscar por Pet">
+                        <button type="submit" class="search-btn"><span class="material-symbols-outlined">search</span></button>
+                    </div>
+            </form>
 
-    <main class="main-container">  
+            <div class="addPet-btn">
+                    <button class="primary-btn"><span class="material-symbols-outlined"></span>Adicionar novo Pet</button>
+            </div>
+            </section>
 
+            <section class="filters-sidebar">
+                <h2>Filtros Avançados</h2>
+                <form class="advanced-filters">
+                    <div class="filter-group">
+                        <label for="Espécie">
+                            <select id="especie">
+                                <option value="All">Todos</option>
+                                <option value="Dog">Cachorro</option>
+                                <option value="Cat">Gato</option>
+                                <option value="Rabbit">Coelho</option>
+                                <option value="Bird">Pássaro</option>
+                                <option value="Rodent">Roedor</option>
+                                <option value="Fish">Peixe</option>
+                                <option value="Other">Outros</option>
+                            </select>
+                        </label>
 
-    </main>
+                        <label for="Raça">
+                            <select id="animal-breed">
+                                <option value="All">Todas</option>
+                                <option value="Labrador">Labrador</option>
+                                <option value="Bulldog">Bulldog</option>
+                                <option value="Poodle">Poodle</option>
+                                <option value="Siamese">Siamês</option>
+                                <option value="Persian">Persa</option>
+                                <option value="Parakeet">Periquito</option>
+                                <option value="Hamster">Hamster</option>
+                                <option value="Goldfish">Peixe Dourado</option>
+                                <option value="Other">Outras</option>
+                            </select>    
+                        </label>
 
-    <script src="/Web HTML/js/pet-control.js"></script>
-</body>
-</html>
+                        <label for="Idade">
+                            <select id="age">
+                                <option value="All">Todas</option>
+                                <option value="Baby">Filhote</option>
+                                <option value="Young">Jovem</option>
+                                <option value="Adult">Adulto</option>
+                                <option value="Senior">Idoso</option>
+                            </select>
+                        </label>
+
+                        <label for="Sexo">
+                            <select id="gender">
+                                <option value="All">Todos</option>
+                                <option value="M">Macho</option>
+                                <option value="F">Fêmea</option>
+                            </select>
+                        </label>
+
+                        <label for="Porte">
+                            <select id="size">
+                                <option value="All">Todos</option>
+                                <option value="Small">Pequeno</option>
+                                <option value="Medium">Médio</option>
+                                <option value="Large">Grande</option>
+                            </select>
+                        </label>
+
+                        <label for="Disponibilidade">
+                            <select id="availability">
+                                <option value="All">Todos</option>
+                                <option value="Available">Disponível</option>
+                                <option value="Adopted">Adotado</option>
+                                <option value="Fostered">Em Adoção Temporária</option>
+                            </select>
+                        </label>
+
+                        <label for="Cor">
+                            <select id="color">
+                                <option value="All">Todas</option>
+                                <option value="Black">Preto</option>
+                                <option value="White">Branco</option>
+                                <option value="Brown">Marrom</option>
+                                <option value="Golden">Dourado</option>
+                                <option value="Gray">Cinza</option>
+                                <option value="Mixed">Misto</option>
+                            </select>
+                        </label>
+
+                        <label for="Pelagem">
+                            <select id="coat">
+                                <option value="All">Todas</option>
+                                <option value="Short">Curta</option>
+                                <option value="Medium">Média</option>
+                                <option value="Long">Longa</option>
+                                <option value="Hairless">Sem Pelo</option>
+                            </select>
+                        </label>
+
+                        <label for="Vacinado">
+                            <select id="vaccinated">
+                                <option value="All">Todos</option>
+                                <option value="Yes">Sim</option>
+                                <option value="No">Não</option>
+                            </select>
+                        </label>
+
+                        <label for="Castrado">
+                            <select id="neutered">
+                                <option value="All">Todos</option>
+                                <option value="Yes">Sim</option>
+                                <option value="No">Não</option>
+                            </select>
+                        </label>
+
+                        <label for="Microchipado">
+                            <select id="microchipped">
+                                <option value="All">Todos</option>
+                                <option value="Yes">Sim</option>
+                                <option value="No">Não</option>
+                            </select>
+                        </label>
+
+                        <label for="Abrigo/Tutor">
+                            <select id="shelter">
+                                <option value="All">Todos</option>
+                                <option value="Shelter1">Abrigo 1</option>
+                                <option value="Shelter2">Abrigo 2</option>
+                                <option value="Shelter3">Abrigo 3</option>
+                                <option value="Private">Tutor Privado</option>
+                            </select>
+                        </label>
+
+                        <label for="Estado">
+                            <select id="state">
+                                <option value="All">Todos</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="BA">Bahia</option>
+                                <option value="PR">Paraná</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                            </select>
+                        </label>
+
+                        <label for="Cidade">
+                            <select id="city">
+                                <option value="All">Todas</option>
+                                <option value="São Paulo">São Paulo</option>
+                                <option value="Rio de Janeiro">Rio de Janeiro</option>
+                                <option value="Belo Horizonte">Belo Horizonte</option>
+                                <option value="Salvador">Salvador</option>
+                                <option value="Curitiba">Curitiba</option>
+                                <option value="Porto Alegre">Porto Alegre</option>
+                                <option value="Recife">Recife</option>
+                                <option value="Fortaleza">Fortaleza</option>
+                                <option value="Brasília">Brasília</option>
+                            </select>
+                        </label>
+                    </div>
+                </form>
+            </section>
+
+            <section class="pets-container" aria-label="Lista de Pets Disponíveis">
+                <article class="pets-card" data-id="1">
+                    <img src="/Web HTML/src/assets/imgs/dachshund-1519374_1280-1200x700.jpg" alt="foto-pet1" class="pet-photo">
+                    <div class="pet-info">
+                        <h3 class="pet-name">Farofa</h3>
+                        <p class="pet-breed">Raça: Dachshund</p>
+                        <p class="pet-age">Idade: 1 ano</p>
+                        <p class="pet-gender">Sexo: Macho</p>
+                        <div class="pet-actions">
+                            <button class="view-details"><span class="material-symbols-outlined">visibility</span>Ver detalhes</button>
+                            <button class="pet-edit"><span class="material-symbols-outlined">edit</span>Editar</button>
+                        </div>             
+                    </div>
+                </article>
+
+                <article class="pets-card" data-id="2">
+                    <img src="/Web HTML/src/assets/imgs/gato-persa-branco.jpg" alt="foto-pet2" class="pet-photo">
+                    <div class="pet-info">
+                        <h3 class="pet-name">Cristal</h3>
+                        <p class="pet-breed">Raça: Persa</p>
+                        <p class="pet-age">Idade: 5 ano</p>
+                        <p class="pet-gender">Sexo: Femea</p>
+                        <div class="pet-actions">
+                            <button class="view-details"><span class="material-symbols-outlined">visibility</span>Ver detalhes</button>
+                            <button class="pet-edit"><span class="material-symbols-outlined">edit</span>Editar</button>
+                        </div>             
+                    </div>
+                </article>
+
+                <article class="pets-card" data-id="3">
+                    <img src="/Web HTML/src/assets/imgs/coelho-roedores.jpg" alt="foto-pet3" class="pet-photo">
+                    <div class="pet-info">
+                        <h3 class="pet-name">Nevasca</h3>
+                        <p class="pet-breed">Raça: Rex</p>
+                        <p class="pet-age">Idade: 2 ano</p>
+                        <p class="pet-gender">Sexo: Femea</p>
+                        <div class="pet-actions">
+                            <button class="view-details"><span class="material-symbols-outlined">visibility</span>Ver detalhes</button>
+                            <button class="pet-edit"><span class="material-symbols-outlined">edit</span>Editar</button>
+                        </div>             
+                    </div>
+                </article>
+
+                <article class="pets-card" data-id="4">
+                    <img src="/Web HTML/src/assets/imgs/filhote-de-hamster.jpg" alt="foto-pet4" class="pet-photo">
+                    <div class="pet-info">
+                        <h3 class="pet-name">Bolota</h3>
+                        <p class="pet-breed">Raça: Sírio</p>
+                        <p class="pet-age">Idade: 6 meses</p>
+                        <p class="pet-gender">Sexo: Macho</p>
+                        <div class="pet-actions">
+                            <button class="view-details"><span class="material-symbols-outlined">visibility</span>Ver detalhes</button>
+                            <button class="pet-edit"><span class="material-symbols-outlined">edit</span>Editar</button>
+                        </div>             
+                    </div>
+                </article>
+            </section>
+
+        </main>
+
+        <script src="/Web HTML/js/pet-control.js"></script>
+    </body>
+    </html>
