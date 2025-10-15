@@ -17,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import static org.springframework.security.config.Customizer.withDefaults;
+
 
 // Indica que esta classe contém configurações do Spring Boot
 @Configuration
@@ -61,15 +63,20 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    // Configuração principal da cadeia de filtros de segurança (SecurityFilterChain)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthTokenFilter authTokenFilter) throws Exception {
-        // Desativa o CSRF (não necessário para APIs REST)
-        http.csrf(csrf -> csrf.disable())
+        // --- Libera CORS global usando configuração do WebMvcConfigurer ---
+        http.cors(withDefaults()) // <-- ESTA LINHA É OBRIGATÓRIA!
+
+                // Desativa o CSRF (não necessário para APIs REST)
+                .csrf(csrf -> csrf.disable())
+
                 // Define o tratamento de exceções de autenticação
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+
                 // Define que a aplicação não manterá sessão (autenticação será stateless via token)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 // Define as regras de autorização das rotas
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll() // Endpoints de autenticação são públicos
@@ -86,6 +93,7 @@ public class SecurityConfig {
 
         // Registra o provedor de autenticação configurado acima
         http.authenticationProvider(authenticationProvider());
+
         // Adiciona o filtro JWT antes do filtro padrão de autenticação por usuário/senha
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
