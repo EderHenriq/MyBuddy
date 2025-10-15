@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestão de Interesses de Adoção</title>
+  <link rel="stylesheet" href="../css/InteresseAdoacao.css">
+</head>
+<body>
+  <div class="container">
+    <h2 class="page-title">Gestão de Interesses de Adoção</h2>
+    
+    <div class="actions">
+      <button id="refreshBtn" class="btn-primary">Atualizar Lista</button>
+    </div>
+    
+    <div id="filters" class="filters">
+      <div class="filter-group">
+        <label for="petSelect"><strong>Filtrar por Pet:</strong></label>
+        <select id="petSelect">
+          <option value="">Todos os Pets</option>
+          <!-- Pets carregados via JS -->
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <strong>Status:</strong>
+        <label><input type="checkbox" name="status" value="Em Análise"> Em Análise</label>
+        <label><input type="checkbox" name="status" value="Aprovado"> Aprovado</label>
+        <label><input type="checkbox" name="status" value="Rejeitado"> Rejeitado</label>
+      </div>
+      
+      <div class="filter-group">
+        <input type="text" id="userFilter" placeholder="Nome do Usuário">
+      </div>
+    </div>
+    
+    <div id="interessesContainer"></div>
+    <p id="noInteressesMessage" style="display:none;">Nenhum interesse de adoção encontrado.</p>
+    
+    <!-- Modal para detalhes do pet -->
+    <div id="petModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <div id="petDetails">
+          <!-- Detalhes do pet carregados via JS -->
+        </div>
+      </div>
+    </div>
+    
+    <script src="../js/GestaoInteresseAdocao.js"></script>
+  </div>
+</body>
+</html>
