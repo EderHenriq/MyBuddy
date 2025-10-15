@@ -1,29 +1,34 @@
 package com.Mybuddy.Myb.Dto; // Declara o pacote onde esta classe DTO (Data Transfer Object) está localizada.
 
-import com.Mybuddy.Myb.Model.InteresseAdoacao; // Importa a entidade (modelo) InteresseAdoacao, que representa um interesse de adoção completo no sistema.
+import com.Mybuddy.Myb.Model.InteresseAdoacao; // Importa a entidade InteresseAdoacao, que representa o interesse completo no banco.
+import com.Mybuddy.Myb.Dto.UsuarioResponse;     // Importa o DTO simplificado do usuário (nome + id).
+import com.Mybuddy.Myb.Dto.PetResponse;        // Importa o DTO simplificado do pet (nome + id).
 
 // Declara uma classe final chamada InteresseAdoacaoMapper.
-// Classes "final" não podem ser estendidas. Isso sugere que ela é uma classe utilitária.
-// O nome "Mapper" indica que seu propósito é mapear ou converter objetos de um tipo para outro.
+// Classes "final" não podem ser estendidas, reforçando o uso utilitário da classe.
 public final class InteresseAdoacaoMapper {
-    // Construtor privado. Isso impede que instâncias desta classe sejam criadas.
-    // Isso reforça a ideia de que é uma classe utilitária com métodos estáticos.
+    // Construtor privado. Impede instanciação externa, reforçando o padrão utilitário.
     private InteresseAdoacaoMapper() {}
 
-    // Método estático público que converte um objeto InteresseAdoacao (entidade do banco de dados)
-    // para um objeto InteresseResponse (DTO de resposta).
-    // O objetivo é expor apenas os dados relevantes e no formato desejado para o cliente da API.
+    // Método estático que converte uma entidade InteresseAdoacao em um DTO InteresseResponse.
+    // Agora mapeia os objetos completos de usuário e pet, essenciais para o frontend exibir nomes.
     public static InteresseResponse toResponse(InteresseAdoacao i) {
-        // Cria e retorna uma nova instância de InteresseResponse,
-        // preenchendo seus campos com os dados correspondentes do objeto InteresseAdoacao (i).
         return new InteresseResponse(
-                i.getId(), // Mapeia o ID do interesse
-                i.getUsuario().getId(), // Mapeia o ID do usuário (quem manifestou interesse)
-                i.getPet().getId(), // Mapeia o ID do pet (o pet que recebeu o interesse)
-                i.getStatus(), // Mapeia o status do interesse (pendente, aprovado, etc.)
-                i.getMensagem(), // Mapeia a mensagem enviada junto com o interesse
-                i.getCriadoEm(), // Mapeia a data/hora de criação do interesse
-                i.getAtuaziladoEm() // Mapeia a data/hora da última atualização do interesse
+                i.getId(), // ID do interesse
+                // Mapeia o objeto DTO do usuário (id e nome)
+                new UsuarioResponse(
+                        i.getUsuario().getId(),
+                        i.getUsuario().getNome()
+                ),
+                // Mapeia o objeto DTO do pet (id e nome)
+                new PetResponse(
+                        i.getPet().getId(),
+                        i.getPet().getNome()
+                ),
+                i.getStatus(),       // Status do interesse (pendente, aprovado, etc.)
+                i.getMensagem(),     // Mensagem enviada junto com o interesse
+                i.getCriadoEm(),     // Data/hora de criação do interesse
+                i.getAtuaziladoEm()  // Data/hora da última atualização do interesse
         );
     }
 }
