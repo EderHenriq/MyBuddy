@@ -28,7 +28,7 @@ public final class InteresseAdoacaoMapper {
                 i.getStatus(),       // Status do interesse (pendente, aprovado, etc.)
                 i.getMensagem(),     // Mensagem enviada junto com o interesse
                 i.getCriadoEm(),     // Data/hora de criação do interesse
-                i.getAtuaziladoEm()  // Data/hora da última atualização do interesse
+                i.getAtualizadoEm()  // Data/hora da última atualização do interesse
         );
     }
 }
