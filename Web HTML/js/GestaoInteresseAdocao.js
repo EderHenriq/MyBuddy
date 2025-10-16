@@ -23,23 +23,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- Carregando lista de pets autenticado ---
-async function fetchPets() {
-  try {
-    const resp = await fetch('http://localhost:8080/api/pets', {
-      headers: {
-        'Authorization': 'Bearer ' + jwtToken,
-        'Content-Type': 'application/json'
-      }
-    });
-    const dados = await resp.json();
-    todosPets = dados.content; // É AQUI!
-    renderPetSelect();
-    console.log('Pets carregados:', todosPets);
-  } catch {
-    interessesContainer.innerHTML = '<p style="color:red;">Erro ao carregar pets.</p>';
+  async function fetchPets() {
+    try {
+      const resp = await fetch("http://localhost:8080/api/pets", {
+        headers: {
+          Authorization: "Bearer " + jwtToken,
+          "Content-Type": "application/json",
+        },
+      });
+      const dados = await resp.json();
+      todosPets = dados.content; // É AQUI!
+      renderPetSelect();
+      console.log("Pets carregados:", todosPets);
+    } catch {
+      interessesContainer.innerHTML =
+        '<p style="color:red;">Erro ao carregar pets.</p>';
+    }
   }
-}
-
 
   function renderPetSelect() {
     petSelect.innerHTML = '<option value="">Todos os Pets</option>';
@@ -104,25 +104,34 @@ async function fetchPets() {
   }
 
   // --- Carregamento dos interesses via API autenticada ---
-  async function fetchInteresses() {
-    interessesContainer.innerHTML = "<p>Carregando...</p>";
-    try {
-      const resp = await fetch(
-        `http://localhost:8080/api/usuarios/me/interesses?usuarioId=${usuarioId}`,
-        {
-          headers: {
-            Authorization: "Bearer " + jwtToken,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      todosInteresses = await resp.json();
-      aplicarFiltros();
-    } catch {
-      interessesContainer.innerHTML =
-        '<p style="color:red;">Erro ao carregar interesses.</p>';
+  // Defina se é admin baseado no armazenamento local, JWT ou sua lógica de sessão
+const roles = JSON.parse(localStorage.getItem("userRoles") || "[]");
+const isAdmin = roles.includes("ROLE_ADMIN");;
+
+console.log(roles)
+async function fetchInteresses() {
+  interessesContainer.innerHTML = "<p>Carregando...</p>";
+  try {
+    let url;
+    if (isAdmin) {
+      url = "http://localhost:8080/api/interesses";
+    } else {
+      url = `http://localhost:8080/api/usuarios/me/interesses?usuarioId=${usuarioId}`;
     }
+    const resp = await fetch(url, {
+      headers: {
+        Authorization: "Bearer " + jwtToken,
+        "Content-Type": "application/json",
+      },
+    });
+    todosInteresses = await resp.json();
+    aplicarFiltros();
+  } catch {
+    interessesContainer.innerHTML =
+      '<p style="color:red;">Erro ao carregar interesses.</p>';
   }
+}
+
 
   // --- Aplicar filtros ---
   function aplicarFiltros() {
