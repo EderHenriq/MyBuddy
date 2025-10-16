@@ -8,11 +8,14 @@ import com.Mybuddy.Myb.Service.InteresseAdoacaoService; // Importa a classe de s
 import jakarta.validation.Valid; // Importa a anotação para validação de objetos DTO
 import org.springframework.http.HttpStatus; // Importa a classe para definir códigos de status HTTP
 import org.springframework.http.ResponseEntity; // Importa a classe para construir respostas HTTP
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication; // Importa a interface Authentication para acessar o contexto de segurança
 import org.springframework.web.bind.annotation.*; // Importa todas as anotações do Spring Web para REST controllers
 
 import java.util.List; // Importa a interface List para coleções de objetos
 
+@PreAuthorize("hasRole('ADMIN')")//Permite Que ADM tenha acesso a permissão de listar todos conforme o TOKEN JWT e o
+//Role locaziado no localStorage no navegador, isso se aplica a todas as menções (ATRIBUIR A ONG TAMBÉM)
 @RestController // Anotação que indica que esta classe é um controlador REST, combinando @Controller e @ResponseBody
 @RequestMapping("/api") // Anotação que mapeia todas as requisições que começam com "/api" para este controlador
 public class InteresseAdoacaoController { // Declara a classe do controlador
@@ -41,6 +44,7 @@ public class InteresseAdoacaoController { // Declara a classe do controlador
 
     // PUT /api/interesses/{id}/status (BUDDY-87) - Comentário indicando o endpoint e a tarefa associada
     // Este método permite que usuários autorizados (ex: ONG, ADMIN) atualizem o status de um interesse de adoção
+
     @PutMapping("/interesses/{id}/status") // Anotação que mapeia requisições HTTP PUT para o caminho "/api/interesses/{id}/status"
     // {id} é uma variável de caminho que será substituída pelo ID real do interesse
     public ResponseEntity<InteresseResponse> atualizarStatus( // Método para atualizar o status de um interesse de adoção
@@ -52,6 +56,8 @@ public class InteresseAdoacaoController { // Declara a classe do controlador
 
     // GET /api/usuarios/me/interesses (BUDDY-91) - Comentário indicando o endpoint e a tarefa associada
     // Este método permite que um usuário autenticado liste todos os seus interesses de adoção registrados
+    @PreAuthorize("hasRole('ADMIN')")//Permite Que ADM tenha acesso a permissão de listar todos conforme o TOKEN JWT e o
+//Role locaziado no localStorage no navegador, isso se aplica a todas as menções (ATRIBUIR A ONG TAMBÉM)
     @GetMapping("/usuarios/me/interesses") // Anotação que mapeia requisições HTTP GET para o caminho "/api/usuarios/me/interesses"
     public ResponseEntity<List<InteresseResponse>> listarMeusInteresses( // Método para listar interesses de adoção do usuário autenticado, retorna uma lista de InteresseResponse
                                                                          @RequestParam Long usuarioId) { // @RequestParam: Extrai o valor do 'usuarioId' de um parâmetro de consulta na URL (ex: ?usuarioId=1)
@@ -59,4 +65,11 @@ public class InteresseAdoacaoController { // Declara a classe do controlador
         var resp = service.listarPorUsuario(usuarioId); // Chama o método 'listarPorUsuario' no serviço, passando o ID do usuário
         return ResponseEntity.ok(resp); // Retorna uma resposta HTTP 200 OK com a lista de 'InteresseResponse' no corpo
     }
+
+    @GetMapping("/interesses")
+    public ResponseEntity<List<InteresseResponse>> listarTodos() {
+        var resp = service.listarTodos();
+        return ResponseEntity.ok(resp);
+    }
+
 }
