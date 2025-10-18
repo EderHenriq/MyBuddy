@@ -8,18 +8,48 @@ document.addEventListener("DOMContentLoaded", () => {
   const petDetails = document.getElementById("petDetails");
   const userFilter = document.getElementById("userFilter");
 
-  // Pegando token JWT e userId salvos durante login
+  // Token e roles do usuário autenticado
   const jwtToken = localStorage.getItem("accessToken");
-  const usuarioId = localStorage.getItem("userId");
+  const roles = JSON.parse(localStorage.getItem("userRoles") || "[]");
+  const isAdmin = roles.includes("ROLE_ADMIN");
+  const isOng = roles.includes("ROLE_ONG");
+  const canModerate = isAdmin || isOng;
 
   let todosInteresses = [];
   let todosPets = [];
 
   // Redireciona se não estiver autenticado
-  if (!jwtToken || !usuarioId) {
+  if (!jwtToken) {
     alert("Você precisa estar logado para acessar!");
     window.location.href = "login.html";
     return;
+  }
+
+  // Utilitário simples para escapar HTML ao renderizar strings
+  const escapeHtml = (s) =>
+    String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  // Handler genérico para respostas HTTP
+  async function handleResponse(resp) {
+    if (resp.status === 401) {
+      alert("Sessão expirada ou não autenticado. Faça login novamente.");
+      window.location.href = "./login_screen.html";
+      throw new Error("401");
+    }
+    if (resp.status === 403) {
+      alert("Permissão negada. Seu usuário não possui acesso a esta ação.");
+      throw new Error("403");
+    }
+    if (!resp.ok) {
+      const msg = await resp.text().catch(() => "");
+      throw new Error(msg || "Erro ao processar requisição.");
+    }
+    return resp;
   }
 
   // --- Carregando lista de pets autenticado ---
@@ -31,11 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
           "Content-Type": "application/json",
         },
       });
+      await handleResponse(resp);
       const dados = await resp.json();
-      todosPets = dados.content; // É AQUI!
+      todosPets = Array.isArray(dados) ? dados : (dados.content || []);
       renderPetSelect();
       console.log("Pets carregados:", todosPets);
-    } catch {
+    } catch (e) {
+      console.error(e);
       interessesContainer.innerHTML =
         '<p style="color:red;">Erro ao carregar pets.</p>';
     }
@@ -77,26 +109,33 @@ document.addEventListener("DOMContentLoaded", () => {
     interesses.forEach((interesse) => {
       const card = document.createElement("div");
       card.classList.add("interesse-card");
+
+      const usuarioNome = escapeHtml(interesse.usuario?.nome || "N/A");
+      const petId = interesse.pet?.id || 0;
+      const petNome = escapeHtml(interesse.pet?.nome || "N/A");
+      const dataStr = new Date(
+        interesse.criadoEm || interesse.dataCriacao || Date.now()
+      ).toLocaleDateString();
+      const statusStr = escapeHtml(interesse.status || "Pendente");
+
+      const actionsHtml = canModerate
+        ? `
+          <button class="approve-btn" onclick="atualizarStatus(${interesse.id}, 'Aprovado')">Aprovar</button>
+          <button class="reject-btn" onclick="atualizarStatus(${interesse.id}, 'Rejeitado')">Rejeitar</button>
+        `
+        : `<span>-</span>`;
+
       card.innerHTML = `
-        <div>${interesse.usuario?.nome || "N/A"}</div>
+        <div>${usuarioNome}</div>
         <div>
-          <span class="pet-link" onclick="mostrarDetalhesPet(${
-            interesse.pet?.id || 0
-          })">
-            ${interesse.pet?.nome || "N/A"}
+          <span class="pet-link" onclick="mostrarDetalhesPet(${petId})">
+            ${petNome}
           </span>
         </div>
-        <div>${new Date(
-          interesse.criadoEm || interesse.dataCriacao
-        ).toLocaleDateString()}</div>
-        <div>${interesse.status}</div>
+        <div>${escapeHtml(dataStr)}</div>
+        <div>${statusStr}</div>
         <div class="actions">
-          <button class="approve-btn" onclick="atualizarStatus(${
-            interesse.id
-          }, 'Aprovado')">Aprovar</button>
-          <button class="reject-btn" onclick="atualizarStatus(${
-            interesse.id
-          }, 'Rejeitado')">Rejeitar</button>
+          ${actionsHtml}
         </div>
       `;
       interessesContainer.appendChild(card);
@@ -104,38 +143,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- Carregamento dos interesses via API autenticada ---
-  // Defina se é admin baseado no armazenamento local, JWT ou sua lógica de sessão
-const roles = JSON.parse(localStorage.getItem("userRoles") || "[]");
-const isAdmin = roles.includes("ROLE_ADMIN");;
-
-console.log(roles)
-async function fetchInteresses() {
-  interessesContainer.innerHTML = "<p>Carregando...</p>";
-  try {
-    let url;
-    if (isAdmin) {
-      url = "http://localhost:8080/api/interesses";
-    } else {
-      url = `http://localhost:8080/api/usuarios/me/interesses?usuarioId=${usuarioId}`;
+  async function fetchInteresses() {
+    interessesContainer.innerHTML = "<p>Carregando...</p>";
+    try {
+      const url = canModerate
+        ? "http://localhost:8080/api/interesses" // ADMIN/ONG lista geral
+        : "http://localhost:8080/api/usuarios/me/interesses"; // usuário comum lista os próprios (sem usuarioId)
+      const resp = await fetch(url, {
+        headers: {
+          Authorization: "Bearer " + jwtToken,
+          "Content-Type": "application/json",
+        },
+      });
+      await handleResponse(resp);
+      todosInteresses = await resp.json();
+      aplicarFiltros();
+    } catch (e) {
+      console.error(e);
+      interessesContainer.innerHTML =
+        '<p style="color:red;">Erro ao carregar interesses.</p>';
     }
-    const resp = await fetch(url, {
-      headers: {
-        Authorization: "Bearer " + jwtToken,
-        "Content-Type": "application/json",
-      },
-    });
-    todosInteresses = await resp.json();
-    aplicarFiltros();
-  } catch {
-    interessesContainer.innerHTML =
-      '<p style="color:red;">Erro ao carregar interesses.</p>';
   }
-}
-
 
   // --- Aplicar filtros ---
   function aplicarFiltros() {
-    let interessesFiltrados = [...todosInteresses];
+    let interessesFiltrados = Array.isArray(todosInteresses)
+      ? [...todosInteresses]
+      : [];
 
     // Filtro por pet
     const petSelecionado = petSelect.value;
@@ -166,7 +200,7 @@ async function fetchInteresses() {
     renderInteresses(interessesFiltrados);
   }
 
-  // --- Atualização do status (autenticado) ---
+  // --- Atualização do status (autenticado e autorizado) ---
   window.atualizarStatus = async function (id, novoStatus) {
     if (!confirm(`Confirma alterar status para "${novoStatus}"?`)) return;
     try {
@@ -181,14 +215,13 @@ async function fetchInteresses() {
           body: JSON.stringify({ status: novoStatus }),
         }
       );
-      if (resp.ok) {
-        alert("Status atualizado com sucesso!");
-        fetchInteresses();
-      } else {
-        throw new Error();
+      await handleResponse(resp);
+      alert("Status atualizado com sucesso!");
+      fetchInteresses();
+    } catch (e) {
+      if (e.message !== "401" && e.message !== "403") {
+        alert("Erro ao atualizar status.");
       }
-    } catch {
-      alert("Erro ao atualizar status.");
     }
   };
 
@@ -202,18 +235,21 @@ async function fetchInteresses() {
           "Content-Type": "application/json",
         },
       });
+      await handleResponse(resp);
       const pet = await resp.json();
       petDetails.innerHTML = `
-        <h3>${pet.nome}</h3>
-        <p><strong>Espécie:</strong> ${pet.especie || "N/A"}</p>
-        <p><strong>Raça:</strong> ${pet.raca || "N/A"}</p>
-        <p><strong>Idade:</strong> ${pet.idade || "N/A"}</p>
-        <p><strong>Descrição:</strong> ${pet.descricao || "N/A"}</p>
-        <p><strong>Status:</strong> ${pet.status || "N/A"}</p>
+        <h3>${escapeHtml(pet.nome)}</h3>
+        <p><strong>Espécie:</strong> ${escapeHtml(pet.especie || "N/A")}</p>
+        <p><strong>Raça:</strong> ${escapeHtml(pet.raca || "N/A")}</p>
+        <p><strong>Idade:</strong> ${escapeHtml(pet.idade || "N/A")}</p>
+        <p><strong>Descrição:</strong> ${escapeHtml(pet.descricao || "N/A")}</p>
+        <p><strong>Status:</strong> ${escapeHtml(pet.status || "N/A")}</p>
       `;
       petModal.style.display = "block";
-    } catch {
-      alert("Erro ao carregar detalhes do pet");
+    } catch (e) {
+      if (e.message !== "401" && e.message !== "403") {
+        alert("Erro ao carregar detalhes do pet");
+      }
     }
   };
 
