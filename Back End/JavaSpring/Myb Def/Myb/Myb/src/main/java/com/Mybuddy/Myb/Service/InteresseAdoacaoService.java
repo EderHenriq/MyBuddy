@@ -104,4 +104,12 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
                 .map(InteresseAdoacaoMapper::toResponse) // Mapeia cada entidade InteresseAdoacao para um InteresseResponse DTO.
                 .toList(); // Coleta os DTOs em uma nova lista imutável e a retorna ao controlador.
     }
+
+    @Transactional(readOnly = true)
+    public List<InteresseResponse> listarTodos() {
+        return interesseRepo.findAll().stream()
+                .map(InteresseAdoacaoMapper::toResponse)
+                .toList();
+    }
+
 }
