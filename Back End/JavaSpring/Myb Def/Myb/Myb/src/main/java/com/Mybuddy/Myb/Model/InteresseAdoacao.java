@@ -46,7 +46,7 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
 
     @UpdateTimestamp // Anotação do Hibernate que faz com que este campo seja atualizado automaticamente com a data e hora da última modificação da entidade.
     @Column(name = "Atualizado_em") // Anotação JPA para a coluna no banco.
-    private LocalDateTime AtuaziladoEm; // Campo para armazenar a data e hora da última atualização do interesse.
+    private LocalDateTime AtualizadoEm; // Campo para armazenar a data e hora da última atualização do interesse.
 
     public InteresseAdoacao() {} // Construtor padrão (vazio), necessário para o JPA.
 
@@ -101,11 +101,11 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
         this.criadoEm = criadoEm;
     }
 
-    public LocalDateTime getAtuaziladoEm() { // Método getter para a data de atualização.
-        return AtuaziladoEm;
+    public LocalDateTime getAtualizadoEm() { // Método getter para a data de atualização.
+        return AtualizadoEm;
     }
 
-    public void setAtuazilado_em(LocalDateTime atuaziladoEm) { // Método setter para a data de atualização.
-        AtuaziladoEm = atuaziladoEm;
+    public void setAtualizadoEm(LocalDateTime atuaziladoEm) { // Método setter para a data de atualização.
+        this.AtualizadoEm= AtualizadoEm;
     }
 }

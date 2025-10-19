@@ -1,51 +1,73 @@
 package com.Mybuddy.Myb.Controller; // Declara o pacote onde esta classe está localizada
 
-import com.Mybuddy.Myb.Dto.AtualizarStatusRequest; // Importa o DTO (Data Transfer Object) para requisições de atualização de status
-import com.Mybuddy.Myb.Dto.InteresseResponse; // Importa o DTO para respostas de interesse de adoção
-import com.Mybuddy.Myb.Dto.RegistrarInteresseRequest; // Importa o DTO para requisições de registro de interesse
-import com.Mybuddy.Myb.Service.InteresseAdoacaoService; // Importa a classe de serviço que contém a lógica de negócio
-import jakarta.validation.Valid; // Importa a anotação para validação de objetos DTO
-import org.springframework.http.ResponseEntity; // Importa a classe para construir respostas HTTP
-import org.springframework.web.bind.annotation.*; // Importa todas as anotações do Spring Web para REST controllers
+import com.Mybuddy.Myb.Dto.AtualizarStatusRequest; // DTO para requisições de atualização de status
+import com.Mybuddy.Myb.Dto.InteresseResponse; // DTO para respostas de interesse de adoção
+import com.Mybuddy.Myb.Dto.RegistrarInteresseRequest; // DTO para requisições de registro de interesse
+import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl; // Detalhes do usuário autenticado extraídos do JWT
+import com.Mybuddy.Myb.Service.InteresseAdoacaoService; // Serviço com a lógica de negócio
+import jakarta.validation.Valid; // Validação de DTOs
+import org.springframework.http.HttpStatus; // Códigos HTTP
+import org.springframework.http.ResponseEntity; // Respostas HTTP
+import org.springframework.security.access.prepost.PreAuthorize; // Segurança por método
+import org.springframework.security.core.annotation.AuthenticationPrincipal; // Injeta o usuário autenticado
+import org.springframework.web.bind.annotation.*; // Anotações REST
 
-import java.util.List; // Importa a interface List para coleções de objetos
+import java.util.List; // Coleções
 
-@RestController // Anotação que indica que esta classe é um controlador REST, combinando @Controller e @ResponseBody
-@RequestMapping("/api") // Anotação que mapeia todas as requisições que começam com "/api" para este controlador
-public class InteresseAdoacaoController { // Declara a classe do controlador
+@RestController // Controlador REST
+@RequestMapping("/api") // Prefixo base dos endpoints
+public class InteresseAdoacaoController { // Controlador de interesses de adoção
 
-    private final InteresseAdoacaoService service; // Declara uma instância do serviço de interesse de adoção, que é final (não pode ser reatribuída)
+    private final InteresseAdoacaoService service; // Serviço injetado
 
-    // Construtor do controlador. O Spring injeta automaticamente uma instância de InteresseAdoacaoService aqui.
+    // Construtor com injeção do serviço
     public InteresseAdoacaoController(InteresseAdoacaoService service) {
-        this.service = service; // Atribui a instância do serviço injetada à variável 'service'
+        this.service = service; // Atribui a instância do serviço
     }
 
-    // POST /api/interesses (BUDDY-79) - Comentário indicando o endpoint e a tarefa associada
-    @PostMapping("/interesses") // Anotação que mapeia requisições HTTP POST para o caminho "/api/interesses"
-    public ResponseEntity<InteresseResponse> registrarInteresse( // Método para registrar um novo interesse de adoção, retorna uma ResponseEntity com InteresseResponse
-                                                                 @RequestBody @Valid RegistrarInteresseRequest req) { // @RequestBody: Indica que o corpo da requisição HTTP será mapeado para um objeto RegistrarInteresseRequest
-        // @Valid: Ativa a validação do objeto 'req' conforme definido no DTO
-        var resp = service.registrarInteresse(req.usuarioId(), req.petId(), req.mensagem()); // Chama o método 'registrarInteresse' no serviço, passando os dados da requisição
-        return ResponseEntity.ok(resp); // Retorna uma resposta HTTP 200 OK com o objeto 'InteresseResponse' no corpo
+    // POST /api/interesses (BUDDY-77)
+    // Permite que um usuário autenticado manifeste interesse em adotar um pet disponível
+    @PostMapping("/interesses") // Mapeia requisições HTTP POST para "/api/interesses"
+    @PreAuthorize("isAuthenticated()") // Exige autenticação para manifestar interesse
+    public ResponseEntity<InteresseResponse> manifestarInteresse( // Retorna InteresseResponse com status 201
+                                                                  @RequestBody @Valid RegistrarInteresseRequest req, // Corpo da requisição com validação
+                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails // Usuário autenticado extraído do contexto de segurança
+    ) {
+        Long usuarioId = userDetails.getId(); // Obtém o ID do usuário autenticado
+        var resp = service.manifestarInteresse(usuarioId, req.petId(), req.mensagem()); // Chama o serviço com o ID do usuário, ID do pet e mensagem
+        return ResponseEntity.status(HttpStatus.CREATED).body(resp); // Retorna 201 CREATED com o corpo da resposta
     }
 
-    // PUT /api/interesses/{id}/status (BUDDY-87) - Comentário indicando o endpoint e a tarefa associada
-    @PutMapping("/interesses/{id}/status") // Anotação que mapeia requisições HTTP PUT para o caminho "/api/interesses/{id}/status"
-    // {id} é uma variável de caminho que será substituída pelo ID real
-    public ResponseEntity<InteresseResponse> atualizarStatus( // Método para atualizar o status de um interesse de adoção
-                                                              @PathVariable Long id, // @PathVariable: Extrai o valor do 'id' da URL e o mapeia para o parâmetro 'id'
-                                                              @RequestBody @Valid AtualizarStatusRequest req) { // @RequestBody e @Valid: Mapeiam e validam o corpo da requisição para um AtualizarStatusRequest
-        var resp = service.atualizarStatus(id, req.status()); // Chama o método 'atualizarStatus' no serviço, passando o ID e o novo status
-        return ResponseEntity.ok(resp); // Retorna uma resposta HTTP 200 OK com o objeto 'InteresseResponse' no corpo
+    // PUT /api/interesses/{id}/status (BUDDY-87)
+    // Permite que usuários autorizados (ex.: ONG, ADMIN) atualizem o status de um interesse de adoção
+    @PutMapping("/interesses/{id}/status") // Mapeia requisições HTTP PUT para "/api/interesses/{id}/status"
+    @PreAuthorize("hasAnyRole('ADMIN','ONG')") // Restringe a atualização de status a ADMIN e ONG
+    public ResponseEntity<InteresseResponse> atualizarStatus( // Retorna InteresseResponse atualizado
+                                                              @PathVariable Long id, // Extrai o ID do interesse da URL
+                                                              @RequestBody @Valid AtualizarStatusRequest req // Corpo da requisição com o novo status e validação
+    ) {
+        var resp = service.atualizarStatus(id, req.status()); // Atualiza o status via serviço
+        return ResponseEntity.ok(resp); // Retorna 200 OK com o objeto atualizado
     }
 
-    // GET /api/usuarios/me/interesses (BUDDY-91) - Comentário indicando o endpoint e a tarefa associada
-    // Trocar a origem do usuarioId pelo SecurityContext quando integrar autenticação - Observação importante sobre futura implementação
-    @GetMapping("/usuarios/me/interesses") // Anotação que mapeia requisições HTTP GET para o caminho "/api/usuarios/me/interesses"
-    public ResponseEntity<List<InteresseResponse>> listarMeusInteresses( // Método para listar interesses de adoção de um usuário, retorna uma lista de InteresseResponse
-                                                                         @RequestParam Long usuarioId) { // @RequestParam: Extrai o valor do 'usuarioId' de um parâmetro de consulta na URL (ex: ?usuarioId=1)
-        var resp = service.listarPorUsuario(usuarioId); // Chama o método 'listarPorUsuario' no serviço, passando o ID do usuário
-        return ResponseEntity.ok(resp); // Retorna uma resposta HTTP 200 OK com a lista de 'InteresseResponse' no corpo
+    // GET /api/usuarios/me/interesses (BUDDY-91)
+    // Lista todos os interesses de adoção do usuário autenticado
+    @GetMapping("/usuarios/me/interesses") // Mapeia requisições HTTP GET para "/api/usuarios/me/interesses"
+    @PreAuthorize("isAuthenticated()") // Exige autenticação para listar os próprios interesses
+    public ResponseEntity<List<InteresseResponse>> listarMeusInteresses( // Retorna a lista de InteresseResponse
+                                                                         @AuthenticationPrincipal UserDetailsImpl userDetails // Injeta o usuário autenticado
+    ) {
+        Long usuarioId = userDetails.getId(); // Obtém o ID do usuário autenticado
+        var resp = service.listarPorUsuario(usuarioId); // Busca os interesses do próprio usuário
+        return ResponseEntity.ok(resp); // Retorna 200 OK com a lista de interesses
+    }
+
+    // GET /api/interesses
+    // Lista todos os interesses (restrito a administradores)
+    @GetMapping("/interesses") // Mapeia requisições HTTP GET para "/api/interesses"
+    @PreAuthorize("hasRole('ADMIN')") // Restringe o acesso ao perfil ADMIN
+    public ResponseEntity<List<InteresseResponse>> listarTodos() { // Retorna a lista completa de interesses
+        var resp = service.listarTodos(); // Busca todos os interesses via serviço
+        return ResponseEntity.ok(resp); // Retorna 200 OK com a lista completa
     }
 }

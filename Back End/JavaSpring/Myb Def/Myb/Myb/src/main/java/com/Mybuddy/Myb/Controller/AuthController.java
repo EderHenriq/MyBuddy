@@ -7,8 +7,6 @@ import com.Mybuddy.Myb.Payload.Request.SignupRequest;
 import com.Mybuddy.Myb.Payload.Response.JwtResponse;
 import com.Mybuddy.Myb.Repository.RoleRepository;
 import com.Mybuddy.Myb.Repository.UsuarioRepository;
-import com.Mybuddy.Myb.Repository.UsuarioRepository;
-import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
 import com.Mybuddy.Myb.Security.Role; // Entidade que representa um papel (role) no sistema
 import com.Mybuddy.Myb.Security.ERole; // Enum que define os tipos de roles disponíveis
