@@ -1,6 +1,5 @@
 package com.Mybuddy.Myb;
 
-// Importações necessárias do Spring Boot e configurações de CORS e recursos estáticos
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -9,24 +8,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.beans.factory.annotation.Value;
 
-// Marca esta classe como a principal aplicação Spring Boot.
-// Ela ativa automaticamente a configuração e o escaneamento de componentes.
 @SpringBootApplication
 public class MybApplication {
 
-	// Injeta o valor configurado no arquivo application.properties (por exemplo, file.upload-dir=uploads)
-	@Value("${file.upload-dir}")
+	@Value("${file.upload-dir}") // Injeta o valor configurado no arquivo application.properties (por exemplo, file.upload-dir=uploads)
 	private String uploadDir;
 
-	// Método principal que inicia a aplicação Spring Boot
-	public static void main(String[] args) {
+	public static void main(String[] args) { // Método principal que inicia a aplicação Spring Boot
 		SpringApplication.run(MybApplication.class, args);
 	}
 
-	// Bean que configura o CORS (Cross-Origin Resource Sharing) e o acesso a arquivos estáticos
-	@Bean
+	
+	@Bean // Bean que configura o CORS (Cross-Origin Resource Sharing) e o acesso a arquivos estáticos
 	public WebMvcConfigurer corsConfigurer() {
-		// Retorna uma implementação anônima de WebMvcConfigurer
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
