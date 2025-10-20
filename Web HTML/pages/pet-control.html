@@ -49,24 +49,11 @@
         </header>
 
         <main class="main-container">  
-            <section class="pet-management-container">
-            <form class="search-form" role="search">
-                    <div class="search-wrapper">
-                        <input type="search" class="search-input" placeholder="Busque por Pet ou Raça" aria-label="Buscar por Pet">
-                        <button type="submit" class="search-btn"><span class="material-symbols-outlined">search</span></button>
-                    </div>
-            </form>
-
-            <div class="addPet-btn">
-                    <button class="primary-btn"><span class="material-symbols-outlined"></span>Adicionar novo Pet</button>
-            </div>
-            </section>
-
             <section class="filters-sidebar">
                 <h2>Filtros Avançados</h2>
                 <form class="advanced-filters">
                     <div class="filter-group">
-                        <label for="Espécie">
+                        <label for="Espécie">Espécie:
                             <select id="especie">
                                 <option value="All">Todos</option>
                                 <option value="Dog">Cachorro</option>
@@ -79,7 +66,7 @@
                             </select>
                         </label>
 
-                        <label for="Raça">
+                        <label for="Raça"> Raça:
                             <select id="animal-breed">
                                 <option value="All">Todas</option>
                                 <option value="Labrador">Labrador</option>
@@ -94,7 +81,7 @@
                             </select>    
                         </label>
 
-                        <label for="Idade">
+                        <label for="Idade"> Idade:
                             <select id="age">
                                 <option value="All">Todas</option>
                                 <option value="Baby">Filhote</option>
@@ -104,7 +91,7 @@
                             </select>
                         </label>
 
-                        <label for="Sexo">
+                        <label for="Sexo"> Sexo:
                             <select id="gender">
                                 <option value="All">Todos</option>
                                 <option value="M">Macho</option>
@@ -112,7 +99,7 @@
                             </select>
                         </label>
 
-                        <label for="Porte">
+                        <label for="Porte"> Porte:
                             <select id="size">
                                 <option value="All">Todos</option>
                                 <option value="Small">Pequeno</option>
@@ -121,7 +108,7 @@
                             </select>
                         </label>
 
-                        <label for="Disponibilidade">
+                        <label for="Disponibilidade"> Disponibilidade:
                             <select id="availability">
                                 <option value="All">Todos</option>
                                 <option value="Available">Disponível</option>
@@ -130,7 +117,7 @@
                             </select>
                         </label>
 
-                        <label for="Cor">
+                        <label for="Cor"> Cor:
                             <select id="color">
                                 <option value="All">Todas</option>
                                 <option value="Black">Preto</option>
@@ -142,7 +129,7 @@
                             </select>
                         </label>
 
-                        <label for="Pelagem">
+                        <label for="Pelagem"> Pelagem:
                             <select id="coat">
                                 <option value="All">Todas</option>
                                 <option value="Short">Curta</option>
@@ -152,7 +139,7 @@
                             </select>
                         </label>
 
-                        <label for="Vacinado">
+                        <label for="Vacinado"> Vacinado:
                             <select id="vaccinated">
                                 <option value="All">Todos</option>
                                 <option value="Yes">Sim</option>
@@ -160,7 +147,7 @@
                             </select>
                         </label>
 
-                        <label for="Castrado">
+                        <label for="Castrado"> Castrado:
                             <select id="neutered">
                                 <option value="All">Todos</option>
                                 <option value="Yes">Sim</option>
@@ -168,7 +155,7 @@
                             </select>
                         </label>
 
-                        <label for="Microchipado">
+                        <label for="Microchipado"> Microchipado:
                             <select id="microchipped">
                                 <option value="All">Todos</option>
                                 <option value="Yes">Sim</option>
@@ -176,7 +163,7 @@
                             </select>
                         </label>
 
-                        <label for="Abrigo/Tutor">
+                        <label for="Abrigo/Tutor"> Abrigo/Tutor:
                             <select id="shelter">
                                 <option value="All">Todos</option>
                                 <option value="Shelter1">Abrigo 1</option>
@@ -186,7 +173,7 @@
                             </select>
                         </label>
 
-                        <label for="Estado">
+                        <label for="Estado"> Estado:
                             <select id="state">
                                 <option value="All">Todos</option>
                                 <option value="SP">São Paulo</option>
@@ -201,7 +188,7 @@
                             </select>
                         </label>
 
-                        <label for="Cidade">
+                        <label for="Cidade"> Cidade:
                             <select id="city">
                                 <option value="All">Todas</option>
                                 <option value="São Paulo">São Paulo</option>
@@ -220,7 +207,21 @@
             </section>
 
             <section class="pets-container" aria-label="Lista de Pets Disponíveis">
-                <article class="pets-card" data-id="1">
+                <section class="pet-management-container">
+                    <form class="search-form" role="search">
+                        <div class="search-wrapper">
+                            <input type="search" class="search-input" placeholder="Busque por Pet ou Raça" aria-label="Buscar por Pet">
+                            <button type="submit" class="search-btn"><span class="material-symbols-outlined">search</span></button>
+                        </div>
+                    </form>
+                
+                    <div class="addPet-btn">
+                        <button class="primary-btn"><span class="material-symbols-outlined"></span>Adicionar novo Pet</button>
+                    </div>
+                </section>
+
+                <div class="pets-cards-wrapper">
+                  <article class="pets-card" data-id="1">
                     <img src="/Web HTML/src/assets/imgs/dachshund-1519374_1280-1200x700.jpg" alt="foto-pet1" class="pet-photo">
                     <div class="pet-info">
                         <h3 class="pet-name">Farofa</h3>
@@ -275,9 +276,99 @@
                         </div>             
                     </div>
                 </article>
-            </section>
 
+                </div>
+            </section>
         </main>
+
+         <div id="addPetModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-button" id="closeAddPetModal">&times;</span>
+                        <div class="add-pet-content">
+                            <h2>Adicionar Novo Pet</h2>
+                            <form id="addPetForm">
+
+                                <label for="pet-photos">Fotos do Pet:</label>
+                                <input type="file" id="pet-photos" accept="image/*" multiple required>
+                                <div id="photos-preview" class="photos-preview"></div>
+
+                                <label for="pet-name">Nome:</label>
+                                <input type="text" id="pet-name" required>
+                
+                                <label for="pet-species">Espécie:</label>
+                                <select id="pet-species" required>
+                                    <option value="">Selecione</option>
+                                    <option value="Dog">Cachorro</option>
+                                    <option value="Cat">Gato</option>
+                                    <option value="Rabbit">Coelho</option>
+                                    <option value="Bird">Pássaro</option>
+                                    <option value="Rodent">Roedor</option>
+                                    <option value="Fish">Peixe</option>
+                                    <option value="Other">Outros</option>
+                                </select>
+                
+                                <label for="pet-breed">Raça:</label>
+                                <input type="text" id="pet-breed" required>
+                
+                                <label for="pet-age">Idade:</label>
+                                <input type="number" id="pet-age" required>
+                
+                                <label for="pet-gender">Sexo:</label>
+                                <select id="pet-gender" required>
+                                    <option value="M">Macho</option>
+                                    <option value="F">Fêmea</option>
+                                </select>
+                
+                                <label for="pet-size">Porte:</label>
+                                <select id="pet-size" required>
+                                    <option value="Small">Pequeno</option>
+                                    <option value="Medium">Médio</option>
+                                    <option value="Large">Grande</option>
+                                </select>
+
+                                <label for="pet-color">Cor:</label>
+                                <input type="text" id="pet-color" required>
+
+                                <label for="pet-coat">Pelagem:</label>
+                                <select id="pet-coat" required>
+                                    <option value="Short">Curta</option>
+                                    <option value="Medium">Média</option>
+                                    <option value="Long">Longa</option>
+                                    <option value="Hairless">Sem Pelo</option>
+                                </select>
+
+                                <label for="pet-vaccinated">Vacinado:</label>
+                                <select id="pet-vaccinated" required>
+                                    <option value="Yes">Sim</option>
+                                    <option value="No">Não</option>
+                                </select>
+
+                                <label for="pet-neutered">Castrado:</label>
+                                <select id="pet-neutered" required>
+                                    <option value="Yes">Sim</option>
+                                    <option value="No">Não</option>
+                                </select>
+
+                                <label for="pet-microchipped">Microchipado</label>
+                                <select id="pet-microchipped" required>
+                                    <option value="Yes">Sim</option>
+                                    <option value="No">Não</option>
+                                </select>
+
+                                <label for="pet-shelter">Tutor/Ong:</label>
+                                <input type="text" id="pet-shelter" required>
+
+                                <label for="pet-city">Cidade:</label>
+                                <input type="text" id="pet-city" required>
+                                
+                                <label for="pet-state">Estado:</label>
+                                <input type="text" id="pet-state" required>
+                
+                                <button type="submit" class="primary-btn">Adicionar Pet</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
         <script src="/Web HTML/js/pet-control.js"></script>
     </body>
