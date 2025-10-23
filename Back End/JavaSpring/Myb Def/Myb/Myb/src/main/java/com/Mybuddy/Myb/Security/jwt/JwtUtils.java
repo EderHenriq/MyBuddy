@@ -62,7 +62,7 @@ public class JwtUtils {
     private Key key() {
         // Decodifica a string 'jwtSecret' (que está em Base64) e gera uma chave HMAC SHA para ser usada com JJWT.
         System.out.println("jwtSecret lido pelo Spring: [" + jwtSecret + "]");
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+        return Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecret));
     }
 
     // Extrai o username (subject) de um token JWT válido.
