@@ -56,6 +56,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             // Extrai o token JWT do header Authorization (se presente)
             String jwt = parseJwt(request);
 
+            System.out.println("Token recebido no backend: " + jwt);
+
+
             // Se o token está presente E é validado pelo JwtUtils (assinatura, expiração, formato correto)
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 
