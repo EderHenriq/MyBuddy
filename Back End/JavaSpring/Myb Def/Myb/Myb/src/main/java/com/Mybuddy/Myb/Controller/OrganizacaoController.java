@@ -1,72 +1,94 @@
 package com.Mybuddy.Myb.Controller;
 
-import java.util.List;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.Mybuddy.Myb.Model.Organizacao;
+import com.Mybuddy.Myb.DTO.OrganizacaoRequestDTO;
+import com.Mybuddy.Myb.DTO.OrganizacaoResponseDTO;
+import com.Mybuddy.Myb.Exception.ResourceNotFoundException; // Precisaremos desta para demonstrar
+import com.Mybuddy.Myb.Exception.ConflictException;       // Precisaremos desta para demonstrar
 import com.Mybuddy.Myb.Service.OrganizacaoService;
+import jakarta.validation.Valid; // Importe para usar a validação de DTOs
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus; // Para códigos HTTP
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-//julia linda a mais mais
+import java.util.List;
 
-@RestController
-@RequestMapping("/api/organizacoes")
+@RestController // Indica que esta classe é um controlador REST
+@RequestMapping("/api/organizacoes") // Define o caminho base para todos os endpoints neste controller
 public class OrganizacaoController {
-     private final OrganizacaoService service;
 
-    public OrganizacaoController(OrganizacaoService service) {
-        this.service = service;
+    private static final Logger logger = LoggerFactory.getLogger(OrganizacaoController.class);
+
+    private final OrganizacaoService organizacaoService; // Renomeado para seguir convenção
+
+    // Injeção de dependência do serviço via construtor
+    public OrganizacaoController(OrganizacaoService organizacaoService) {
+        this.organizacaoService = organizacaoService;
     }
 
-    //listar todas
-    @GetMapping
-    public List<Organizacao> listarTodas() {
-        return service.listarTodas();
-    }
-
-    //buscar por id
-    @GetMapping("/{id}")
-    public ResponseEntity<Organizacao> buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    //criar nova
+    /**
+     * Endpoint para criar uma nova organização.
+     * Recebe um DTO de requisição e retorna um DTO de resposta.
+     * @param requestDTO Dados da organização a ser criada, com validação.
+     * @return ResponseEntity com o DTO da organização criada e status 201 Created.
+     */
     @PostMapping
-    public Organizacao criar(@RequestBody Organizacao ong) {
-        return service.salvar(ong);
+    public ResponseEntity<OrganizacaoResponseDTO> criarOrganizacao(@Valid @RequestBody OrganizacaoRequestDTO requestDTO) {
+        logger.info("Recebida requisição para criar organização: {}", requestDTO.getNomeFantasia());
+        // O serviço já trata as exceções de conflito (CNPJ/Email), que serão mapeadas pelo GlobalExceptionHandler
+        OrganizacaoResponseDTO createdOrganizacao = organizacaoService.criarOrganizacao(requestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrganizacao); // Retorna 201 Created
     }
 
-    //aualizar existente
+    /**
+     * Endpoint para buscar uma organização pelo ID.
+     * @param id ID da organização.
+     * @return ResponseEntity com o DTO da organização encontrada e status 200 OK, ou 404 Not Found.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<OrganizacaoResponseDTO> buscarOrganizacaoPorId(@PathVariable Long id) {
+        logger.info("Recebida requisição para buscar organização com ID: {}", id);
+        // O serviço lançará ResourceNotFoundException se não encontrar, que será mapeada pelo GlobalExceptionHandler
+        OrganizacaoResponseDTO organizacao = organizacaoService.buscarOrganizacaoPorId(id);
+        return ResponseEntity.ok(organizacao); // Retorna 200 OK
+    }
+
+    /**
+     * Endpoint para listar todas as organizações.
+     * @return ResponseEntity com uma lista de DTOs de organizações e status 200 OK.
+     */
+    @GetMapping
+    public ResponseEntity<List<OrganizacaoResponseDTO>> listarTodasOrganizacoes() {
+        logger.info("Recebida requisição para listar todas as organizações.");
+        List<OrganizacaoResponseDTO> organizacoes = organizacaoService.listarTodasOrganizacoes();
+        return ResponseEntity.ok(organizacoes); // Retorna 200 OK
+    }
+
+    /**
+     * Endpoint para atualizar uma organização existente.
+     * @param id ID da organização a ser atualizada.
+     * @param requestDTO Dados atualizados da organização, com validação.
+     * @return ResponseEntity com o DTO da organização atualizada e status 200 OK, ou 404 Not Found, 409 Conflict.
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<Organizacao> atualizar(@PathVariable Long id, @RequestBody Organizacao ongAtualizada) {
-        return service.buscarPorId(id)
-                .map(ong -> {
-                    ong.setNome(ongAtualizada.getNome());
-                    ong.setEmail(ongAtualizada.getEmail());
-                    ong.setTelefone(ongAtualizada.getTelefone());
-                    ong.setEndereco(ongAtualizada.getEndereco());
-                    return ResponseEntity.ok(service.salvar(ong));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<OrganizacaoResponseDTO> atualizarOrganizacao(@PathVariable Long id, @Valid @RequestBody OrganizacaoRequestDTO requestDTO) {
+        logger.info("Recebida requisição para atualizar organização com ID: {}", id);
+        // O serviço já trata as exceções (NotFound, Conflict), que serão mapeadas pelo GlobalExceptionHandler
+        OrganizacaoResponseDTO updatedOrganizacao = organizacaoService.atualizarOrganizacao(id, requestDTO);
+        return ResponseEntity.ok(updatedOrganizacao); // Retorna 200 OK
     }
 
-    //deletar porrraaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    /**
+     * Endpoint para deletar uma organização pelo ID.
+     * @param id ID da organização a ser deletada.
+     * @return ResponseEntity sem conteúdo e status 204 No Content, ou 404 Not Found.
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        return service.buscarPorId(id)
-                .map(ong -> {
-                    service.deletar(id);
-                    return ResponseEntity.noContent().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Void> deletarOrganizacao(@PathVariable Long id) {
+        logger.info("Recebida requisição para deletar organização com ID: {}", id);
+        // O serviço lançará ResourceNotFoundException se não encontrar, que será mapeada pelo GlobalExceptionHandler
+        organizacaoService.deletarOrganizacao(id);
+        return ResponseEntity.noContent().build(); // Retorna 204 No Content
     }
 }

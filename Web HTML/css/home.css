@@ -1,0 +1,315 @@
+/* Geral */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Fundo mais claro */
+    color: #343a40;
+    display: flex; /* Para o footer fixar no final */
+    flex-direction: column; /* Para o footer fixar no final */
+    min-height: 100vh; /* Para o footer fixar no final */
+}
+
+/* Header */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff; /* Fundo branco puro */
+    padding: 15px 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    width: 45px; /* Levemente maior */
+    height: 45px;
+    margin-right: 12px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.app-name {
+    font-size: 1.6em;
+    font-weight: 700; /* Mais negrito */
+    color: #343a40;
+}
+
+.header-nav {
+    display: flex;
+    gap: 35px; /* Mais espaço */
+}
+
+.nav-item {
+    text-decoration: none;
+    color: #6c757d; /* Cinza mais suave */
+    font-weight: 600;
+    padding: 8px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0px; /* Alinhar melhor o sublinhado */
+    width: 0;
+    height: 3px;
+    background-color: #FF5722; /* Laranja MyBuddy */
+    transition: width 0.3s ease;
+}
+
+.nav-item:hover, .nav-item.active {
+    color: #FF5722; /* Laranja no hover e ativo */
+}
+
+.nav-item:hover::after, .nav-item.active::after {
+    width: 100%;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 25px; /* Mais espaço */
+}
+
+.header-icon {
+    font-size: 1.6em; /* Ícones maiores */
+    color: #6c757d;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.header-icon:hover {
+    color: #FF5722;
+}
+
+.user-greeting {
+    margin-left: 10px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.logout-btn {
+    background-color: #dc3545; /* Vermelho para logout */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    margin-left: 15px;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+}
+
+
+/* Main Content */
+.home-main-content {
+    flex-grow: 1; /* Ocupa o espaço restante, empurrando o footer */
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.welcome-section {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.welcome-section h1 {
+    color: #343a40;
+    font-size: 3em; /* Título maior */
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.welcome-section p {
+    color: #6c757d;
+    font-size: 1.2em;
+    max-width: 700px;
+    line-height: 1.6;
+}
+
+/* Action Buttons Grid (Cards) */
+.action-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 300px para cards */
+    gap: 30px; /* Mais espaço entre cards */
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.action-card {
+    background-color: #f8f9fa; /* Fundo claro para o card */
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px; /* Altura mínima para cards */
+    text-decoration: none; /* Caso mude para <a> */
+    color: inherit;
+}
+
+.action-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background-color: #e9ecef; /* Um pouco mais escuro no hover */
+}
+
+.action-card .icon-large {
+    font-size: 3.5em; /* Ícones grandes */
+    color: #FF5722; /* Cor principal */
+    margin-bottom: 20px;
+}
+
+.action-card h3 {
+    font-size: 1.7em;
+    color: #343a40;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.action-card p {
+    font-size: 1em;
+    color: #6c757d;
+    line-height: 1.5;
+    flex-grow: 1; /* Para que o parágrafo ocupe espaço e alinhe os cards */
+}
+
+/* Specific card styles based on roles */
+.action-card.admin-card {
+    background-color: #e0f7fa; /* Cor de fundo para admin */
+    border-color: #00bcd4;
+}
+.action-card.admin-card .icon-large {
+    color: #00bcd4;
+}
+.action-card.admin-card:hover {
+    background-color: #b2ebf2;
+}
+
+.action-card.ong-card {
+    background-color: #fff3e0; /* Cor de fundo para ONG */
+    border-color: #ff9800;
+}
+.action-card.ong-card .icon-large {
+    color: #ff9800;
+}
+.action-card.ong-card:hover {
+    background-color: #ffe0b2;
+}
+
+
+/* Footer */
+.main-footer {
+    background-color: #343a40; /* Fundo escuro */
+    color: #f8f9fa;
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: auto; /* Empurra o footer para o final da página */
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-footer p {
+    margin: 0 0 15px 0;
+    font-size: 0.9em;
+}
+
+.social-links {
+    margin-top: 15px;
+}
+
+.social-links a {
+    color: #f8f9fa;
+    font-size: 1.5em;
+    margin: 0 15px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: #FF5722; /* Laranja no hover */
+}
+
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .main-header {
+        padding: 10px 20px;
+        flex-wrap: wrap;
+    }
+    .header-nav {
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 20px;
+    }
+    .header-right {
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+    }
+    .welcome-section h1 {
+        font-size: 2.5em;
+    }
+    .action-buttons-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    .action-card {
+        min-height: 200px;
+        padding: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-name {
+        font-size: 1.4em;
+    }
+    .welcome-section h1 {
+        font-size: 2em;
+    }
+    .welcome-section p {
+        font-size: 1em;
+    }
+    .action-buttons-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+    }
+    .action-card {
+        min-height: 180px;
+    }
+    .action-card h3 {
+        font-size: 1.5em;
+    }
+    .action-card .icon-large {
+        font-size: 3em;
+    }
+}

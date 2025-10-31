@@ -1,4 +1,4 @@
-package com.Mybuddy.Myb.Dto;
+package com.Mybuddy.Myb.DTO;
 
 // Importa as classes dos modelos e enums necessários
 import com.Mybuddy.Myb.Model.StatusInteresse;

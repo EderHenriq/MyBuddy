@@ -1,116 +1,106 @@
-package com.Mybuddy.Myb.Security.jwt; // Declara o pacote onde esta classe de detalhes do usuário JWT está localizada.
+package com.Mybuddy.Myb.Security.jwt;
 
-import com.Mybuddy.Myb.Model.Usuario; // Importa a entidade Usuario, o modelo de usuário do seu sistema.
-import com.Mybuddy.Myb.Security.Role; // Importa a entidade Role, que representa os papéis/perfis de um usuário. (Comentário CORRIGIDO indica o caminho correto).
-import com.fasterxml.jackson.annotation.JsonIgnore; // Importa a anotação @JsonIgnore, usada para ignorar um campo durante a serialização JSON.
-import org.springframework.security.core.GrantedAuthority; // Importa a interface GrantedAuthority do Spring Security, que representa uma permissão concedida ao usuário.
-import org.springframework.security.core.authority.SimpleGrantedAuthority; // Importa a implementação padrão de GrantedAuthority.
-import org.springframework.security.core.userdetails.UserDetails; // Importa a interface UserDetails do Spring Security, que fornece informações essenciais do usuário para o framework.
+import com.Mybuddy.Myb.Model.Usuario;
+import com.Mybuddy.Myb.Security.Role; // Corrigido para Role, assumindo que é a entidade
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection; // Importa a interface Collection para lidar com coleções genéricas.
-import java.util.List; // Importa a interface List para coleções ordenadas.
-import java.util.Objects; // Importa a classe Objects para utilitários de objetos, como comparação.
-import java.util.stream.Collectors; // Importa Collectors para operar com Streams.
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-// Declara a classe UserDetailsImpl que implementa a interface UserDetails do Spring Security.
-// Esta classe é uma implementação personalizada de UserDetails, que encapsula as informações do usuário
-// necessárias para o processo de autenticação e autorização do Spring Security.
 public class UserDetailsImpl implements UserDetails {
-    private static final long serialVersionUID = 1L; // Um identificador de versão para serialização, necessário para classes serializáveis.
+    private static final long serialVersionUID = 1L;
 
-    private Long id; // Campo para armazenar o ID do usuário.
-    private String nome; // Campo para armazenar o nome do usuário (mapeado para o campo 'nome' da entidade Usuario).
-    private String email; // Campo para armazenar o e-mail do usuário.
+    private Long id;
+    private String nome;
+    private String email;
 
-    @JsonIgnore // Anotação que indica ao Jackson (biblioteca de JSON) para ignorar este campo
-    // ao serializar o objeto para JSON. Isso é importante para não expor o "telefone" (que atua como senha)
-    // em respostas da API, como no JwtResponse.
-    private String telefone; // Campo para armazenar o telefone do usuário, que está sendo usado como a "senha" para autenticação.
+    @JsonIgnore // Garante que a senha não seja serializada para JSON
+    private String password; // <-- MUDANÇA AQUI: Campo para a senha codificada
 
-    private Collection<? extends GrantedAuthority> authorities; // Campo para armazenar as permissões/papéis (roles) do usuário.
+    private Collection<? extends GrantedAuthority> authorities;
 
-    // Construtor da classe UserDetailsImpl.
-    // Usado para inicializar uma instância com as informações do usuário e suas autoridades.
-    public UserDetailsImpl(Long id, String nome, String email, String telefone,
+    // Construtor atualizado para receber a senha (codificada)
+    public UserDetailsImpl(Long id, String nome, String email, String password, // <-- MUDANÇA AQUI
                            Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;             // Inicializa o ID.
-        this.nome = nome;         // Inicializa o nome.
-        this.email = email;       // Inicializa o e-mail.
-        this.telefone = telefone; // Inicializa o telefone (a "senha").
-        this.authorities = authorities; // Inicializa as autoridades (roles).
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.password = password; // <-- MUDANÇA AQUI
+        this.authorities = authorities;
     }
 
-    // Método estático de fábrica para construir um objeto UserDetailsImpl a partir de uma entidade Usuario.
     public static UserDetailsImpl build(Usuario user) {
-        // Converte o conjunto de roles do usuário (user.getRoles()) em uma lista de GrantedAuthority.
-        // Cada Role é mapeada para um SimpleGrantedAuthority com o nome da role (ex: "ROLE_ADOTANTE").
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name())) // Converte a enum RoleName para String e cria um SimpleGrantedAuthority.
-                .collect(Collectors.toList()); // Coleta os resultados em uma lista.
+                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                .collect(Collectors.toList());
 
-        // Retorna uma nova instância de UserDetailsImpl com os dados extraídos do objeto Usuario.
         return new UserDetailsImpl(
-                user.getId(),         // Passa o ID do usuário.
-                user.getNome(),       // Passa o nome do usuário.
-                user.getEmail(),      // Passa o e-mail do usuário.
-                user.getTelefone(),   // Passa o telefone do usuário (a "senha").
-                authorities);         // Passa a lista de autoridades (roles).
+                user.getId(),
+                user.getNome(),
+                user.getEmail(),
+                user.getPassword(),   // <-- MUDANÇA CRUCIAL AQUI: Passa a senha real do usuário
+                authorities);
     }
 
-    @Override // Implementa o método getAuthorities da interface UserDetails.
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities; // Retorna a coleção de permissões concedidas ao usuário.
+        return authorities;
     }
 
-    public Long getId() { // Método getter para o ID do usuário.
+    public Long getId() {
         return id;
     }
 
-    public String getEmail() { // Método getter para o e-mail do usuário.
+    public String getEmail() {
         return email;
     }
 
-    public String getNome() { // Método getter para o nome do usuário.
+    public String getNome() {
         return nome;
     }
 
-    @Override // Implementa o método getPassword da interface UserDetails.
+    @Override
     public String getPassword() {
-        return telefone; // Retorna o telefone, que está sendo usado como a senha para autenticação.
+        return password; // <-- MUDANÇA CRUCIAL AQUI: Retorna a senha codificada
     }
 
-    @Override // Implementa o método getUsername da interface UserDetails.
+    @Override
     public String getUsername() {
-        return email; // Retorna o e-mail do usuário, que está sendo usado como o nome de usuário para login.
+        return email;
     }
 
-    @Override // Implementa o método isAccountNonExpired da interface UserDetails.
+    @Override
     public boolean isAccountNonExpired() {
-        return true; // Indica que a conta do usuário nunca expira (sem lógica de expiração implementada).
+        return true;
     }
 
-    @Override // Implementa o método isAccountNonLocked da interface UserDetails.
+    @Override
     public boolean isAccountNonLocked() {
-        return true; // Indica que a conta do usuário nunca é bloqueada (sem lógica de bloqueio implementada).
+        return true;
     }
 
-    @Override // Implementa o método isCredentialsNonExpired da interface UserDetails.
+    @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Indica que as credenciais do usuário nunca expiram (sem lógica de expiração de credenciais implementada).
+        return true;
     }
 
-    @Override // Implementa o método isEnabled da interface UserDetails.
+    @Override
     public boolean isEnabled() {
-        return true; // Indica que a conta do usuário está sempre habilitada (sem lógica de habilitação/desabilitação implementada).
+        return true;
     }
 
-    @Override // Sobrescreve o método equals para comparação de objetos UserDetailsImpl.
+    @Override
     public boolean equals(Object o) {
-        if (this == o) // Se o objeto for a mesma instância, são iguais.
+        if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass()) // Se o objeto for nulo ou de uma classe diferente, não são iguais.
+        if (o == null || getClass() != o.getClass())
             return false;
-        UserDetailsImpl user = (UserDetailsImpl) o; // Faz um cast do objeto para UserDetailsImpl.
-        return Objects.equals(id, user.id); // Compara os objetos baseando-se no ID do usuário. Se os IDs forem iguais, os usuários são considerados os mesmos.
+        UserDetailsImpl user = (UserDetailsImpl) o;
+        return Objects.equals(id, user.id);
     }
 }

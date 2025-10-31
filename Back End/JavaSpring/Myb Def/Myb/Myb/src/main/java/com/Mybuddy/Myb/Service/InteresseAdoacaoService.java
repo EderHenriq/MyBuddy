@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Service; // Declara o pacote onde esta classe de serviço está localizada.
 
-import com.Mybuddy.Myb.Dto.InteresseAdoacaoMapper; // Importa o mapper para converter entidades em DTOs de resposta.
-import com.Mybuddy.Myb.Dto.InteresseResponse; // Importa o DTO de resposta para interesses de adoção.
+import com.Mybuddy.Myb.DTO.InteresseAdoacaoMapper; // Importa o mapper para converter entidades em DTOs de resposta.
+import com.Mybuddy.Myb.DTO.InteresseResponse; // Importa o DTO de resposta para interesses de adoção.
 import com.Mybuddy.Myb.Model.*; // Importa todas as classes de modelo (entidades), incluindo InteresseAdoacao, Usuario, Pet, StatusInteresse, StatusAdocao.
 import com.Mybuddy.Myb.Repository.InteresseAdoacaoRepository; // Importa o repositório para a entidade InteresseAdoacao.
 import com.Mybuddy.Myb.Repository.PetRepository; // Importa o repositório para a entidade Pet.

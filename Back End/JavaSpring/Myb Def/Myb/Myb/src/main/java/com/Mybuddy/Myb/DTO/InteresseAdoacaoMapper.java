@@ -1,4 +1,4 @@
-package com.Mybuddy.Myb.Dto; // Declara o pacote onde esta classe DTO (Data Transfer Object) está localizada.
+package com.Mybuddy.Myb.DTO; // Declara o pacote onde esta classe DTO (Data Transfer Object) está localizada.
 
 import com.Mybuddy.Myb.Model.InteresseAdoacao; // Importa a entidade InteresseAdoacao, que representa o interesse completo no banco.
 //import com.Mybuddy.Myb.Dto.UsuarioResponse;     // Importa o DTO simplificado do usuário (nome + id).

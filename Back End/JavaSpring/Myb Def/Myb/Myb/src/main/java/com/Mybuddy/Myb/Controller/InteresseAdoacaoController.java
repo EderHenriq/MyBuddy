@@ -1,8 +1,8 @@
 package com.Mybuddy.Myb.Controller; // Declara o pacote onde esta classe está localizada
 
-import com.Mybuddy.Myb.Dto.AtualizarStatusRequest; // DTO para requisições de atualização de status
-import com.Mybuddy.Myb.Dto.InteresseResponse; // DTO para respostas de interesse de adoção
-import com.Mybuddy.Myb.Dto.RegistrarInteresseRequest; // DTO para requisições de registro de interesse
+import com.Mybuddy.Myb.DTO.AtualizarStatusRequest; // DTO para requisições de atualização de status
+import com.Mybuddy.Myb.DTO.InteresseResponse; // DTO para respostas de interesse de adoção
+import com.Mybuddy.Myb.DTO.RegistrarInteresseRequest; // DTO para requisições de registro de interesse
 import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl; // Detalhes do usuário autenticado extraídos do JWT
 import com.Mybuddy.Myb.Service.InteresseAdoacaoService; // Serviço com a lógica de negócio
 import jakarta.validation.Valid; // Validação de DTOs

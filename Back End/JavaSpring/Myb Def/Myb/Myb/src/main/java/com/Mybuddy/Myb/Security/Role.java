@@ -1,62 +1,69 @@
-package com.Mybuddy.Myb.Security; // Pacote onde a entidade Role está localizada
+package com.Mybuddy.Myb.Security;
 
-import com.Mybuddy.Myb.Security.ERole;
-// Importa o enum ERole, que define os tipos de roles (ex: ADMIN, USER)
-import com.Mybuddy.Myb.Model.Usuario;
-// Importa a entidade Usuario, caso você queira relacionar roles com usuários
 import jakarta.persistence.*;
-// Importa anotações JPA para mapear a entidade no banco de dados
-
-import java.util.HashSet;
-import java.util.Set;
-// Importa coleções para relacionamentos ManyToMany (opcional)
+import java.util.Objects; // Para equals e hashCode
 
 @Entity
-// Marca a classe como uma entidade JPA, que será mapeada para uma tabela no banco
 @Table(name = "roles")
-// Define o nome da tabela no banco de dados como "roles"
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // Define que o campo 'id' é a chave primária e será gerado automaticamente
-    private Integer id;
+    private Long id; // Consistência: use Long (classe) para IDs
 
+    // O nome da role (ex: "ROLE_ADOTANTE", "ROLE_ONG")
+    // Deve ser único e não nulo. O EnumType.STRING já cuida de como é salvo.
     @Enumerated(EnumType.STRING)
-    // Indica que o enum ERole será armazenado como String no banco
-    @Column(length = 20)
-    // Define o tamanho máximo da coluna no banco
+    @Column(length = 20, nullable = false, unique = true) // name deve ser único para uma Role
     private ERole name;
 
-    // Relacionamento ManyToMany inverso (opcional) caso queira acessar usuários pela Role
-    // @ManyToMany(mappedBy = "roles")
-    // private Set<Usuario> usuarios = new HashSet<>();
-
-    public Role() {}
-    // Construtor padrão necessário para JPA
+    // --- Construtores ---
+    public Role() {} // Construtor padrão necessário para JPA
 
     public Role(ERole name) {
         this.name = name;
-    }
-    // Construtor para criar uma Role com um nome específico
+    } // Construtor para criar uma Role com um nome específico
 
-    public Integer getId() {
+    // --- Getters e Setters ---
+    public Long getId() {
         return id;
     }
-    // Getter do id
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
-    // Setter do id
 
     public ERole getName() {
         return name;
     }
-    // Getter do nome da Role
 
     public void setName(ERole name) {
         this.name = name;
     }
 
+    // --- Sobrescrita de equals() e hashCode() ---
+    // Essencial para o bom funcionamento de coleções (Set) e para comparar entidades.
+    // Usa o ID para comparação e hash, já que é o identificador único na persistência.
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return id != null && Objects.equals(id, role.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? Objects.hash(id) : 0;
+    }
+
+    // --- Sobrescrita de toString() ---
+    // Útil para debugging, mostra uma representação significativa do objeto.
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name=" + name +
+                '}';
+    }
 }

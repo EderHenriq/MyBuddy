@@ -1,34 +1,29 @@
-package com.Mybuddy.Myb.Payload.Request; // Declara o pacote onde esta classe de requisição está localizada.
-// O termo "Payload.Request" geralmente indica que a classe é um DTO (Data Transfer Object)
-// usado para receber dados de uma requisição HTTP.
+package com.Mybuddy.Myb.Payload.Request;
 
-import jakarta.validation.constraints.NotBlank; // Importa a anotação de validação @NotBlank, que garante que uma string não seja nula, vazia ou contenha apenas espaços em branco.
+import jakarta.validation.constraints.NotBlank;
 
-// Declara a classe LoginRequest.
-// Esta classe é um DTO que representa os dados esperados no corpo de uma requisição HTTP
-// para autenticação (login) de um usuário.
 public class LoginRequest {
-    @NotBlank // Anotação de validação que garante que o campo 'email' não seja nulo, vazio ou composto apenas por espaços em branco.
-    private String email; // Campo para armazenar o e-mail do usuário (renomeado de 'username' para 'email', indicando que o login é feito por e-mail).
 
-    @NotBlank // Anotação de validação que garante que o campo 'telefone' não seja nulo, vazio ou composto apenas por espaços em branco.
-    private String telefone; // Campo para armazenar o telefone do usuário (renomeado de 'password' para 'telefone', o que é uma escolha incomum para senha, mas seguindo o código).
+    @NotBlank
+    private String email; // Campo para o e-mail do usuário
 
-    // Métodos Getters e Setters para cada atributo da classe, permitindo acesso e modificação dos valores dos campos.
+    @NotBlank // NOVO: Este campo é para a senha real do usuário
+    private String password; // Campo para armazenar a senha do usuário
 
-    public String getEmail() { // Método getter para o campo 'email'.
+    // --- Getters e Setters ---
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) { // Método setter para o campo 'email'.
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getTelefone() { // Método getter para o campo 'telefone'.
-        return telefone;
+    public String getPassword() { // Getter para a senha
+        return password;
     }
 
-    public void setTelefone(String telefone) { // Método setter para o campo 'telefone'.
-        this.telefone = telefone;
+    public void setPassword(String password) { // Setter para a senha
+        this.password = password;
     }
 }

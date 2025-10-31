@@ -30,66 +30,103 @@
           </div>
 
           <div class="form-wrapper" id="formWrapper">
-                    <form class="form sign-in-form active" id="formSignIn">
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined">mail</span>
-              <input type="email" id="signInEmail" placeholder="Email" required />
-            </div>
+            <form class="form sign-in-form active" id="formSignIn">
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined">mail</span>
+                <input type="email" id="signInEmail" placeholder="Email" required />
+              </div>
 
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined">lock</span>
-              <input type="password" id="signInTelefone" placeholder="Telefone (senha)" required />
-            </div>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined">lock</span>
+                <input type="password" id="signInPassword" placeholder="Senha" required />
+              </div>
 
-            <button type="submit">Login</button>
+              <button type="submit">Login</button>
 
-            <div class="login-options"> 
-              <label>
-                <input type="checkbox" />
-                Lembrar-me
-              </label>
-              <a href="#">Esqueceu seu Telefone?</a> 
-            </div>
+              <div class="login-options">
+                <label>
+                  <input type="checkbox" />
+                  Lembrar-me
+                </label>
+                <a href="#">Esqueceu sua Senha?</a>
+              </div>
 
-            <p id="mensagemLogin" class="mensagem-area"></p>
-          </form>
+              <p id="mensagemLogin" class="mensagem-area"></p>
+            </form>
 
-                    <form class="form sign-up-form" id="formSignUp">
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined">person</span>
-              <input type="text" id="signUpNome" placeholder="Nome completo" required />
-            </div>
+            <form class="form sign-up-form" id="formSignUp">
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined">person</span>
+                <input type="text" id="signUpNome" placeholder="Nome completo" required />
+              </div>
 
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined">mail</span>
-              <input type="email" id="signUpEmail" placeholder="Email" required />
-            </div>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined">mail</span>
+                <input type="email" id="signUpEmail" placeholder="Email" required />
+              </div>
 
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined">phone</span>
-              <input type="text" id="signUpTelefone" placeholder="Telefone (será sua senha)" required />
-            </div>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined">phone</span>
+                <input type="text" id="signUpTelefoneUsuario" placeholder="Telefone" required />
+              </div>
 
-            <div class="input-wrapper">
-              <span class="material-symbols-outlined">group</span>
-              <select id="signUpRole" required class="select-field">
-                <option value="" disabled selected>Escolha seu tipo de usuário</option>
-                <option value="adotante">Adotante</option>
-                <option value="ong">ONG</option>
-              </select>
-            </div>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined">lock</span>
+                <input type="password" id="signUpPassword" placeholder="Senha" required />
+              </div>
 
-            <button type="submit">Registrar</button>
-            <p id="mensagemRegistro" class="mensagem-area"></p>
-          </form>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined">group</span>
+                <select id="signUpRole" required class="select-field">
+                  <option value="" disabled selected>Escolha seu tipo de usuário</option>
+                  <option value="adotante">Adotante</option>
+                  <option value="ong">ONG</option>
+                </select>
+              </div>
+
+              <div id="ongFields" style="display: none; width: 100%; display: flex; flex-direction: column; gap: 14px; align-items: center;">
+                <h3 style="color: #272728; font-size: 16px; margin-top: 10px; margin-bottom: 5px;">Dados da ONG</h3>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">business</span>
+                  <input type="text" id="ongNomeFantasia" placeholder="Nome Fantasia da ONG" />
+                </div>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">alternate_email</span>
+                  <input type="email" id="ongEmailContato" placeholder="Email de Contato da ONG" />
+                </div>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">badge</span>
+                  <input type="text" id="ongCnpj" placeholder="CNPJ da ONG" />
+                </div>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">call</span>
+                  <input type="text" id="ongTelefoneContato" placeholder="Telefone de Contato da ONG" />
+                </div>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">location_on</span>
+                  <input type="text" id="ongEndereco" placeholder="Endereço Completo da ONG" />
+                </div>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">description</span>
+                  <textarea id="ongDescricao" placeholder="Descrição da ONG (Opcional)" rows="3" style="width: 100%; border: none; outline: none; flex: 1; font-size: 15px; background: transparent; color: #222; resize: vertical;"></textarea>
+                </div>
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">language</span>
+                  <input type="url" id="ongWebsite" placeholder="Website da ONG (Opcional)" />
+                </div>
+              </div>
+
+              <button type="submit">Registrar</button>
+              <p id="mensagemRegistro" class="mensagem-area"></p>
+            </form>
           </div>
         </div>
-        
+
         <div class="image-section">
           <img src="../src/assets/imgs/adotar-cachorro-pet.jpg" alt="Imagem de fundo" />
         </div>
-      </div> 
-    </div> 
+      </div>
+    </div>
 
     <script src="../js/login.js"></script>
   </body>

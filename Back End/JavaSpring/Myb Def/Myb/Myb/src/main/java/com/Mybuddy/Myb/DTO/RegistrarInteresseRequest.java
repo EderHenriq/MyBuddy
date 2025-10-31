@@ -1,4 +1,4 @@
-package com.Mybuddy.Myb.Dto; // Declara o pacote onde este DTO (Data Transfer Object) está localizado.
+package com.Mybuddy.Myb.DTO; // Declara o pacote onde este DTO (Data Transfer Object) está localizado.
 
 import jakarta.validation.constraints.NotNull; // Importa a anotação de validação @NotNull, que garante que o campo não seja nulo.
 import jakarta.validation.constraints.Size; // Importa a anotação de validação @Size, que verifica o tamanho de uma string ou coleção.

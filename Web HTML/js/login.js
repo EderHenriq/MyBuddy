@@ -5,22 +5,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const signInForm = document.querySelector(".sign-in-form");
     const signUpForm = document.querySelector(".sign-up-form");
 
-    // Elementos do formulário de registro
+    // Elementos do formulário de registro (para USUÁRIO)
     const formSignUp = document.getElementById('formSignUp');
     const signUpNome = document.getElementById('signUpNome');
     const signUpEmail = document.getElementById('signUpEmail');
-    const signUpTelefone = document.getElementById('signUpTelefone');
-    const signUpRole = document.getElementById('signUpRole'); // <<--- NOVO: Pegar o elemento select da role
+    const signUpTelefoneUsuario = document.getElementById('signUpTelefoneUsuario'); // ALTERADO: telefone real do usuário
+    const signUpPassword = document.getElementById('signUpPassword'); // NOVO: Senha do usuário
+    const signUpRole = document.getElementById('signUpRole');
     const mensagemRegistro = document.getElementById('mensagemRegistro');
+
+    // Elementos do formulário de registro (para ONG)
+    const ongFieldsDiv = document.getElementById('ongFields'); // NOVO: Container dos campos da ONG
+    const ongNomeFantasia = document.getElementById('ongNomeFantasia');
+    const ongEmailContato = document.getElementById('ongEmailContato');
+    const ongCnpj = document.getElementById('ongCnpj');
+    const ongTelefoneContato = document.getElementById('ongTelefoneContato');
+    const ongEndereco = document.getElementById('ongEndereco');
+    const ongDescricao = document.getElementById('ongDescricao'); // Opcional
+    const ongWebsite = document.getElementById('ongWebsite');     // Opcional
+
 
     // Elementos do formulário de login
     const formSignIn = document.getElementById('formSignIn');
     const signInEmail = document.getElementById('signInEmail');
-    const signInTelefone = document.getElementById('signInTelefone');
+    const signInPassword = document.getElementById('signInPassword'); // ALTERADO: Senha para login
     const mensagemLogin = document.getElementById('mensagemLogin');
 
-    // Constante para a URL base da sua API
-    const API_BASE_URL_REGISTRO = 'http://localhost:8080/api/auth/cadastro'; 
+    const API_BASE_URL_REGISTRO = 'http://localhost:8080/api/auth/cadastro';
     const API_BASE_URL_LOGIN = 'http://localhost:8080/api/auth/login';
 
     // --- Funções Auxiliares para Mensagens ---
@@ -56,7 +67,29 @@ document.addEventListener("DOMContentLoaded", () => {
         limparMensagem(mensagemRegistro);
         limparMensagem(mensagemLogin);
         signInEmail.value = '';
-        signInTelefone.value = '';
+        signInPassword.value = ''; // Limpa o campo de senha do login
+    });
+
+    // --- Lógica de Exibição de Campos da ONG ---
+    signUpRole.addEventListener('change', () => {
+        if (signUpRole.value === 'ong') {
+            ongFieldsDiv.style.display = 'flex'; // Exibe os campos da ONG
+            // Tornar campos obrigatórios para ONG (exceto descrição e website)
+            ongNomeFantasia.setAttribute('required', 'true');
+            ongEmailContato.setAttribute('required', 'true');
+            ongCnpj.setAttribute('required', 'true');
+            ongTelefoneContato.setAttribute('required', 'true');
+            ongEndereco.setAttribute('required', 'true');
+            // Descricao e Website são opcionais, não precisa setar required
+        } else {
+            ongFieldsDiv.style.display = 'none'; // Oculta os campos da ONG
+            // Remover 'required' se não for ONG
+            ongNomeFantasia.removeAttribute('required');
+            ongEmailContato.removeAttribute('required');
+            ongCnpj.removeAttribute('required');
+            ongTelefoneContato.removeAttribute('required');
+            ongEndereco.removeAttribute('required');
+        }
     });
 
     // --- Lógica de Registro de Usuário (API) ---
@@ -67,17 +100,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const nome = signUpNome.value.trim();
         const email = signUpEmail.value.trim();
-        const telefone = signUpTelefone.value.trim();
-        const role = signUpRole.value; // <<--- NOVO: Pegar o valor da role selecionada
+        const telefone = signUpTelefoneUsuario.value.trim(); // Telefone real do usuário
+        const password = signUpPassword.value.trim();       // Senha do usuário
+        const role = signUpRole.value;
 
-        if (!nome || !email || !telefone || !role) { // <<--- NOVO: Validar se a role foi selecionada
-            exibirMensagem(mensagemRegistro, 'Por favor, preencha todos os campos e selecione seu tipo de usuário.', 'erro');
+        // Validação básica para campos comuns a ambos os tipos de usuário
+        if (!nome || !email || !telefone || !password || !role) {
+            exibirMensagem(mensagemRegistro, 'Por favor, preencha todos os campos obrigatórios e selecione seu tipo de usuário.', 'erro');
             return;
         }
 
-        // Objeto com os dados a serem enviados para a API de REGISTRO
-        // <<--- NOVO: Incluir a role no objeto novoUsuario
-        const novoUsuario = { nome, email, telefone, role: [role] }; // O backend espera um array de roles, ex: { "role": ["adotante"] }
+        let payload = {
+            nome,
+            email,
+            telefone,
+            password,
+            role: [role] // O backend espera um array de roles
+        };
+
+        // Adicionar campos da ONG se a role for 'ong'
+        if (role === 'ong') {
+            const nomeFantasia = ongNomeFantasia.value.trim();
+            const emailContato = ongEmailContato.value.trim();
+            const cnpj = ongCnpj.value.trim();
+            const telefoneContato = ongTelefoneContato.value.trim();
+            const endereco = ongEndereco.value.trim();
+            const descricao = ongDescricao.value.trim(); // Opcional
+            const website = ongWebsite.value.trim();     // Opcional
+
+            // Validação para campos obrigatórios da ONG
+            if (!nomeFantasia || !emailContato || !cnpj || !telefoneContato || !endereco) {
+                exibirMensagem(mensagemRegistro, 'Por favor, preencha todos os campos obrigatórios da ONG.', 'erro');
+                return;
+            }
+            
+            // O payload do signup para ONG no backend não recebe os dados completos da ONG
+            // ele espera apenas o `organizacaoId` ou `organizacaoCnpj`.
+            // Para cadastrar uma ONG completa, o ideal é ter um endpoint separado para ONGs.
+            // Por enquanto, vamos enviar o CNPJ para que o AuthController tente buscar/validar.
+            payload.organizacaoCnpj = cnpj; 
+            // Se você tivesse um endpoint para CRIAR ONG primeiro,
+            // então após criar a ONG, você passaria o ID dela aqui.
+
+            // Nota: Se a ideia é o usuário se registrar como ONG e *criar* a ONG,
+            // a API precisaria de um payload mais complexo no /cadastro para
+            // receber os dados da ONG ou um endpoint para criar a ONG separadamente.
+            // Pelo seu AuthController, ele espera um ID ou CNPJ de uma ONG *existente*.
+            // Por simplicidade, assumimos que o AuthController tentará encontrar/validar o CNPJ.
+        }
 
         try {
             const response = await fetch(API_BASE_URL_REGISTRO, {
@@ -85,23 +155,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(novoUsuario)
+                body: JSON.stringify(payload)
             });
 
-            if (response.status === 200) { 
-                const usuarioCriado = await response.json();
-                exibirMensagem(mensagemRegistro, `Usuário "${novoUsuario.nome}" cadastrado com sucesso!`, 'sucesso');
-                formSignUp.reset();
+            const data = await response.json(); // Tenta parsear a resposta JSON
+
+            if (response.ok) { // response.ok é true para status 2xx
+                exibirMensagem(mensagemRegistro, `Usuário "${nome}" cadastrado com sucesso!`, 'sucesso');
+                formSignUp.reset(); // Limpa o formulário
                 // Opcional: Mudar para a tela de login após o registro
                 // signInBtn.click();
-
-            } else if (response.status === 400 && response.text().includes("Role is not found")) { // Tratamento específico para role não encontrada
-                exibirMensagem(mensagemRegistro, 'Erro: Tipo de usuário inválido.', 'erro');
-            } else if (response.status === 409) {
-                exibirMensagem(mensagemRegistro, 'Erro: O e-mail informado já está em uso.', 'erro');
             } else {
-                const errorData = await response.json().catch(() => ({ message: response.statusText }));
-                exibirMensagem(mensagemRegistro, `Erro ao cadastrar: ${errorData.message || 'Erro desconhecido'}`, 'erro');
+                exibirMensagem(mensagemRegistro, `Erro ao cadastrar: ${data.message || 'Erro desconhecido'}`, 'erro');
             }
         } catch (error) {
             console.error('Erro de rede ou na API de registro:', error);
@@ -113,16 +178,16 @@ document.addEventListener("DOMContentLoaded", () => {
     formSignIn.addEventListener('submit', async (event) => {
         event.preventDefault();
         limparMensagem(mensagemLogin);
-        
-        const email = signInEmail.value.trim();
-        const telefone = signInTelefone.value.trim();
 
-        if (!email || !telefone) {
-            exibirMensagem(mensagemLogin, 'Por favor, preencha email e telefone (senha).', 'erro');
+        const email = signInEmail.value.trim();
+        const password = signInPassword.value.trim(); // ALTERADO: Pegar a senha
+
+        if (!email || !password) { // ALTERADO: Validar email e password
+            exibirMensagem(mensagemLogin, 'Por favor, preencha email e senha.', 'erro');
             return;
         }
 
-        const loginData = { email, telefone: telefone }; 
+        const loginData = { email, password: password }; // ALTERADO: Enviar password
 
         try {
             const response = await fetch(API_BASE_URL_LOGIN, {
@@ -133,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 const data = await response.json();
-                
+
                 localStorage.setItem('accessToken', data.accessToken);
                 localStorage.setItem('userId', data.id);
                 localStorage.setItem('userEmail', data.email);
@@ -141,10 +206,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem('userRoles', JSON.stringify(data.roles));
 
                 exibirMensagem(mensagemLogin, 'Login realizado com sucesso! Redirecionando...', 'sucesso');
-                
+
                 setTimeout(() => {
-                    window.location.href = '../index.html'; 
-                }, 1000); 
+                    window.location.href = './home.html';
+                }, 1000);
             } else {
                 const errorData = await response.json().catch(() => ({ message: response.statusText }));
                 exibirMensagem(mensagemLogin, `Erro no login: ${errorData.message || 'Credenciais inválidas'}`, 'erro');

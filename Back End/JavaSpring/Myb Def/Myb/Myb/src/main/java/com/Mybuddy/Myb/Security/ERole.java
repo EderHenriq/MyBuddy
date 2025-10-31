@@ -1,11 +1,9 @@
-package com.Mybuddy.Myb.Security; // Declara o pacote onde esta enumeração de papéis (roles) está localizada.
+package com.Mybuddy.Myb.Security;
 
-// Declara uma enumeração chamada ERole.
-// Uma enumeração é um tipo de dado especial que permite que uma variável seja um conjunto de constantes pré-definidas.
-// Ela é usada aqui para definir os diferentes papéis (roles) que um usuário pode ter no sistema,
-// seguindo a convenção do Spring Security de prefixar roles com "ROLE_".
+// Este é um enum simples que define os tipos de papéis no sistema.
+// Ele não precisa de anotações JPA.
 public enum ERole {
-    ROLE_ADOTANTE, // Constante que representa o papel de um usuário que busca pets para adoção.
-    ROLE_ONG,      // Constante que representa o papel de uma organização não governamental (ONG) que cuida de pets.
-    ROLE_ADMIN     // Constante que representa o papel de um administrador do sistema, com privilégios elevados.
+    ROLE_ADOTANTE, // Para usuários que buscam adotar pets
+    ROLE_ONG,      // Para usuários que gerenciam uma organização
+    ROLE_ADMIN     // Para administradores do sistema
 }

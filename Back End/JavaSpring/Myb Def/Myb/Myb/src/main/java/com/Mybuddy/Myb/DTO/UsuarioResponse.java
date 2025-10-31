@@ -1,4 +1,4 @@
-package com.Mybuddy.Myb.Dto;
+package com.Mybuddy.Myb.DTO;
 
 // DTO simplificado para usuário
 public record UsuarioResponse(

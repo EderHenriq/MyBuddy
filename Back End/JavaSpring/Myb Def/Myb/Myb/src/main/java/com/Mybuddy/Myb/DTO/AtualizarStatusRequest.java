@@ -1,4 +1,4 @@
-package com.Mybuddy.Myb.Dto; // Declara o pacote onde este DTO (Data Transfer Object) está localizado.
+package com.Mybuddy.Myb.DTO; // Declara o pacote onde este DTO (Data Transfer Object) está localizado.
 
 import com.Mybuddy.Myb.Model.StatusInteresse; // Importa a enumeração StatusInteresse, que define os possíveis status para um interesse de adoção.
 import jakarta.validation.constraints.NotNull; // Importa a anotação de validação @NotNull, que garante que o campo não seja nulo.
