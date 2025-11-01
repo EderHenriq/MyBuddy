@@ -1,8 +1,6 @@
 package com.Mybuddy.Myb.Model; // Declara o pacote onde este modelo (entidade) está localizado.
 
-// Importações necessárias para anotações JPA (Java Persistence API) e do Hibernate para mapeamento de objetos para o banco de dados.
-import jakarta.persistence.*; // Importa todas as anotações JPA para persistência de dados.
-import org.hibernate.annotations.CreationTimestamp; // Importa anotação do Hibernate para preencher automaticamente a data de criação.
+import org.hibernate.annotations.CreationTimestamp; //  anotação do Hibernate para preencher automaticamente a data de criação.
 import org.hibernate.annotations.UpdateTimestamp; // Importa anotação do Hibernate para preencher automaticamente a data de última atualização.
 
 import java.time.LocalDateTime; // Importa a classe LocalDateTime para lidar com datas e horas sem fuso horário.
@@ -48,16 +46,14 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
     @Column(name = "Atualizado_em") // Anotação JPA para a coluna no banco.
     private LocalDateTime AtualizadoEm; // Campo para armazenar a data e hora da última atualização do interesse.
 
-    public InteresseAdoacao() {} // Construtor padrão (vazio), necessário para o JPA.
+    public InteresseAdoacao() {} 
 
 
-    // Métodos Getters e Setters para cada atributo da classe, permitindo acesso e modificação dos valores dos campos.
-
-    public Long getId() { // Método getter para o ID.
+    public Long getId() { 
         return id;
     }
 
-    public void setId(Long id) { // Método setter para o ID.
+    public void setId(Long id) { 
         this.id = id;
     }
 
@@ -101,11 +97,12 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
         this.criadoEm = criadoEm;
     }
 
-    public LocalDateTime getAtualizadoEm() { // Método getter para a data de atualização.
+    public LocalDateTime getAtualizadoEm() { 
         return AtualizadoEm;
     }
 
-    public void setAtualizadoEm(LocalDateTime atuaziladoEm) { // Método setter para a data de atualização.
-        this.AtualizadoEm= AtualizadoEm;
+    public void setAtualizadoEm(LocalDateTime atualizadoEm) {
+    this.AtualizadoEm = atualizadoEm;
     }
+
 }

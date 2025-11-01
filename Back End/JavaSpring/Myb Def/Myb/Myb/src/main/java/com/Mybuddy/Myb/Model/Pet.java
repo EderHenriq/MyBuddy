@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Model;
 
 import jakarta.persistence.*;
-import java.util.Objects; // Para a implementação de equals e hashCode
+import java.util.Objects;
 
 @Entity
 @Table(name = "pets")
@@ -14,47 +14,48 @@ public class Pet {
     @Column(length = 80, nullable = false)
     private String nome;
 
-    @Column(length = 60, nullable = false) // Raça geralmente é obrigatória
+    @Column(length = 60, nullable = false)
     private String raca;
 
     @Column(nullable = false)
-    private Integer idade; // Idade em anos (se for em meses, considere renomear ou adicionar unidade)
+    private Integer idade;
 
     @Column(length = 40, nullable = false)
-    private String especie; // Ex: "Cachorro", "Gato"
+    private String especie;
 
     @Column(length = 20, nullable = false)
-    private String porte; // Ex: "Pequeno", "Médio", "Grande"
+    private String porte;
 
     @Column(length = 30, nullable = false)
     private String cor;
 
     @Column(length = 10, nullable = false)
-    private String sexo; // Ex: "Macho", "Fêmea"
+    private String sexo;
 
-    @Column(length = 255) // Pode ser nulo se não houver imagem
+    @Column(length = 255)
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private StatusAdocao statusAdocao;
 
-    // NOVO: Relacionamento ManyToOne com Organizacao
-    // Muitos Pets pertencem a UMA Organização.
-    // fetch = FetchType.LAZY: Carregamento otimizado para não buscar a organização desnecessariamente.
-    // @JoinColumn: Define a coluna de chave estrangeira na tabela 'pets' que aponta para 'organizacoes'.
-    // nullable = false: Um Pet DEVE ter uma Organização associada.
+    // Relacionamento com a organização que cadastrou o pet
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizacao_id", nullable = false)
-    private Organizacao organizacao; // Este é o campo "organizacao" referenciado no 'mappedBy' da Organização
+    private Organizacao organizacao;
+
+    // NOVO: Relacionamento com o usuário que adotou o pet
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "adotado_por_id")
+    private Usuario adotadoPor;
 
     // --- Construtores ---
     public Pet() {
-        this.statusAdocao = StatusAdocao.EM_ADOCAO; // Define um status padrão ao criar o objeto
+        this.statusAdocao = StatusAdocao.EM_ADOCAO;
     }
 
-    // Construtor completo, incluindo a organização (sem ID, pois é gerado automaticamente)
-    public Pet(String nome, String raca, Integer idade, String especie, String porte, String cor, String sexo, String imageUrl, StatusAdocao statusAdocao, Organizacao organizacao) {
+    public Pet(String nome, String raca, Integer idade, String especie, String porte, String cor,
+               String sexo, String imageUrl, StatusAdocao statusAdocao, Organizacao organizacao) {
         this.nome = nome;
         this.raca = raca;
         this.idade = idade;
@@ -63,7 +64,7 @@ public class Pet {
         this.cor = cor;
         this.sexo = sexo;
         this.imageUrl = imageUrl;
-        this.statusAdocao = (statusAdocao != null) ? statusAdocao : StatusAdocao.EM_ADOCAO; // Garante um status
+        this.statusAdocao = (statusAdocao != null) ? statusAdocao : StatusAdocao.EM_ADOCAO;
         this.organizacao = organizacao;
     }
 
@@ -101,9 +102,10 @@ public class Pet {
     public Organizacao getOrganizacao() { return organizacao; }
     public void setOrganizacao(Organizacao organizacao) { this.organizacao = organizacao; }
 
-    // --- Sobrescrita de equals() e hashCode() ---
-    // Essencial para o bom funcionamento de coleções (Set) e para comparar entidades.
-    // Usa o ID para comparação e hash, já que é o identificador único na persistência.
+    public Usuario getAdotadoPor() { return adotadoPor; }
+    public void setAdotadoPor(Usuario adotadoPor) { this.adotadoPor = adotadoPor; }
+
+    // --- equals e hashCode ---
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,8 +119,7 @@ public class Pet {
         return id != null ? Objects.hash(id) : 0;
     }
 
-    // --- Sobrescrita de toString() ---
-    // Útil para debugging, mostra uma representação significativa do objeto.
+    // --- toString ---
     @Override
     public String toString() {
         return "Pet{" +
@@ -127,6 +128,7 @@ public class Pet {
                 ", especie='" + especie + '\'' +
                 ", statusAdocao=" + statusAdocao +
                 ", organizacaoId=" + (organizacao != null ? organizacao.getId() : "N/A") +
+                ", adotadoPorId=" + (adotadoPor != null ? adotadoPor.getId() : "N/A") +
                 '}';
     }
 }
