@@ -7,6 +7,8 @@ import com.Mybuddy.Myb.Repository.PetRepository; // Importa o repositório para 
 import org.springframework.stereotype.Service; // Importa a anotação @Service do Spring.
 import com.Mybuddy.Myb.Repository.InteresseAdoacaoRepository;
 import org.springframework.transaction.annotation.Transactional;
+import com.Mybuddy.Myb.DTO.PetResponse;//Importa o PetResponse que serve para transação de dados Seguros
+
 
 import java.util.List; // Importa a interface List para lidar com coleções de objetos.
 import java.util.Optional; // Importa a classe Optional para lidar com resultados que podem estar ausentes.
@@ -120,4 +122,22 @@ public class PetService { // Declara a classe de serviço para Pets.
         // para construir dinamicamente a consulta baseada nos filtros e aplicar a paginação.
         return petRepository.findAll(PetSpecification.comFiltros(filtro), pageable);
     }
+
+    public Page<PetResponse> buscarComFiltrosDTO(PetFiltro filtro, Pageable pageable) {
+        return petRepository.findAll(PetSpecification.comFiltros(filtro), pageable)
+                .map(p -> new PetResponse(
+                        p.getId(),
+                        p.getNome(),
+                        p.getEspecie(),
+                        p.getRaca(),
+                        p.getIdade(),
+                        p.getPorte(),
+                        p.getCor(),
+                        p.getSexo(),
+                        p.getImageUrl(),
+                        p.getStatusAdocao(),
+                        p.getOrganizacao() != null ? p.getOrganizacao().getNomeFantasia() : null
+                ));
+    }
+
 }

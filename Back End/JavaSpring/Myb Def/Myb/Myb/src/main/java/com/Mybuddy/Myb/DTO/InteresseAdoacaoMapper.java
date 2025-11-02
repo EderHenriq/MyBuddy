@@ -2,7 +2,7 @@ package com.Mybuddy.Myb.DTO; // Declara o pacote onde esta classe DTO (Data Tran
 
 import com.Mybuddy.Myb.Model.InteresseAdoacao; // Importa a entidade InteresseAdoacao, que representa o interesse completo no banco.
 //import com.Mybuddy.Myb.Dto.UsuarioResponse;     // Importa o DTO simplificado do usuário (nome + id).
-//import com.Mybuddy.Myb.Dto.PetResponse;        // Importa o DTO simplificado do pet (nome + id).
+//import com.Mybuddy.Myb.Dto.PetResumoResponse; //Importa o DTO simplificado
 
 // Declara uma classe final chamada InteresseAdoacaoMapper.
 // Classes "final" não podem ser estendidas, reforçando o uso utilitário da classe.
@@ -21,10 +21,11 @@ public final class InteresseAdoacaoMapper {
                         i.getUsuario().getNome()
                 ),
                 // Mapeia o objeto DTO do pet (id e nome)
-                new PetResponse(
+                new PetResumoResponse(
                         i.getPet().getId(),
                         i.getPet().getNome()
                 ),
+
                 i.getStatus(),       // Status do interesse (pendente, aprovado, etc.)
                 i.getMensagem(),     // Mensagem enviada junto com o interesse
                 i.getCriadoEm(),     // Data/hora de criação do interesse

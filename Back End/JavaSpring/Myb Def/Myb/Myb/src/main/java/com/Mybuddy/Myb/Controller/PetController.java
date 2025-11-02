@@ -1,6 +1,7 @@
 package com.Mybuddy.Myb.Controller;
 // Pacote onde o controlador PetController está localizado, responsável pelos endpoints relacionados a pets
 
+import com.Mybuddy.Myb.DTO.PetResponse;
 import com.Mybuddy.Myb.Model.Pet;
 // Importa a entidade Pet
 import com.Mybuddy.Myb.Service.PetFiltro;
@@ -104,35 +105,47 @@ public class PetController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    // Qualquer usuário autenticado pode buscar pets
-    public ResponseEntity<Page<Pet>> buscarPetsComFiltros(
+    public ResponseEntity<Page<PetResponse>> buscarPetsComFiltros(
             PetFiltro filtro,
             @PageableDefault(size = 10, sort = "id") Pageable pageable) {
-        // Recebe filtros e paginação
 
-        Page<Pet> pets = petService.buscarComFiltros(filtro, pageable);
+        Page<PetResponse> pets = petService.buscarComFiltros(filtro, pageable)
+                .map(p -> new PetResponse(
+                        p.getId(),
+                        p.getNome(),
+                        p.getEspecie(),
+                        p.getRaca(),
+                        p.getIdade(),
+                        p.getPorte(),
+                        p.getCor(),
+                        p.getSexo(),
+                        p.getImageUrl(),
+                        p.getStatusAdocao(),
+                        p.getOrganizacao() != null ? p.getOrganizacao().getNomeFantasia() : null
+                ));
+
         return ResponseEntity.ok(pets);
-        // Retorna a página de pets filtrados
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    // Qualquer usuário autenticado pode buscar pet por ID
-    public ResponseEntity<Pet> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<PetResponse> buscarPorId(@PathVariable Long id) {
         return petService.buscarPetPorId(id)
+                .map(p -> new PetResponse(
+                        p.getId(),
+                        p.getNome(),
+                        p.getEspecie(),
+                        p.getRaca(),
+                        p.getIdade(),
+                        p.getPorte(),
+                        p.getCor(),
+                        p.getSexo(),
+                        p.getImageUrl(),
+                        p.getStatusAdocao(),
+                        p.getOrganizacao() != null ? p.getOrganizacao().getNomeFantasia() : null
+                ))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-        // Retorna pet encontrado ou 404 se não existir
-    }
-
-    @PutMapping("/{id}")
-    // Apenas ADMIN ou ONG que possui o pet podem atualizar
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('ONG') and @petService.isPetOwnedByCurrentUser(#id, authentication.principal.id))")
-    public ResponseEntity<Pet> atualizar(@PathVariable Long id, @RequestBody Pet dadosPet) {
-        Pet atualizado = petService.atualizarPet(id, dadosPet);
-        // Atualiza o pet
-        return ResponseEntity.ok(atualizado);
-        // Retorna o pet atualizado
     }
 
     @DeleteMapping("/{id}")
