@@ -1,6 +1,6 @@
-/* Ajustes para zerar o CSS */
+/* Estilização do Reset Geral */
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -11,8 +11,7 @@ body {
     background-color: #fff;
 }
 
-/*Estilização do Header*/
-
+/* Estilização do Header */
 .main-header {
     display: flex;
     justify-content: space-between;
@@ -21,6 +20,7 @@ body {
     background-color: #fff;
 }
 
+/* Estilização do Logo */
 .logo-mybuddy {
     display: flex;
     align-items: center;
@@ -37,6 +37,7 @@ body {
     color: #333;
 }
 
+/* Estilização da Navegação */
 .header-nav {
     display: flex;
     justify-content: center;
@@ -54,7 +55,7 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
-    position: relative
+    position: relative;
 }
 
 .nav-links a {
@@ -86,20 +87,7 @@ body {
         height 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
-.header-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 30px;
-}
-
-.header-nav a {
-    text-decoration: none;
-    color: #333;;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-
+/* Estilização das Ações do Usuário */
 .user-actions {
     display: flex;
     align-items: center;
@@ -116,52 +104,73 @@ body {
     color: #333;
 }
 
+/* Estilização do Modal de Notificações (Pop-up) e Perfil */
 .notification-menu, .profile-menu {
+    /* Estado Inicial (Escondido) */
     display: none;
     position: absolute;
-    top: 40px;
+    top: 40px; 
     right: 0;
     background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
     border-radius: 8px;
-    padding: 10px;
-    width: 200px;
+    padding: 0; 
+    width: 300px; 
     flex-direction: column;
-    z-index: 10;
+    z-index: 1000; 
+    /* Efeito de Transição */
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-/* Estilização do Menu de Notificações e Perfil */
+/* Classe Ativada pelo JS */
+.notification-menu.show, .profile-menu.show {
+    display: flex; 
+    opacity: 1;
+    transform: translateY(0);
+}
 
+/* Estilo do Conteúdo (Lista de Notificações e Itens do Perfil) */
 .notification-menu ul, .profile-menu ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.notification-menu li, .profile-menu li {
-    padding: 8px 5px;
-    border-bottom: 1px solid #eee;
+.notification-menu li {
+    padding: 12px 15px; 
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #eee; 
+    cursor: default;
+    transition: background-color 0.2s;
 }
 
-.notification-menu li:last-child, .profile-menu li:last-child {
+.notification-menu li:last-child {
     border-bottom: none;
 }
 
-.profile-menu li a{
+.notification-menu li:hover {
+    background-color: #f5f5f5;
+}
+
+.profile-menu li a {
     text-decoration: none;
     color: #333;
     display: block;
     width: 100%;
+    padding: 8px 15px; 
     transition: background-color 0.2s;
 }
 
-.profile-menu li a:hover{
+.profile-menu li a:hover {
     background-color: #ff7b00;
+    color: #fff;
     border-radius: 5px;
 }
 
-/* Estilização da Sidebar */
-
+/* ===== Estilização da Sidebar (Filtros) - CORRIGIDA ===== */
 .filters-sidebar {
     position: fixed;
     top: 70px;
@@ -172,7 +181,6 @@ body {
     border-right: 1px solid #ddd;
     border-radius: 20px;
     overflow-y: auto;
-    overflow-y: overlay;
     padding: 25px;
     margin: 15px;
 }
@@ -194,7 +202,6 @@ body {
     border-radius: 20px;
     border: 2px solid #f0f0f0;
 }
-
 
 .filter-sidebar h2 {
     font-size: 18px;
@@ -218,8 +225,8 @@ body {
     font-size: 18px;
 }
 
+/* SELETOR CORRIGIDO */
 .filter-group select {
-    
     margin-top: 6px;
     padding: 10px 12px;
     border-radius: 15px;
@@ -241,8 +248,7 @@ body {
     box-shadow: 0 0 5px rgba(255, 123, 0, 0.7);
 }
 
-/* Estilização da Área de Conteúdo Principal */
-
+/* Estilização do Pets Grid e Cards */
 .pets-container {
     position: fixed;
     width: calc(100% - 340px);
@@ -266,11 +272,11 @@ body {
 }
 
 .pets-card {
-   background-color: #fff;
-   width: 100%;
-   height: auto;
-   border-radius: 20px;
-   margin: 10px 0;
+    background-color: #fff;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    margin: 10px 0;
 }
 
 .pets-card:hover {
@@ -289,16 +295,52 @@ body {
 }
 
 .pet-info h3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-size: 20px;
-    margin-bottom: 10px;
     color: #333;
-    
+    margin-bottom: 10px;
 }
 
 .pet-info p {
     font-size: 14px;
     color: #666;
     margin-bottom: 4px;
+}
+
+/* Botão de Favoritar */
+.favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    transition: transform 0.2s, color 0.3s;
+}
+
+.favorite span {
+    display: inline-flex;
+    color: #999;
+    transition: color 0.3s;
+}
+
+.favorite.active {
+    background-color: #ff0000;
+    
+}
+
+.favorite-btn.active span {
+    color: #ff0000;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2);
 }
 
 .pet-actions {
@@ -325,6 +367,7 @@ body {
     background-color: #e66a00;
 }
 
+/* Estilização da Busca e Botões */
 .pet-management-container {
     background: none;
     display: flex;
@@ -392,8 +435,7 @@ body {
     background-color: #e66a00;
 }
 
-/* Estilização do Modal */
-
+/* Estilização do Modal (Tela Cheia) */
 .modal {
     display: none;
     position: fixed;
@@ -416,8 +458,105 @@ body {
     max-width: 600px;
     max-height: 90%;
     overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: translateY(-20px);
+    animation: slideDown 0.3s ease-out forwards;
+    cursor: default;
+    position: relative;
 }
+
+@keyframes slideDown {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.2s;
+}
+
+.close-button:hover {
+    color: #ff7b00;
+}
+
 .modal-content h2 {
     margin-bottom: 20px;
     color: #333;
+}
+
+/* Estilização do Formulário do Modal */
+.add-pet-content h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+}
+
+.add-pet-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.add-pet-content label {
+    font-weight: 600;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.add-pet-content input[type="text"],
+.add-pet-content input[type="number"],
+.add-pet-content input[type="file"],
+.add-pet-content select {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+
+.add-pet-content input[type="text"]:focus,
+.add-pet-content select:focus {
+    outline: none;
+    border-color: #ff7b00;
+    box-shadow: 0 0 5px rgba(255, 123, 0, 0.7);
+}
+
+.add-pet-content .primary-btn {
+    margin-top: 10px;
+    background-color: #ff7b00;
+    color: #fff;
+    padding: 12px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-pet-content .primary-btn:hover {
+    background-color: #e66a00;
+}
+
+.photos-preview {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.photos-preview img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ccc;
 }
