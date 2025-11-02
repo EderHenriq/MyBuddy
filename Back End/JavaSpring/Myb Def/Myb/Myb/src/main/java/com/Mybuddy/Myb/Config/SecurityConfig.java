@@ -66,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthTokenFilter authTokenFilter) throws Exception {
         // --- Libera CORS global usando configuração do WebMvcConfigurer ---
-        http.cors(withDefaults()) // <-- ESTA LINHA É OBRIGATÓRIA!
+        http.cors(withDefaults())
 
                 // Desativa o CSRF (não necessário para APIs REST)
                 .csrf(csrf -> csrf.disable())
@@ -80,6 +80,8 @@ public class SecurityConfig {
                 // Define as regras de autorização das rotas
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll() // Endpoints de autenticação são públicos
+                                // Permite acesso irrestrito ao diretório /uploads/** para servir imagens estáticas
+                                .requestMatchers("/uploads/**").permitAll() // <-- ADIÇÃO ESSENCIAL AQUI
                                 // --- ADIÇÃO PARA H2 CONSOLE ---
                                 .requestMatchers("/h2-console/**").permitAll() // Permite acesso ao console do H2
                                 // -----------------------------

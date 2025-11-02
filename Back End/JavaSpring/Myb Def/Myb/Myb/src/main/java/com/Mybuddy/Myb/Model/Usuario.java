@@ -1,39 +1,35 @@
 package com.Mybuddy.Myb.Model;
 
 import com.Mybuddy.Myb.Security.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference; // Importa a anotação
 import jakarta.persistence.*;
 import java.util.HashSet;
-import java.util.Objects; // Para equals e hashCode
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "users") // Sugestão: "users" em minúsculo é uma convenção mais comum para tabelas
+@Table(name = "users")
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Use Long (classe) para o ID em vez de long (primitivo) para consistência com JPA
+    private Long id;
 
     @Column(nullable = false, length = 100)
     private String nome;
 
-    @Column(nullable = false, unique = true, length = 100) // E-mail é crucial, deve ser not null e ter um length
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(length = 20) // Telefone com tamanho razoável
+    @Column(length = 20)
     private String telefone;
 
-    @Column(nullable = false) // Uma senha é essencial para um usuário
-    private String password; // Adicione este campo para a senha (hash da senha)
+    @Column(nullable = false)
+    private String password;
 
-    // NOVO: Relacionamento ManyToOne com Organizacao
-    // Um Usuário pode pertencer a UMA Organização (se for funcionário/admin de ONG).
-    // @ManyToOne indica que esta é a parte "muitos" do relacionamento.
-    // fetch = FetchType.LAZY: Carregamento otimizado. A organização só será carregada quando for acessada.
-    // @JoinColumn(name = "organizacao_id"): Define a chave estrangeira na tabela 'users'.
-    // nullable = true: Um usuário PODE existir sem uma organização (ex: adotante, admin do sistema).
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizacao_id", nullable = true)
+    @JsonBackReference // Lado "filho" do relacionamento com Organizacao
     private Organizacao organizacao;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -46,22 +42,20 @@ public class Usuario {
     public Usuario() {
     }
 
-    // Construtor para criação básica de usuário (sem organização ou roles)
     public Usuario(String nome, String email, String telefone, String password) {
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
-        this.password = password; // Senha é importante
+        this.password = password;
     }
 
-    // Construtor completo, incluindo organização e roles
     public Usuario(String nome, String email, String telefone, String password, Organizacao organizacao, Set<Role> roles) {
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
         this.password = password;
         this.organizacao = organizacao;
-        this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>(); // Copia o set para evitar referências diretas
+        this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();
     }
 
     // --- Getters e Setters ---
@@ -80,7 +74,6 @@ public class Usuario {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    // NOVO: Getter e Setter para Organizacao
     public Organizacao getOrganizacao() { return organizacao; }
     public void setOrganizacao(Organizacao organizacao) { this.organizacao = organizacao; }
 
@@ -97,7 +90,6 @@ public class Usuario {
     }
 
     // --- Sobrescrita de equals() e hashCode() ---
-    // Essencial para o bom funcionamento de coleções e comparações de entidades.
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -112,7 +104,6 @@ public class Usuario {
     }
 
     // --- Sobrescrita de toString() ---
-    // Útil para debugging.
     @Override
     public String toString() {
         return "Usuario{" +

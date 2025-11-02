@@ -563,10 +563,9 @@ document.addEventListener("DOMContentLoaded", async () => { // Adicionado 'async
     console.log("Script pet-control.js carregado!");
 
     // Carrega as organizações primeiro, pois são necessárias para os selects e para renderizar os pets
-    await fetchOrganizations(); // NOVO: Chama a função para buscar organizações
-
-    applyRolePermissions(); 
-    fetchPets(); 
+   await fetchOrganizations();
+    applyRolePermissions();
+    fetchPets();
 
     // Abrir modal de Adicionar/Editar Pet
     if (openAddPetModalBtn) {
@@ -614,22 +613,49 @@ document.addEventListener("DOMContentLoaded", async () => { // Adicionado 'async
 
 
     // Lógica de pré-visualização de imagens
-    if (petImageInput) {
-        petImageInput.addEventListener("change", (e) => {
-            displayImagePreviews(e.target.files);
-        });
-    }
+ if (petImageInput) {
+        petImageInput.addEventListener("change", (e) => {
+            displayImagePreviews(e.target.files);
+        });
+    }
 
     // Submissão do formulário de Adicionar/Editar Pet
-    if (addEditPetForm) {
-        addEditPetForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
+   if (addEditPetForm) {
+        addEditPetForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-            const petId = petIdInput.value;
-            const method = petId ? "PUT" : "POST"; 
+            const petId = petIdInput.value;
+            const method = petId ? "PUT" : "POST";
 
-            const formData = new FormData(addEditPetForm);
-            let petData = formDataToJson(formData);
+            const formData = new FormData(addEditPetForm);
+            let petData = {};
+
+            // Mapeia os dados do formulário para o petData
+            for (let [key, value] of formData.entries()) {
+                // Ignora o campo de upload de arquivo aqui, pois será tratado separadamente
+                if (key === 'pet-photos') continue; 
+                
+                // Converte campos booleanos
+                if (key === 'vacinado' || key === 'castrado' || key === 'microchipado') {
+                    petData[key] = value === 'true';
+                } 
+                // Converte idade para número
+                else if (key === 'idade') {
+                    petData[key] = parseInt(value, 10);
+                } 
+                // Mapeia o ID da organização para 'organizacaoId'
+                else if (key === 'pet-shelter') { // O 'name' do seu select de ONG deve ser 'pet-shelter'
+                    if (value && value !== "") {
+                        petData.organizacaoId = parseInt(value, 10);
+                    } else {
+                        petData.organizacaoId = null; // Ou trate como erro se for obrigatório
+                    }
+                }
+                // Outros campos diretamente
+                else {
+                    petData[key] = value;
+                }
+            }
 
 // Pega o ID da organização do campo selecionado
 // Se o campo estiver desabilitado (para ROLE_ONG), o FormData não o incluirá.
@@ -638,18 +664,19 @@ let selectedOrgId = petShelterSelect.value;
 
 // Se for ONG, e o campo estiver desabilitado, pegamos o ID da ONG do localStorage
 if (currentRole === "ROLE_ONG" && petShelterSelect.hasAttribute('disabled')) {
-    selectedOrgId = localStorage.getItem('userOrganizationId');
-}
-
-// Converte para número e define como null se for string vazia ou inválida
-if (selectedOrgId && selectedOrgId !== "") {
-    petData.organizacaoId = parseInt(selectedOrgId, 10);
-} else {
-    // Se ainda for nulo aqui, significa que nenhuma ONG foi selecionada
-    // E o banco de dados não permite NULL.
-    alert("Por favor, selecione uma ONG/Tutor para o pet.");
-    return; // Impede o envio do formulário
-}
+                const userOrgId = localStorage.getItem('userOrganizationId');
+                if (userOrgId) {
+                    petData.organizacaoId = parseInt(userOrgId, 10);
+                } else {
+                    alert("Erro: ID da organização do usuário não encontrado no armazenamento local.");
+                    return;
+                }
+            }
+            // Validação final da organizaçãoId antes de enviar
+            if (!petData.organizacaoId) {
+                alert("Por favor, selecione uma ONG/Tutor para o pet.");
+                return; // Impede o envio do formulário
+            }
 
 
             // Corrigido: Mapeamento de 'true'/'false' para booleanos para o backend
