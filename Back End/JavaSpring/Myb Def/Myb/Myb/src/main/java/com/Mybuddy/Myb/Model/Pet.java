@@ -1,5 +1,7 @@
 package com.Mybuddy.Myb.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.Objects; // Para a implementação de equals e hashCode
 
@@ -46,6 +48,7 @@ public class Pet {
     // nullable = false: Um Pet DEVE ter uma Organização associada.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizacao_id", nullable = false)
+    @JsonIgnoreProperties("pets")//impede loop Pet -> Organização -> Pets
     private Organizacao organizacao; // Este é o campo "organizacao" referenciado no 'mappedBy' da Organização
 
     // --- Construtores ---

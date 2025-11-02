@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.HashSet; // Preferível a List para OneToMany, se a ordem não importa
 import java.util.Set;    // Preferível a List para OneToMany, se a ordem não importa
@@ -38,6 +39,7 @@ public class Organizacao {
     // 'cascade = CascadeType.ALL' significa que operações em Organizacao (salvar, deletar) serão aplicadas aos Pets associados.
     // 'orphanRemoval = true' significa que se um Pet for removido da coleção 'pets' da Organizacao, ele será deletado do banco.
     @OneToMany(mappedBy = "organizacao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("organizacao") // impede o inverso. Explicação em Pet.java
     private Set<Pet> pets = new HashSet<>(); // Inicializa para evitar NullPointerException
 
     // NOVO: Relacionamento One-to-Many com Usuários
