@@ -2,52 +2,59 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Gestão de Interesses de Adoção</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão de Interesses de Adoção | MyBuddy</title>
   <link rel="stylesheet" href="../css/InteresseAdoacao.css">
 </head>
 <body>
-  <div class="container">
-    <h2 class="page-title">Gestão de Interesses de Adoção</h2>
-    
-    <div class="actions">
-      <button id="refreshBtn" class="btn-primary">Atualizar Lista</button>
+  <header class="main-header">
+    <div class="header-left">
+      <img src="../src/assets/icons/logo-provisoria.png" alt="Logo MyBuddy" class="header-logo">
+      <h1 class="app-name">MyBuddy</h1>
     </div>
-    
-    <div id="filters" class="filters">
-      <div class="filter-group">
-        <label for="petSelect"><strong>Filtrar por Pet:</strong></label>
-        <select id="petSelect">
-          <option value="">Todos os Pets</option>
-          <!-- Pets carregados via JS -->
-        </select>
-      </div>
-      
-      <div class="filter-group">
-        <strong>Status:</strong>
-        <label><input type="checkbox" name="status" value="Em Análise"> Em Análise</label>
-        <label><input type="checkbox" name="status" value="Aprovado"> Aprovado</label>
-        <label><input type="checkbox" name="status" value="Rejeitado"> Rejeitado</label>
-      </div>
-      
-      <div class="filter-group">
-        <input type="text" id="userFilter" placeholder="Nome do Usuário">
-      </div>
+    <div class="header-right">
+      <span id="userInfo" class="user-info"></span>
+      <button id="logoutBtn" class="logout-btn">Sair</button>
     </div>
-    
-    <div id="interessesContainer"></div>
-    <p id="noInteressesMessage" style="display:none;">Nenhum interesse de adoção encontrado.</p>
-    
-    <!-- Modal para detalhes do pet -->
-    <div id="petModal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <div id="petDetails">
-          <!-- Detalhes do pet carregados via JS -->
-        </div>
-      </div>
+  </header>
+
+  <main class="main-container">
+    <div class="container-header">
+      <h2>Gestão de Interesses de Adoção</h2>
+      <button id="refreshBtn" class="primary-btn">Atualizar Lista</button>
     </div>
-    
-    <script src="../js/GestaoInteresseAdocao.js"></script>
+
+    <div class="filters-bar">
+      <label for="petSelect"><strong>Pet:</strong></label>
+      <select id="petSelect">
+        <option value="">Todos os Pets</option>
+      </select>
+
+      <label><strong>Status:</strong></label>
+      <label><input type="checkbox" name="status" value="PENDENTE"> Em Análise</label>
+      <label><input type="checkbox" name="status" value="APROVADO"> Aprovado</label>
+      <label><input type="checkbox" name="status" value="REJEITADO"> Rejeitado</label>
+
+      <input type="text" id="userFilter" placeholder="Buscar por nome de usuário...">
+    </div>
+
+    <div id="interessesContainer" class="interesses-list"></div>
+    <p id="noInteressesMessage" class="empty-message" style="display:none;">
+      Nenhum interesse de adoção encontrado.
+    </p>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 MyBuddy — Conectando você ao seu cãopanheiro 🐶</p>
+  </footer>
+
+  <div id="petModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="closeModal">&times;</span>
+      <div id="petDetails"></div>
+    </div>
   </div>
+
+  <script src="../js/GestaoInteresseAdocao.js"></script>
 </body>
 </html>
