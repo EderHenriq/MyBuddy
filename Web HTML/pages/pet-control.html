@@ -1,347 +1,446 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Pets | MyBuddy</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="../src/assets/icons/logo-provisoria.png" type="image/x-icon">
-    <link rel="stylesheet" href="../css/pet-control.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Pets | MyBuddy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="../src/assets/icons/logo-provisoria.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/pet-control.css">
 </head>
 <body>
-    <header class="main-header">
-        <div class="header-left">
-            <img src="../src/assets/icons/logo-provisoria.png" alt="MyBuddy Logo" class="header-logo">
-            <span class="app-name">MyBuddy</span>
-        </div>
-        <nav class="header-nav">
-            <a href="./home.html" class="nav-item" data-nav-page="home">Home</a>
-            <a href="#" class="nav-item active" data-nav-page="meus-pets">Meus Pets</a>
-            <a href="#" class="nav-item" data-nav-page="favoritos">Favoritos</a>
-            <a href="#" class="nav-item" data-nav-page="fale-conosco">Fale Conosco</a>
-        </nav>
-        <div class="header-right">
-            <i class="fas fa-bell header-icon"></i>
-            <i class="fas fa-user-circle header-icon"></i>
-            <span id="userNameDisplay" class="user-greeting"></span>
-            <button id="logoutBtn" class="logout-btn" style="display: none;">Sair</button>
-        </div>
-    </header>
+    <header class="main-header">
+        <div class="header-left">
+            <img src="../src/assets/icons/logo-provisoria.png" alt="MyBuddy Logo" class="header-logo">
+            <span class="app-name">MyBuddy</span>
+        </div>
+        <nav class="header-nav">
+            <a href="./home.html" class="nav-item" data-nav-page="home">Home</a>
+            <a href="#" class="nav-item active" data-nav-page="meus-pets">Meus Pets</a>
+            <a href="#" class="nav-item" data-nav-page="favoritos">Favoritos</a>
+            <a href="#" class="nav-item" data-nav-page="fale-conosco">Fale Conosco</a>
+        </nav>
+        <div class="header-right">
+            <i class="fas fa-bell header-icon"></i>
+            <i class="fas fa-user-circle header-icon"></i>
+            <span id="userNameDisplay" class="user-greeting"></span>
+            <button id="logoutBtn" class="logout-btn" style="display: none;">Sair</button>
+        </div>
+    </header>
 
-    <main class="main-container">
-        <section class="pet-management-actions">
-            <div class="search-and-filters">
-                <form class="search-form" role="search">
-                    <div class="search-wrapper">
-                        <input type="search" class="search-input" placeholder="Busque por Pet ou Raça" aria-label="Buscar por Pet">
-                        <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
-                    </div>
-                </form>
-                <button id="openFilterModalBtn" class="secondary-btn"><i class="fas fa-filter"></i> Mostrar Filtros</button>
-            </div>
+    <main class="main-container">
+        <section class="pet-management-actions">
+            <div class="search-and-filters">
+                <form class="search-form" role="search">
+                    <div class="search-wrapper">
+                        <input type="search" id="searchInput" class="search-input" placeholder="Busque por Pet ou Raça" aria-label="Buscar por Pet">
+                        <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+                <button id="openFilterModalBtn" class="secondary-btn"><i class="fas fa-filter"></i> Mostrar Filtros</button>
+            </div>
 
-            <button id="openAddPetModalBtn" class="primary-btn add-pet-button">
-                <i class="fas fa-plus-circle"></i> Adicionar novo Pet
-            </button>
-        </section>
+            <button id="openAddPetModalBtn" class="primary-btn add-pet-button">
+                <i class="fas fa-plus-circle"></i> Adicionar novo Pet
+            </button>
+        </section>
 
-        <section class="pets-cards-wrapper" aria-label="Lista de Pets Disponíveis">
-        </section>
-    </main>
+        <section class="pets-cards-wrapper" aria-label="Lista de Pets Disponíveis">
+            </section>
+    </main>
 
-    <div id="addEditPetModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" id="closeAddEditPetModal">&times;</span>
-            <div class="add-pet-content">
-                <h2 id="modalTitle">Adicionar Novo Pet</h2>
-                <form id="addEditPetForm">
-                    <input type="hidden" id="pet-id" name="id">
-                    <label for="pet-photos">Fotos do Pet:</label>
-                    <input type="file" id="pet-photos" name="pet-photos" accept="image/*" multiple>
-                    <div id="photos-preview" class="photos-preview"></div>
+    <div id="addEditPetModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeAddEditPetModal">&times;</span>
+            <div class="add-pet-content">
+                <h2 id="modalTitle">Adicionar Novo Pet</h2>
+                <form id="addEditPetForm">
+                    <input type="hidden" id="pet-id" name="id">
+                    
+                    <label for="pet-photos">Fotos do Pet:</label>
+                    <input type="file" id="pet-photos" name="pet-photos" accept="image/*" multiple>
+                    <div id="photos-preview" class="photos-preview">
+                        <span>Nenhuma imagem selecionada.</span>
+                    </div>
 
-                    <label for="pet-name">Nome:</label>
-                    <input type="text" id="pet-name" name="nome" required>
+                    <label for="pet-name">Nome:</label>
+                    <input type="text" id="pet-name" name="nome" required>
 
-                    <label for="pet-species">Espécie:</label>
-                    <select id="pet-species" name="especie" required>
-                        <option value="">Selecione</option>
-                        <option value="Dog">Cachorro</option>
-                        <option value="Cat">Gato</option>
-                        <option value="Rabbit">Coelho</option>
-                        <option value="Bird">Pássaro</option>
-                        <option value="Rodent">Roedor</option>
-                        <option value="Fish">Peixe</option>
-                        <option value="Other">Outros</option>
-                    </select>
+                    <label for="pet-species">Espécie:</label>
+                    <select id="pet-species" name="especie" required>
+                        <option value="">Selecione</option>
+                        <option value="Dog">Cachorro</option>
+                        <option value="Cat">Gato</option>
+                        <option value="Rabbit">Coelho</option>
+                        <option value="Bird">Pássaro</option>
+                        <option value="Rodent">Roedor</option>
+                        <option value="Fish">Peixe</option>
+                        <option value="Other">Outros</option>
+                    </select>
 
-                    <label for="pet-breed">Raça:</label>
-                    <input type="text" id="pet-breed" name="raca" required>
+                    <label for="pet-breed">Raça:</label>
+                    <input type="text" id="pet-breed" name="raca" required>
 
-                    <label for="pet-age">Idade:</label>
-                    <input type="number" id="pet-age" name="idade" required>
+                    <label for="pet-age">Idade:</label>
+                    <input type="number" id="pet-age" name="idade" min="0" required>
 
-                    <label for="pet-gender">Sexo:</label>
-                    <select id="pet-gender" name="sexo" required>
-                        <option value="M">Macho</option>
-                        <option value="F">Fêmea</option>
-                    </select>
+                    <label for="pet-gender">Sexo:</label>
+                    <select id="pet-gender" name="sexo" required>
+                        <option value="">Selecione</option>
+                        <option value="M">Macho</option>
+                        <option value="F">Fêmea</option>
+                    </select>
 
-                    <label for="pet-size">Porte:</label>
-                    <select id="pet-size" name="porte" required>
-                        <option value="Small">Pequeno</option>
-                        <option value="Medium">Médio</option>
-                        <option value="Large">Grande</option>
-                    </select>
+                    <label for="pet-size">Porte:</label>
+                    <select id="pet-size" name="porte" required>
+                        <option value="">Selecione</option>
+                        <option value="Small">Pequeno</option>
+                        <option value="Medium">Médio</option>
+                        <option value="Large">Grande</option>
+                    </select>
 
-                    <label for="pet-color">Cor:</label>
-                    <input type="text" id="pet-color" name="cor" required>
+                    <label for="pet-color">Cor:</label>
+                    <input type="text" id="pet-color" name="cor" required>
 
-                    <label for="pet-coat">Pelagem:</label>
-                    <select id="pet-coat" name="pelagem" required>
-                        <option value="Short">Curta</option>
-                        <option value="Medium">Média</option>
-                        <option value="Long">Longa</option>
-                        <option value="Hairless">Sem Pelo</option>
-                    </select>
+                    <label for="pet-coat">Pelagem:</label>
+                    <select id="pet-coat" name="pelagem" required>
+                        <option value="">Selecione</option>
+                        <option value="Short">Curta</option>
+                        <option value="Medium">Média</option>
+                        <option value="Long">Longa</option>
+                        <option value="Hairless">Sem Pelo</option>
+                    </select>
 
-                    <label for="pet-vaccinated">Vacinado:</label>
-                    <select id="pet-vaccinated" name="vacinado" required>
-                        <option value="true">Sim</option>
-                        <option value="false">Não</option>
-                    </select>
+                    <label>Saúde:</label>
+                    <div class="checkbox-group">
+                        <label for="pet-vaccinated">
+                            <input type="checkbox" id="pet-vaccinated" name="vacinado"> Vacinado
+                        </label>
+                        <label for="pet-neutered">
+                            <input type="checkbox" id="pet-neutered" name="castrado"> Castrado
+                        </label>
+                        <label for="pet-microchipped">
+                            <input type="checkbox" id="pet-microchipped" name="microchipado"> Microchipado
+                        </label>
+                    </div>
 
-                    <label for="pet-neutered">Castrado:</label>
-                    <select id="pet-neutered" name="castrado" required>
-                        <option value="true">Sim</option>
-                        <option value="false">Não</option>
-                    </select>
+                    <label for="pet-availability">Disponibilidade:</label>
+                    <select id="pet-availability" name="statusAdocao" required>
+                        <option value="">Selecione</option>
+                        <option value="DISPONIVEL">Disponível para Adoção</option> 
+                        <option value="RESERVADO">Reservado</option>
+                        <option value="EM_ADOCAO">Em Adoção Temporária</option>
+                        <option value="ADOTADO">Adotado</option>
+                        <option value="INDISPONIVEL">Indisponível para Adoção</option>
+                    </select>
 
-                    <label for="pet-microchipped">Microchipado:</label>
-                    <select id="pet-microchipped" name="microchipado" required>
-                        <option value="true">Sim</option>
-                        <option value="false">Não</option>
-                    </select>
+                    <label for="pet-shelter">Tutor/ONG:</label>
+                    <select id="pet-shelter" name="organizacaoId" required> 
+                        <option value="">Selecione a ONG/Tutor</option>
+                        </select>
 
-                    <label for="pet-availability">Disponibilidade:</label>
-                    <select id="pet-availability" name="statusAdocao" required>
-                        <option value="">Selecione</option>
-                        <option value="DISPONIVEL">Disponível para Adoção</option> 
-                        <option value="RESERVADO">Reservado</option>
-                        <option value="EM_ADOCAO">Em Adoção Temporária</option>
-                        <option value="ADOTADO">Adotado</option>
-                        <option value="INDISPONIVEL">Indisponível para Adoção</option>
-                    </select>
+                    <label for="pet-city">Cidade:</label>
+                    <input type="text" id="pet-city" name="cidade" required>
 
-    <div class="form-group">
-    <label for="pet-shelter">Tutor/ONG:</label>
-    <select id="pet-shelter" name="organizacaoId" required> 
-        <option value="">Selecione a ONG/Tutor</option>
-        </select>
-</div>
+                    <label for="pet-state">Estado:</label>
+                    <input type="text" id="pet-state" name="estado" required>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel" id="cancelPetBtn">Cancelar</button>
+                        <button type="submit" class="btn btn-submit" id="submitPetBtn">Adicionar Pet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                    <label for="pet-city">Cidade:</label>
-                    <input type="text" id="pet-city" name="cidade" required>
+    <div id="petDetailsModal" class="modal pet-details-modal">
+        <div class="modal-content">
+            <span class="close-button" id="closePetDetailsModal">&times;</span>
+            <h2 id="detailsModalTitle">Detalhes do Pet</h2>
+            <div class="details-image-container">
+                <img id="details-pet-image" src="" alt="Foto do Pet">
+            </div>
+            <div class="details-grid">
+                <div class="details-item">
+                    <label>Nome:</label>
+                    <span id="detail-pet-name"></span>
+                </div>
+                <div class="details-item">
+                    <label>Espécie:</label>
+                    <span id="detail-pet-species"></span>
+                </div>
+                <div class="details-item">
+                    <label>Raça:</label>
+                    <span id="detail-pet-race"></span>
+                </div>
+                <div class="details-item">
+                    <label>Idade:</label>
+                    <span id="detail-pet-age"></span>
+                </div>
+                <div class="details-item">
+                    <label>Sexo:</label>
+                    <span id="detail-pet-gender"></span>
+                </div>
+                <div class="details-item">
+                    <label>Porte:</label>
+                    <span id="detail-pet-port"></span>
+                </div>
+                <div class="details-item">
+                    <label>Cor:</label>
+                    <span id="detail-pet-color"></span>
+                </div>
+                <div class="details-item">
+                    <label>Pelagem:</label>
+                    <span id="detail-pet-coat"></span>
+                </div>
+                <div class="details-item">
+                    <label>Vacinado:</label>
+                    <span id="detail-pet-vacinado"></span>
+                </div>
+                <div class="details-item">
+                    <label>Castrado:</label>
+                    <span id="detail-pet-castrado"></span>
+                </div>
+                <div class="details-item">
+                    <label>Microchipado:</label>
+                    <span id="detail-pet-microchipado"></span>
+                </div>
+                 <div class="details-item">
+                    <label>Tutor/ONG:</label>
+                    <span id="detail-pet-shelter"></span>
+                </div>
+                <div class="details-item">
+                    <label>Cidade:</label>
+                    <span id="detail-pet-city"></span>
+                </div>
+                <div class="details-item">
+                    <label>Estado:</label>
+                    <span id="detail-pet-state"></span>
+                </div>
+                 <div class="details-item full-width">
+                    <label>Status de Adoção:</label>
+                    <span id="detail-pet-status"></span>
+                </div>
+            </div>
+            <div class="form-actions" style="justify-content: center; margin-top: 30px;">
+                <button type="button" class="btn btn-cancel" id="closeDetailsModalBtn">Fechar</button>
+            </div>
+        </div>
+    </div>
 
-                    <label for="pet-state">Estado:</label>
-                    <input type="text" id="pet-state" name="estado" required>
 
-                    <button type="submit" class="primary-btn" id="submitPetBtn">Adicionar Pet</button>
-                </form>
-            </div>
-        </div>
-    </div>
+    <div id="filterModal" class="modal">
+        <div class="modal-content filter-modal-content">
+            <span class="close-button" id="closeFilterModal">&times;</span>
+            <h2>Filtros Avançados</h2>
+            <form id="advancedFiltersForm" class="advanced-filters">
+                <div class="filter-group">
+                    <label for="filter-especie">Espécie:
+                        <select id="filter-especie" name="especie">
+                            <option value="All">Todos</option>
+                            <option value="Dog">Cachorro</option>
+                            <option value="Cat">Gato</option>
+                            <option value="Rabbit">Coelho</option>
+                            <option value="Bird">Pássaro</option>
+                            <option value="Rodent">Roedor</option>
+                            <option value="Fish">Peixe</option>
+                            <option value="Other">Outros</option>
+                        </select>
+                    </label>
 
-    <div id="filterModal" class="modal">
-        <div class="modal-content filter-modal-content">
-            <span class="close-button" id="closeFilterModal">&times;</span>
-            <h2>Filtros Avançados</h2>
-            <form id="advancedFiltersForm" class="advanced-filters">
-                <div class="filter-group">
-                    <label for="filter-especie">Espécie:
-                        <select id="filter-especie" name="especie">
-                            <option value="All">Todos</option>
-                            <option value="Dog">Cachorro</option>
-                            <option value="Cat">Gato</option>
-                            <option value="Rabbit">Coelho</option>
-                            <option value="Bird">Pássaro</option>
-                            <option value="Rodent">Roedor</option>
-                            <option value="Fish">Peixe</option>
-                            <option value="Other">Outros</option>
-                        </select>
-                    </label>
+                    <label for="filter-breed"> Raça:
+                        <select id="filter-breed" name="raca">
+                            <option value="All">Todas</option>
+                            <option value="Labrador">Labrador</option>
+                            <option value="Bulldog">Bulldog</option>
+                            <option value="Poodle">Poodle</option>
+                            <option value="Siamese">Siamês</option>
+                            <option value="Persian">Persa</option>
+                            <option value="Parakeet">Periquito</option>
+                            <option value="Hamster">Hamster</option>
+                            <option value="Goldfish">Peixe Dourado</option>
+                            <option value="Other">Outras</option>
+                        </select>
+                    </label>
 
-                    <label for="filter-breed"> Raça:
-                        <select id="filter-breed" name="raca">
-                            <option value="All">Todas</option>
-                            <option value="Labrador">Labrador</option>
-                            <option value="Bulldog">Bulldog</option>
-                            <option value="Poodle">Poodle</option>
-                            <option value="Siamese">Siamês</option>
-                            <option value="Persian">Persa</option>
-                            <option value="Parakeet">Periquito</option>
-                            <option value="Hamster">Hamster</option>
-                            <option value="Goldfish">Peixe Dourado</option>
-                            <option value="Other">Outras</option>
-                        </select>
-                    </label>
+                    <label for="filter-age"> Idade:
+                        <select id="filter-age" name="idade">
+                            <option value="All">Todas</option>
+                            <option value="Baby">Filhote</option>
+                            <option value="Young">Jovem</option>
+                            <option value="Adult">Adulto</option>
+                            <option value="Senior">Idoso</option>
+                        </select>
+                    </label>
 
-                    <label for="filter-age"> Idade:
-                        <select id="filter-age" name="idade">
-                            <option value="All">Todas</option>
-                            <option value="Baby">Filhote</option>
-                            <option value="Young">Jovem</option>
-                            <option value="Adult">Adulto</option>
-                            <option value="Senior">Idoso</option>
-                        </select>
-                    </label>
+                    <label for="filter-gender"> Sexo:
+                        <select id="filter-gender" name="sexo">
+                            <option value="All">Todos</option>
+                            <option value="M">Macho</option>
+                            <option value="F">Fêmea</option>
+                        </select>
+                    </label>
 
-                    <label for="filter-gender"> Sexo:
-                        <select id="filter-gender" name="sexo">
-                            <option value="All">Todos</option>
-                            <option value="M">Macho</option>
-                            <option value="F">Fêmea</option>
-                        </select>
-                    </label>
+                    <label for="filter-size"> Porte:
+                        <select id="filter-size" name="porte">
+                            <option value="All">Todos</option>
+                            <option value="Small">Pequeno</option>
+                            <option value="Medium">Médio</option>
+                            <option value="Large">Grande</option>
+                        </select>
+                    </label>
 
-                    <label for="filter-size"> Porte:
-                        <select id="filter-size" name="porte">
-                            <option value="All">Todos</option>
-                            <option value="Small">Pequeno</option>
-                            <option value="Medium">Médio</option>
-                            <option value="Large">Grande</option>
-                        </select>
-                    </label>
+                    <label for="filter-availability"> Disponibilidade:
+                        <select id="filter-availability" name="statusAdocao">
+                            <option value="All">Todos</option>
+                            <option value="DISPONIVEL">Disponível para Adoção</option>
+                            <option value="RESERVADO">Reservado</option>
+                            <option value="EM_ADOCAO">Em Adoção Temporária</option>
+                            <option value="ADOTADO">Adotado</option>
+                            <option value="INDISPONIVEL">Indisponível para Adoção</option>
+                        </select>
+                    </label>
 
-                    <label for="filter-availability"> Disponibilidade:
-                        <select id="filter-availability" name="statusAdocao">
-                            <option value="All">Todos</option>
-                            <option value="DISPONIVEL">Disponível para Adoção</option>
-                            <option value="RESERVADO">Reservado</option>
-                            <option value="EM_ADOCAO">Em Adoção Temporária</option>
-                            <option value="ADOTADO">Adotado</option>
-                            <option value="INDISPONIVEL">Indisponível para Adoção</option>
-                        </select>
-                    </label>
+                    <label for="filter-color"> Cor:
+                        <select id="filter-color" name="cor">
+                            <option value="All">Todas</option>
+                            <option value="Black">Preto</option>
+                            <option value="White">Branco</option>
+                            <option value="Brown">Marrom</option>
+                            <option value="Golden">Dourado</option>
+                            <option value="Gray">Cinza</option>
+                            <option value="Mixed">Misto</option>
+                        </select>
+                    </label>
 
-                    <label for="filter-color"> Cor:
-                        <select id="filter-color" name="cor">
-                            <option value="All">Todas</option>
-                            <option value="Black">Preto</option>
-                            <option value="White">Branco</option>
-                            <option value="Brown">Marrom</option>
-                            <option value="Golden">Dourado</option>
-                            <option value="Gray">Cinza</option>
-                            <option value="Mixed">Misto</option>
-                        </select>
-                    </label>
+                    <label for="filter-coat"> Pelagem:
+                        <select id="filter-coat" name="pelagem">
+                            <option value="All">Todas</option>
+                            <option value="Short">Curta</option>
+                            <option value="Medium">Média</option>
+                            <option value="Long">Longa</option>
+                            <option value="Hairless">Sem Pelo</option>
+                        </select>
+                    </label>
 
-                    <label for="filter-coat"> Pelagem:
-                        <select id="filter-coat" name="pelagem">
-                            <option value="All">Todas</option>
-                            <option value="Short">Curta</option>
-                            <option value="Medium">Média</option>
-                            <option value="Long">Longa</option>
-                            <option value="Hairless">Sem Pelo</option>
-                        </select>
-                    </label>
+                    <label for="filter-vaccinated"> Vacinado:
+                        <select id="filter-vaccinated" name="vacinado">
+                            <option value="All">Todos</option>
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
+                    </label>
 
-                    <label for="filter-vaccinated"> Vacinado:
-                        <select id="filter-vaccinated" name="vacinado">
-                            <option value="All">Todos</option>
-                            <option value="true">Sim</option>
-                            <option value="false">Não</option>
-                        </select>
-                    </label>
+                    <label for="filter-neutered"> Castrado:
+                        <select id="filter-neutered" name="castrado">
+                            <option value="All">Todos</option>
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
+                    </label>
 
-                    <label for="filter-neutered"> Castrado:
-                        <select id="filter-neutered" name="castrado">
-                            <option value="All">Todos</option>
-                            <option value="true">Sim</option>
-                            <option value="false">Não</option>
-                        </select>
-                    </label>
+                    <label for="filter-microchipped"> Microchipado:
+                        <select id="filter-microchipped" name="microchipado">
+                            <option value="All">Todos</option>
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </select>
+                    </label>
+                    
+                    <label for="filter-shelter"> Abrigo/Tutor:
+                        <select id="filter-shelter" name="organizacaoId">
+                            <option value="All">Todos</option>
+                            </select>
+                    </label>
 
-                    <label for="filter-microchipped"> Microchipado:
-                        <select id="filter-microchipped" name="microchipado">
-                            <option value="All">Todos</option>
-                            <option value="true">Sim</option>
-                            <option value="false">Não</option>
-                        </select>
-                    </label>
+                    <label for="filter-state"> Estado:
+                        <select id="filter-state" name="estado">
+                            <option value="All">Todos</option>
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                    </label>
 
-                                        <label for="filter-shelter"> Abrigo/Tutor:
-                        <select id="filter-shelter" name="organizacaoId">
-                            <option value="All">Todos</option>
-                                                    </select>
-                    </label>
+                    <label for="filter-city"> Cidade:
+                        <select id="filter-city" name="cidade">
+                            <option value="All">Todas</option>
+                            <option value="São Paulo">São Paulo</option>
+                            <option value="Rio de Janeiro">Rio de Janeiro</option>
+                            <option value="Belo Horizonte">Belo Horizonte</option>
+                            <option value="Salvador">Salvador</option>
+                            <option value="Curitiba">Curitiba</option>
+                            <option value="Porto Alegre">Porto Alegre</option>
+                            <option value="Recife">Recife</option>
+                            <option value="Fortaleza">Fortaleza</option>
+                            <option value="Brasília">Brasília</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="form-actions" style="justify-content: center;">
+                    <button type="button" class="btn btn-cancel" id="closeFilterModalBtn">Cancelar</button>
+                    <button type="submit" class="btn btn-submit apply-filters-btn"><i class="fas fa-check"></i> Aplicar Filtros</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-                    <label for="filter-state"> Estado:
-                        <select id="filter-state" name="estado">
-                            <option value="All">Todos</option>
-                            <option value="SP">São Paulo</option>
-                            <option value="RJ">Rio de Janeiro</option>
-                            <option value="MG">Minas Gerais</option>
-                            <option value="BA">Bahia</option>
-                            <option value="PR">Paraná</option>
-                            <option value="RS">Rio Grande do Sul</option>
-                            <option value="PE">Pernambuco</option>
-                            <option value="CE">Ceará</option>
-                            <option value="DF">Distrito Federal</option>
-                        </select>
-                    </label>
+    <script src="../js/pet-control.js"></script>
+    <script>
+        // Script simples para manter o item "Meus Pets" ativo no header
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.header-nav .nav-item');
+            navItems.forEach(item => {
+                if (item.dataset.navPage === 'meus-pets') {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            // Carregar e exibir o nome do usuário logado e botão de logout no header
+            const userNameDisplay = document.getElementById('userNameDisplay');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const storedUserName = localStorage.getItem('userName');
+            const accessToken = localStorage.getItem('accessToken');
 
-                    <label for="filter-city"> Cidade:
-                        <select id="filter-city" name="cidade">
-                            <option value="All">Todas</option>
-                            <option value="São Paulo">São Paulo</option>
-                            <option value="Rio de Janeiro">Rio de Janeiro</option>
-                            <option value="Belo Horizonte">Belo Horizonte</option>
-                            <option value="Salvador">Salvador</option>
-                            <option value="Curitiba">Curitiba</option>
-                            <option value="Porto Alegre">Porto Alegre</option>
-                            <option value="Recife">Recife</option>
-                            <option value="Fortaleza">Fortaleza</option>
-                            <option value="Brasília">Brasília</option>
-                        </select>
-                    </label>
-                </div>
-                <button type="submit" class="primary-btn apply-filters-btn"><i class="fas fa-check"></i> Aplicar Filtros</button>
-            </form>
-        </div>
-    </div>
+            if (storedUserName && accessToken) {
+                userNameDisplay.textContent = `Olá, ${storedUserName}!`;
+                logoutBtn.style.display = 'block';
+            } else {
+                userNameDisplay.textContent = '';
+                logoutBtn.style.display = 'none';
+            }
 
-    <script src="../js/pet-control.js"></script>
-    <script>
-        // Script simples para manter o item "Meus Pets" ativo no header
-        document.addEventListener('DOMContentLoaded', () => {
-            const navItems = document.querySelectorAll('.header-nav .nav-item');
-            navItems.forEach(item => {
-                if (item.dataset.navPage === 'meus-pets') {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-            // Carregar e exibir o nome do usuário logado e botão de logout no header
-            const userNameDisplay = document.getElementById('userNameDisplay');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const storedUserName = localStorage.getItem('userName');
-            const accessToken = localStorage.getItem('accessToken');
-
-            if (storedUserName && accessToken) {
-                userNameDisplay.textContent = `Olá, ${storedUserName}!`;
-                logoutBtn.style.display = 'block';
-            } else {
-                userNameDisplay.textContent = '';
-                logoutBtn.style.display = 'none';
-            }
-
-            logoutBtn.addEventListener('click', () => {
-                localStorage.clear();
-                window.location.href = './login_screen.html';
-            });
-        });
-    </script>
+            logoutBtn.addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = './login_screen.html';
+            });
+        });
+    </script>
 </body>
 </html>
