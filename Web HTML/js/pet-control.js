@@ -276,7 +276,7 @@ function populateOrganizationSelects(organizations) {
         organizations.forEach(org => {
             const option = document.createElement('option');
             option.value = org.id;
-            option.textContent = org.nome;
+            option.textContent = org.nomeFantasia;;
             petShelterSelect.appendChild(option);
         });
         // Re-aplica permissões para pré-selecionar/desabilitar para ONGs
@@ -289,7 +289,7 @@ function populateOrganizationSelects(organizations) {
         organizations.forEach(org => {
             const option = document.createElement('option');
             option.value = org.id;
-            option.textContent = org.nome;
+            option.textContent = org.nomeFantasia;;
             filterShelterSelect.appendChild(option);
         });
     }
@@ -315,7 +315,7 @@ function createPetCard(pet) {
         : '../assets/imgs/placeholder.jpg'; // Caminho para o placeholder local
 
     // NOVO: Encontra o nome da organização pelo ID
-    const organizationName = allOrganizations.find(org => org.id === pet.organizacaoId)?.nome || 'Não Informado';
+    const organizationName = allOrganizations.find(org => org.id === pet.organizacaoId)?.nomeFantasia || 'Não Informado';
 
     card.innerHTML = `
         <img src="${imageUrl}" alt="Foto de ${pet.nome}" class="pet-photo">
@@ -630,6 +630,27 @@ document.addEventListener("DOMContentLoaded", async () => { // Adicionado 'async
 
             const formData = new FormData(addEditPetForm);
             let petData = formDataToJson(formData);
+
+// Pega o ID da organização do campo selecionado
+// Se o campo estiver desabilitado (para ROLE_ONG), o FormData não o incluirá.
+// Precisamos pegá-lo diretamente.
+let selectedOrgId = petShelterSelect.value; 
+
+// Se for ONG, e o campo estiver desabilitado, pegamos o ID da ONG do localStorage
+if (currentRole === "ROLE_ONG" && petShelterSelect.hasAttribute('disabled')) {
+    selectedOrgId = localStorage.getItem('userOrganizationId');
+}
+
+// Converte para número e define como null se for string vazia ou inválida
+if (selectedOrgId && selectedOrgId !== "") {
+    petData.organizacaoId = parseInt(selectedOrgId, 10);
+} else {
+    // Se ainda for nulo aqui, significa que nenhuma ONG foi selecionada
+    // E o banco de dados não permite NULL.
+    alert("Por favor, selecione uma ONG/Tutor para o pet.");
+    return; // Impede o envio do formulário
+}
+
 
             // Corrigido: Mapeamento de 'true'/'false' para booleanos para o backend
             petData.vacinado = petData.vacinado === 'true';
