@@ -148,6 +148,16 @@ public class PetController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    // Apenas ADMIN ou ONG que possui o pet podem atualizar
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('ONG') and @petService.isPetOwnedByCurrentUser(#id, authentication.principal.id))")
+    public ResponseEntity<Pet> atualizar(@PathVariable Long id, @RequestBody Pet dadosPet) {
+        Pet atualizado = petService.atualizarPet(id, dadosPet);
+        // Atualiza o pet
+        return ResponseEntity.ok(atualizado);
+        // Retorna o pet atualizado
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     // Apenas ADMIN pode deletar pets
