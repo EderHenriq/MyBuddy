@@ -7,5 +7,6 @@ public enum StatusAdocao {
     EM_ADOCAO, // Constante que indica que o pet está atualmente disponível para ser adotado.
     ADOTADO,   // Constante que indica que o pet já foi adotado e não está mais disponível.
     RESERVADO, // Constante que indica que o pet foi reservado, mas ainda não foi formalmente adotado.
-    INDISPONIVEL, // Constante que indica que o pet não está disponível para adoção no momento (por qualquer motivo).
+    INDISPONIVEL,// Constante que indica que o pet não está disponível para adoção no momento (por qualquer motivo).
+    DISPONIVEL // Constante que indica que o pet está atualmente disponível para ser adotado.
 }

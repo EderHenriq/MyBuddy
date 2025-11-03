@@ -20,31 +20,47 @@ public class UserDetailsImpl implements UserDetails {
     private String email;
 
     @JsonIgnore // Garante que a senha não seja serializada para JSON
-    private String password; // <-- MUDANÇA AQUI: Campo para a senha codificada
+    private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    // Construtor atualizado para receber a senha (codificada)
-    public UserDetailsImpl(Long id, String nome, String email, String password, // <-- MUDANÇA AQUI
-                           Collection<? extends GrantedAuthority> authorities) {
+    // --- NOVO CAMPO: ID DA ORGANIZAÇÃO DO USUÁRIO ---
+    private Long organizacaoId; // Pode ser null se o usuário não for de uma ONG (ex: ADMIN)
+
+    // Construtor atualizado para receber a senha (codificada) E o ID da organização
+    public UserDetailsImpl(Long id, String nome, String email, String password,
+                           Collection<? extends GrantedAuthority> authorities,
+                           Long organizacaoId) { // <-- NOVO PARAMETRO
         this.id = id;
         this.nome = nome;
         this.email = email;
-        this.password = password; // <-- MUDANÇA AQUI
+        this.password = password;
         this.authorities = authorities;
+        this.organizacaoId = organizacaoId; // <-- Inicializa o novo campo
     }
 
+    /**
+     * Constrói um UserDetailsImpl a partir de um objeto Usuario.
+     * @param user O objeto Usuario do banco de dados.
+     * @return Uma instância de UserDetailsImpl.
+     */
     public static UserDetailsImpl build(Usuario user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
 
+        // Extrai o ID da organização se o usuário tiver uma ONG associada.
+        // Assumimos que a entidade Usuario tem um campo 'organizacao' que é uma entidade Organizacao.
+        // Se a lógica for diferente (ex: o Usuario pode ter um organizacaoId direto), ajuste aqui.
+        Long userOrgId = (user.getOrganizacao() != null) ? user.getOrganizacao().getId() : null;
+
         return new UserDetailsImpl(
                 user.getId(),
                 user.getNome(),
                 user.getEmail(),
-                user.getPassword(),   // <-- MUDANÇA CRUCIAL AQUI: Passa a senha real do usuário
-                authorities);
+                user.getPassword(),
+                authorities,
+                userOrgId); // <-- PASSA O ID DA ORGANIZAÇÃO
     }
 
     @Override
@@ -64,9 +80,14 @@ public class UserDetailsImpl implements UserDetails {
         return nome;
     }
 
+    // --- NOVO GETTER PARA O ID DA ORGANIZAÇÃO ---
+    public Long getOrganizacaoId() {
+        return organizacaoId;
+    }
+
     @Override
     public String getPassword() {
-        return password; // <-- MUDANÇA CRUCIAL AQUI: Retorna a senha codificada
+        return password;
     }
 
     @Override
