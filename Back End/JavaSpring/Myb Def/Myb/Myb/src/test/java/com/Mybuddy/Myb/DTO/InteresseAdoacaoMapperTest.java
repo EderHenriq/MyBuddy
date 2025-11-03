@@ -15,8 +15,8 @@ public class InteresseAdoacaoMapperTest {
     @Test
     public void toResponse_mapsAllFieldsCorrectly() {
         // arrange: create modelo objects
-        Usuario usuario = new Usuario("Maria", "maria@example.com", "12345");
-        usuario.setId(42L);
+        //Usuario usuario = new Usuario("Maria", "maria@example.com", "12345");
+        //usuario.setId(42L);
 
         Pet pet = new Pet();
         pet.setId(99L);
