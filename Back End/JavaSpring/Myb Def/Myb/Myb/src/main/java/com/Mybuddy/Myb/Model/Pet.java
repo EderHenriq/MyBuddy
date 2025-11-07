@@ -1,8 +1,11 @@
 package com.Mybuddy.Myb.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference; // Importa a anotação
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "pets")
@@ -19,22 +22,26 @@ public class Pet {
     private String raca;
 
     @Column(nullable = false)
-    private Integer idade;
+    private Integer idade; // Idade em anos, como visto no card de detalhes
 
     @Column(length = 40, nullable = false)
-    private String especie;
+    private String especie; // Ex: "CAO", "GATO" (usar enums no futuro pode ser melhor)
 
     @Column(length = 20, nullable = false)
-    private String porte;
+    private String porte; // Ex: "PEQUENO", "MEDIO", "GRANDE" (usar enums no futuro pode ser melhor)
 
     @Column(length = 30, nullable = false)
     private String cor;
 
-    @Column(length = 10, nullable = false)
-    private String sexo;
+    @Column(length = 60, nullable = true)
+    private String pelagem; // Ex: "CURTA", "MEDIA", "LONGA" (usar enums no futuro pode ser melhor)
 
-    @Column(length = 255)
-    private String imageUrl;
+    @Column(length = 10, nullable = false)
+    private String sexo; // Ex: "MACHO", "FEMEA" (usar enums no futuro pode ser melhor)
+
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference // Lado "pai" do relacionamento com FotoPet
+    private Set<FotoPet> fotos = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
@@ -45,15 +52,17 @@ public class Pet {
     @JsonBackReference // Lado "filho" do relacionamento com Organizacao
     private Organizacao organizacao;
 
-    // --- NOVOS CAMPOS ESSENCIAIS PARA A ATUALIZAÇÃO E CRIAÇÃO ---
+    // --- CAMPOS ADICIONAIS ---
     @Column(nullable = false)
-    private boolean microchipado;
+    private boolean microchipado; // true/false
 
     @Column(nullable = false)
-    private boolean vacinado;
+    private boolean vacinado;     // true/false
 
     @Column(nullable = false)
-    private boolean castrado;
+    private boolean castrado;     // true/false
+
+    // Campo 'temperamento' removido conforme sua solicitação
 
     @Column(length = 100, nullable = true)
     private String cidade;
@@ -61,32 +70,34 @@ public class Pet {
     @Column(length = 100, nullable = true)
     private String estado;
 
+
     // --- Construtores ---
     public Pet() {
-        this.statusAdocao = StatusAdocao.EM_ADOCAO;
+        this.statusAdocao = StatusAdocao.DISPONIVEL;
     }
 
-    public Pet(String nome, String raca, Integer idade, String especie, String porte, String cor, String sexo,
-               String imageUrl, StatusAdocao statusAdocao, Organizacao organizacao,
-               boolean microchipado, boolean vacinado, boolean castrado, String cidade, String estado) {
+    public Pet(String nome, String raca, Integer idade, String especie, String porte, String cor, String pelagem, String sexo,
+               StatusAdocao statusAdocao, Organizacao organizacao, boolean microchipado, boolean vacinado,
+               boolean castrado, String cidade, String estado) {
         this.nome = nome;
         this.raca = raca;
         this.idade = idade;
         this.especie = especie;
         this.porte = porte;
         this.cor = cor;
+        this.pelagem = pelagem;
         this.sexo = sexo;
-        this.imageUrl = imageUrl;
-        this.statusAdocao = (statusAdocao != null) ? statusAdocao : StatusAdocao.EM_ADOCAO;
+        this.statusAdocao = (statusAdocao != null) ? statusAdocao : StatusAdocao.DISPONIVEL;
         this.organizacao = organizacao;
         this.microchipado = microchipado;
         this.vacinado = vacinado;
         this.castrado = castrado;
+        // temperamento removido
         this.cidade = cidade;
         this.estado = estado;
     }
 
-    // --- Getters e Setters (Existentes) ---
+    // --- Getters e Setters ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -108,11 +119,32 @@ public class Pet {
     public String getCor() { return cor; }
     public void setCor(String cor) { this.cor = cor; }
 
+    public String getPelagem() { return pelagem; }
+    public void setPelagem(String pelagem) { this.pelagem = pelagem; }
+
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public Set<FotoPet> getFotos() { return fotos; }
+    public void setFotos(Set<FotoPet> fotos) { this.fotos = fotos; }
+
+    public void addFoto(FotoPet foto) {
+        if (foto != null && !this.fotos.contains(foto)) {
+            this.fotos.add(foto);
+            foto.setPet(this);
+        }
+    }
+    public void removeFoto(FotoPet foto) {
+        if (foto != null && this.fotos.contains(foto)) {
+            this.fotos.remove(foto);
+            foto.setPet(null);
+        }
+    }
+    public void clearFotos() {
+        this.fotos.forEach(foto -> foto.setPet(null)); // Desvincula o pet das fotos
+        this.fotos.clear(); // Limpa o set
+    }
+
 
     public StatusAdocao getStatusAdocao() { return statusAdocao; }
     public void setStatusAdocao(StatusAdocao statusAdocao) { this.statusAdocao = statusAdocao; }
@@ -120,7 +152,6 @@ public class Pet {
     public Organizacao getOrganizacao() { return organizacao; }
     public void setOrganizacao(Organizacao organizacao) { this.organizacao = organizacao; }
 
-    // --- Getters e Setters (NOVOS) ---
     public boolean isMicrochipado() { return microchipado; }
     public void setMicrochipado(boolean microchipado) { this.microchipado = microchipado; }
 
@@ -129,6 +160,8 @@ public class Pet {
 
     public boolean isCastrado() { return castrado; }
     public void setCastrado(boolean castrado) { this.castrado = castrado; }
+
+    // Getter e Setter para temperamento removidos
 
     public String getCidade() { return cidade; }
     public void setCidade(String cidade) { this.cidade = cidade; }
@@ -162,6 +195,7 @@ public class Pet {
                 ", microchipado=" + microchipado +
                 ", vacinado=" + vacinado +
                 ", castrado=" + castrado +
+                // temperamento removido
                 ", cidade='" + cidade + '\'' +
                 ", estado='" + estado + '\'' +
                 '}';

@@ -1,17 +1,22 @@
 package com.Mybuddy.Myb.Service;
-// Pacote onde a classe/record PetFiltro está localizada, provavelmente usado no serviço de pets
+
+import com.Mybuddy.Myb.Model.StatusAdocao; // Importar o enum StatusAdocao
 
 public record PetFiltro(
-        String nome,      // Nome do pet para filtro (pode ser parcial ou completo)
-        String especie,   // Espécie do pet (ex: cachorro, gato) para filtro
-        String porte,     // Porte do pet (ex: pequeno, médio, grande) para filtro
-        String sexo,      // Sexo do pet (ex: macho, fêmea) para filtro
-        Integer idadeMin, // Idade mínima do pet para filtro
-        Integer idadeMax  // Idade máxima do pet para filtro
+        String nome,
+        String especie,
+        String porte,
+        String sexo,
+        Integer idadeMin,
+        Integer idadeMax,
+        StatusAdocao statusAdocao // Adicionado o campo statusAdocao
 ) {
-    // Record em Java é uma classe imutável e compacta, ideal para transportar dados
-    // Ele já gera automaticamente:
-    // - Construtor
-    // - Getters (nomes iguais aos campos)
-    // - equals(), hashCode() e toString()
+    // Construtor compacto para definir valores padrão
+    // Isso é útil se o filtro não for fornecido e você quiser um padrão no backend.
+    public PetFiltro {
+        // Se statusAdocao for nulo (não fornecido na requisição), define como DISPONIVEL
+        if (statusAdocao == null) {
+            statusAdocao = StatusAdocao.DISPONIVEL;
+        }
+    }
 }

@@ -22,9 +22,11 @@ public class MybApplication {
 	@Bean // Bean que configura o CORS (Cross-Origin Resource Sharing) e o acesso a arquivos estáticos
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
-			@Override
+
+            @Override
 			public void addCorsMappings(CorsRegistry registry) {
-				// --- Configuração de CORS para rotas da API ---
+
+                // --- Configuração de CORS para rotas da API ---
 				// Permite que diferentes origens acessem a API (útil para comunicação entre frontend e backend)
 				registry.addMapping("/api/**")
 						.allowedOrigins(

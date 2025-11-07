@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,34 @@ public class OrganizacaoService {
     }
 
     /**
+     * NOVO MÉTODO: Cria uma nova organização a partir de uma entidade Organizacao.
+     * Este método é ideal para ser usado internamente por outros serviços (ex: AuthService)
+     * que já mapearam os dados para a entidade.
+     * @param organizacao Entidade Organizacao a ser criada.
+     * @return A entidade Organizacao criada e salva.
+     * @throws ConflictException Se o CNPJ ou e-mail de contato já existirem.
+     */
+    @Transactional
+    public Organizacao criarOrganizacao(Organizacao organizacao) {
+        logger.info("Tentando criar nova organização (via entidade): {}", organizacao.getNomeFantasia());
+
+        if (organizacaoRepository.existsByCnpj(organizacao.getCnpj())) {
+            logger.warn("Criação de organização falhou: CNPJ {} já existe.", organizacao.getCnpj());
+            throw new ConflictException("CNPJ já cadastrado.");
+        }
+
+        if (organizacaoRepository.existsByEmailContato(organizacao.getEmailContato())) {
+            logger.warn("Criação de organização falhou: E-mail de contato {} já existe.", organizacao.getEmailContato());
+            throw new ConflictException("E-mail de contato da organização já cadastrado.");
+        }
+
+        Organizacao savedOrganizacao = organizacaoRepository.save(organizacao);
+        logger.info("Organização criada com sucesso com ID: {}", savedOrganizacao.getId());
+        return savedOrganizacao;
+    }
+
+
+    /**
      * Cria uma nova organização. Realiza validações de unicidade de CNPJ e e-mail.
      * @param requestDTO Dados da organização a serem criados.
      * @return DTO da organização criada.
@@ -33,7 +62,7 @@ public class OrganizacaoService {
      */
     @Transactional // Garante que a operação seja atômica
     public OrganizacaoResponseDTO criarOrganizacao(OrganizacaoRequestDTO requestDTO) {
-        logger.info("Tentando criar nova organização: {}", requestDTO.getNomeFantasia());
+        logger.info("Tentando criar nova organização (via DTO): {}", requestDTO.getNomeFantasia());
 
         // Validação de unicidade do CNPJ usando o método existsByCnpj do repositório
         if (organizacaoRepository.existsByCnpj(requestDTO.getCnpj())) {
@@ -44,7 +73,7 @@ public class OrganizacaoService {
         // Validação de unicidade do E-mail de Contato usando o método existsByEmailContato do repositório
         if (organizacaoRepository.existsByEmailContato(requestDTO.getEmailContato())) {
             logger.warn("Criação de organização falhou: E-mail de contato {} já existe.", requestDTO.getEmailContato());
-            throw new ConflictException("E-mail de contato já cadastrado.");
+            throw new ConflictException("E-mail de contato da organização já cadastrado.");
         }
 
         // Mapeia DTO de requisição para Entidade Organizacao
@@ -76,6 +105,28 @@ public class OrganizacaoService {
         Organizacao organizacao = organizacaoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Organização não encontrada com ID: " + id));
         return new OrganizacaoResponseDTO(organizacao); // Mapeia a entidade encontrada para um DTO de resposta
+    }
+
+    /**
+     * NOVO MÉTODO: Busca uma organização pelo seu CNPJ.
+     * @param cnpj O CNPJ da organização.
+     * @return Optional de Organizacao.
+     */
+    @Transactional(readOnly = true)
+    public Optional<Organizacao> buscarOrganizacaoPorCnpj(String cnpj) {
+        logger.debug("Buscando organização com CNPJ: {}", cnpj);
+        return organizacaoRepository.findByCnpj(cnpj);
+    }
+
+    /**
+     * NOVO MÉTODO: Verifica se uma organização existe pelo CNPJ.
+     * @param cnpj O CNPJ da organização.
+     * @return true se existir, false caso contrário.
+     */
+    @Transactional(readOnly = true)
+    public boolean existeOrganizacaoPorCnpj(String cnpj) {
+        logger.debug("Verificando existência de organização com CNPJ: {}", cnpj);
+        return organizacaoRepository.existsByCnpj(cnpj);
     }
 
     /**
@@ -120,7 +171,7 @@ public class OrganizacaoService {
                 .ifPresent(ong -> {
                     if (!ong.getId().equals(id)) { // Se o e-mail já existe e pertence a OUTRA ONG
                         logger.warn("Atualização de organização ID {} falhou: E-mail de contato {} já existe em outra organização.", id, requestDTO.getEmailContato());
-                        throw new ConflictException("E-mail de contato já cadastrado para outra organização.");
+                        throw new ConflictException("E-mail de contato da organização já cadastrado para outra organização.");
                     }
                 });
 

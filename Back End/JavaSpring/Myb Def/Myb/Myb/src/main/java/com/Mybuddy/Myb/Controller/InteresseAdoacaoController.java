@@ -70,4 +70,15 @@ public class InteresseAdoacaoController { // Controlador de interesses de adoç�
         var resp = service.listarTodos(); // Busca todos os interesses via serviço
         return ResponseEntity.ok(resp); // Retorna 200 OK com a lista completa
     }
+
+    // Lista todos os interesses de adoção para os pets gerenciados pela ONG autenticada
+    @GetMapping("/ongs/me/interesses")
+    @PreAuthorize("hasRole('ONG')") // Apenas ONGs podem ver os interesses de seus pets
+    public ResponseEntity<List<InteresseResponse>> listarInteressesDaMinhaOng(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long organizacaoId = userDetails.getOrganizacaoId(); // Assumindo que você tem o organizacaoId no UserDetailsImpl
+        var resp = service.listarInteressesPorOrganizacao(organizacaoId);
+        return ResponseEntity.ok(resp);
+    }
 }

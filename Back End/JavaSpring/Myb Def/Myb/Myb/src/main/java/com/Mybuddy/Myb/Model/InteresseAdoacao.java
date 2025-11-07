@@ -101,11 +101,11 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
         this.criadoEm = criadoEm;
     }
 
-    public LocalDateTime getAtualizadoEm() { // Método getter para a data de atualização.
+    public LocalDateTime getAtualizadoEm() {
         return AtualizadoEm;
     }
 
-    public void setAtualizadoEm(LocalDateTime atuaziladoEm) { // Método setter para a data de atualização.
-        this.AtualizadoEm= AtualizadoEm;
+    public void setAtualizadoEm(LocalDateTime atualizadoEm) { // Corrigido o nome do parâmetro
+        this.AtualizadoEm = atualizadoEm; // Atribuição correta
     }
 }

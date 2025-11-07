@@ -1,51 +1,53 @@
 package com.Mybuddy.Myb.Service;
 
-// --- Imports Existentes ---
+import com.Mybuddy.Myb.DTO.PetRequestDTO;
+import com.Mybuddy.Myb.DTO.PetResponse;
+import com.Mybuddy.Myb.Model.FotoPet;
+import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Model.Pet;
 import com.Mybuddy.Myb.Model.StatusAdocao;
+import com.Mybuddy.Myb.Repository.FotoPetRepository;
+import com.Mybuddy.Myb.Repository.InteresseAdoacaoRepository;
+import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
 import com.Mybuddy.Myb.Repository.PetRepository;
 import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.Mybuddy.Myb.Repository.InteresseAdoacaoRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-// --- Imports Necessários para DTO e Organização ---
-import com.Mybuddy.Myb.DTO.PetRequestDTO;
-import com.Mybuddy.Myb.Model.Organizacao;
-import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
-
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-// Importação do PetResponse que serve para transação de dados Seguros
-import com.Mybuddy.Myb.DTO.PetResponse;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PetService {
 
+    private static final Logger log = LoggerFactory.getLogger(PetService.class);
+
     private final PetRepository petRepository;
     private final InteresseAdoacaoRepository interesseRepo;
     private final OrganizacaoRepository organizacaoRepository;
+    private final FotoPetRepository fotoPetRepository;
 
-    public PetService(PetRepository petRepository, InteresseAdoacaoRepository interesseRepo, OrganizacaoRepository organizacaoRepository) {
+    public PetService(PetRepository petRepository, InteresseAdoacaoRepository interesseRepo,
+                      OrganizacaoRepository organizacaoRepository, FotoPetRepository fotoPetRepository) {
         this.petRepository = petRepository;
         this.interesseRepo = interesseRepo;
         this.organizacaoRepository = organizacaoRepository;
+        this.fotoPetRepository = fotoPetRepository;
     }
 
-    /**
-     * Cria um novo pet a partir de um PetRequestDTO.
-     * Busca a organização associada pelo ID e a atribui ao pet antes de salvar.
-     * @param petRequestDTO DTO contendo os dados do pet, incluindo o ID da organização.
-     * @return O Pet criado e persistido.
-     * @throws IllegalArgumentException se o ID da organização for nulo ou a organização não for encontrada.
-     */
-    public Pet criarPet(PetRequestDTO petRequestDTO) {
+    @Transactional
+    public PetResponse criarPet(PetRequestDTO petRequestDTO) {
+        log.debug("Iniciando criação de pet para: {}", petRequestDTO.getNome());
         Pet pet = new Pet();
 
         pet.setNome(petRequestDTO.getNome());
@@ -55,15 +57,14 @@ public class PetService {
         pet.setCor(petRequestDTO.getCor());
         pet.setPorte(petRequestDTO.getPorte());
         pet.setSexo(petRequestDTO.getSexo());
-        pet.setImageUrl(petRequestDTO.getImageUrl());
-
+        pet.setPelagem(petRequestDTO.getPelagem());
         pet.setMicrochipado(petRequestDTO.isMicrochipado());
         pet.setVacinado(petRequestDTO.isVacinado());
         pet.setCastrado(petRequestDTO.isCastrado());
         pet.setCidade(petRequestDTO.getCidade());
         pet.setEstado(petRequestDTO.getEstado());
 
-        pet.setStatusAdocao(petRequestDTO.getStatusAdocao() != null ? petRequestDTO.getStatusAdocao() : StatusAdocao.EM_ADOCAO);
+        pet.setStatusAdocao(petRequestDTO.getStatusAdocao() != null ? petRequestDTO.getStatusAdocao() : StatusAdocao.DISPONIVEL);
 
         if (petRequestDTO.getOrganizacaoId() != null) {
             Organizacao organizacao = organizacaoRepository.findById(petRequestDTO.getOrganizacaoId())
@@ -73,7 +74,20 @@ public class PetService {
             throw new IllegalArgumentException("O ID da organização é obrigatório para cadastrar um pet.");
         }
 
-        return petRepository.save(pet);
+        Pet savedPet = petRepository.save(pet);
+        log.debug("Pet salvo no banco de dados com ID: {}", savedPet.getId());
+
+        if (petRequestDTO.getFotosUrls() != null && !petRequestDTO.getFotosUrls().isEmpty()) {
+            boolean primeiraFoto = true;
+            for (String url : petRequestDTO.getFotosUrls()) {
+                FotoPet foto = new FotoPet(url, primeiraFoto, savedPet);
+                savedPet.addFoto(foto);
+                if (primeiraFoto) primeiraFoto = false;
+                log.debug("Adicionada foto ao pet {}: {}", savedPet.getId(), url);
+            }
+        }
+
+        return toPetResponse(savedPet);
     }
 
     public List<Pet> buscarTodosPets() {
@@ -84,91 +98,110 @@ public class PetService {
         return petRepository.findById(id);
     }
 
-    /**
-     * Atualiza os dados de um pet existente a partir de um PetRequestDTO.
-     * @param id ID do pet a ser atualizado.
-     * @param petRequestDTO DTO contendo os dados atualizados do pet.
-     * @return O Pet atualizado e persistido.
-     * @throws IllegalStateException se o pet com o ID não for encontrado.
-     * @throws IllegalArgumentException se o ID da organização fornecido no DTO for inválido.
-     */
-    public Pet atualizarPet(Long id, PetRequestDTO petRequestDTO) {
+    @Transactional
+    public PetResponse atualizarPet(Long id, PetRequestDTO petRequestDTO) {
+        log.debug("Iniciando atualização de pet ID: {}", id);
         Pet petExistente = petRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Pet com ID " + id + " não encontrado."));
 
-        if (petRequestDTO.getNome() != null) petExistente.setNome(petRequestDTO.getNome());
-        if (petRequestDTO.getCor() != null) petExistente.setCor(petRequestDTO.getCor());
-        if (petRequestDTO.getPorte() != null) petExistente.setPorte(petRequestDTO.getPorte());
-        if (petRequestDTO.getIdade() != null) petExistente.setIdade(petRequestDTO.getIdade());
-        if (petRequestDTO.getSexo() != null) petExistente.setSexo(petRequestDTO.getSexo());
-        if (petRequestDTO.getEspecie() != null) petExistente.setEspecie(petRequestDTO.getEspecie());
-        if (petRequestDTO.getRaca() != null) petExistente.setRaca(petRequestDTO.getRaca());
+        Optional.ofNullable(petRequestDTO.getNome()).ifPresent(petExistente::setNome);
+        Optional.ofNullable(petRequestDTO.getCor()).ifPresent(petExistente::setCor);
+        Optional.ofNullable(petRequestDTO.getPorte()).ifPresent(petExistente::setPorte);
+        Optional.ofNullable(petRequestDTO.getIdade()).ifPresent(petExistente::setIdade);
+        Optional.ofNullable(petRequestDTO.getSexo()).ifPresent(petExistente::setSexo);
+        Optional.ofNullable(petRequestDTO.getEspecie()).ifPresent(petExistente::setEspecie);
+        Optional.ofNullable(petRequestDTO.getRaca()).ifPresent(petExistente::setRaca);
+        Optional.ofNullable(petRequestDTO.getPelagem()).ifPresent(petExistente::setPelagem);
+        Optional.ofNullable(petRequestDTO.getCidade()).ifPresent(petExistente::setCidade);
+        Optional.ofNullable(petRequestDTO.getEstado()).ifPresent(petExistente::setEstado);
 
         petExistente.setMicrochipado(petRequestDTO.isMicrochipado());
         petExistente.setVacinado(petRequestDTO.isVacinado());
         petExistente.setCastrado(petRequestDTO.isCastrado());
-        if (petRequestDTO.getCidade() != null) petExistente.setCidade(petRequestDTO.getCidade());
-        if (petRequestDTO.getEstado() != null) petExistente.setEstado(petRequestDTO.getEstado());
 
+        if (petRequestDTO.getFotosUrls() != null) {
+            log.debug("Atualizando fotos para o pet ID {}. Novas URLs: {}", id, petRequestDTO.getFotosUrls());
+            petExistente.clearFotos();
 
-        if (petRequestDTO.getImageUrl() != null && !petRequestDTO.getImageUrl().isBlank()) {
-            petExistente.setImageUrl(petRequestDTO.getImageUrl());
-        } else if (petRequestDTO.getImageUrl() == null) {
-            petExistente.setImageUrl(null);
+            if (!petRequestDTO.getFotosUrls().isEmpty()) {
+                boolean primeiraFoto = true;
+                for (String url : petRequestDTO.getFotosUrls()) {
+                    FotoPet novaFoto = new FotoPet(url, primeiraFoto, petExistente);
+                    petExistente.addFoto(novaFoto);
+                    primeiraFoto = false;
+                }
+            }
         }
 
         if (petRequestDTO.getStatusAdocao() != null) {
             petExistente.setStatusAdocao(petRequestDTO.getStatusAdocao());
         }
 
-        if (petRequestDTO.getOrganizacaoId() != null && !petRequestDTO.getOrganizacaoId().equals(petExistente.getOrganizacao().getId())) {
-            Organizacao novaOrganizacao = organizacaoRepository.findById(petRequestDTO.getOrganizacaoId())
-                    .orElseThrow(() -> new IllegalArgumentException("Nova organização não encontrada com ID: " + petRequestDTO.getOrganizacaoId()));
-            petExistente.setOrganizacao(novaOrganizacao);
+        if (petRequestDTO.getOrganizacaoId() != null) {
+            if (petExistente.getOrganizacao() == null || !petRequestDTO.getOrganizacaoId().equals(petExistente.getOrganizacao().getId())) {
+                Organizacao novaOrganizacao = organizacaoRepository.findById(petRequestDTO.getOrganizacaoId())
+                        .orElseThrow(() -> new IllegalArgumentException("Nova organização não encontrada com ID: " + petRequestDTO.getOrganizacaoId()));
+                petExistente.setOrganizacao(novaOrganizacao);
+            }
+        } else {
+            throw new IllegalArgumentException("O ID da organização é obrigatório para atualizar um pet.");
         }
 
-        return petRepository.save(petExistente);
+        Pet updatedPet = petRepository.save(petExistente);
+        log.debug("Pet ID {} atualizado com sucesso.", id);
+        return toPetResponse(updatedPet);
     }
 
     /**
-     * Método para verificar se o pet pertence à organização do usuário atual.
-     * Usado no @PreAuthorize do Controller.
-     * @param petId O ID do pet a ser verificado.
-     * @param userOrganizationId O ID da organização do usuário logado, obtido do UserDetailsImpl.
-     * @return true se o pet pertence à organização do usuário (se for ONG) ou se o usuário é ADMIN, false caso contrário.
+     * Verifica se o pet pertence à organização do usuário logado (ONG) ou se o usuário é ADMIN.
+     * Método auxiliar para @PreAuthorize.
+     *
+     * @param petId O ID do pet.
+     * @param userOrganizationId O ID da organização do usuário logado (se for ONG). Pode ser null para ADMIN/ADOTANTE.
+     * @return true se o usuário tem permissão para modificar o pet, false caso contrário.
      */
-    public boolean isPetOwnedByCurrentUser(Long petId, Long userOrganizationId) { // <-- ASSINATURA CORRETA
-        // Busca o pet
+    public boolean isPetOwnedByCurrentUser(Long petId, Long userOrganizationId) {
+        log.debug("Verificando posse do pet {}. Organização do usuário: {}", petId, userOrganizationId);
         Optional<Pet> petOptional = petRepository.findById(petId);
         if (petOptional.isEmpty()) {
-            return false; // Pet não existe
+            log.warn("Pet com ID {} não encontrado para verificação de posse.", petId);
+            return false;
         }
         Pet pet = petOptional.get();
 
-        // Obtém a autenticação do contexto de segurança para verificar as roles
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) { // Adicionei verificação de null para authentication
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            log.warn("Tentativa de acesso não autenticada para pet {}.", petId);
             return false;
         }
 
-        // Verifica se o usuário é ADMIN
+        // Verifica se é ADMIN
         if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            return true; // Administradores podem manipular qualquer pet
+            log.debug("Usuário é ADMIN. Acesso concedido para pet {}.", petId);
+            return true;
         }
-        // Verifica se o usuário é ONG e se o pet pertence à sua organização
+        // Verifica se é ONG e se o pet pertence à sua organização
         else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ONG"))) {
-            // Se o pet não tem organização ou a organização do pet é diferente da organização do usuário logado
-            if (pet.getOrganizacao() == null || !pet.getOrganizacao().getId().equals(userOrganizationId)) { // <-- CORREÇÃO AQUI
+            if (pet.getOrganizacao() == null) {
+                log.warn("Pet ID {} não tem organização associada.", petId);
                 return false;
             }
-            return true; // Pet pertence à organização do usuário
+            if (userOrganizationId == null) {
+                log.warn("ID da organização do usuário nulo para ONG ao verificar pet {}.", petId);
+                return false;
+            }
+            boolean isOwner = pet.getOrganizacao().getId().equals(userOrganizationId);
+            log.debug("Usuário é ONG. Pet ID {} pertence à organização do usuário ({}): {}", petId, userOrganizationId, isOwner);
+            return isOwner;
         }
-        return false; // Outros roles não são proprietários ou não há correspondência
+        log.warn("Usuário sem permissão adequada para pet {}.", petId);
+        return false;
     }
 
 
     @Transactional
     public void deletarPet(Long id) {
+        log.debug("Iniciando exclusão de pet ID: {}", id);
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Pet com ID " + id + " não encontrado."));
 
@@ -182,44 +215,73 @@ public class PetService {
         }
 
         petRepository.deleteById(id);
+        log.debug("Pet ID {} excluído com sucesso.", id);
+    }
+
+    // --- NOVO MÉTODO PARA BUSCAR PETS POR ID DA ORGANIZAÇÃO ---
+    public List<PetResponse> buscarPetsPorOrganizacaoId(Long organizacaoId) {
+        log.debug("Buscando pets pela organização ID: {}", organizacaoId);
+        return petRepository.findByOrganizacaoId(organizacaoId) // Chamada ao método do PetRepository
+                .stream()
+                .map(this::toPetResponse)
+                .collect(Collectors.toList());
     }
 
 
-    public Page<Pet> buscarComFiltros(PetFiltro filtro, Pageable pageable) {
-        return petRepository.findAll(PetSpecification.comFiltros(filtro), pageable);
+    private PetResponse toPetResponse(Pet p) {
+        List<String> fotosUrls = p.getFotos().stream()
+                .sorted(Comparator.comparing(FotoPet::isPrincipal).reversed())
+                .map(FotoPet::getUrl)
+                .collect(Collectors.toList());
+
+        String statusDescricao = mapStatusAdocaoToFriendlyText(p.getStatusAdocao());
+
+        return new PetResponse(
+                p.getId(),
+                p.getNome(),
+                p.getEspecie(),
+                p.getRaca(),
+                p.getIdade(),
+                p.getPorte(),
+                p.getCor(),
+                p.getPelagem(),
+                p.getSexo(),
+                fotosUrls,
+                statusDescricao,
+                p.getStatusAdocao(),
+                p.getOrganizacao() != null ? p.getOrganizacao().getNomeFantasia() : null,
+                p.getOrganizacao() != null ? p.getOrganizacao().getId() : null,
+                p.isMicrochipado(),
+                p.isVacinado(),
+                p.isCastrado(),
+                p.getCidade(),
+                p.getEstado()
+        );
     }
+
+    /**
+     * Mapeia o enum StatusAdocao para um texto amigável em português.
+     * @param status O StatusAdocao a ser mapeado.
+     * @return A descrição amigável do status.
+     */
+    private String mapStatusAdocaoToFriendlyText(StatusAdocao status) {
+        switch (status) {
+            case DISPONIVEL: return "Disponível para Adoção";
+            case RESERVADO: return "Reservado para Adoção";
+            case ADOTADO: return "Adotado";
+            case INDISPONIVEL: return "Indisponível para Adoção";
+            default: return "Não Informado";
+        }
+    }
+
 
     public Page<PetResponse> buscarComFiltrosDTO(PetFiltro filtro, Pageable pageable) {
         return petRepository.findAll(PetSpecification.comFiltros(filtro), pageable)
-                .map(p -> new PetResponse(
-                        p.getId(),
-                        p.getNome(),
-                        p.getEspecie(),
-                        p.getRaca(),
-                        p.getIdade(),
-                        p.getPorte(),
-                        p.getCor(),
-                        p.getSexo(),
-                        p.getImageUrl(),
-                        p.getStatusAdocao(),
-                        p.getOrganizacao() != null ? p.getOrganizacao().getNomeFantasia() : null
-                ));
+                .map(this::toPetResponse);
     }
 
     public Optional<PetResponse> buscarPetPorIdDTO(Long id) {
         return petRepository.findById(id)
-                .map(p -> new PetResponse(
-                        p.getId(),
-                        p.getNome(),
-                        p.getEspecie(),
-                        p.getRaca(),
-                        p.getIdade(),
-                        p.getPorte(),
-                        p.getCor(),
-                        p.getSexo(),
-                        p.getImageUrl(),
-                        p.getStatusAdocao(),
-                        p.getOrganizacao() != null ? p.getOrganizacao().getNomeFantasia() : null
-                ));
+                .map(this::toPetResponse);
     }
 }

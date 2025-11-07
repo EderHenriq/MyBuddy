@@ -10,28 +10,25 @@ const modalTitle = document.getElementById("modalTitle"); // Título do modal de
 const addEditPetForm = document.getElementById("addEditPetForm");
 const submitPetBtn = document.getElementById("submitPetBtn");
 const petIdInput = document.getElementById("pet-id"); // Campo hidden para ID do pet
-
 const filterModal = document.getElementById("filterModal");
 const closeFilterModalBtn = document.getElementById("closeFilterModal");
 const openFilterModalBtn = document.getElementById("openFilterModalBtn"); // Botão "Mostrar Filtros"
 const advancedFiltersForm = document.getElementById("advancedFiltersForm");
-
-// NOVO: Seletores para o modal de detalhes
 const petDetailsModal = document.getElementById("petDetailsModal"); // O SEU NOVO MODAL DE DETALHES
 const closePetDetailsModalBtn = document.getElementById("closePetDetailsModal");
 const detailsModalTitle = document.getElementById("detailsModalTitle"); // Título do modal de detalhes (NOVO)
 const detailsPetImage = document.getElementById("details-pet-image");
-const detailPetName = document.getElementById("detail-pet-name"); // Corrigido para detail-pet-name
+const detailPetName = document.getElementById("detail-pet-name");
 const detailPetSpecies = document.getElementById("detail-pet-species");
-const detailPetBreed = document.getElementById("detail-pet-race"); // Corrigido para detail-pet-race (seu HTML)
+const detailPetBreed = document.getElementById("detail-pet-race");
 const detailPetAge = document.getElementById("detail-pet-age");
 const detailPetGender = document.getElementById("detail-pet-gender");
-const detailPetSize = document.getElementById("detail-pet-port"); // Corrigido para detail-pet-port (seu HTML)
+const detailPetSize = document.getElementById("detail-pet-port");
 const detailPetColor = document.getElementById("detail-pet-color");
 const detailPetCoat = document.getElementById("detail-pet-coat");
-const detailPetVaccinated = document.getElementById("detail-pet-vacinado"); // Corrigido para detail-pet-vacinado
-const detailPetNeutered = document.getElementById("detail-pet-castrado"); // Corrigido para detail-pet-castrado
-const detailPetMicrochipped = document.getElementById("detail-pet-microchipado"); // Corrigido para detail-pet-microchipado
+const detailPetVaccinated = document.getElementById("detail-pet-vacinado");
+const detailPetNeutered = document.getElementById("detail-pet-castrado");
+const detailPetMicrochipped = document.getElementById("detail-pet-microchipado");
 const detailPetStatus = document.getElementById("detail-pet-status");
 const detailPetShelter = document.getElementById("detail-pet-shelter");
 const detailPetCity = document.getElementById("detail-pet-city");
@@ -58,7 +55,7 @@ const petShelterSelect = document.getElementById("pet-shelter"); // Seleciona o 
 const filterShelterSelect = document.getElementById("filter-shelter"); // Seleciona o select de ONG/Tutor nos filtros
 
 // Backend URL
-const API_BASE_URL = "http://localhost:8080/api"; // URL base da sua API
+const API_BASE_URL = 'http://localhost:8080/api';// URL base da sua API
 
 // Arrays para guardar os pets e organizações
 let allPets = []; // Todos os pets carregados do backend
@@ -98,7 +95,6 @@ function clearAddEditPetForm() {
     submitPetBtn.textContent = "Adicionar Pet"; // Volta o texto do botão para "Adicionar Pet"
     modalTitle.textContent = "Adicionar Novo Pet"; // Volta o título do modal
     delete petImageInput.dataset.existingImageUrl; // Limpa a URL da imagem existente
-    // Garante que os checkboxes voltem ao estado padrão (desmarcados, ou como definido pelo reset())
     document.getElementById("pet-vaccinated").checked = false;
     document.getElementById("pet-neutered").checked = false;
     document.getElementById("pet-microchipped").checked = false;
@@ -139,19 +135,127 @@ function displayImagePreviews(files) {
  * Mapeia o valor do Enum `StatusAdocao` para um texto amigável.
  * @param {string} status Enum `StatusAdocao` (ex: "EM_ADOCAO").
  * @returns {string} Texto amigável (ex: "Em Adoção Temporária").
-*/
+ */
 function mapStatusAdocaoToFriendlyText(status) {
-    switch (status) {
-        case "EM_ADOCAO":
-            return "Em Adoção Temporária";
+    if (!status) return "Não informado";
+    switch (status.toUpperCase()) {
         case "ADOTADO":
             return "Adotado";
         case "RESERVADO":
             return "Reservado";
         case "INDISPONIVEL":
             return "Indisponível para Adoção";
-        case "DISPONIVEL": // Novo status
+        case "DISPONIVEL":
             return "Disponível para Adoção";
+        default:
+            return "Não informado";
+    }
+}
+
+/**
+ * Mapeia o valor do Enum `Especie` para um texto amigável.
+ * @param {string} especie Enum `Especie` (ex: "CAO").
+ * @returns {string} Texto amigável (ex: "Cachorro").
+ */
+function mapEspecieToFriendlyText(especie) {
+    if (!especie) return "Não informada";
+    switch (especie.toUpperCase()) { // Converte para maiúsculas antes de comparar
+        case "CAO":
+        case "DOG": // Se o backend envia "Dog"
+            return "Cachorro";
+        case "GATO":
+        case "CAT": // Se o backend envia "Cat"
+            return "Gato";
+        case "COELHO":
+        case "RABBIT": // Se o backend envia "Rabbit"
+            return "Coelho";
+        case "PASSARO":
+        case "BIRD": // Se o backend envia "Bird"
+            return "Pássaro";
+        case "ROEDOR":
+        case "RODENT": // Se o backend envia "Rodent"
+            return "Roedor";
+        case "PEIXE":
+        case "FISH": // Se o backend envia "Fish"
+            return "Peixe";
+        case "OUTROS":
+        case "OTHER": // Se o backend envia "Other"
+            return "Outros";
+        // Se houver outras espécies que você cadastrou no backend e que não estão na lista acima,
+        // adicione-as aqui também. Exemplo:
+        // case "DRAGAO":
+        //    return "Dragão";
+        default:
+            return "Não informada";
+    }
+}
+
+/**
+ * Mapeia o valor do Enum `Porte` para um texto amigável.
+ * @param {string} porte Enum `Porte` (ex: "MEDIO").
+ * @returns {string} Texto amigável (ex: "Médio").
+ */
+function mapPorteToFriendlyText(porte) {
+    if (!porte) return "Não informado";
+    switch (porte.toUpperCase()) {
+        case "PEQUENO":
+        case "SMALL": // Adicionado: se o backend envia "Small"
+            return "Pequeno";
+        case "MEDIO":
+        case "MEDIUM": // Adicionado: se o backend envia "Medium"
+            return "Médio";
+        case "GRANDE":
+        case "LARGE": // Adicionado: se o backend envia "Large"
+            return "Grande";
+        // Se você tiver outras opções de porte, adicione aqui
+        default:
+            return "Não informado";
+    }
+}
+
+/**
+ * Mapeia o valor do Enum `Pelagem` para um texto amigável.
+ * @param {string} pelagem Enum `Pelagem` (ex: "CURTA").
+ * @returns {string} Texto amigável (ex: "Curta").
+ */
+function mapPelagemToFriendlyText(pelagem) {
+    if (!pelagem || pelagem.trim() === '') return "Não informada";
+    const normalizedPelagem = pelagem.toUpperCase().trim();
+
+    if (normalizedPelagem === 'NÃO INFORMADO' || normalizedPelagem === 'NAO INFORMADO') {
+        return "Não informada";
+    }
+
+    switch (normalizedPelagem) {
+        case "CURTA":
+        case "SHORT": // Adicionado: se o backend envia "Short"
+            return "Curta";
+        case "MEDIA":
+        case "MEDIUM": // Adicionado: se o backend envia "Medium"
+            return "Média";
+        case "LONGA":
+        case "LONG": // Adicionado: se o backend envia "Long"
+            return "Longa";
+        // Adicione outros casos de pelagem se houver
+        default:
+            return "Não informada";
+    }
+}
+
+/**
+ * Mapeia o valor do Enum `Sexo` para um texto amigável.
+ * @param {string} sexo Enum `Sexo` (ex: "MACHO").
+ * @returns {string} Texto amigável (ex: "Macho").
+ */
+function mapSexoToFriendlyText(sexo) {
+    if (!sexo) return "Não informado";
+    switch (sexo.toUpperCase()) {
+        case "MACHO":
+        case "M": // Mantido, pois o JSON mostra "M"
+            return "Macho";
+        case "FEMEA":
+        case "F": // Adicionado para consistência
+            return "Fêmea";
         default:
             return "Não informado";
     }
@@ -163,7 +267,9 @@ function mapStatusAdocaoToFriendlyText(status) {
  * @returns {string} "Sim" ou "Não".
  */
 function mapBooleanToText(value) {
-    return value ? 'Sim' : 'Não';
+    if (value === true) return 'Sim';
+    if (value === false) return 'Não';
+    return 'Não informado'; // Adicionado para lidar com null/undefined, se ocorrer
 }
 
 // ===========================================
@@ -207,6 +313,7 @@ function applyRolePermissions() {
 
     const isOngOrAdmin = currentRole === "ROLE_ONG" || currentRole === "ROLE_ADMIN";
     const isAdmin = currentRole === "ROLE_ADMIN";
+    const isAdotante = currentRole === "ROLE_ADOTANTE";
 
     // Botão "Adicionar novo Pet"
     if (openAddPetModalBtn) {
@@ -249,10 +356,6 @@ function applyRolePermissions() {
             if (adoptedOption) adoptedOption.style.display = 'block';
         }
     }
-
-    // Desabilita campos para ADOTANTE no modal de adicionar/editar se ele abrir
-    // Esta parte agora é mais específica para o modo "somente leitura"
-    // e é chamada pela `fillAddEditPetForm` e `openAddPetModalBtn`
 }
 
 
@@ -332,28 +435,37 @@ function populateOrganizationSelects(organizations) {
 function createPetCard(pet) {
     const card = document.createElement("article");
     card.classList.add("pets-card");
-    card.setAttribute("data-pet-id", pet.id); // Renomeado para data-pet-id para evitar conflitos
+    card.setAttribute("data-pet-id", pet.id);
 
-    const imageUrl = pet.imageUrl
-        ? (pet.imageUrl.startsWith('http') ? pet.imageUrl : `http://localhost:8080/uploads/${pet.imageUrl}`)
-        : '../src/assets/imgs/placeholder.jpg'; // Caminho para o placeholder local (ajustado para src/assets)
+    // Corrigido para lidar com a URL completa vinda do backend ou apenas o nome do arquivo
+    // Assumimos que pet.fotosUrls é um array de strings [ "nome_do_arquivo.png" ]
+    const imageUrlFromBackend = pet.fotosUrls && pet.fotosUrls.length > 0 ? pet.fotosUrls[0] : null;
+
+    let finalImageUrl = '../src/assets/imgs/placeholder.jpg'; // Default para o placeholder local
+
+    if (imageUrlFromBackend && typeof imageUrlFromBackend === 'string' && imageUrlFromBackend.length > 0) {
+        // Constrói a URL completa usando o BASE_URL do backend para os uploads
+        // API_BASE_URL.replace('/api', '') garante que removemos o /api do final, deixando apenas http://localhost:8080
+        finalImageUrl = `${API_BASE_URL.replace('/api', '')}/uploads/${imageUrlFromBackend}`;
+    }
 
     // Encontra o nome da organização pelo ID
     const organizationName = allOrganizations.find(org => org.id === pet.organizacaoId)?.nomeFantasia || 'Não Informado';
 
     card.innerHTML = `
-        <img src="${imageUrl}" alt="Foto de ${pet.nome}" class="pet-photo">
+        <img src="${finalImageUrl}" alt="Foto de ${pet.nome}" class="pet-photo">
         <div class="pet-info">
             <h3 class="pet-name">${pet.nome}</h3>
             <p class="pet-breed">Raça: ${pet.raca || "Não informada"}</p>
             <p class="pet-age">Idade: ${pet.idade} ${pet.idade > 1 ? 'anos' : 'ano'}</p>
-            <p class="pet-gender">Sexo: ${pet.sexo === 'M' ? 'Macho' : 'Fêmea'}</p>
+            <p class="pet-gender">Sexo: ${mapSexoToFriendlyText(pet.sexo)}</p>
             <p class="pet-status">Status: ${mapStatusAdocaoToFriendlyText(pet.statusAdocao)}</p>
             <p class="pet-organization">ONG/Tutor: ${organizationName}</p>
             <div class="pet-actions">
                 <button class="view-details primary-btn"><i class="fas fa-info-circle"></i> Ver detalhes</button>
                 <button class="pet-edit secondary-btn"><i class="fas fa-edit"></i> Editar</button>
                 <button class="pet-delete logout-btn"><i class="fas fa-trash-alt"></i> Excluir</button>
+                <button class="manifestar-interesse success-btn"><i class="fas fa-heart"></i> Manifestar Interesse</button>
             </div>
         </div>
     `;
@@ -362,12 +474,23 @@ function createPetCard(pet) {
     const btnDetails = card.querySelector(".view-details");
     const btnEdit = card.querySelector(".pet-edit");
     const btnDelete = card.querySelector(".pet-delete");
+    const btnManifestarInteresse = card.querySelector(".manifestar-interesse"); // NOVO BOTÃO
 
     const isOngOrAdmin = currentRole === "ROLE_ONG" || currentRole === "ROLE_ADMIN";
-    
+    const isAdotante = currentRole === "ROLE_ADOTANTE";
+
     // Esconder/mostrar botões de editar/excluir baseados na role
     if (btnEdit) btnEdit.style.display = isOngOrAdmin ? "flex" : "none";
     if (btnDelete) btnDelete.style.display = isOngOrAdmin ? "flex" : "none";
+
+    // Mostrar botão Manifestar Interesse apenas para adotantes e se o pet estiver "DISPONIVEL" ou "EM_ADOCAO"
+    if (btnManifestarInteresse) {
+        if (isAdotante && pet.statusAdocao === 'DISPONIVEL') { // Mantive apenas DISPONIVEL por enquanto, confirme se EM_ADOCAO também deve permitir interesse
+            btnManifestarInteresse.style.display = "flex";
+        } else {
+            btnManifestarInteresse.style.display = "none";
+        }
+    }
 
     // Adiciona event listeners aos botões
     btnDetails.addEventListener("click", (e) => {
@@ -375,7 +498,7 @@ function createPetCard(pet) {
         displayPetDetails(pet); // Chama a nova função para exibir os detalhes no modal
     });
 
-    if (btnEdit) { 
+    if (btnEdit) {
         btnEdit.addEventListener("click", (e) => {
             e.stopPropagation();
             fillAddEditPetForm(pet); // Preenche o formulário para edição
@@ -383,12 +506,19 @@ function createPetCard(pet) {
         });
     }
 
-    if (btnDelete) { 
+    if (btnDelete) {
         btnDelete.addEventListener("click", (e) => {
             e.stopPropagation();
             if (confirm(`Tem certeza que deseja excluir o pet ${pet.nome}?`)) {
                 deletePet(pet.id);
             }
+        });
+    }
+
+    if (btnManifestarInteresse) {
+        btnManifestarInteresse.addEventListener("click", (e) => {
+            e.stopPropagation();
+            manifestarInteresse(pet.id); // Nova função para manifestar interesse
         });
     }
 
@@ -425,40 +555,50 @@ function fillAddEditPetForm(pet) {
     // Mapeamento direto pelos `id`s dos elementos do formulário
     document.getElementById("pet-name").value = pet.nome || '';
     document.getElementById("pet-species").value = pet.especie || '';
-    document.getElementById("pet-breed").value = pet.raca || ''; // Corrigido para `pet-breed`
+    document.getElementById("pet-breed").value = pet.raca || '';
     document.getElementById("pet-age").value = pet.idade || '';
     document.getElementById("pet-gender").value = pet.sexo || '';
-    document.getElementById("pet-size").value = pet.porte || ''; // Corrigido para `pet-size`
+    document.getElementById("pet-size").value = pet.porte || '';
     document.getElementById("pet-color").value = pet.cor || '';
     document.getElementById("pet-coat").value = pet.pelagem || '';
-    
+
     // Campos booleanos (checkboxes)
     document.getElementById("pet-vaccinated").checked = pet.vacinado || false;
     document.getElementById("pet-neutered").checked = pet.castrado || false;
     document.getElementById("pet-microchipped").checked = pet.microchipado || false;
-    
+
+    // NOVO: Preenche o select de status de adoção
     document.getElementById("pet-availability").value = pet.statusAdocao || '';
 
     // Preenche o select de organização com o ID da organização do pet
-    if (pet.organizacaoId) {
+    // O backend agora retorna o objeto `organizacao` dentro do `petResponse`,
+    // mas o `pet.organizacaoId` ainda é o caminho mais direto para o ID.
+    // Garantir que `pet.organizacaoId` está disponível.
+    if (pet.organizacaoId) { // Assumindo que o PetResponse ainda retorna organizacaoId
         petShelterSelect.value = pet.organizacaoId;
     } else {
         petShelterSelect.value = ""; // Nenhuma organização selecionada
     }
-    
+
     document.getElementById("pet-city").value = pet.cidade || '';
     document.getElementById("pet-state").value = pet.estado || '';
 
     // Se tiver uma imagem já, exibe a prévia
     photosPreview.innerHTML = "";
-    if (pet.imageUrl) {
+    // Adição para pegar o primeiro URL da lista fotosUrls, como no createPetCard
+    const currentImageUrlFromBackend = pet.fotosUrls && pet.fotosUrls.length > 0 ? pet.fotosUrls[0] : null;
+
+    if (currentImageUrlFromBackend) {
         photosPreview.classList.add('has-images');
+        // Usar a mesma lógica de imageUrl do createPetCard para garantir que a imagem seja carregada corretamente
+        const imgDisplayUrl = `${API_BASE_URL.replace('/api', '')}/uploads/${currentImageUrlFromBackend}`;
         const img = document.createElement("img");
-        img.src = pet.imageUrl.startsWith('http') ? pet.imageUrl : `http://localhost:8080/uploads/${pet.imageUrl}`;
+        img.src = imgDisplayUrl;
         img.alt = `Foto de ${pet.nome}`;
         photosPreview.appendChild(img);
-        // Salva a URL da imagem existente para não perdê-la em caso de não upload de nova imagem
-        petImageInput.dataset.existingImageUrl = pet.imageUrl;
+        // Salva a URL *relativa/nome do arquivo* da imagem existente para não perdê-la em caso de não upload de nova imagem
+        // Pois o backend espera apenas o nome do arquivo para PUT
+        petImageInput.dataset.existingImageUrl = currentImageUrlFromBackend;
     } else {
         photosPreview.classList.remove('has-images');
         photosPreview.innerHTML = '<span>Nenhuma imagem selecionada.</span>'; // Placeholder
@@ -481,33 +621,49 @@ function fillAddEditPetForm(pet) {
  */
 function displayPetDetails(pet) {
     // Título do modal de detalhes
-    detailsModalTitle.textContent = `Detalhes de ${pet.nome}`; 
+    detailsModalTitle.textContent = `Detalhes de ${pet.nome}`;
 
     // Imagem do pet
-    detailsPetImage.src = pet.imageUrl
-        ? (pet.imageUrl.startsWith('http') ? pet.imageUrl : `http://localhost:8080/uploads/${pet.imageUrl}`)
-        : '../src/assets/imgs/placeholder.jpg'; // Corrigido o caminho do placeholder
+    // Corrigido para lidar com a URL completa vinda do backend ou apenas o nome do arquivo
+    // Assumimos que pet.fotosUrls é um array de strings [ "nome_do_arquivo.png" ]
+    const detailsImageUrlFromBackend = pet.fotosUrls && pet.fotosUrls.length > 0 ? pet.fotosUrls[0] : null;
+
+    let finalDetailsImageUrl = '../src/assets/imgs/placeholder.jpg'; // Default para o placeholder local
+
+    if (detailsImageUrlFromBackend && typeof detailsImageUrlFromBackend === 'string' && detailsImageUrlFromBackend.length > 0) {
+        finalDetailsImageUrl = `${API_BASE_URL.replace('/api', '')}/uploads/${detailsImageUrlFromBackend}`;
+    }
+    detailsPetImage.src = finalDetailsImageUrl;
     detailsPetImage.alt = `Foto de ${pet.nome}`;
 
-    // Preenche os campos de detalhes usando os seletores corrigidos
+    // Preenche os campos de detalhes usando os seletores corrigidos e funções de mapeamento
     detailPetName.textContent = pet.nome || 'Não informado';
-    detailPetSpecies.textContent = pet.especie || 'Não informado';
-    detailPetBreed.textContent = pet.raca || 'Não informada'; // Mapeia `pet.raca` para `detail-pet-race`
+    // Utiliza as novas funções de mapeamento para tradução dos enums
+    detailPetSpecies.textContent = mapEspecieToFriendlyText(pet.especie);
+    detailPetBreed.textContent = pet.raca || 'Não informada';
     detailPetAge.textContent = (pet.idade !== undefined && pet.idade !== null) ? `${pet.idade} ${pet.idade > 1 ? 'anos' : 'ano'}` : 'Não informado';
-    detailPetGender.textContent = (pet.sexo === 'M' ? 'Macho' : (pet.sexo === 'F' ? 'Fêmea' : 'Não informado'));
-    detailPetSize.textContent = pet.porte || 'Não informado'; // Mapeia `pet.porte` para `detail-pet-port`
+    detailPetGender.textContent = mapSexoToFriendlyText(pet.sexo);
+    detailPetSize.textContent = mapPorteToFriendlyText(pet.porte);
     detailPetColor.textContent = pet.cor || 'Não informada';
-    detailPetCoat.textContent = pet.pelagem || 'Não informada';
-    
-    detailPetVaccinated.textContent = mapBooleanToText(pet.vacinado); // Mapeia `pet.vacinado` para `detail-pet-vacinado`
-    detailPetNeutered.textContent = mapBooleanToText(pet.castrado); // Mapeia `pet.castrado` para `detail-pet-castrado`
-    detailPetMicrochipped.textContent = mapBooleanToText(pet.microchipado); // Mapeia `pet.microchipado` para `detail-pet-microchipado`
-    
+    detailPetCoat.textContent = mapPelagemToFriendlyText(pet.pelagem);
+
+    detailPetVaccinated.textContent = mapBooleanToText(pet.vacinado);
+    detailPetNeutered.textContent = mapBooleanToText(pet.castrado);
+    detailPetMicrochipped.textContent = mapBooleanToText(pet.microchipado);
+
     detailPetStatus.textContent = mapStatusAdocaoToFriendlyText(pet.statusAdocao);
-    
-    const organization = allOrganizations.find(org => org.id === pet.organizacaoId);
-    detailPetShelter.textContent = organization ? organization.nomeFantasia : 'Não informado';
-    
+
+    // O backend agora envia `organizacao.nomeFantasia` diretamente dentro do DTO do pet
+    // Então, podemos acessar `pet.organizacao.nomeFantasia` se o `organizacao` for um objeto completo.
+    // Se o `organizacaoId` ainda estiver presente, usamos ele para buscar no `allOrganizations`.
+    // Priorizamos `pet.organizacao.nomeFantasia` se disponível.
+    if (pet.organizacao && pet.organizacao.nomeFantasia) {
+        detailPetShelter.textContent = pet.organizacao.nomeFantasia;
+    } else {
+        const organization = allOrganizations.find(org => org.id === pet.organizacaoId);
+        detailPetShelter.textContent = organization ? organization.nomeFantasia : 'Não informado';
+    }
+
     detailPetCity.textContent = pet.cidade || 'Não informado';
     detailPetState.textContent = pet.estado || 'Não informado';
 
@@ -523,11 +679,11 @@ async function fetchPets(filters = {}) {
     try {
         const queryParams = new URLSearchParams(filters).toString();
         const url = `${API_BASE_URL}/pets${queryParams ? `?${queryParams}` : ''}`;
-        
+
         const token = localStorage.getItem('accessToken'); // Pega o token JWT
 
         const headers = {
-            'Content-Type': 'application/json' 
+            'Content-Type': 'application/json'
         };
         if (token) {
             headers['Authorization'] = `Bearer ${token}`; // Adiciona o token no cabeçalho
@@ -535,7 +691,7 @@ async function fetchPets(filters = {}) {
 
         const res = await fetch(url, {
             method: 'GET',
-            headers: headers 
+            headers: headers
         });
 
         if (!res.ok) {
@@ -547,12 +703,12 @@ async function fetchPets(filters = {}) {
             throw new Error(`Erro ao buscar pets: ${res.status} - ${errorText}`);
         }
         const data = await res.json();
-        allPets = data.content || []; 
-        renderPets(allPets); 
+        allPets = data.content || [];
+        renderPets(allPets);
     } catch (err) {
         console.error("Erro ao buscar pets:", err);
         alert(`Não foi possível carregar os pets: ${err.message}`);
-        renderPets([]); 
+        renderPets([]);
     }
 }
 
@@ -565,27 +721,27 @@ async function fetchPets(filters = {}) {
 async function sendPetToBackend(petData, method, petId = null) {
     try {
         const url = petId ? `${API_BASE_URL}/pets/${petId}` : `${API_BASE_URL}/pets`;
-        const token = localStorage.getItem('accessToken'); 
+        const token = localStorage.getItem('accessToken');
 
         const res = await fetch(url, {
             method: method,
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}` 
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(petData),
         });
 
         if (!res.ok) {
-            const errorBody = await res.json(); 
+            const errorBody = await res.json();
             throw new Error(`Erro na operação: ${res.status} - ${errorBody.message || 'Erro desconhecido'}`);
         }
 
-        await res.json(); 
+        await res.json();
         alert(`Pet ${method === 'POST' ? 'cadastrado' : 'atualizado'} com sucesso!`);
         closeModal(addEditPetModal);
         clearAddEditPetForm();
-        fetchPets(); 
+        fetchPets();
     } catch (err) {
         console.error(`Erro ao ${method === 'POST' ? 'cadastrar' : 'atualizar'} pet:`, err);
         alert(`Erro: ${err.message}`);
@@ -612,10 +768,46 @@ async function deletePet(petId) {
         }
 
         alert("Pet excluído com sucesso!");
-        fetchPets(); 
+        fetchPets();
     } catch (err) {
         console.error("Erro ao excluir pet:", err);
         alert(`Erro: ${err.message}`);
+    }
+}
+
+/**
+ * Manifesta interesse em adotar um pet.
+ * @param {number} petId O ID do pet no qual o usuário deseja manifestar interesse.
+ */
+async function manifestarInteresseNoPet(petId, mensagem) {
+    const jwtToken = localStorage.getItem("accessToken"); // Certifique-se de pegar o token aqui também!
+
+    if (!jwtToken) {
+        alert("Você precisa estar logado para manifestar interesse.");
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/interesses`, { // Ou use "http://localhost:8080/api/interesses"
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${jwtToken}` // <--- ISSO É CRUCIAL!
+            },
+            body: JSON.stringify({ petId: petId, mensagem: mensagem })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Erro ao manifestar interesse.");
+        }
+
+        alert("Interesse manifestado com sucesso!");
+        // Fechar modal ou atualizar UI
+    } catch (error) {
+        console.error("Erro ao manifestar interesse:", error);
+        alert("Erro ao manifestar interesse: " + error.message);
     }
 }
 
@@ -624,7 +816,7 @@ async function deletePet(petId) {
 // EVENT LISTENERS GERAIS
 // ===========================================
 
-document.addEventListener("DOMContentLoaded", async () => { 
+document.addEventListener("DOMContentLoaded", async () => {
     console.log("Script pet-control.js carregado!");
 
     // Carrega as organizações primeiro, pois são necessárias para os selects e para renderizar os pets
@@ -635,13 +827,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Abrir modal de Adicionar/Editar Pet
     if (openAddPetModalBtn) {
         openAddPetModalBtn.addEventListener("click", () => {
-            clearAddEditPetForm(); 
+            clearAddEditPetForm();
             // Garante que os campos estão habilitados para um novo cadastro
             addEditPetForm.querySelectorAll('input, select, textarea').forEach(field => {
                 field.removeAttribute('disabled');
             });
-            if (petImageInput) petImageInput.style.display = 'block'; 
-            if (submitPetBtn) submitPetBtn.style.display = 'block'; 
+            if (petImageInput) petImageInput.style.display = 'block';
+            if (submitPetBtn) submitPetBtn.style.display = 'block';
             openModal(addEditPetModal);
             applyRolePermissions(); // Re-aplica permissões para configurar o select de ONG
         });
@@ -722,11 +914,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const formData = new FormData(addEditPetForm);
             let petData = {};
 
-            // Mapeia os dados do formulário para o petData usando os `name`s dos inputs
-            // Os `name` dos inputs no seu HTML são:
-            // nome, especie, raca, idade, sexo, porte, cor, pelagem, vacinado, castrado, microchipado,
-            // statusAdocao, organizacaoId, cidade, estado
-            
             // Inicializa todos os checkboxes como false, caso não venham do formData
             const checkboxFields = ['vacinado', 'castrado', 'microchipado'];
             checkboxFields.forEach(field => {
@@ -735,18 +922,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             for (let [key, value] of formData.entries()) {
                 // Ignora o campo de upload de arquivo aqui, pois será tratado separadamente
-                if (key === 'pet-photos') continue; 
-                
+                if (key === 'pet-photos') continue;
+
                 // Converte idade para número
-                if (key === 'idade') { 
+                if (key === 'idade') {
                     petData[key] = parseInt(value, 10);
-                } 
+                }
                 // Mapeia o ID da organização para 'organizacaoId'
-                else if (key === 'organizacaoId') { 
+                else if (key === 'organizacaoId') {
                     if (value && value !== "") {
                         petData.organizacaoId = parseInt(value, 10);
                     } else {
-                        petData.organizacaoId = null; 
+                        petData.organizacaoId = null;
                     }
                 }
                 // Campos checkbox: se estiverem no formData, significa que foram marcados
@@ -755,7 +942,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 // Outros campos de texto e selects
                 else {
-                    petData[key] = value; 
+                    petData[key] = value;
                 }
             }
 
@@ -769,28 +956,27 @@ document.addEventListener("DOMContentLoaded", async () => {
                     return;
                 }
             }
-            
+
             // Validação final da organizacaoId antes de enviar (se for um campo visível e editável)
             // Se o campo de seleção de organização estiver visível E não estiver desabilitado E não tiver um valor válido
             if (petShelterSelect.style.display !== 'none' && !petShelterSelect.hasAttribute('disabled') && (!petData.organizacaoId || isNaN(petData.organizacaoId))) {
                 alert("Por favor, selecione uma ONG/Tutor para o pet.");
                 return; // Impede o envio do formulário
             }
-            
+
             // Verifica se o pet já tem uma imagem e a mantém se não houver novo upload
-            let imageUrl = ''; 
-            const existingImageUrl = petImageInput.dataset.existingImageUrl; 
+            let imageUrl = '';
+            const existingImageUrl = petImageInput.dataset.existingImageUrl;
             if (petImageInput.files.length === 0 && existingImageUrl) {
-                // Remove a URL base para enviar apenas o nome do arquivo para o backend
-                // Assumindo que o backend espera apenas o nome do arquivo, não a URL completa
-                imageUrl = existingImageUrl.replace('http://localhost:8080/uploads/', ''); 
+                // Já está salvo no dataset.existingImageUrl apenas o nome do arquivo.
+                imageUrl = existingImageUrl;
             }
 
             // Processa o upload da imagem SOMENTE se um novo arquivo foi selecionado
             if (petImageInput.files.length > 0) {
                 const file = petImageInput.files[0];
                 const fd = new FormData();
-                fd.append("file", file); 
+                fd.append("file", file);
 
                 try {
                     const token = localStorage.getItem('accessToken');
@@ -805,15 +991,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                         const errorText = await res.text();
                         throw new Error(`Erro no upload da imagem: ${res.status} - ${errorText}`);
                     }
-                    imageUrl = await res.text(); // A API deve retornar o nome do arquivo ou a URL relativa
+                    // O backend retorna a URL completa, precisamos extrair apenas o nome do arquivo
+                    const fullImageUrl = await res.text();
+                    imageUrl = fullImageUrl.split('/').pop();
                     alert("Imagem enviada com sucesso!");
                 } catch (err) {
                     console.error("Erro no upload da imagem:", err);
                     alert(`Erro no upload da imagem: ${err.message}`);
-                    return; 
+                    return;
                 }
             }
-            petData.imageUrl = imageUrl; 
+            petData.imageUrl = imageUrl;
+            if (imageUrl) {
+            petData.fotosUrls = [imageUrl]; // Se o backend espera um array de strings
+            } else {
+            petData.fotosUrls = []; // Garante que seja um array vazio se não houver imagem
+        }
 
             console.log("Pet Data final para envio:", petData);
             await sendPetToBackend(petData, method, petId);
@@ -828,7 +1021,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const filterData = {};
             advancedFiltersForm.querySelectorAll('select').forEach(select => {
-                if (select.value !== "All" && select.value !== "") { 
+                if (select.value !== "All" && select.value !== "") {
                     // Os `name` dos selects do filtro já correspondem aos nomes do backend
                     // O `name="organizacaoId"` já está correto
                     if (select.name === 'organizacaoId') {
@@ -840,22 +1033,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                 }
             });
-            
+
             const query = petSearchInput.value.trim();
             if (query) {
-                filterData.search = query; 
+                filterData.search = query;
             }
 
             console.log("Aplicando filtros:", filterData);
-            await fetchPets(filterData); 
-            closeModal(filterModal); 
+            await fetchPets(filterData);
+            closeModal(filterModal);
         });
     }
 
-    // Busca Reativa e por Botão 
+    // Busca Reativa e por Botão
     function applySearchAndFilters() {
         const query = petSearchInput.value.trim();
-        
+
         const currentAdvancedFilters = {};
         if (advancedFiltersForm) {
             advancedFiltersForm.querySelectorAll('select').forEach(select => {
@@ -874,10 +1067,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const combinedFilters = { ...currentAdvancedFilters };
         if (query) {
-            combinedFilters.search = query; 
+            combinedFilters.search = query;
         }
 
-        fetchPets(combinedFilters); 
+        fetchPets(combinedFilters);
     }
 
     if (petSearchBtn) {
@@ -893,7 +1086,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 applySearchAndFilters();
-            }, 300); 
+            }, 300);
         });
     }
 });

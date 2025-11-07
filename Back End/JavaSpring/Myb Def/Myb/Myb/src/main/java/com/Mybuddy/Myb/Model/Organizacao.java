@@ -1,6 +1,6 @@
 package com.Mybuddy.Myb.Model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference; // Importa a anotação
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class Organizacao {
     @Column(nullable = false, unique = true)
     private String cnpj;
 
-    private String telefoneContato;
+    private String telefoneContato; // Pode ser nullable dependendo da sua regra
 
     @Column(nullable = false)
     private String endereco;
@@ -31,7 +31,7 @@ public class Organizacao {
     @Column(columnDefinition = "TEXT")
     private String descricao;
 
-    private String website;
+    private String website; // Pode ser nullable
 
     @OneToMany(mappedBy = "organizacao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference // Lado "pai" do relacionamento com Pet
@@ -163,11 +163,13 @@ public class Organizacao {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organizacao organizacao = (Organizacao) o;
+        // Importante: use o ID para equals/hashCode se for uma entidade persistida
         return id != null && Objects.equals(id, organizacao.id);
     }
 
     @Override
     public int hashCode() {
+        // Importante: use o ID para equals/hashCode se for uma entidade persistida
         return id != null ? Objects.hash(id) : 0;
     }
 

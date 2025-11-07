@@ -48,7 +48,7 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
 
         // VALIDAÇÃO 1: Verifica se o pet está disponível para adoção (status = EM_ADOCAO).
         // Se o pet já foi adotado ou está indisponível, lança uma exceção IllegalStateException.
-        if (!pet.getStatusAdocao().equals(StatusAdocao.EM_ADOCAO)) {
+        if (!pet.getStatusAdocao().equals(StatusAdocao.DISPONIVEL)) {
             throw new IllegalStateException("Pet não está disponível para adoção no momento");
         }
 
@@ -108,6 +108,18 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
     @Transactional(readOnly = true)
     public List<InteresseResponse> listarTodos() {
         return interesseRepo.findAll().stream()
+                .map(InteresseAdoacaoMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<InteresseResponse> listarInteressesPorOrganizacao(Long organizacaoId) {
+        // 1. Encontrar todos os pets desta organização
+        List<Pet> petsDaOng = petRepo.findByOrganizacaoId(organizacaoId);
+
+        // 2. Para cada pet, encontrar seus interesses
+        return petsDaOng.stream()
+                .flatMap(pet -> interesseRepo.findByPet(pet).stream()) // Combina todos os interesses de todos os pets
                 .map(InteresseAdoacaoMapper::toResponse)
                 .toList();
     }

@@ -9,6 +9,16 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
       rel="stylesheet"
     />
+    <style>
+      /* Pequeno ajuste para garantir que os inputs da ONG apareçam corretamente no CSS padrão */
+      #ongFields.input-wrapper {
+        display: flex; /* Garante que os filhos flexíveis da wrapper da ONG se alinhem corretamente */
+        flex-direction: column;
+        gap: 14px;
+        align-items: center;
+        width: 100%; /* Ocupa a largura total */
+      }
+    </style>
   </head>
   <body>
     <div class="main-container">
@@ -56,26 +66,6 @@
 
             <form class="form sign-up-form" id="formSignUp">
               <div class="input-wrapper">
-                <span class="material-symbols-outlined">person</span>
-                <input type="text" id="signUpNome" placeholder="Nome completo" required />
-              </div>
-
-              <div class="input-wrapper">
-                <span class="material-symbols-outlined">mail</span>
-                <input type="email" id="signUpEmail" placeholder="Email" required />
-              </div>
-
-              <div class="input-wrapper">
-                <span class="material-symbols-outlined">phone</span>
-                <input type="text" id="signUpTelefoneUsuario" placeholder="Telefone" required />
-              </div>
-
-              <div class="input-wrapper">
-                <span class="material-symbols-outlined">lock</span>
-                <input type="password" id="signUpPassword" placeholder="Senha" required />
-              </div>
-
-              <div class="input-wrapper">
                 <span class="material-symbols-outlined">group</span>
                 <select id="signUpRole" required class="select-field">
                   <option value="" disabled selected>Escolha seu tipo de usuário</option>
@@ -84,7 +74,29 @@
                 </select>
               </div>
 
-              <div id="ongFields" style="display: none; width: 100%; display: flex; flex-direction: column; gap: 14px; align-items: center;">
+              <div id="camposComuns" style="display: none; width: 100%; display: flex; flex-direction: column; gap: 14px; align-items: center;">
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">person</span>
+                  <input type="text" id="signUpNome" placeholder="Nome completo" />
+                </div>
+
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">mail</span>
+                  <input type="email" id="signUpEmail" placeholder="Email" />
+                </div>
+
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">phone</span>
+                  <input type="text" id="signUpTelefoneUsuario" placeholder="Telefone" />
+                </div>
+
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined">lock</span>
+                  <input type="password" id="signUpPassword" placeholder="Senha" />
+                </div>
+              </div>
+
+              <div id="camposOng" style="display: none; width: 100%; display: flex; flex-direction: column; gap: 14px; align-items: center;">
                 <h3 style="color: #272728; font-size: 16px; margin-top: 10px; margin-bottom: 5px;">Dados da ONG</h3>
                 <div class="input-wrapper">
                   <span class="material-symbols-outlined">business</span>

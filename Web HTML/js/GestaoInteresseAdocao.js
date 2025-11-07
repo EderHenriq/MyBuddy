@@ -11,7 +11,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const roles = JSON.parse(localStorage.getItem("userRoles") || "[]");
   const isAdmin = roles.includes("ROLE_ADMIN");
   const isOng = roles.includes("ROLE_ONG");
+  const isAdotante = roles.includes("ROLE_ADOTANTE");
   const canModerate = isAdmin || isOng;
+
+  // Obter o ID da organização para ONGs
+  const organizationId = localStorage.getItem("organizationId");
 
   if (!jwtToken) {
     alert("Você precisa estar logado para acessar!");
@@ -40,18 +44,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     REJEITADO: "Rejeitado",
   };
 
+  // --- Funções Auxiliares para Endpoints ---
+  function getPetsEndpoint() {
+    if (isOng && organizationId) {
+      return `http://localhost:8080/api/pets/organizacao/${organizationId}`;
+    }
+    return "http://localhost:8080/api/pets"; // Para ADMIN e ADOTANTE (todos os pets)
+  }
+
+  function getInteressesEndpoint() {
+    if (isAdmin) {
+      return "http://localhost:8080/api/interesses"; // Todos os interesses
+    } else if (isOng && organizationId) {
+      return `http://localhost:8080/api/ongs/me/interesses`; // Interesses dos pets da ONG
+    } else if (isAdotante) {
+      return "http://localhost:8080/api/usuarios/me/interesses"; // Meus interesses como adotante
+    }
+    // Caso nenhuma role válida seja encontrada
+    return null;
+  }
+
   // ---- BUSCAR PETS ----
   async function fetchPets() {
     try {
-      const resp = await fetch("http://localhost:8080/api/pets", {
+      const petEndpoint = getPetsEndpoint();
+      if (!petEndpoint) {
+        console.error("Nenhum endpoint de pets definido para a role atual.");
+        return;
+      }
+      const resp = await fetch(petEndpoint, {
         headers: { Authorization: "Bearer " + jwtToken },
       });
-      if (!resp.ok) throw new Error();
+      if (!resp.ok) throw new Error("Falha ao carregar pets");
       const dados = await resp.json();
+      // O endpoint para ONG e ADMIN pode retornar uma lista direta ou um Page<PetResponse>
+      // Ajustamos para lidar com ambos.
       todosPets = Array.isArray(dados) ? dados : dados.content || [];
       renderPetSelect();
-    } catch {
-      console.warn("API de pets offline, usando mock.");
+    } catch (error) {
+      console.warn("API de pets offline ou inacessível, usando mock.", error);
       todosPets = [
         { id: 10, nome: "Rex" },
         { id: 11, nome: "Mia" },
@@ -74,15 +105,31 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ---- BUSCAR INTERESSES ----
   async function fetchInteresses() {
     interessesContainer.innerHTML = "<p>Carregando...</p>";
+    const endpointInteresses = getInteressesEndpoint();
+
+    if (!endpointInteresses) {
+      alert("Você não tem permissão para visualizar interesses.");
+      window.location.href = "index.html"; // Redireciona para a home
+      return;
+    }
+
     try {
-      const resp = await fetch("http://localhost:8080/api/interesses", {
+      const resp = await fetch(endpointInteresses, {
         headers: { Authorization: "Bearer " + jwtToken },
       });
-      if (!resp.ok) throw new Error();
+
+      if (resp.status === 403) {
+        throw new Error(
+          "Acesso negado. Você não tem permissão para ver estes interesses."
+        );
+      }
+      if (!resp.ok) throw new Error("Erro ao carregar interesses.");
+
       todosInteresses = await resp.json();
       aplicarFiltros();
-    } catch {
-      console.error("Erro ao carregar interesses.");
+    } catch (error) {
+      console.error("Erro ao carregar interesses:", error.message);
+      interessesContainer.innerHTML = `<p class="empty-message">${error.message}</p>`;
       noInteressesMessage.style.display = "block";
     }
   }
@@ -152,13 +199,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const statusHtml = `<span class="status-badge status-cell ${statusClass}">${statusLabels[i.status]}</span>`;
 
+      // Ações só são exibidas se o usuário pode moderar E o interesse estiver PENDENTE
       const actionsHtml =
         canModerate && i.status === "PENDENTE"
           ? `
               <button class="approve-btn">Aprovar</button>
               <button class="reject-btn">Rejeitar</button>
             `
-          : "-";
+          : '<span class="status-badge status-cell">-</span>'; // Exibe um traço ou nada se não houver ações
 
       card.innerHTML = `
         <div>${escapeHtml(i.usuario?.nome || "N/A")}</div>
@@ -192,23 +240,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     card.classList.add("changing");
 
     try {
-      const resp = await fetch(`http://localhost:8080/api/interesses/${id}/status`, {
-        method: "PUT",
-        headers: {
-          Authorization: "Bearer " + jwtToken,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: novoStatus }),
-      });
+      const resp = await fetch(
+        `http://localhost:8080/api/interesses/${id}/status`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: "Bearer " + jwtToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: novoStatus }),
+        }
+      );
 
       if (!resp.ok) throw new Error("Falha ao atualizar status");
 
-      const badgeClass = novoStatus === "APROVADO" ? "status-aprovado" : "status-rejeitado";
+      // Atualiza o estado local do interesse
+      const interesseIndex = todosInteresses.findIndex((int) => int.id === id);
+      if (interesseIndex > -1) {
+        todosInteresses[interesseIndex].status = novoStatus;
+      }
+
+      const badgeClass =
+        novoStatus === "APROVADO" ? "status-aprovado" : "status-rejeitado";
       const badgeLabel = novoStatus === "APROVADO" ? "Aprovado" : "Rejeitado";
 
       // Efeito de transição do botão → badge
-      actionsCell.innerHTML = `<span class="status-badge ${badgeClass} animate-badge">${badgeLabel}</span>`;
-      statusCell.innerHTML = `<span class="status-badge ${badgeClass} animate-badge">${badgeLabel}</span>`;
+      if (actionsCell)
+        actionsCell.innerHTML = `<span class="status-badge ${badgeClass} animate-badge">${badgeLabel}</span>`;
+      if (statusCell)
+        statusCell.innerHTML = `<span class="status-badge ${badgeClass} animate-badge">${badgeLabel}</span>`;
+      card.dataset.status = novoStatus; // Atualiza o data-status do card
 
       // Animação de fundo
       card.style.backgroundColor = novoStatus === "APROVADO" ? "#eafaf0" : "#fdeaea";
@@ -217,7 +278,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         card.style.backgroundColor = "#fff";
       }, 400);
 
-      showNotification(` Pet ${petNome} foi ${badgeLabel.toLowerCase()} com sucesso!`, "success");
+      showNotification(
+        `Pet ${petNome} foi ${badgeLabel.toLowerCase()} com sucesso!`,
+        "success"
+      );
+      // Re-aplica filtros para garantir que o item sumirá ou mudará de posição se o filtro de status estiver ativo
+      aplicarFiltros();
     } catch (err) {
       console.error(err);
       showNotification("Erro ao atualizar status.", "error");
@@ -248,6 +314,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   userFilter.oninput = aplicarFiltros;
   refreshBtn.onclick = fetchInteresses;
 
+  // Inicialização
   await fetchPets();
   await fetchInteresses();
 });

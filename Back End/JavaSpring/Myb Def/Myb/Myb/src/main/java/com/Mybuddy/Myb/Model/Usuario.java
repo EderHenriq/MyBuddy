@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Model;
 
 import com.Mybuddy.Myb.Security.Role;
-import com.fasterxml.jackson.annotation.JsonBackReference; // Importa a anotação
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -29,7 +29,7 @@ public class Usuario {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizacao_id", nullable = true)
-    @JsonBackReference // Lado "filho" do relacionamento com Organizacao
+    @JsonBackReference
     private Organizacao organizacao;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -49,6 +49,7 @@ public class Usuario {
         this.password = password;
     }
 
+    // CONSTRUTOR REINTRODUZIDO PARA ATENDER AO DataInitializer
     public Usuario(String nome, String email, String telefone, String password, Organizacao organizacao, Set<Role> roles) {
         this.nome = nome;
         this.email = email;

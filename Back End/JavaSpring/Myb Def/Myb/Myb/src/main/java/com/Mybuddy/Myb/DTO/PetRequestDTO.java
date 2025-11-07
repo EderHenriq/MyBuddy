@@ -1,33 +1,73 @@
 package com.Mybuddy.Myb.DTO;
 
-import com.Mybuddy.Myb.Model.StatusAdocao; // Importe se você usa StatusAdocao no DTO
+import com.Mybuddy.Myb.Model.StatusAdocao;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 public class PetRequestDTO {
-    private String nome;
-    private String especie;
-    private String raca;
-    private Integer idade;
-    private String cor;
-    private String porte;
-    private String sexo;
-    private String imageUrl; // Pode ser nulo
-    private StatusAdocao statusAdocao; // Pode ser nulo, o serviço define padrão
 
-    // Este campo receberá o ID da organização do frontend
+    @NotBlank(message = "O nome do pet é obrigatório.")
+    @Size(max = 80, message = "O nome deve ter no máximo 80 caracteres.")
+    private String nome;
+
+    @NotBlank(message = "A espécie do pet é obrigatória.")
+    @Size(max = 40, message = "A espécie deve ter no máximo 40 caracteres.")
+    private String especie;
+
+    @NotBlank(message = "A raça do pet é obrigatória.")
+    @Size(max = 60, message = "A raça deve ter no máximo 60 caracteres.")
+    private String raca;
+
+    @NotNull(message = "A idade do pet é obrigatória.")
+    @Min(value = 0, message = "A idade não pode ser negativa.")
+    private Integer idade; // Idade em anos
+
+    @NotBlank(message = "A cor do pet é obrigatória.")
+    @Size(max = 30, message = "A cor deve ter no máximo 30 caracteres.")
+    private String cor;
+
+    @NotBlank(message = "O porte do pet é obrigatório.")
+    @Size(max = 20, message = "O porte deve ter no máximo 20 caracteres.")
+    private String porte; // Pequeno, Médio, Grande
+
+    @NotBlank(message = "O sexo do pet é obrigatório.")
+    @Size(max = 10, message = "O sexo deve ter no máximo 10 caracteres.")
+    private String sexo; // M, F
+
+    @Size(max = 3, message = "São permitidas no máximo 3 fotos por pet.")
+    private List<String> fotosUrls; // Lista de URLs das fotos
+
+    @NotNull(message = "O status de adoção é obrigatório.")
+    private StatusAdocao statusAdocao;
+
+    @NotNull(message = "O ID da organização é obrigatório.")
     private Long organizacaoId;
 
-    // Opcional: Adicione campos para microchipado, vacinado, castrado, cidade, estado
-    // que você parece ter no frontend, mas não no Pet.java atual.
+    @NotNull(message = "A informação de microchip é obrigatória.")
     private boolean microchipado;
+
+    @NotNull(message = "A informação de vacinação é obrigatória.")
     private boolean vacinado;
+
+    @NotNull(message = "A informação de castração é obrigatória.")
     private boolean castrado;
+
+    @Size(max = 60, message = "A pelagem deve ter no máximo 60 caracteres.")
+    private String pelagem;
+
+    // Campo 'temperamento' removido
+
+    @Size(max = 100, message = "A cidade deve ter no máximo 100 caracteres.")
     private String cidade;
+
+    @Size(max = 100, message = "O estado deve ter no máximo 100 caracteres.")
     private String estado;
 
     // --- Getters e Setters ---
-    // Você pode gerar com o IDE (Alt+Insert no IntelliJ, Source -> Generate Getters and Setters no Eclipse)
-    // ou usar Lombok (@Data)
-
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
 
@@ -49,8 +89,8 @@ public class PetRequestDTO {
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public List<String> getFotosUrls() { return fotosUrls; }
+    public void setFotosUrls(List<String> fotosUrls) { this.fotosUrls = fotosUrls; }
 
     public StatusAdocao getStatusAdocao() { return statusAdocao; }
     public void setStatusAdocao(StatusAdocao statusAdocao) { this.statusAdocao = statusAdocao; }
@@ -66,6 +106,11 @@ public class PetRequestDTO {
 
     public boolean isCastrado() { return castrado; }
     public void setCastrado(boolean castrado) { this.castrado = castrado; }
+
+    public String getPelagem() { return pelagem; }
+    public void setPelagem(String pelagem) { this.pelagem = pelagem; }
+
+    // Getter e Setter para temperamento removidos
 
     public String getCidade() { return cidade; }
     public void setCidade(String cidade) { this.cidade = cidade; }

@@ -2,34 +2,43 @@ package com.Mybuddy.Myb.Payload.Request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern; // Import para o Pattern
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 
 public class SignupRequest {
 
-    @NotBlank
-    @Size(min = 3, max = 100) // Nome mais flexível, para nomes completos
+    // Campos do Usuário
+    @NotBlank(message = "O nome é obrigatório")
+    @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
     private String nome;
 
-    @NotBlank
-    @Size(max = 100) // Email com tamanho máximo mais comum
-    @Email
+    @NotBlank(message = "O email é obrigatório")
+    @Size(max = 100, message = "O email não pode ter mais de 100 caracteres")
+    @Email(message = "Formato de email inválido")
     private String email;
 
-    @NotBlank // Telefone agora é um campo real do usuário
-    @Size(min = 10, max = 20) // Tamanho realista para números de telefone
+    @NotBlank(message = "O telefone é obrigatório")
+    @Pattern(regexp = "^\\(?\\d{2}\\)?[\\s-]?\\d{4,5}-?\\d{4}$", message = "Formato de telefone inválido. Ex: (XX) XXXX-XXXX ou (XX) XXXXX-XXXX")
     private String telefone;
 
-    @NotBlank // NOVO: Campo para a senha real do usuário
-    @Size(min = 6, max = 40) // Tamanho da senha, de 6 a 40 caracteres (deve ser o hash no banco)
+    @NotBlank(message = "A senha é obrigatória")
+    @Size(min = 6, max = 40, message = "A senha deve ter entre 6 e 40 caracteres")
     private String password;
 
-    private Set<String> role;
+    // A lista de roles que o usuário terá (ex: ["adotante"], ["ong"])
+    private Set<String> roles; // Renomeado de 'role' para 'roles' para consistência
 
-    // NOVO: Campos para associar o usuário a uma organização (especialmente para ROLE_ONG)
-    private Long organizacaoId;    // ID de uma organização existente
-    private String organizacaoCnpj; // CNPJ de uma organização existente (alternativa ao ID)
+    // --- Campos específicos para CRIAR uma nova ONG (se a role for "ong") ---
+    // Estes campos devem vir do frontend apenas se o usuário for do tipo ONG
+    private String organizacaoCnpj;
+    private String organizacaoNomeFantasia;
+    private String organizacaoEmailContato;
+    private String organizacaoTelefoneContato;
+    private String organizacaoEndereco;
+    private String organizacaoDescricao; // Opcional
+    private String organizacaoWebsite;   // Opcional
 
     // --- Getters e Setters ---
     public String getNome() { return nome; }
@@ -41,15 +50,31 @@ public class SignupRequest {
     public String getTelefone() { return telefone; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
 
-    public String getPassword() { return password; } // Getter para a senha
-    public void setPassword(String password) { this.password = password; } // Setter para a senha
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public Set<String> getRole() { return role; }
-    public void setRole(Set<String> role) { this.role = role; }
+    public Set<String> getRoles() { return roles; }
+    public void setRoles(Set<String> roles) { this.roles = roles; }
 
-    public Long getOrganizacaoId() { return organizacaoId; }
-    public void setOrganizacaoId(Long organizacaoId) { this.organizacaoId = organizacaoId; }
-
+    // Getters e Setters para os campos da ONG
     public String getOrganizacaoCnpj() { return organizacaoCnpj; }
     public void setOrganizacaoCnpj(String organizacaoCnpj) { this.organizacaoCnpj = organizacaoCnpj; }
+
+    public String getOrganizacaoNomeFantasia() { return organizacaoNomeFantasia; }
+    public void setOrganizacaoNomeFantasia(String organizacaoNomeFantasia) { this.organizacaoNomeFantasia = organizacaoNomeFantasia; }
+
+    public String getOrganizacaoEmailContato() { return organizacaoEmailContato; }
+    public void setOrganizacaoEmailContato(String organizacaoEmailContato) { this.organizacaoEmailContato = organizacaoEmailContato; }
+
+    public String getOrganizacaoTelefoneContato() { return organizacaoTelefoneContato; }
+    public void setOrganizacaoTelefoneContato(String organizacaoTelefoneContato) { this.organizacaoTelefoneContato = organizacaoTelefoneContato; }
+
+    public String getOrganizacaoEndereco() { return organizacaoEndereco; }
+    public void setOrganizacaoEndereco(String organizacaoEndereco) { this.organizacaoEndereco = organizacaoEndereco; }
+
+    public String getOrganizacaoDescricao() { return organizacaoDescricao; }
+    public void setOrganizacaoDescricao(String organizacaoDescricao) { this.organizacaoDescricao = organizacaoDescricao; }
+
+    public String getOrganizacaoWebsite() { return organizacaoWebsite; }
+    public void setOrganizacaoWebsite(String organizacaoWebsite) { this.organizacaoWebsite = organizacaoWebsite; }
 }

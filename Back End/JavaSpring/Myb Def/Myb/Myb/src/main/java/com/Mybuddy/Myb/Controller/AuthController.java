@@ -1,60 +1,44 @@
 package com.Mybuddy.Myb.Controller;
 
-import com.Mybuddy.Myb.Model.Organizacao;
-import com.Mybuddy.Myb.Model.Usuario;
+import com.Mybuddy.Myb.Model.Organizacao; // Manter, pois JwtResponse pode precisar
 import com.Mybuddy.Myb.Payload.Request.LoginRequest;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
 import com.Mybuddy.Myb.Payload.Response.JwtResponse;
-import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
-import com.Mybuddy.Myb.Repository.RoleRepository;
-import com.Mybuddy.Myb.Repository.UsuarioRepository;
+import com.Mybuddy.Myb.Payload.Response.MessageResponse; // NOVO: Classe para respostas simples
+import com.Mybuddy.Myb.Service.AuthService; // NOVO: Injeta o AuthService
 import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
-import com.Mybuddy.Myb.Security.Role;
-import com.Mybuddy.Myb.Security.ERole;
-import com.Mybuddy.Myb.Security.jwt.JwtUtils;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final UsuarioRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder encoder;
-    private final JwtUtils jwtUtils;
-    private final OrganizacaoRepository organizacaoRepository;
+    // Apenas Autowire o AuthService e o AuthenticationManager diretamente.
+    // O AuthService encapsulará os outros repositórios e o PasswordEncoder.
+    private final AuthService authService; // NOVO: Injeta o AuthService
 
-    public AuthController(AuthenticationManager authenticationManager, UsuarioRepository userRepository,
-                          RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils,
-                          OrganizacaoRepository organizacaoRepository) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.encoder = encoder;
-        this.jwtUtils = jwtUtils;
-        this.organizacaoRepository = organizacaoRepository;
+    public AuthController(AuthService authService) { // Construtor com injeção de AuthService
+        this.authService = authService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        // A lógica de autenticação pode ser movida para AuthService ou mantida aqui,
+        // dependendo da granularidade que você quer dar ao AuthService.
+        // Por simplicidade, vou manter a autenticação aqui e ajustar a resposta de login.
+        Authentication authentication = authService.authenticateUser(loginRequest); // Delega para AuthService
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        String jwt = authService.generateJwtToken(authentication); // Delega geração de JWT
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -62,79 +46,22 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+        // Agora, se o userDetails tiver um ID de organização, ele será incluído no JwtResponse
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getNome(),
-                roles));
+                userDetails.getUsername(), // Geralmente o email ou um nome de usuário único
+                userDetails.getEmail(),
+                roles,
+                userDetails.getOrganizacaoId())); // Inclui o ID da organização
     }
 
     @PostMapping("/cadastro")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(Collections.singletonMap("message", "Erro: O e-mail já está em uso!"));
+        try {
+            authService.registerUser(signUpRequest); // Delega toda a lógica para AuthService
+            return ResponseEntity.ok(new MessageResponse("Usuário registrado com sucesso!"));
+        } catch (RuntimeException e) { // Captura exceções de validação ou conflito do serviço
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
-
-        Set<String> strRoles = signUpRequest.getRole();
-        Set<Role> roles = new HashSet<>();
-        Organizacao organizacaoAssociada = null; // Inicializada como null e será atribuída se necessário
-
-        // --- Lógica de atribuição de Roles e Organização ---
-        if (strRoles == null || strRoles.isEmpty()) {
-            Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
-                    .orElseThrow(() -> new RuntimeException("Erro: Role ADOTANTE não encontrada."));
-            roles.add(adotanteRole);
-        } else {
-            // Se houver roles especificadas, processá-las
-            for (String roleName : strRoles) { // Usando um loop for-each tradicional para maior flexibilidade
-                switch (roleName) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Erro: Role ADMIN não encontrada."));
-                        roles.add(adminRole);
-                        break;
-
-                    case "ong":
-                        Role ongRole = roleRepository.findByName(ERole.ROLE_ONG)
-                                .orElseThrow(() -> new RuntimeException("Erro: Role ONG não encontrada."));
-                        roles.add(ongRole);
-
-                        // Lógica de associação da Organização
-                        if (signUpRequest.getOrganizacaoId() != null) {
-                            organizacaoAssociada = organizacaoRepository.findById(signUpRequest.getOrganizacaoId())
-                                    .orElseThrow(() -> new RuntimeException("Erro: Organização não encontrada com ID: " + signUpRequest.getOrganizacaoId()));
-                        } else if (signUpRequest.getOrganizacaoCnpj() != null) {
-                            organizacaoAssociada = organizacaoRepository.findByCnpj(signUpRequest.getOrganizacaoCnpj())
-                                    .orElseThrow(() -> new RuntimeException("Erro: Organização com CNPJ " + signUpRequest.getOrganizacaoCnpj() + " não encontrada. Por favor, crie a ONG primeiro ou forneça um ID."));
-                        } else {
-                            throw new RuntimeException("Erro: Usuário ONG deve fornecer ID ou CNPJ da organização.");
-                        }
-                        break; // Importante para sair do switch após processar a role "ong"
-
-                    case "adotante":
-                    default:
-                        Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
-                                .orElseThrow(() -> new RuntimeException("Erro: Role ADOTANTE não encontrada."));
-                        roles.add(adotanteRole);
-                }
-            }
-        }
-
-        Usuario user = new Usuario(
-                signUpRequest.getNome(),
-                signUpRequest.getEmail(),
-                signUpRequest.getTelefone(),
-                encoder.encode(signUpRequest.getPassword()),
-                organizacaoAssociada, // Associa a organização (pode ser null)
-                roles
-        );
-
-        userRepository.save(user);
-
-        Map<String, String> responseBody = Collections.singletonMap("message", "Usuário registrado com sucesso!");
-        return ResponseEntity.ok(responseBody);
     }
 }

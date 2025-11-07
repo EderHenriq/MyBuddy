@@ -30,7 +30,6 @@ public class OrganizacaoRequestDTO {
     @Pattern(regexp = "^(https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([/\\w \\.-]*)*\\/?$", message = "URL do site inválida.")
     private String website; // Pode ser null ou vazio
 
-    // Construtores (se não estiver usando Lombok)
     public OrganizacaoRequestDTO() {}
 
     public OrganizacaoRequestDTO(String nomeFantasia, String emailContato, String cnpj, String telefoneContato, String endereco, String descricao, String website) {
@@ -43,7 +42,6 @@ public class OrganizacaoRequestDTO {
         this.website = website;
     }
 
-    // Getters e Setters (se não estiver usando Lombok)
     public String getNomeFantasia() { return nomeFantasia; }
     public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
     public String getEmailContato() { return emailContato; }

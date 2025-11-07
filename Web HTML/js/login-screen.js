@@ -5,36 +5,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const signInForm = document.querySelector(".sign-in-form");
     const signUpForm = document.querySelector(".sign-up-form");
 
-    // Elementos do formulário de registro (para USUÁRIO)
     const formSignUp = document.getElementById('formSignUp');
-    const signUpNome = document.getElementById('signUpNome');
-    const signUpEmail = document.getElementById('signUpEmail');
-    const signUpTelefoneUsuario = document.getElementById('signUpTelefoneUsuario'); // ALTERADO: telefone real do usuário
-    const signUpPassword = document.getElementById('signUpPassword'); // NOVO: Senha do usuário
     const signUpRole = document.getElementById('signUpRole');
     const mensagemRegistro = document.getElementById('mensagemRegistro');
 
-    // Elementos do formulário de registro (para ONG)
-    const ongFieldsDiv = document.getElementById('ongFields'); // NOVO: Container dos campos da ONG
+    const camposComunsDiv = document.getElementById('camposComuns');
+    const camposOngDiv = document.getElementById('camposOng');
+
+    const signUpNome = document.getElementById('signUpNome');
+    const signUpEmail = document.getElementById('signUpEmail');
+    const signUpTelefoneUsuario = document.getElementById('signUpTelefoneUsuario');
+    const signUpPassword = document.getElementById('signUpPassword');
+
     const ongNomeFantasia = document.getElementById('ongNomeFantasia');
     const ongEmailContato = document.getElementById('ongEmailContato');
     const ongCnpj = document.getElementById('ongCnpj');
     const ongTelefoneContato = document.getElementById('ongTelefoneContato');
     const ongEndereco = document.getElementById('ongEndereco');
-    const ongDescricao = document.getElementById('ongDescricao'); // Opcional
-    const ongWebsite = document.getElementById('ongWebsite');     // Opcional
+    const ongDescricao = document.getElementById('ongDescricao');
+    const ongWebsite = document.getElementById('ongWebsite');
 
-
-    // Elementos do formulário de login
     const formSignIn = document.getElementById('formSignIn');
     const signInEmail = document.getElementById('signInEmail');
-    const signInPassword = document.getElementById('signInPassword'); // ALTERADO: Senha para login
+    const signInPassword = document.getElementById('signInPassword');
     const mensagemLogin = document.getElementById('mensagemLogin');
 
     const API_BASE_URL_REGISTRO = 'http://localhost:8080/api/auth/cadastro';
     const API_BASE_URL_LOGIN = 'http://localhost:8080/api/auth/login';
 
-    // --- Funções Auxiliares para Mensagens ---
     function exibirMensagem(elemento, mensagem, tipo = 'info') {
         elemento.textContent = mensagem;
         elemento.className = `mensagem-area mensagem-${tipo}`;
@@ -45,7 +43,84 @@ document.addEventListener("DOMContentLoaded", () => {
         elemento.className = 'mensagem-area';
     }
 
-    // --- Lógica de Alternância de Formulários ---
+    function resetarCamposDeRegistro() {
+        signUpRole.value = '';
+        camposComunsDiv.style.display = 'none';
+        camposOngDiv.style.display = 'none';
+
+        signUpNome.value = '';
+        signUpNome.removeAttribute('required');
+        signUpNome.setAttribute('disabled', 'true');
+
+        signUpEmail.value = '';
+        signUpEmail.removeAttribute('required');
+        signUpEmail.setAttribute('disabled', 'true');
+
+        signUpTelefoneUsuario.value = '';
+        signUpTelefoneUsuario.removeAttribute('required');
+        signUpTelefoneUsuario.setAttribute('disabled', 'true');
+
+        signUpPassword.value = '';
+        signUpPassword.removeAttribute('required');
+        signUpPassword.setAttribute('disabled', 'true');
+
+        ongNomeFantasia.value = '';
+        ongNomeFantasia.removeAttribute('required');
+        ongNomeFantasia.setAttribute('disabled', 'true');
+
+        ongEmailContato.value = '';
+        ongEmailContato.removeAttribute('required');
+        ongEmailContato.setAttribute('disabled', 'true');
+
+        ongCnpj.value = '';
+        ongCnpj.removeAttribute('required');
+        ongCnpj.setAttribute('disabled', 'true');
+
+        ongTelefoneContato.value = '';
+        ongTelefoneContato.removeAttribute('required');
+        ongTelefoneContato.setAttribute('disabled', 'true');
+
+        ongEndereco.value = '';
+        ongEndereco.removeAttribute('required');
+        ongEndereco.setAttribute('disabled', 'true');
+
+        ongDescricao.value = '';
+        ongDescricao.removeAttribute('required');
+        ongDescricao.setAttribute('disabled', 'true');
+
+        ongWebsite.value = '';
+        ongWebsite.removeAttribute('required');
+        ongWebsite.setAttribute('disabled', 'true');
+    }
+
+    function habilitarCamposComuns() {
+        camposComunsDiv.style.display = 'flex';
+        signUpNome.setAttribute('required', 'true');
+        signUpNome.removeAttribute('disabled');
+        signUpEmail.setAttribute('required', 'true');
+        signUpEmail.removeAttribute('disabled');
+        signUpTelefoneUsuario.setAttribute('required', 'true');
+        signUpTelefoneUsuario.removeAttribute('disabled');
+        signUpPassword.setAttribute('required', 'true');
+        signUpPassword.removeAttribute('disabled');
+    }
+
+    function habilitarCamposOng() {
+        camposOngDiv.style.display = 'flex';
+        ongNomeFantasia.setAttribute('required', 'true');
+        ongNomeFantasia.removeAttribute('disabled');
+        ongEmailContato.setAttribute('required', 'true');
+        ongEmailContato.removeAttribute('disabled');
+        ongCnpj.setAttribute('required', 'true');
+        ongCnpj.removeAttribute('disabled');
+        ongTelefoneContato.setAttribute('required', 'true');
+        ongTelefoneContato.removeAttribute('disabled');
+        ongEndereco.setAttribute('required', 'true');
+        ongEndereco.removeAttribute('disabled');
+        ongDescricao.removeAttribute('disabled');
+        ongWebsite.removeAttribute('disabled');
+    }
+
     signInBtn.addEventListener("click", () => {
         glider.style.transform = "translateX(0)";
         signInBtn.classList.add("active");
@@ -55,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
         signUpForm.classList.remove("active");
         limparMensagem(mensagemRegistro);
         limparMensagem(mensagemLogin);
+        resetarCamposDeRegistro();
     });
 
     signUpBtn.addEventListener("click", () => {
@@ -67,32 +143,29 @@ document.addEventListener("DOMContentLoaded", () => {
         limparMensagem(mensagemRegistro);
         limparMensagem(mensagemLogin);
         signInEmail.value = '';
-        signInPassword.value = ''; // Limpa o campo de senha do login
+        signInPassword.value = '';
+
+        resetarCamposDeRegistro();
     });
 
-    // --- Lógica de Exibição de Campos da ONG ---
     signUpRole.addEventListener('change', () => {
-        if (signUpRole.value === 'ong') {
-            ongFieldsDiv.style.display = 'flex'; // Exibe os campos da ONG
-            // Tornar campos obrigatórios para ONG (exceto descrição e website)
-            ongNomeFantasia.setAttribute('required', 'true');
-            ongEmailContato.setAttribute('required', 'true');
-            ongCnpj.setAttribute('required', 'true');
-            ongTelefoneContato.setAttribute('required', 'true');
-            ongEndereco.setAttribute('required', 'true');
-            // Descricao e Website são opcionais, não precisa setar required
-        } else {
-            ongFieldsDiv.style.display = 'none'; // Oculta os campos da ONG
-            // Remover 'required' se não for ONG
-            ongNomeFantasia.removeAttribute('required');
-            ongEmailContato.removeAttribute('required');
-            ongCnpj.removeAttribute('required');
-            ongTelefoneContato.removeAttribute('required');
-            ongEndereco.removeAttribute('required');
+        const selectedRole = signUpRole.value;
+        limparMensagem(mensagemRegistro);
+
+        resetarCamposDeRegistro();
+        signUpRole.removeAttribute('disabled');
+        signUpRole.value = selectedRole;
+
+        if (selectedRole === 'adotante') {
+            habilitarCamposComuns();
+        } else if (selectedRole === 'ong') {
+            habilitarCamposComuns();
+            habilitarCamposOng();
         }
     });
 
-    // --- Lógica de Registro de Usuário (API) ---
+    resetarCamposDeRegistro();
+
     formSignUp.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -100,13 +173,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const nome = signUpNome.value.trim();
         const email = signUpEmail.value.trim();
-        const telefone = signUpTelefoneUsuario.value.trim(); // Telefone real do usuário
-        const password = signUpPassword.value.trim();       // Senha do usuário
+        const telefone = signUpTelefoneUsuario.value.trim();
+        const password = signUpPassword.value.trim();
         const role = signUpRole.value;
 
-        // Validação básica para campos comuns a ambos os tipos de usuário
-        if (!nome || !email || !telefone || !password || !role) {
-            exibirMensagem(mensagemRegistro, 'Por favor, preencha todos os campos obrigatórios e selecione seu tipo de usuário.', 'erro');
+        if (!role) {
+            exibirMensagem(mensagemRegistro, 'Por favor, selecione seu tipo de usuário.', 'erro');
+            return;
+        }
+
+        if (camposComunsDiv.style.display === 'flex' && (!nome || !email || !telefone || !password)) {
+            exibirMensagem(mensagemRegistro, 'Por favor, preencha todos os campos obrigatórios.', 'erro');
             return;
         }
 
@@ -115,38 +192,30 @@ document.addEventListener("DOMContentLoaded", () => {
             email,
             telefone,
             password,
-            role: [role] // O backend espera um array de roles
+            roles: [role.toUpperCase()]
         };
 
-        // Adicionar campos da ONG se a role for 'ong'
         if (role === 'ong') {
             const nomeFantasia = ongNomeFantasia.value.trim();
             const emailContato = ongEmailContato.value.trim();
             const cnpj = ongCnpj.value.trim();
             const telefoneContato = ongTelefoneContato.value.trim();
             const endereco = ongEndereco.value.trim();
-            const descricao = ongDescricao.value.trim(); // Opcional
-            const website = ongWebsite.value.trim();     // Opcional
+            const descricao = ongDescricao.value.trim();
+            const website = ongWebsite.value.trim();
 
-            // Validação para campos obrigatórios da ONG
             if (!nomeFantasia || !emailContato || !cnpj || !telefoneContato || !endereco) {
                 exibirMensagem(mensagemRegistro, 'Por favor, preencha todos os campos obrigatórios da ONG.', 'erro');
                 return;
             }
-            
-            // O payload do signup para ONG no backend não recebe os dados completos da ONG
-            // ele espera apenas o `organizacaoId` ou `organizacaoCnpj`.
-            // Para cadastrar uma ONG completa, o ideal é ter um endpoint separado para ONGs.
-            // Por enquanto, vamos enviar o CNPJ para que o AuthController tente buscar/validar.
-            payload.organizacaoCnpj = cnpj; 
-            // Se você tivesse um endpoint para CRIAR ONG primeiro,
-            // então após criar a ONG, você passaria o ID dela aqui.
 
-            // Nota: Se a ideia é o usuário se registrar como ONG e *criar* a ONG,
-            // a API precisaria de um payload mais complexo no /cadastro para
-            // receber os dados da ONG ou um endpoint para criar a ONG separadamente.
-            // Pelo seu AuthController, ele espera um ID ou CNPJ de uma ONG *existente*.
-            // Por simplicidade, assumimos que o AuthController tentará encontrar/validar o CNPJ.
+            payload.organizacaoCnpj = cnpj;
+            payload.organizacaoNomeFantasia = nomeFantasia;
+            payload.organizacaoEmailContato = emailContato;
+            payload.organizacaoTelefoneContato = telefoneContato;
+            payload.organizacaoEndereco = endereco;
+            if (descricao) payload.organizacaoDescricao = descricao;
+            if (website) payload.organizacaoWebsite = website;
         }
 
         try {
@@ -158,13 +227,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify(payload)
             });
 
-            const data = await response.json(); // Tenta parsear a resposta JSON
+            const data = await response.json();
 
-            if (response.ok) { // response.ok é true para status 2xx
+            if (response.ok) {
                 exibirMensagem(mensagemRegistro, `Usuário "${nome}" cadastrado com sucesso!`, 'sucesso');
-                formSignUp.reset(); // Limpa o formulário
-                // Opcional: Mudar para a tela de login após o registro
-                // signInBtn.click();
+                formSignUp.reset();
+                resetarCamposDeRegistro();
             } else {
                 exibirMensagem(mensagemRegistro, `Erro ao cadastrar: ${data.message || 'Erro desconhecido'}`, 'erro');
             }
@@ -174,20 +242,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // --- Lógica de Login de Usuário (API) ---
     formSignIn.addEventListener('submit', async (event) => {
         event.preventDefault();
         limparMensagem(mensagemLogin);
 
         const email = signInEmail.value.trim();
-        const password = signInPassword.value.trim(); // ALTERADO: Pegar a senha
+        const password = signInPassword.value.trim();
 
-        if (!email || !password) { // ALTERADO: Validar email e password
+        if (!email || !password) {
             exibirMensagem(mensagemLogin, 'Por favor, preencha email e senha.', 'erro');
             return;
         }
 
-        const loginData = { email, password: password }; // ALTERADO: Enviar password
+        const loginData = { email, password: password };
 
         try {
             const response = await fetch(API_BASE_URL_LOGIN, {
@@ -202,8 +269,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem('accessToken', data.accessToken);
                 localStorage.setItem('userId', data.id);
                 localStorage.setItem('userEmail', data.email);
-                localStorage.setItem('userName', data.username);
+                localStorage.setItem('userName', data.username); // 'username' é o email, 'nome' é o nome real
                 localStorage.setItem('userRoles', JSON.stringify(data.roles));
+                // **Alteração aqui:** Usar 'organizacaoId' e 'userOrganizacaoId' consistentemente
+                if (data.organizacaoId) { // Backend deve retornar 'organizacaoId'
+                    localStorage.setItem('userOrganizacaoId', data.organizacaoId);
+                } else {
+                    localStorage.removeItem('userOrganizacaoId');
+                }
 
                 exibirMensagem(mensagemLogin, 'Login realizado com sucesso! Redirecionando...', 'sucesso');
 
