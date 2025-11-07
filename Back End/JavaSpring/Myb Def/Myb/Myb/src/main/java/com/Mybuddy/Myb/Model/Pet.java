@@ -44,7 +44,7 @@ public class Pet {
     private Set<FotoPet> fotos = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = false) // Mantenha o length do Enum StatusAdocao
     private StatusAdocao statusAdocao;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -74,11 +74,6 @@ public class Pet {
     // --- Construtores ---
     public Pet() {
         this.statusAdocao = StatusAdocao.DISPONIVEL;
-    }
-
-    public Pet(String nome, String raca, Integer idade, String especie, String porte, String cor, String pelagem, String sexo,
-               StatusAdocao statusAdocao, Organizacao organizacao, boolean microchipado, boolean vacinado,
-               boolean castrado, String cidade, String estado) {
         this.nome = nome;
         this.raca = raca;
         this.idade = idade;
@@ -201,3 +196,4 @@ public class Pet {
                 '}';
     }
 }
+    

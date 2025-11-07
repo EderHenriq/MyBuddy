@@ -1,14 +1,14 @@
 package com.Mybuddy.Myb.Model; // Declara o pacote onde este modelo (entidade) está localizado.
 
-// Importações necessárias para anotações JPA (Java Persistence API) e do Hibernate para mapeamento de objetos para o banco de dados.
-import jakarta.persistence.*; // Importa todas as anotações JPA para persistência de dados.
-import org.hibernate.annotations.CreationTimestamp; // Importa anotação do Hibernate para preencher automaticamente a data de criação.
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp; //  anotação do Hibernate para preencher automaticamente a data de criação.
 import org.hibernate.annotations.UpdateTimestamp; // Importa anotação do Hibernate para preencher automaticamente a data de última atualização.
 
 import java.time.LocalDateTime; // Importa a classe LocalDateTime para lidar com datas e horas sem fuso horário.
 
 @Table(name = "Interesses_adoacao") // Anotação JPA que especifica o nome da tabela no banco de dados para esta entidade.
-@Entity // Anotação JPA que marca esta classe como uma entidade, ou seja, uma classe que será mapeada para uma tabela no banco de dados.
+@Entity
+// Anotação JPA que marca esta classe como uma entidade, ou seja, uma classe que será mapeada para uma tabela no banco de dados.
 public class InteresseAdoacao { // Declara a classe que representa um interesse de adoção.
 
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Anotação JPA que configura a estratégia de geração de valor para a chave primária. IDENTITY usa a auto-incremento do banco de dados.
@@ -29,7 +29,7 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
     // nullable = false: Indica que esta coluna não pode ser nula.
     private Pet pet; // Campo que representa o pet para o qual o interesse foi manifestado.
 
-    @Enumerated (EnumType.STRING) // Anotação JPA que especifica como um tipo enumerado (enum) deve ser persistido no banco de dados.
+    @Enumerated(EnumType.STRING) // Anotação JPA que especifica como um tipo enumerado (enum) deve ser persistido no banco de dados.
     // EnumType.STRING: Armazena o nome da enumeração como uma String no banco (ex: "PENDENTE").
     @Column(name = "status", nullable = false, length = 20) // Anotação JPA que mapeia o campo para uma coluna no banco de dados.
     // nullable = false: A coluna não pode ser nula.
@@ -48,16 +48,14 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
     @Column(name = "Atualizado_em") // Anotação JPA para a coluna no banco.
     private LocalDateTime AtualizadoEm; // Campo para armazenar a data e hora da última atualização do interesse.
 
-    public InteresseAdoacao() {} // Construtor padrão (vazio), necessário para o JPA.
+    public InteresseAdoacao() {} 
 
 
-    // Métodos Getters e Setters para cada atributo da classe, permitindo acesso e modificação dos valores dos campos.
-
-    public Long getId() { // Método getter para o ID.
+    public Long getId() { 
         return id;
     }
 
-    public void setId(Long id) { // Método setter para o ID.
+    public void setId(Long id) { 
         this.id = id;
     }
 
@@ -108,4 +106,5 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
     public void setAtualizadoEm(LocalDateTime atualizadoEm) { // Corrigido o nome do parâmetro
         this.AtualizadoEm = atualizadoEm; // Atribuição correta
     }
+
 }
