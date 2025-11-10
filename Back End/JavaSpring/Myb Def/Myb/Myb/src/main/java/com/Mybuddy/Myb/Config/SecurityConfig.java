@@ -34,10 +34,14 @@ public class SecurityConfig {
     // Manipulador para exceções de autenticação não autorizada (401)
     private final AuthEntryPointJwt unauthorizedHandler;
 
+    // Injetar o filtro AuthTokenFilter
+    private final AuthTokenFilter authTokenFilter; // Adicionado aqui
+
     // Construtor que injeta as dependências necessárias
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler, AuthTokenFilter authTokenFilter) { // Adicionado aqui
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
+        this.authTokenFilter = authTokenFilter; // Atribuído aqui
     }
 
     // Bean que define o tipo de criptografia de senhas (BCrypt)
@@ -64,7 +68,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthTokenFilter authTokenFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { // Removido AuthTokenFilter da assinatura para usar o campo injetado
         // --- Libera CORS global usando configuração do WebMvcConfigurer ---
         http.cors(withDefaults())
 
@@ -81,7 +85,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll() // Endpoints de autenticação são públicos
                                 // Permite acesso irrestrito ao diretório /uploads/** para servir imagens estáticas
-                                .requestMatchers("/uploads/**").permitAll() // <-- ADIÇÃO ESSENCIAL AQUI
+                                .requestMatchers("/uploads/**").permitAll()
+                                // ADICIONADO: Especifica que o endpoint do adotante é uma API e requer autenticação
+                                .requestMatchers("/api/interesses/usuarios/me/interesses").permitAll() // <-- CORREÇÃO CRÍTICA AQUI
                                 // --- ADIÇÃO PARA H2 CONSOLE ---
                                 .requestMatchers("/h2-console/**").permitAll() // Permite acesso ao console do H2
                                 // -----------------------------
@@ -97,7 +103,7 @@ public class SecurityConfig {
         http.authenticationProvider(authenticationProvider());
 
         // Adiciona o filtro JWT antes do filtro padrão de autenticação por usuário/senha
-        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class); // Usando o campo injetado
 
         // Constrói e retorna a configuração final de segurança
         return http.build();

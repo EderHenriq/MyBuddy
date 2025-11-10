@@ -1,320 +1,375 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const interessesContainer = document.getElementById("interessesContainer");
-  const noInteressesMessage = document.getElementById("noInteressesMessage");
-  const refreshBtn = document.getElementById("refreshBtn");
-  const petSelect = document.getElementById("petSelect");
-  const userFilter = document.getElementById("userFilter");
-  const userInfo = document.getElementById("userInfo");
+    const interessesContainer = document.getElementById("interessesContainer");
+    const noInteressesMessage = document.getElementById("noInteressesMessage");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const petSelect = document.getElementById("petSelect");
+    const userFilter = document.getElementById("userFilter");
+    const userInfo = document.getElementById("userInfo");
+    const logoutBtn = document.getElementById("logoutBtn"); // Adicionado o botão de logout
+    const petModal = document.getElementById("petModal"); // Modal de detalhes do pet
+    const closeModalBtn = document.getElementById("closeModal"); // Botão fechar modal
+    const petDetailsDiv = document.getElementById("petDetails"); // Conteúdo do modal de pet
 
-  const jwtToken = localStorage.getItem("accessToken");
-  const userEmail = localStorage.getItem("userEmail");
-  const roles = JSON.parse(localStorage.getItem("userRoles") || "[]");
-  const isAdmin = roles.includes("ROLE_ADMIN");
-  const isOng = roles.includes("ROLE_ONG");
-  const isAdotante = roles.includes("ROLE_ADOTANTE");
-  const canModerate = isAdmin || isOng;
+    const jwtToken = localStorage.getItem("accessToken");
+    const userEmail = localStorage.getItem("userEmail");
+    const roles = JSON.parse(localStorage.getItem("userRoles") || "[]");
+    const isAdmin = roles.includes("ROLE_ADMIN");
+    const isOng = roles.includes("ROLE_ONG");
+    const isAdotante = roles.includes("ROLE_ADOTANTE");
+    const canModerate = isAdmin || isOng;
 
-  // Obter o ID da organização para ONGs
-  const organizationId = localStorage.getItem("organizationId");
+    // CORRIGIDO: Obter o ID da organização para ONGs usando a chave correta
+    const organizacaoId = localStorage.getItem("userOrganizacaoId"); // <--- AQUI A MUDANÇA
+    // Obter o ID do usuário para o adotante
+    const userId = localStorage.getItem("userId");
 
-  if (!jwtToken) {
-    alert("Você precisa estar logado para acessar!");
-    window.location.href = "login.html";
-    return;
-  }
-
-  userInfo.textContent = userEmail
-    ? `Conectado como: ${userEmail}`
-    : "Usuário autenticado";
-
-  let todosPets = [];
-  let todosInteresses = [];
-
-  const escapeHtml = (s) =>
-    String(s ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  const statusLabels = {
-    PENDENTE: "Em Análise",
-    APROVADO: "Aprovado",
-    REJEITADO: "Rejeitado",
-  };
-
-  // --- Funções Auxiliares para Endpoints ---
-  function getPetsEndpoint() {
-    if (isOng && organizationId) {
-      return `http://localhost:8080/api/pets/organizacao/${organizationId}`;
-    }
-    return "http://localhost:8080/api/pets"; // Para ADMIN e ADOTANTE (todos os pets)
-  }
-
-  function getInteressesEndpoint() {
-    if (isAdmin) {
-      return "http://localhost:8080/api/interesses"; // Todos os interesses
-    } else if (isOng && organizationId) {
-      return `http://localhost:8080/api/ongs/me/interesses`; // Interesses dos pets da ONG
-    } else if (isAdotante) {
-      return "http://localhost:8080/api/usuarios/me/interesses"; // Meus interesses como adotante
-    }
-    // Caso nenhuma role válida seja encontrada
-    return null;
-  }
-
-  // ---- BUSCAR PETS ----
-  async function fetchPets() {
-    try {
-      const petEndpoint = getPetsEndpoint();
-      if (!petEndpoint) {
-        console.error("Nenhum endpoint de pets definido para a role atual.");
+    if (!jwtToken) {
+        alert("Você precisa estar logado para acessar!");
+        window.location.href = "login.html";
         return;
-      }
-      const resp = await fetch(petEndpoint, {
-        headers: { Authorization: "Bearer " + jwtToken },
-      });
-      if (!resp.ok) throw new Error("Falha ao carregar pets");
-      const dados = await resp.json();
-      // O endpoint para ONG e ADMIN pode retornar uma lista direta ou um Page<PetResponse>
-      // Ajustamos para lidar com ambos.
-      todosPets = Array.isArray(dados) ? dados : dados.content || [];
-      renderPetSelect();
-    } catch (error) {
-      console.warn("API de pets offline ou inacessível, usando mock.", error);
-      todosPets = [
-        { id: 10, nome: "Rex" },
-        { id: 11, nome: "Mia" },
-        { id: 12, nome: "Bob" },
-      ];
-      renderPetSelect();
-    }
-  }
-
-  function renderPetSelect() {
-    petSelect.innerHTML = '<option value="">Todos os Pets</option>';
-    todosPets.forEach((pet) => {
-      const option = document.createElement("option");
-      option.value = pet.id;
-      option.textContent = pet.nome;
-      petSelect.appendChild(option);
-    });
-  }
-
-  // ---- BUSCAR INTERESSES ----
-  async function fetchInteresses() {
-    interessesContainer.innerHTML = "<p>Carregando...</p>";
-    const endpointInteresses = getInteressesEndpoint();
-
-    if (!endpointInteresses) {
-      alert("Você não tem permissão para visualizar interesses.");
-      window.location.href = "index.html"; // Redireciona para a home
-      return;
     }
 
-    try {
-      const resp = await fetch(endpointInteresses, {
-        headers: { Authorization: "Bearer " + jwtToken },
-      });
+    userInfo.textContent = userEmail ? `Olá, ${userEmail}!` : "Usuário autenticado";
 
-      if (resp.status === 403) {
-        throw new Error(
-          "Acesso negado. Você não tem permissão para ver estes interesses."
-        );
-      }
-      if (!resp.ok) throw new Error("Erro ao carregar interesses.");
-
-      todosInteresses = await resp.json();
-      aplicarFiltros();
-    } catch (error) {
-      console.error("Erro ao carregar interesses:", error.message);
-      interessesContainer.innerHTML = `<p class="empty-message">${error.message}</p>`;
-      noInteressesMessage.style.display = "block";
-    }
-  }
-
-  // ---- APLICAR FILTROS ----
-  function aplicarFiltros() {
-    let filtrados = [...todosInteresses];
-
-    const petSelecionado = petSelect.value;
-    if (petSelecionado) {
-      filtrados = filtrados.filter((i) => i.pet?.id == petSelecionado);
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            localStorage.clear();
+            window.location.href = "login.html";
+        });
     }
 
-    const statusSelecionados = Array.from(
-      document.querySelectorAll('input[name="status"]:checked')
-    ).map((cb) => cb.value);
+    let todosPets = [];
+    let todosInteresses = [];
 
-    if (statusSelecionados.length > 0) {
-      filtrados = filtrados.filter((i) => statusSelecionados.includes(i.status));
-    }
+    const escapeHtml = (s) =>
+        String(s ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
-    const termo = userFilter.value.trim().toLowerCase();
-    if (termo) {
-      filtrados = filtrados.filter((i) =>
-        (i.usuario?.nome || "").toLowerCase().includes(termo)
-      );
-    }
+    const statusLabels = {
+        PENDENTE: "Em Análise",
+        APROVADO: "Aprovado",
+        REJEITADO: "Rejeitado",
+    };
 
-    renderInteresses(filtrados);
-  }
-
-  // ---- RENDERIZAR INTERESSES ----
-  function renderInteresses(interesses) {
-    interessesContainer.innerHTML = "";
-
-    if (!interesses.length) {
-      noInteressesMessage.style.display = "block";
-      return;
-    }
-    noInteressesMessage.style.display = "none";
-
-    const header = document.createElement("div");
-    header.className = "interesse-card";
-    header.style.fontWeight = "700";
-    header.style.background = "#f8f9fa";
-    header.innerHTML = `
-      <div>Usuário</div>
-      <div>Pet</div>
-      <div>Data</div>
-      <div>Status</div>
-      <div>Ações</div>
-    `;
-    interessesContainer.appendChild(header);
-
-    interesses.forEach((i) => {
-      const card = document.createElement("div");
-      card.className = "interesse-card";
-      card.dataset.id = i.id;
-      card.dataset.status = i.status;
-
-      const statusClass =
-        {
-          APROVADO: "status-aprovado",
-          REJEITADO: "status-rejeitado",
-          PENDENTE: "status-pendente",
-        }[i.status] || "status-pendente";
-
-      const statusHtml = `<span class="status-badge status-cell ${statusClass}">${statusLabels[i.status]}</span>`;
-
-      // Ações só são exibidas se o usuário pode moderar E o interesse estiver PENDENTE
-      const actionsHtml =
-        canModerate && i.status === "PENDENTE"
-          ? `
-              <button class="approve-btn">Aprovar</button>
-              <button class="reject-btn">Rejeitar</button>
-            `
-          : '<span class="status-badge status-cell">-</span>'; // Exibe um traço ou nada se não houver ações
-
-      card.innerHTML = `
-        <div>${escapeHtml(i.usuario?.nome || "N/A")}</div>
-        <div>${escapeHtml(i.pet?.nome || "N/A")}</div>
-        <div>${new Date(i.criadoEm).toLocaleDateString("pt-BR")}</div>
-        <div class="status-cell">${statusHtml}</div>
-        <div class="actions">${actionsHtml}</div>
-      `;
-
-      if (canModerate && i.status === "PENDENTE") {
-        card.querySelector(".approve-btn")?.addEventListener("click", () =>
-          atualizarStatus(i.id, "APROVADO", i.pet?.nome)
-        );
-        card.querySelector(".reject-btn")?.addEventListener("click", () =>
-          atualizarStatus(i.id, "REJEITADO", i.pet?.nome)
-        );
-      }
-
-      interessesContainer.appendChild(card);
-    });
-  }
-
-  // ---- ATUALIZAR STATUS COM ANIMAÇÃO ----
-  async function atualizarStatus(id, novoStatus, petNome) {
-    const card = document.querySelector(`.interesse-card[data-id="${id}"]`);
-    if (!card) return;
-
-    const actionsCell = card.querySelector(".actions");
-    const statusCell = card.querySelector(".status-cell");
-
-    card.classList.add("changing");
-
-    try {
-      const resp = await fetch(
-        `http://localhost:8080/api/interesses/${id}/status`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: "Bearer " + jwtToken,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status: novoStatus }),
+    function getPetsEndpoint() {
+        if (isOng && organizacaoId) {
+            return `http://localhost:8080/api/pets/organizacao/${organizacaoId}`;
         }
-      );
-
-      if (!resp.ok) throw new Error("Falha ao atualizar status");
-
-      // Atualiza o estado local do interesse
-      const interesseIndex = todosInteresses.findIndex((int) => int.id === id);
-      if (interesseIndex > -1) {
-        todosInteresses[interesseIndex].status = novoStatus;
-      }
-
-      const badgeClass =
-        novoStatus === "APROVADO" ? "status-aprovado" : "status-rejeitado";
-      const badgeLabel = novoStatus === "APROVADO" ? "Aprovado" : "Rejeitado";
-
-      // Efeito de transição do botão → badge
-      if (actionsCell)
-        actionsCell.innerHTML = `<span class="status-badge ${badgeClass} animate-badge">${badgeLabel}</span>`;
-      if (statusCell)
-        statusCell.innerHTML = `<span class="status-badge ${badgeClass} animate-badge">${badgeLabel}</span>`;
-      card.dataset.status = novoStatus; // Atualiza o data-status do card
-
-      // Animação de fundo
-      card.style.backgroundColor = novoStatus === "APROVADO" ? "#eafaf0" : "#fdeaea";
-      setTimeout(() => {
-        card.style.transition = "background-color 1s ease";
-        card.style.backgroundColor = "#fff";
-      }, 400);
-
-      showNotification(
-        `Pet ${petNome} foi ${badgeLabel.toLowerCase()} com sucesso!`,
-        "success"
-      );
-      // Re-aplica filtros para garantir que o item sumirá ou mudará de posição se o filtro de status estiver ativo
-      aplicarFiltros();
-    } catch (err) {
-      console.error(err);
-      showNotification("Erro ao atualizar status.", "error");
-    } finally {
-      setTimeout(() => card.classList.remove("changing"), 1000);
+        return "http://localhost:8080/api/pets"; 
     }
-  }
 
-  // ---- NOTIFICAÇÃO CENTRAL ----
-  function showNotification(mensagem, tipo = "info") {
-    const box = document.createElement("div");
-    box.className = `notification-box ${tipo}`;
-    box.textContent = mensagem;
-    document.body.appendChild(box);
+    function getInteressesEndpoint() {
+        if (isAdmin) {
+            return "http://localhost:8080/api/interesses"; 
+        } else if (isOng && organizacaoId) { // Agora 'organizacaoId' deve ter o valor correto
+            return `http://localhost:8080/api/ongs/me/interesses`;
+        } else if (isAdotante && userId) {
+            return "http://localhost:8080/api/interesses/usuarios/me/interesses";
+        }
+        return null;
+    }
 
-    setTimeout(() => box.classList.add("show"), 50);
-    setTimeout(() => {
-      box.classList.remove("show");
-      setTimeout(() => box.remove(), 300);
-    }, 2500);
-  }
+    async function fetchPets() {
+        try {
+            const petEndpoint = getPetsEndpoint();
+            if (!petEndpoint) {
+                console.error("Nenhum endpoint de pets definido para a role atual.");
+                return;
+            }
+            const resp = await fetch(petEndpoint, {
+                headers: { Authorization: "Bearer " + jwtToken },
+            });
+            if (!resp.ok) {
+                const errorData = await resp.json();
+                throw new Error(errorData.message || "Falha ao carregar pets");
+            }
+            const dados = await resp.json();
+            todosPets = Array.isArray(dados) ? dados : dados.content || [];
+            renderPetSelect();
+        } catch (error) {
+            console.warn("API de pets offline ou inacessível, usando mock para filtro.", error);
+            todosPets = [];
+            renderPetSelect();
+        }
+    }
 
-  // ---- EVENTOS ----
-  petSelect.onchange = aplicarFiltros;
-  document
-    .querySelectorAll('input[name="status"]')
-    .forEach((cb) => (cb.onchange = aplicarFiltros));
-  userFilter.oninput = aplicarFiltros;
-  refreshBtn.onclick = fetchInteresses;
+    function renderPetSelect() {
+        petSelect.innerHTML = '<option value="">Todos os Pets</option>';
+        todosPets.forEach((pet) => {
+            const option = document.createElement("option");
+            option.value = pet.id;
+            option.textContent = pet.nome;
+            petSelect.appendChild(option);
+        });
+    }
 
-  // Inicialização
-  await fetchPets();
-  await fetchInteresses();
+    async function fetchInteresses() {
+        interessesContainer.innerHTML = "<p>Carregando...</p>";
+        const endpointInteresses = getInteressesEndpoint();
+
+        if (!endpointInteresses) {
+            // Este alert deve agora ser menos frequente para ONGs com ID
+            alert("Você não tem permissão para visualizar interesses ou dados de usuário ausentes.");
+            window.location.href = "index.html";
+            return;
+        }
+
+        try {
+            const resp = await fetch(endpointInteresses, {
+                headers: { Authorization: "Bearer " + jwtToken },
+            });
+
+            if (resp.status === 403) {
+                throw new Error(
+                    "Acesso negado. Você não tem permissão para ver estes interesses."
+                );
+            }
+            if (!resp.ok) {
+                const errorData = await resp.json();
+                throw new Error(errorData.message || `Erro ao carregar interesses. Status: ${resp.status}`); // Adicionado status para debug
+            }
+
+            todosInteresses = await resp.json();
+            aplicarFiltros();
+        } catch (error) {
+            console.error("Erro ao carregar interesses:", error.message);
+            interessesContainer.innerHTML = `<p class="empty-message">Ocorreu um erro interno no servidor: ${error.message}</p>`; // Mostrar mensagem de erro
+            noInteressesMessage.style.display = "block";
+        }
+    }
+
+    function aplicarFiltros() {
+        let filtrados = [...todosInteresses];
+
+        const petSelecionado = petSelect.value;
+        if (petSelecionado) {
+            filtrados = filtrados.filter((i) => i.pet?.id == petSelecionado);
+        }
+
+        const statusSelecionados = Array.from(
+            document.querySelectorAll('input[name="status"]:checked')
+        ).map((cb) => cb.value);
+
+        if (statusSelecionados.length > 0) {
+            filtrados = filtrados.filter((i) => statusSelecionados.includes(i.status));
+        }
+
+        const termo = userFilter.value.trim().toLowerCase();
+        if (termo) {
+            filtrados = filtrados.filter((i) =>
+                (i.usuario?.nome || "").toLowerCase().includes(termo)
+            );
+        }
+
+        renderInteresses(filtrados);
+    }
+
+    function renderInteresses(interesses) {
+        interessesContainer.innerHTML = "";
+
+        if (!interesses.length) {
+            noInteressesMessage.style.display = "block";
+            return;
+        }
+        noInteressesMessage.style.display = "none";
+
+        if (isAdotante) {
+            document.querySelector('.filters-bar label[for="petSelect"]').style.display = 'none';
+            petSelect.style.display = 'none';
+            userFilter.style.display = 'none';
+            document.querySelector('.filters-bar input[type="text"]').style.display = 'none';
+        } else {
+            document.querySelector('.filters-bar label[for="petSelect"]').style.display = '';
+            petSelect.style.display = '';
+            userFilter.style.display = '';
+            document.querySelector('.filters-bar input[type="text"]').style.display = '';
+        }
+
+        const header = document.createElement("div");
+        header.className = "interesse-card";
+        header.style.fontWeight = "700";
+        header.style.background = "#f8f9fa";
+        header.innerHTML = `
+            <div>Usuário</div>
+            <div>Pet</div>
+            <div>Data</div>
+            <div>Status</div>
+            <div>Ações</div>
+        `;
+        interessesContainer.appendChild(header);
+
+        interesses.forEach((i) => {
+            const card = document.createElement("div");
+            card.className = "interesse-card";
+            card.dataset.id = i.id;
+            card.dataset.status = i.status;
+
+            const statusClass =
+                {
+                    APROVADO: "status-aprovado",
+                    REJEITADO: "status-rejeitado",
+                    PENDENTE: "status-pendente",
+                }[i.status] || "status-pendente";
+
+            const statusHtml = `<span class="status-badge status-cell ${statusClass}">${statusLabels[i.status]}</span>`;
+
+            const actionsHtml =
+                canModerate && i.status === "PENDENTE"
+                    ? `
+                        <button class="approve-btn">Aprovar</button>
+                        <button class="reject-btn">Rejeitar</button>
+                    `
+                    : '<span class="status-badge status-cell">-</span>';
+
+            card.innerHTML = `
+                <div>${escapeHtml(i.usuario?.nome || "N/A")}</div>
+                <div class="pet-name-clickable" data-pet-id="${i.pet?.id}">${escapeHtml(i.pet?.nome || "N/A")}</div>
+                <div>${new Date(i.criadoEm).toLocaleDateString("pt-BR")}</div>
+                <div class="status-cell">${statusHtml}</div>
+                <div class="actions">${actionsHtml}</div>
+            `;
+
+            card.querySelector(".pet-name-clickable")?.addEventListener("click", (e) => {
+                const petId = e.target.dataset.petId;
+                if (petId) {
+                    showPetDetailsModal(petId);
+                }
+            });
+
+
+            if (canModerate && i.status === "PENDENTE") {
+                card.querySelector(".approve-btn")?.addEventListener("click", () =>
+                    atualizarStatus(i.id, "APROVADO", i.pet?.nome)
+                );
+                card.querySelector(".reject-btn")?.addEventListener("click", () =>
+                    atualizarStatus(i.id, "REJEITADO", i.pet?.nome)
+                );
+            }
+
+            interessesContainer.appendChild(card);
+        });
+    }
+
+    async function showPetDetailsModal(petId) {
+        try {
+            const resp = await fetch(`http://localhost:8080/api/pets/${petId}`, {
+                headers: { Authorization: "Bearer " + jwtToken },
+            });
+            if (!resp.ok) throw new Error("Falha ao carregar detalhes do pet.");
+            const pet = await resp.json();
+
+            petDetailsDiv.innerHTML = `
+                <h3>${escapeHtml(pet.nome)}</h3>
+                <p><strong>Raça:</strong> ${escapeHtml(pet.raca)}</p>
+                <p><strong>Idade:</strong> ${escapeHtml(pet.idade)} ${escapeHtml(pet.unidadeIdade)}</p>
+                <p><strong>Sexo:</strong> ${escapeHtml(pet.sexo)}</p>
+                <p><strong>Status:</strong> ${escapeHtml(pet.statusAdocao)}</p>
+                <p><strong>ONG/Tutor:</strong> ${escapeHtml(pet.organizacao?.nome || 'N/A')}</p>
+                <p><strong>Descrição:</strong> ${escapeHtml(pet.descricao)}</p>
+                ${pet.fotoUrl ? `<img src="http://localhost:8080/uploads/${pet.fotoUrl}" alt="${escapeHtml(pet.nome)}" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 15px;">` : ''}
+            `;
+            petModal.style.display = "block";
+        } catch (error) {
+            console.error("Erro ao carregar detalhes do pet:", error.message);
+            showNotification("Erro ao carregar detalhes do pet.", "error");
+        }
+    }
+
+    closeModalBtn.addEventListener("click", () => {
+        petModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target == petModal) {
+            petModal.style.display = "none";
+        }
+    });
+
+    async function atualizarStatus(id, novoStatus, petNome) {
+        const card = document.querySelector(`.interesse-card[data-id="${id}"]`);
+        if (!card) return;
+
+        const actionsCell = card.querySelector(".actions");
+        const statusCell = card.querySelector(".status-cell");
+
+        card.classList.add("changing");
+
+        try {
+            const resp = await fetch(
+                `http://localhost:8080/api/interesses/${id}/status`,
+                {
+                    method: "PUT",
+                    headers: {
+                        Authorization: "Bearer " + jwtToken,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ status: novoStatus }),
+                }
+            );
+
+            if (!resp.ok) {
+                const errorData = await resp.json();
+                throw new Error(errorData.message || "Falha ao atualizar status");
+            }
+
+            const interesseIndex = todosInteresses.findIndex((int) => int.id === id);
+            if (interesseIndex > -1) {
+                todosInteresses[interesseIndex].status = novoStatus;
+            }
+
+            const badgeClass =
+                novoStatus === "APROVADO" ? "status-aprovado" : "status-rejeitado";
+            const badgeLabel = statusLabels[novoStatus];
+
+            if (actionsCell)
+                actionsCell.innerHTML = `<span class="status-badge ${badgeClass} animate-badge">${badgeLabel}</span>`;
+            if (statusCell)
+                statusCell.innerHTML = `<span class="status-badge ${badgeClass} animate-badge">${badgeLabel}</span>`;
+            card.dataset.status = novoStatus;
+
+            card.style.backgroundColor = novoStatus === "APROVADO" ? "#eafaf0" : "#fdeaea";
+            setTimeout(() => {
+                card.style.transition = "background-color 1s ease";
+                card.style.backgroundColor = "#fff";
+            }, 400);
+
+            showNotification(
+                `Interesse para o pet ${petNome} foi ${badgeLabel.toLowerCase()} com sucesso!`,
+                "success"
+            );
+            aplicarFiltros();
+        } catch (err) {
+            console.error(err);
+            showNotification("Erro ao atualizar status: " + err.message, "error");
+        } finally {
+            setTimeout(() => card.classList.remove("changing"), 1000);
+        }
+    }
+
+    function showNotification(mensagem, tipo = "info") {
+        const box = document.createElement("div");
+        box.className = `notification-box ${tipo}`;
+        box.textContent = mensagem;
+        document.body.appendChild(box);
+
+        setTimeout(() => box.classList.add("show"), 50);
+        setTimeout(() => {
+            box.classList.remove("show");
+            setTimeout(() => box.remove(), 300);
+        }, 2500);
+    }
+
+    petSelect.onchange = aplicarFiltros;
+    document
+        .querySelectorAll('input[name="status"]')
+        .forEach((cb) => (cb.onchange = aplicarFiltros));
+    userFilter.oninput = aplicarFiltros;
+    refreshBtn.onclick = fetchInteresses;
+
+    await fetchPets();
+    await fetchInteresses();
 });

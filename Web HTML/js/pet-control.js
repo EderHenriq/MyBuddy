@@ -34,6 +34,10 @@ const detailPetShelter = document.getElementById("detail-pet-shelter");
 const detailPetCity = document.getElementById("detail-pet-city");
 const detailPetState = document.getElementById("detail-pet-state");
 const closeDetailsModalBtn = document.getElementById("closeDetailsModalBtn"); // Botão "Fechar" dentro do modal de detalhes
+// Modais de Mensagem
+const successMessageModal = document.getElementById("successMessageModal");
+const closeSuccessMessageModalBtn = document.getElementById("closeSuccessMessageModal");
+const goToInterestsPageBtn = document.getElementById("goToInterestsPageBtn"); // Botão para ir para a página de interesses
 
 
 // Seção de Pets
@@ -332,12 +336,12 @@ function applyRolePermissions() {
 
         // Se for ONG, pré-seleciona a própria ONG e desabilita o campo.
         if (currentRole === "ROLE_ONG") {
-            const userOrgId = localStorage.getItem('userOrganizationId'); // Assumindo que você salva o ID da ONG
+            const userOrgId = localStorage.getItem('userOrganizacaoId'); // Assumindo que você salva o ID da ONG
             if (userOrgId && petShelterSelect.options.length > 1) { // Verifica se as opções já foram carregadas
                 petShelterSelect.value = userOrgId;
                 petShelterSelect.setAttribute('disabled', 'true');
             } else if (!userOrgId) {
-                console.warn("userOrganizationId não encontrado no localStorage para ROLE_ONG.");
+                console.warn("userOrganizacaoId não encontrado no localStorage para ROLE_ONG.");
             }
         } else {
             petShelterSelect.removeAttribute('disabled');
@@ -428,6 +432,30 @@ function populateOrganizationSelects(organizations) {
 // ===========================================
 
 /**
+ * Exibe um modal para que o adotante possa adicionar uma mensagem ao manifestar interesse.
+ * @param {number} petId O ID do pet.
+ */
+function showManifestInterestModal(petId) {
+    const userMessage = prompt("Adicione uma mensagem para a ONG/Tutor :");
+
+    // Se o usuário clicou em Cancelar no prompt, não faz nada
+    if (userMessage === null) {
+        return;
+    }
+
+    // Chama a função real para manifestar interesse
+    manifestarInteresseNoPet(petId, userMessage || "") // Passa a mensagem (vazia se o usuário não digitou)
+        .then(() => {
+            // Se a manifestação de interesse foi bem-sucedida, exibe o modal de sucesso
+            openModal(successMessageModal);
+        })
+        .catch(error => {
+            console.error("Erro ao mostrar modal de interesse:", error);
+            alert("Não foi possível registrar seu interesse. Tente novamente.");
+        });
+}
+
+/**
  * Cria e retorna um elemento de card de pet.
  * @param {Object} pet Objeto com os dados do pet.
  * @returns {HTMLElement} O elemento HTML do card do pet.
@@ -485,7 +513,7 @@ function createPetCard(pet) {
 
     // Mostrar botão Manifestar Interesse apenas para adotantes e se o pet estiver "DISPONIVEL" ou "EM_ADOCAO"
     if (btnManifestarInteresse) {
-        if (isAdotante && pet.statusAdocao === 'DISPONIVEL') { // Mantive apenas DISPONIVEL por enquanto, confirme se EM_ADOCAO também deve permitir interesse
+        if (isAdotante && pet.statusAdocao === 'DISPONIVEL') { 
             btnManifestarInteresse.style.display = "flex";
         } else {
             btnManifestarInteresse.style.display = "none";
@@ -518,7 +546,7 @@ function createPetCard(pet) {
     if (btnManifestarInteresse) {
         btnManifestarInteresse.addEventListener("click", (e) => {
             e.stopPropagation();
-            manifestarInteresse(pet.id); // Nova função para manifestar interesse
+            showManifestInterestModal(pet.id); // Nova função para manifestar interesse
         });
     }
 
@@ -789,7 +817,7 @@ async function manifestarInteresseNoPet(petId, mensagem) {
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/interesses`, { // Ou use "http://localhost:8080/api/interesses"
+        const response = await fetch("http://localhost:8080/api/interesses", { // Ou use "http://localhost:8080/api/interesses"
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -803,7 +831,7 @@ async function manifestarInteresseNoPet(petId, mensagem) {
             throw new Error(errorData.message || "Erro ao manifestar interesse.");
         }
 
-        alert("Interesse manifestado com sucesso!");
+        //alert("Interesse manifestado com sucesso!");
         // Fechar modal ou atualizar UI
     } catch (error) {
         console.error("Erro ao manifestar interesse:", error);
@@ -871,6 +899,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeModal(petDetailsModal);
     });
+
+    // NOVO: Fechar modal de Mensagem de Sucesso
+if (closeSuccessMessageModalBtn) {
+    closeSuccessMessageModalBtn.addEventListener("click", () => closeModal(successMessageModal));
+}
+window.addEventListener("click", (e) => {
+    if (e.target === successMessageModal) closeModal(successMessageModal);
+});
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal(successMessageModal);
+});
+
+// NOVO: Botão "Ver Meus Interesses" no modal de sucesso
+if (goToInterestsPageBtn) {
+    goToInterestsPageBtn.addEventListener("click", () => {
+        closeModal(successMessageModal);
+        // Redireciona para a página de interesses de adoção
+        // Assumindo que você terá uma página chamada 'meus-interesses.html'
+        window.location.href = 'GestaoInteresseAdoacao.html'; // Ajuste o nome do arquivo se for diferente
+    });
+}
 
 
     // Abrir modal de Filtros
@@ -948,7 +997,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // Se for ONG e o campo `organizacaoId` estiver desabilitado, pegamos o ID da ONG do localStorage
             if (currentRole === "ROLE_ONG" && petShelterSelect.hasAttribute('disabled')) {
-                const userOrgId = localStorage.getItem('userOrganizationId');
+                const userOrgId = localStorage.getItem('userOrganizacaoId');
                 if (userOrgId) {
                     petData.organizacaoId = parseInt(userOrgId, 10);
                 } else {

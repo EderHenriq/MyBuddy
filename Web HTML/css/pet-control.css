@@ -751,3 +751,92 @@ input[type="file"] {
         width: 100%;
     }
 }
+
+/* --- Botão Manifestar Interesse (New Style) --- */
+.success-btn {
+    background-color: #28a745; /* Verde vibrante */
+    color: white;
+    border: none;
+    padding: 10px 15px; /* Um pouco mais de padding */
+    border-radius: 8px; /* Mantém o border-radius */
+    cursor: pointer;
+    font-weight: 600; /* Mais negrito */
+    font-size: 1em; /* Tamanho da fonte padrão */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex; /* Para centralizar ícone e texto */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espaçamento entre ícone e texto */
+}
+
+.success-btn:hover {
+    background-color: #218838; /* Um verde um pouco mais escuro no hover */
+    transform: translateY(-2px); /* Efeito de elevação sutil */
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); /* Sombra mais destacada */
+}
+
+/* --- Modal de Mensagem de Sucesso (para "Interesse Manifestado") --- */
+.message-modal {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1060; /* Acima de outros modais */
+}
+
+.message-modal-content {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px; /* Um tamanho bom para uma mensagem de sucesso */
+    text-align: center;
+    position: relative;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeInScale 0.3s ease-out;
+}
+
+.message-modal-content h3 {
+    font-size: 1.8em;
+    color: #28a745; /* Cor do título verde */
+    margin-bottom: 20px;
+}
+
+.message-modal-content p {
+    font-size: 1.1em;
+    color: #495057;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.message-modal-content .close-button {
+    top: 15px;
+    right: 20px;
+    font-size: 1.8em;
+    color: #adb5bd;
+}
+
+.message-modal-content .close-button:hover {
+    color: #343a40;
+}
+
+.message-modal-content .modal-action-btn {
+    background-color: #28a745; /* Botão de ação do modal na cor verde */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.05em;
+    transition: background-color 0.3s ease;
+}
+
+.message-modal-content .modal-action-btn:hover {
+    background-color: #218838;
+}

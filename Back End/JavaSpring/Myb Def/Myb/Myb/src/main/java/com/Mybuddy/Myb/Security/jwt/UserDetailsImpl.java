@@ -24,10 +24,8 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    // --- NOVO CAMPO: ID DA ORGANIZAÇÃO DO USUÁRIO ---
     private Long organizacaoId; // Pode ser null se o usuário não for de uma ONG
 
-    // Construtor atualizado para receber o organizacaoId
     public UserDetailsImpl(Long id, String nome, String email, String password,
                            Collection<? extends GrantedAuthority> authorities,
                            Long organizacaoId) {
@@ -39,11 +37,6 @@ public class UserDetailsImpl implements UserDetails {
         this.organizacaoId = organizacaoId;
     }
 
-    /**
-     * Constrói um UserDetailsImpl a partir de um objeto Usuario.
-     * @param user O objeto Usuario do banco de dados.
-     * @return Uma instância de UserDetailsImpl.
-     */
     public static UserDetailsImpl build(Usuario user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))

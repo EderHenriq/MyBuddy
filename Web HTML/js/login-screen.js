@@ -271,8 +271,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem('userEmail', data.email);
                 localStorage.setItem('userName', data.username); // 'username' é o email, 'nome' é o nome real
                 localStorage.setItem('userRoles', JSON.stringify(data.roles));
-                // **Alteração aqui:** Usar 'organizacaoId' e 'userOrganizacaoId' consistentemente
-                if (data.organizacaoId) { // Backend deve retornar 'organizacaoId'
+            
+                if (data.organizacaoId) {
                     localStorage.setItem('userOrganizacaoId', data.organizacaoId);
                 } else {
                     localStorage.removeItem('userOrganizacaoId');

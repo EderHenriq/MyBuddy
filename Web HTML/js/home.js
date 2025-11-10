@@ -67,32 +67,25 @@ document.addEventListener('DOMContentLoaded', () => {
             // Aqui você define a lógica de navegação real
             switch (page) {
                 case 'adocao':
-                    alert('Navegando para a página de Adoção de Pets...');
                      window.location.href = './pet-control.html';
                     break;
                 case 'petshops':
-                    alert('Navegando para a página de PetShops Próximos...');
                     // window.location.href = './petshops.html';
                     break;
                 case 'veterinarios':
-                    alert('Navegando para a página de Veterinários & Hospitais...');
                     // window.location.href = './veterinarios.html';
                     break;
                 case 'perdidos-achados':
-                    alert('Navegando para a página de Pets Perdidos & Achados...');
                     // window.location.href = './perdidos-achados.html';
                     break;
                 case 'meus-pets':
-                    alert('Navegando para a página Meus Pets...');
                     // window.location.href = './meus-pets.html';
                     break;
                 case 'admin-dashboard':
-                    alert('Navegando para o Painel Administrativo...');
                     // window.location.href = './PerfilADM.html'; // Assumindo esta página
                     break;
                 case 'ong-dashboard':
-                    alert('Navegando para a Gestão da ONG...');
-                    // window.location.href = './PerfilOng.html'; // Assumindo esta página
+                    window.location.href = './GestaoInteresseAdoacao.html'; // Assumindo esta página
                     break;
                 default:
                     alert(`Navegando para ${page}...`);
