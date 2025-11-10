@@ -39,6 +39,12 @@ const successMessageModal = document.getElementById("successMessageModal");
 const closeSuccessMessageModalBtn = document.getElementById("closeSuccessMessageModal");
 const goToInterestsPageBtn = document.getElementById("goToInterestsPageBtn"); // Botão para ir para a página de interesses
 
+// Elementos do Header
+const authButtons = document.querySelector('.auth-buttons.logged-out'); // Botões Login/Cadastro
+const profileArea = document.querySelector('.profile-area.logged-in'); // Área "Olá, Nome"
+const userNameDisplay = document.getElementById('userNameDisplay'); // Onde "Nome" será exibido
+const logoutButton = document.querySelector('.logout-btn'); // Botão Sair do header
+const userProfileLink = document.getElementById('userProfileLink'); // Link para perfil (se tiver)
 
 // Seção de Pets
 const petsContainer = document.querySelector(".pets-cards-wrapper");
@@ -133,6 +139,54 @@ function displayImagePreviews(files) {
         photosPreview.classList.remove('has-images');
         photosPreview.innerHTML = '<span>Nenhuma imagem selecionada.</span>'; // Adiciona o placeholder novamente
     }
+}
+
+/**
+ * Verifica se o usuário está logado.
+ * @returns {boolean} True se o token de acesso existir, false caso contrário.
+ */
+function isLoggedIn() {
+    return localStorage.getItem('accessToken') !== null;
+}
+
+/**
+ * Atualiza o estado visual do header (botões de login/cadastro vs. área do perfil).
+ */
+function updateHeaderUI() {
+    if (isLoggedIn()) {
+        if (authButtons) authButtons.style.display = 'none';
+        if (profileArea) profileArea.style.display = 'flex'; // Ou 'block', dependendo do seu CSS
+
+        const userName = localStorage.getItem('userName');
+        if (userNameDisplay && userName) {
+            userNameDisplay.textContent = `Olá, ${userName}`;
+        }
+
+        // Opcional: Atualizar o link de perfil se houver uma página de perfil específica
+        // const userId = localStorage.getItem('userId');
+        // if (userProfileLink && userId) {
+        //     userProfileLink.href = `profile.html?id=${userId}`; // Exemplo
+        // }
+
+    } else {
+        if (authButtons) authButtons.style.display = 'flex'; // Ou 'block'
+        if (profileArea) profileArea.style.display = 'none';
+    }
+}
+
+/**
+ * Realiza o logout do usuário.
+ */
+function logout() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userRoles');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userOrganizacaoId'); // Remover este também
+
+    // Redireciona para a página inicial ou de login
+    window.location.href = 'login_screen.html';
 }
 
 /**
@@ -846,6 +900,16 @@ async function manifestarInteresseNoPet(petId, mensagem) {
 
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("Script pet-control.js carregado!");
+
+    updateHeaderUI(); // <--- CHAME AQUI NO INÍCIO!
+
+    // Adiciona o event listener para o botão de logout
+    if (logoutButton) {
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault(); // Previne o comportamento padrão do link
+            logout();
+        });
+    }
 
     // Carrega as organizações primeiro, pois são necessárias para os selects e para renderizar os pets
     await fetchOrganizations();

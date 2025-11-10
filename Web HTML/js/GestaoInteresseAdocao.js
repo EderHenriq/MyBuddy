@@ -1,46 +1,138 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    // --- Elementos de UI específicos da página de Gestão de Interesses ---
     const interessesContainer = document.getElementById("interessesContainer");
     const noInteressesMessage = document.getElementById("noInteressesMessage");
     const refreshBtn = document.getElementById("refreshBtn");
     const petSelect = document.getElementById("petSelect");
     const userFilter = document.getElementById("userFilter");
-    const userInfo = document.getElementById("userInfo");
-    const logoutBtn = document.getElementById("logoutBtn"); // Adicionado o botão de logout
-    const petModal = document.getElementById("petModal"); // Modal de detalhes do pet
-    const closeModalBtn = document.getElementById("closeModal"); // Botão fechar modal
-    const petDetailsDiv = document.getElementById("petDetails"); // Conteúdo do modal de pet
+    
+    // --- Elementos de UI do Header (para controle de autenticação e navegação) ---
+    const userNameDisplay = document.getElementById("userNameDisplay");
+    const profileIcon = document.getElementById("profileIcon");
+    const logoutBtnHeader = document.getElementById("logoutBtnHeader");
+    const profileAreaLoggedIn = document.querySelector(".profile-area.logged-in");
+    const authButtonsLoggedOut = document.querySelector(".auth-buttons.logged-out");
 
+    // --- Elementos do Modal de Detalhes do Pet ---
+    const petModal = document.getElementById("petModal");
+    const closeModalBtn = document.getElementById("closeModal");
+    const petDetailsDiv = document.getElementById("petDetails");
+
+    // --- Dados de Autenticação do localStorage ---
     const jwtToken = localStorage.getItem("accessToken");
-    const userEmail = localStorage.getItem("userEmail");
+    const userNome = localStorage.getItem("userNome");
     const roles = JSON.parse(localStorage.getItem("userRoles") || "[]");
     const isAdmin = roles.includes("ROLE_ADMIN");
     const isOng = roles.includes("ROLE_ONG");
     const isAdotante = roles.includes("ROLE_ADOTANTE");
     const canModerate = isAdmin || isOng;
-
-    // CORRIGIDO: Obter o ID da organização para ONGs usando a chave correta
-    const organizacaoId = localStorage.getItem("userOrganizacaoId"); // <--- AQUI A MUDANÇA
-    // Obter o ID do usuário para o adotante
+    const organizacaoId = localStorage.getItem("userOrganizacaoId");
     const userId = localStorage.getItem("userId");
 
+    // --- Função de Notificação (mantida da sua implementação) ---
+    function showNotification(mensagem, tipo = "info") {
+        const box = document.createElement("div");
+        box.className = `notification-box ${tipo}`;
+        box.textContent = mensagem;
+        document.body.appendChild(box);
+
+        setTimeout(() => box.classList.add("show"), 50);
+        setTimeout(() => {
+            box.classList.remove("show");
+            setTimeout(() => box.remove(), 300);
+        }, 2500);
+    }
+
+    // --- Verificação de Autenticação e Redirecionamento ---
     if (!jwtToken) {
-        alert("Você precisa estar logado para acessar!");
-        window.location.href = "login.html";
+        showNotification("Você precisa estar logado para acessar esta página.", "error");
+        setTimeout(() => {
+            window.location.href = "login-screen.html";
+        }, 1500);
         return;
     }
 
-    userInfo.textContent = userEmail ? `Olá, ${userEmail}!` : "Usuário autenticado";
+    // --- Lógica de Exibição do Header (Login/Logout) ---
+    if (jwtToken) {
+        profileAreaLoggedIn.style.display = "flex";
+        authButtonsLoggedOut.style.display = "none";
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
+        if (userNameDisplay && userNome) {
+            userNameDisplay.textContent = `Olá, ${userNome}!`;
+        }
+    } else {
+        // Isso não deve ocorrer se o jwtToken for nulo e o redirecionamento funcionar,
+        // mas é bom ter uma fallback para o caso.
+        profileAreaLoggedIn.style.display = "none";
+        authButtonsLoggedOut.style.display = "flex";
+    }
+
+    // --- Manipulador de Evento para o botão de Logout no Header ---
+    if (logoutBtnHeader) {
+        logoutBtnHeader.addEventListener("click", () => {
             localStorage.clear();
-            window.location.href = "login.html";
+            showNotification("Sessão encerrada com sucesso!", "info");
+            setTimeout(() => {
+                window.location.href = "login_screen.html";
+            }, 1000);
         });
     }
 
-    let todosPets = [];
-    let todosInteresses = [];
+    // --- Lógica de Navegação do Header ---
+    const headerNavItems = document.querySelectorAll('.header-nav .nav-item');
+    headerNavItems.forEach(item => {
+        item.addEventListener('click', (event) => {
+            event.preventDefault();
 
+            headerNavItems.forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+
+            const pageLink = item.dataset.pageLink;
+            let targetPage = '';
+
+            switch (pageLink) {
+                case 'home':
+                    targetPage = 'home.html';
+                    break;
+                case 'adocao':
+                    // Corrigido para GestaoPet.html
+                    targetPage = 'GestaoPet.html'; 
+                    break;
+                case 'petshops':
+                    targetPage = 'pet-shops.html';
+                    break;
+                case 'servicos':
+                    targetPage = 'veterinarios-e-servicos.html';
+                    break;
+                case 'meus-interesses':
+                    targetPage = 'GestaoInteresseAdoacao.html';
+                    break;
+                default:
+                    console.warn('Navegação não configurada para:', pageLink);
+                    return;
+            }
+
+            if (targetPage) {
+                window.location.href = targetPage;
+            }
+        });
+    });
+
+    // --- Navegação do Ícone de Perfil ---
+    if (profileIcon) {
+        profileIcon.addEventListener('click', () => {
+            let perfilPage = 'perfilAdotante.html';
+
+            if (isAdmin) {
+                perfilPage = 'perfilADM.html';
+            } else if (isOng) {
+                perfilPage = 'perfilONG.html';
+            }
+            window.location.href = perfilPage;
+        });
+    }
+
+    // --- Funções Auxiliares (escapeHtml, statusLabels) ---
     const escapeHtml = (s) =>
         String(s ?? "")
             .replace(/&/g, "&amp;")
@@ -55,6 +147,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         REJEITADO: "Rejeitado",
     };
 
+    // --- Variáveis de dados e endpoints ---
+    let todosPets = [];
+    let todosInteresses = [];
+
     function getPetsEndpoint() {
         if (isOng && organizacaoId) {
             return `http://localhost:8080/api/pets/organizacao/${organizacaoId}`;
@@ -65,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     function getInteressesEndpoint() {
         if (isAdmin) {
             return "http://localhost:8080/api/interesses"; 
-        } else if (isOng && organizacaoId) { // Agora 'organizacaoId' deve ter o valor correto
+        } else if (isOng && organizacaoId) {
             return `http://localhost:8080/api/ongs/me/interesses`;
         } else if (isAdotante && userId) {
             return "http://localhost:8080/api/interesses/usuarios/me/interesses";
@@ -73,6 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return null;
     }
 
+    // --- Funções de Fetch de Dados ---
     async function fetchPets() {
         try {
             const petEndpoint = getPetsEndpoint();
@@ -97,24 +194,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    function renderPetSelect() {
-        petSelect.innerHTML = '<option value="">Todos os Pets</option>';
-        todosPets.forEach((pet) => {
-            const option = document.createElement("option");
-            option.value = pet.id;
-            option.textContent = pet.nome;
-            petSelect.appendChild(option);
-        });
-    }
-
     async function fetchInteresses() {
         interessesContainer.innerHTML = "<p>Carregando...</p>";
         const endpointInteresses = getInteressesEndpoint();
 
         if (!endpointInteresses) {
-            // Este alert deve agora ser menos frequente para ONGs com ID
-            alert("Você não tem permissão para visualizar interesses ou dados de usuário ausentes.");
-            window.location.href = "index.html";
+            showNotification("Você não tem permissão para visualizar interesses ou dados de usuário ausentes.", "error");
+            setTimeout(() => {
+                window.location.href = "home.html";
+            }, 1500);
             return;
         }
 
@@ -124,22 +212,31 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
 
             if (resp.status === 403) {
-                throw new Error(
-                    "Acesso negado. Você não tem permissão para ver estes interesses."
-                );
+                throw new Error("Acesso negado. Você não tem permissão para ver estes interesses.");
             }
             if (!resp.ok) {
                 const errorData = await resp.json();
-                throw new Error(errorData.message || `Erro ao carregar interesses. Status: ${resp.status}`); // Adicionado status para debug
+                throw new Error(errorData.message || `Erro ao carregar interesses. Status: ${resp.status}`);
             }
 
             todosInteresses = await resp.json();
             aplicarFiltros();
         } catch (error) {
             console.error("Erro ao carregar interesses:", error.message);
-            interessesContainer.innerHTML = `<p class="empty-message">Ocorreu um erro interno no servidor: ${error.message}</p>`; // Mostrar mensagem de erro
+            interessesContainer.innerHTML = `<p class="empty-message">Ocorreu um erro interno no servidor: ${error.message}</p>`;
             noInteressesMessage.style.display = "block";
         }
+    }
+
+    // --- Funções de Renderização e Filtros ---
+    function renderPetSelect() {
+        petSelect.innerHTML = '<option value="">Todos os Pets</option>';
+        todosPets.forEach((pet) => {
+            const option = document.createElement("option");
+            option.value = pet.id;
+            option.textContent = pet.nome;
+            petSelect.appendChild(option);
+        });
     }
 
     function aplicarFiltros() {
@@ -171,22 +268,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     function renderInteresses(interesses) {
         interessesContainer.innerHTML = "";
 
-        if (!interesses.length) {
+        // Garante que o noInteressesMessage esteja escondido se houver interesses
+        if (interesses.length) {
+            noInteressesMessage.style.display = "none";
+        } else {
             noInteressesMessage.style.display = "block";
-            return;
         }
-        noInteressesMessage.style.display = "none";
+
+        // Esconde filtros de Pet e Usuário para Adotantes
+        const petSelectLabel = document.querySelector('.filters-bar label[for="petSelect"]');
+        const petSelectElement = document.getElementById("petSelect");
+        const userFilterInput = document.getElementById("userFilter");
 
         if (isAdotante) {
-            document.querySelector('.filters-bar label[for="petSelect"]').style.display = 'none';
-            petSelect.style.display = 'none';
-            userFilter.style.display = 'none';
-            document.querySelector('.filters-bar input[type="text"]').style.display = 'none';
+            if (petSelectLabel) petSelectLabel.style.display = 'none';
+            if (petSelectElement) petSelectElement.style.display = 'none';
+            if (userFilterInput) userFilterInput.style.display = 'none';
         } else {
-            document.querySelector('.filters-bar label[for="petSelect"]').style.display = '';
-            petSelect.style.display = '';
-            userFilter.style.display = '';
-            document.querySelector('.filters-bar input[type="text"]').style.display = '';
+            if (petSelectLabel) petSelectLabel.style.display = '';
+            if (petSelectElement) petSelectElement.style.display = '';
+            if (userFilterInput) userFilterInput.style.display = '';
         }
 
         const header = document.createElement("div");
@@ -240,7 +341,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             });
 
-
             if (canModerate && i.status === "PENDENTE") {
                 card.querySelector(".approve-btn")?.addEventListener("click", () =>
                     atualizarStatus(i.id, "APROVADO", i.pet?.nome)
@@ -254,6 +354,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    // --- Modal de Detalhes do Pet ---
     async function showPetDetailsModal(petId) {
         try {
             const resp = await fetch(`http://localhost:8080/api/pets/${petId}`, {
@@ -272,7 +373,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <p><strong>Descrição:</strong> ${escapeHtml(pet.descricao)}</p>
                 ${pet.fotoUrl ? `<img src="http://localhost:8080/uploads/${pet.fotoUrl}" alt="${escapeHtml(pet.nome)}" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 15px;">` : ''}
             `;
-            petModal.style.display = "block";
+            petModal.style.display = "flex";
         } catch (error) {
             console.error("Erro ao carregar detalhes do pet:", error.message);
             showNotification("Erro ao carregar detalhes do pet.", "error");
@@ -289,6 +390,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
+    // --- Função de Atualização de Status ---
     async function atualizarStatus(id, novoStatus, petNome) {
         const card = document.querySelector(`.interesse-card[data-id="${id}"]`);
         if (!card) return;
@@ -350,19 +452,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    function showNotification(mensagem, tipo = "info") {
-        const box = document.createElement("div");
-        box.className = `notification-box ${tipo}`;
-        box.textContent = mensagem;
-        document.body.appendChild(box);
-
-        setTimeout(() => box.classList.add("show"), 50);
-        setTimeout(() => {
-            box.classList.remove("show");
-            setTimeout(() => box.remove(), 300);
-        }, 2500);
-    }
-
+    // --- Adição de Event Listeners para Filtros e Refresh ---
     petSelect.onchange = aplicarFiltros;
     document
         .querySelectorAll('input[name="status"]')
@@ -370,6 +460,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     userFilter.oninput = aplicarFiltros;
     refreshBtn.onclick = fetchInteresses;
 
+    // --- Inicialização da Página ---
     await fetchPets();
     await fetchInteresses();
+
+    // No momento em que a página é carregada, se o modal não deve estar visível,
+    // garantimos que o display é 'none'. Isso resolve o "aviso em branco".
+    petModal.style.display = "none";
 });

@@ -1,272 +1,509 @@
+/* Definição de Variáveis CSS para a Paleta de Cores (Replicando de home.css para consistência) */
 :root {
-  --primary-orange: #FD7915;
-  --primary-green: #36bf4c;
-  --danger-red: #e74c3c;
-  --gray-bg: #f8f9fa;
-  --text-dark: #272728;
-  --border-radius: 10px;
+    --primary-orange: #FD7915;
+    --secondary-green: #36bf4c;
+    --alert-red: #e74c3c;
+    --light-background: #f8f9fa; /* Seu --gray-bg */
+    --dark-text: #272728; /* Seu --text-dark */
+    --medium-gray: #6c757d;
+    --dark-background: #343a40; /* Usado no footer da home, pode ser útil aqui */
+    --white: #ffffff;
+
+    /* Variáveis específicas desta página, se houver conflito, ajuste aqui */
+    --border-radius: 10px; /* Mantém o seu border-radius */
+    --primary-green: #36bf4c; /* Seu primary-green */
+    --danger-red: #e74c3c; /* Seu danger-red */
+    --gray-bg: #f8f9fa; /* Seu gray-bg */
+    --text-dark: #272728; /* Seu text-dark */
 }
 
-/* Reset */
+/* Reset Básico e Geral */
 body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background-color: var(--gray-bg);
-  color: var(--text-dark);
-  margin: 0;
-  padding: 0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-color: var(--light-background); /* Usando a variável global para consistência */
+    color: var(--dark-text); /* Usando a variável global para consistência */
+    margin: 0;
+    padding: 0;
+    display: flex; /* Para o footer fixar no final */
+    flex-direction: column; /* Para o footer fixar no final */
+    min-height: 100vh; /* Para o footer fixar no final */
 }
 
-/* HEADER */
-.main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  padding: 16px 40px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.header-logo {
-  width: 48px;
-  height: 48px;
-}
-
-.app-name {
-  font-size: 1.6em;
-  font-weight: 700;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.user-info {
-  font-weight: 600;
-  color: #333;
-  font-size: 0.95em;
-}
-
-.logout-btn {
-  background: var(--danger-red);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-weight: 600;
-}
-.logout-btn:hover {
-  background: #c0392b;
-}
-
-/* MAIN */
-.main-container {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 30px;
-  background: #fff;
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-.container-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
+/* Estilo para botões genéricos (replicado de home.css para consistência) */
+.btn {
+    padding: 10px 20px;
+    border-radius: 25px; /* Bordas mais arredondadas para um visual moderno */
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .primary-btn {
-  background: var(--primary-orange);
-  color: #fff;
-  border: none;
-  border-radius: 25px;
-  padding: 10px 22px;
-  font-weight: 600;
-  cursor: pointer;
+    background-color: var(--primary-orange);
+    color: var(--white);
 }
-.primary-btn:hover { background: #e66700; }
+
+.primary-btn:hover {
+    background-color: #e66a0e; /* Um pouco mais escuro no hover */
+    box-shadow: 0 4px 10px rgba(var(--primary-orange), 0.3);
+}
+
+.secondary-btn { /* Pode ser usado em outros botões se necessário */
+    background-color: transparent;
+    color: var(--primary-orange);
+    border: 2px solid var(--primary-orange);
+}
+
+.secondary-btn:hover {
+    background-color: var(--primary-orange);
+    color: var(--white);
+}
+
+
+/* HEADER (Estilos do novo header) */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--white); /* Fundo branco puro */
+    padding: 15px 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    width: 45px; /* Levemente maior */
+    height: 45px;
+    margin-right: 12px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.app-name {
+    font-size: 1.6em;
+    font-weight: 700; /* Mais negrito */
+    color: var(--dark-text);
+}
+
+.header-nav {
+    display: flex;
+    gap: 35px; /* Mais espaço */
+}
+
+.nav-item {
+    text-decoration: none;
+    color: var(--dark-text); /* Cor do texto padrão para navegação */
+    font-weight: 600;
+    padding: 8px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px; /* Posição do sublinhado */
+    width: 0;
+    height: 3px;
+    background-color: var(--primary-orange);
+    transition: width 0.3s ease-out;
+    border-radius: 2px; /* Pequenas bordas arredondadas para o sublinhado */
+}
+
+.nav-item:hover, .nav-item.active {
+    color: var(--primary-orange); /* Laranja no hover e ativo */
+}
+
+.nav-item:hover::after, .nav-item.active::after {
+    width: 100%;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espaço entre elementos */
+}
+
+.profile-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-greeting {
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+.header-icon.profile-icon {
+    font-size: 1.8em; /* Ícone de perfil maior */
+    color: var(--medium-gray); /* Cor do ícone padrão */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.header-icon.profile-icon:hover {
+    color: var(--primary-orange);
+}
+
+.logout-btn { /* Este é o botão Sair no header para o user logado */
+    background-color: var(--alert-red); /* Usando variável global */
+    color: var(--white);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px; /* Bordas arredondadas */
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.logout-btn:hover {
+    background-color: #cf3030; /* Um tom mais escuro */
+}
+
+.auth-buttons { /* Botões Login/Registre-se */
+    display: flex;
+    gap: 10px;
+}
+
+.login-btn {
+    background-color: transparent;
+    color: var(--dark-text);
+    border: 2px solid var(--dark-text);
+    padding: 8px 18px;
+    border-radius: 20px;
+}
+
+.login-btn:hover {
+    background-color: var(--dark-text);
+    color: var(--white);
+}
+
+.register-btn {
+    background-color: var(--primary-orange);
+    color: var(--white);
+    padding: 8px 18px;
+    border-radius: 20px;
+}
+
+.register-btn:hover {
+    background-color: #e66a0e;
+}
+
+
+/* MAIN */
+.main-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 30px;
+    background: var(--white); /* Usando variável global para consistência */
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.container-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+/* O primary-btn da página já estava configurado com o orange, ajustei para usar a variável */
+.primary-btn {
+    background: var(--primary-orange);
+    color: var(--white);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 22px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.primary-btn:hover { background: #e66700; } /* Mantido o tom mais escuro */
 
 /* FILTROS */
 .filters-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-  background: var(--gray-bg);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    background: var(--light-background); /* Usando variável global para consistência */
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
 }
 
 .filters-bar select,
 .filters-bar input[type="text"] {
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  padding: 8px 14px;
-  background: #fff;
-  transition: all 0.2s;
+    border: 1px solid #ccc;
+    border-radius: 20px; /* Mais arredondado */
+    padding: 8px 14px;
+    background: var(--white); /* Usando variável global */
+    transition: all 0.2s;
 }
 .filters-bar input[type="text"]:focus,
 .filters-bar select:focus {
-  border-color: var(--primary-orange);
-  box-shadow: 0 0 0 3px rgba(253, 121, 21, 0.15);
-  outline: none;
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(253, 121, 21, 0.15);
+    outline: none;
 }
 
 /* CARDS */
 .interesse-card {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
-  gap: 10px;
-  align-items: center;
-  background: #fff;
-  border-radius: var(--border-radius);
-  border: 1px solid #ddd;
-  padding: 12px 16px;
-  margin-bottom: 10px;
-  transition: transform 0.2s ease;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1.5fr;
+    gap: 10px;
+    align-items: center;
+    background: var(--white); /* Usando variável global */
+    border-radius: var(--border-radius);
+    border: 1px solid #ddd;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    transition: transform 0.2s ease;
 }
 
 .interesse-card:hover {
-  transform: scale(1.01);
+    transform: scale(1.01);
 }
 
-.interesse-card[data-status="PENDENTE"] { border-left: 5px solid #ff7a00; }
-.interesse-card[data-status="APROVADO"] { border-left: 5px solid #36bf4c; }
-.interesse-card[data-status="REJEITADO"] { border-left: 5px solid #e74c3c; }
+/* Bordas de status */
+.interesse-card[data-status="PENDENTE"] { border-left: 5px solid var(--primary-orange); } /* Laranja para pendente */
+.interesse-card[data-status="APROVADO"] { border-left: 5px solid var(--secondary-green); } /* Verde para aprovado */
+.interesse-card[data-status="REJEITADO"] { border-left: 5px solid var(--alert-red); } /* Vermelho para rejeitado */
+
 
 .status-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 10px;
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.85em;
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 10px;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.85em;
 }
-.status-aprovado { background-color: #36bf4c; }
-.status-rejeitado { background-color: #e74c3c; }
-.status-pendente { background-color: #ff7a00; }
+.status-aprovado { background-color: var(--secondary-green); }
+.status-rejeitado { background-color: var(--alert-red); }
+.status-pendente { background-color: var(--primary-orange); } /* Laranja para pendente */
 
 .actions {
-  display: flex;
-  gap: 8px;
+    display: flex;
+    gap: 8px;
 }
 
 .approve-btn, .reject-btn {
-  border: none;
-  border-radius: 8px;
-  padding: 6px 12px;
-  color: #fff;
-  font-weight: 500;
-  cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: var(--white);
+    font-weight: 500;
+    cursor: pointer;
 }
-.approve-btn { background: var(--primary-green); }
-.reject-btn { background: var(--danger-red); }
+.approve-btn { background: var(--secondary-green); }
+.reject-btn { background: var(--alert-red); }
 
 /* FOOTER */
 .footer {
-  text-align: center;
-  color: #777;
-  background: #fff;
-  padding: 16px;
-  margin-top: 40px;
+    text-align: center;
+    color: var(--medium-gray); /* Usando variável para consistência */
+    background: var(--white);
+    padding: 16px;
+    margin-top: auto; /* Garante que o footer vá para o final da página */
 }
 
 /* RESPONSIVO */
-@media (max-width: 768px) {
-  .filters-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .interesse-card {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-  .actions { justify-content: center; }
+@media (max-width: 992px) { /* Adicionado breakpoint do header */
+    .main-header {
+        flex-wrap: wrap;
+        padding: 10px 20px;
+    }
+    .header-nav {
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 20px;
+    }
+    .header-right {
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+    }
 }
 
+@media (max-width: 768px) {
+    .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .interesse-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .actions { justify-content: center; }
+    .app-name {
+        font-size: 1.4em;
+    }
+}
+
+/* Estilos para o Modal */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1001; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: var(--white);
+    margin: auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.close-button {
+    color: var(--dark-text);
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--alert-red);
+    text-decoration: none;
+}
+
+#petDetails h3 {
+    color: var(--primary-orange);
+    margin-top: 0;
+    font-size: 1.8em;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+#petDetails p {
+    margin-bottom: 8px;
+    font-size: 1.05em;
+    line-height: 1.5;
+}
+
+#petDetails p strong {
+    color: var(--dark-text);
+}
+
+#petDetails img {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Notificações (mantido de sua implementação) */
 .notification-box {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.9);
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  padding: 18px 30px;
-  border-radius: 14px;
-  font-weight: 600;
-  color: #333;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-  opacity: 0;
-  transition: all 0.3s ease;
-  z-index: 2000;
-  text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 18px 30px;
+    border-radius: 14px;
+    font-weight: 600;
+    color: #333;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    text-align: center;
 }
 
 .notification-box.show {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .notification-box.success {
-  border-left: 6px solid #36bf4c;
+    border-left: 6px solid var(--secondary-green);
 }
 
 .notification-box.error {
-  border-left: 6px solid #e74c3c;
+    border-left: 6px solid var(--alert-red);
 }
 
 /* Efeito de atualização */
 .interesse-card.updating {
-  opacity: 0.7;
-  transform: scale(0.98);
-  transition: all 0.3s ease;
+    opacity: 0.7;
+    transform: scale(0.98);
+    transition: all 0.3s ease;
 }
 
 .interesse-card.updated {
-  animation: pulseCard 0.8s ease;
+    animation: pulseCard 0.8s ease;
 }
 
 @keyframes pulseCard {
-  0% { box-shadow: 0 0 0px #34c759; }
-  50% { box-shadow: 0 0 20px rgba(52, 199, 89, 0.4); }
-  100% { box-shadow: 0 0 0px transparent; }
+    0% { box-shadow: 0 0 0px var(--secondary-green); }
+    50% { box-shadow: 0 0 20px rgba(54, 191, 76, 0.4); } /* Usando a cor verde da variável */
+    100% { box-shadow: 0 0 0px transparent; }
 }
 
 /* Animação do badge aparecendo */
 .animate-badge {
-  animation: badgeFade 0.4s ease forwards;
-  transform-origin: center;
+    animation: badgeFade 0.4s ease forwards;
+    transform-origin: center;
 }
 
 @keyframes badgeFade {
-  0% { opacity: 0; transform: scale(0.6) rotate(-10deg); }
-  100% { opacity: 1; transform: scale(1) rotate(0); }
+    0% { opacity: 0; transform: scale(0.6) rotate(-10deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
 }
 
 .interesse-card.changing {
-  transform: scale(0.98);
-  opacity: 0.8;
-  transition: all 0.3s ease;
+    transform: scale(0.98);
+    opacity: 0.8;
+    transition: all 0.3s ease;
 }
 
 .animate-badge {
-  display: inline-block;
-  animation: fadeInBadge 0.4s ease forwards;
+    display: inline-block;
+    animation: fadeInBadge 0.4s ease forwards;
 }
 
 @keyframes fadeInBadge {
-  0% { opacity: 0; transform: scale(0.6) rotate(-8deg); }
-  60% { transform: scale(1.05); }
-  100% { opacity: 1; transform: scale(1); }
+    0% { opacity: 0; transform: scale(0.6) rotate(-8deg); }
+    60% { transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
 }

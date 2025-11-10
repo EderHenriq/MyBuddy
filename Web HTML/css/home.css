@@ -1,13 +1,60 @@
+/* Definição de Variáveis CSS para a Paleta de Cores */
+:root {
+    --primary-orange: #FD7915; /* Laranja Principal */
+    --secondary-green: #36bf4c; /* Verde para Ações Positivas / Destaques */
+    --alert-red: #e74c3c; /* Vermelho para Avisos / Ações Negativas */
+    --light-background: #f8f9fa; /* Fundo Claro */
+    --dark-elements: #272728; /* Cor para texto principal e elementos escuros */
+    --medium-gray-text: #6c757d; /* Cinza para textos secundários */
+    --dark-footer-background: #343a40; /* Cor para o footer */
+    --white: #ffffff; /* Cor branca */
+}
+
 /* Geral */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa; /* Fundo mais claro */
-    color: #343a40;
-    display: flex; /* Para o footer fixar no final */
-    flex-direction: column; /* Para o footer fixar no final */
-    min-height: 100vh; /* Para o footer fixar no final */
+    background-color: var(--light-background);
+    color: var(--dark-elements);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Estilo para botões genéricos (Botões da Welcome Section) */
+.btn {
+    padding: 10px 20px;
+    border-radius: 25px; /* Bordas arredondadas para um visual moderno */
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    display: inline-flex; /* Permite ícones ao lado do texto, se houver */
+    align-items: center;
+    justify-content: center;
+}
+
+.primary-btn {
+    background-color: var(--primary-orange);
+    color: var(--white);
+}
+
+.primary-btn:hover {
+    background-color: #e66a0e; /* Um pouco mais escuro no hover */
+    box-shadow: 0 4px 10px rgba(var(--primary-orange), 0.3); /* Sombra sutil */
+}
+
+.secondary-btn {
+    background-color: transparent;
+    color: var(--primary-orange);
+    border: 2px solid var(--primary-orange);
+}
+
+.secondary-btn:hover {
+    background-color: var(--primary-orange);
+    color: var(--white);
 }
 
 /* Header */
@@ -15,7 +62,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #ffffff; /* Fundo branco puro */
+    background-color: var(--white);
     padding: 15px 30px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: sticky;
@@ -29,7 +76,7 @@ body {
 }
 
 .header-logo {
-    width: 45px; /* Levemente maior */
+    width: 45px;
     height: 45px;
     margin-right: 12px;
     border-radius: 50%;
@@ -38,37 +85,39 @@ body {
 
 .app-name {
     font-size: 1.6em;
-    font-weight: 700; /* Mais negrito */
-    color: #343a40;
+    font-weight: 700;
+    color: var(--dark-elements);
 }
 
 .header-nav {
     display: flex;
-    gap: 35px; /* Mais espaço */
+    gap: 35px;
 }
 
 .nav-item {
     text-decoration: none;
-    color: #6c757d; /* Cinza mais suave */
+    color: var(--dark-elements); /* Texto dos itens de navegação */
     font-weight: 600;
     padding: 8px 0;
     position: relative;
     transition: color 0.3s ease;
 }
 
+/* Animação de sublinhado e mudança de cor no hover para nav-item */
 .nav-item::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: 0px; /* Alinhar melhor o sublinhado */
+    bottom: -5px; /* Posição do sublinhado */
     width: 0;
     height: 3px;
-    background-color: #FF5722; /* Laranja MyBuddy */
-    transition: width 0.3s ease;
+    background-color: var(--primary-orange);
+    transition: width 0.3s ease-out;
+    border-radius: 2px;
 }
 
 .nav-item:hover, .nav-item.active {
-    color: #FF5722; /* Laranja no hover e ativo */
+    color: var(--primary-orange);
 }
 
 .nav-item:hover::after, .nav-item.active::after {
@@ -78,50 +127,55 @@ body {
 .header-right {
     display: flex;
     align-items: center;
-    gap: 25px; /* Mais espaço */
+    gap: 15px; /* Espaço entre os elementos da direita */
 }
 
-.header-icon {
-    font-size: 1.6em; /* Ícones maiores */
-    color: #6c757d;
+/* Área de perfil logado */
+.profile-area {
+    display: flex; /* Mudamos o padrão para flex no CSS */
+    align-items: center;
+    gap: 10px;
+}
+
+.user-greeting {
+    font-weight: 600;
+    color: var(--dark-elements);
+}
+
+.header-icon.profile-icon { /* Específico para o ícone de perfil */
+    font-size: 1.8em;
+    color: var(--medium-gray-text);
     cursor: pointer;
     transition: color 0.3s ease;
 }
 
-.header-icon:hover {
-    color: #FF5722;
-}
-
-.user-greeting {
-    margin-left: 10px;
-    font-weight: 600;
-    color: #495057;
+.header-icon.profile-icon:hover {
+    color: var(--primary-orange);
 }
 
 .logout-btn {
-    background-color: #dc3545; /* Vermelho para logout */
-    color: white;
+    background-color: var(--alert-red);
+    color: var(--white);
     border: none;
     padding: 8px 15px;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s ease;
-    margin-left: 15px;
 }
 
 .logout-btn:hover {
-    background-color: #c82333;
+    background-color: #cf3030; /* Um vermelho mais escuro no hover */
 }
 
 
 /* Main Content */
 .home-main-content {
-    flex-grow: 1; /* Ocupa o espaço restante, empurrando o footer */
+    flex-grow: 1;
     padding: 40px 20px;
     max-width: 1200px;
     margin: 30px auto;
-    background-color: #ffffff;
+    background-color: var(--white);
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     display: flex;
@@ -131,36 +185,61 @@ body {
 
 .welcome-section {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 60px;
+    position: relative;
+    width: 100%;
+}
+
+.hero-image {
+    width: 100%;
+    max-width: 900px; /* Um pouco maior */
+    height: auto;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .welcome-section h1 {
-    color: #343a40;
-    font-size: 3em; /* Título maior */
+    color: var(--dark-elements);
+    font-size: 3.8em; /* Título maior e mais impactante */
     margin-bottom: 15px;
-    font-weight: 700;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.welcome-section .highlight {
+    color: var(--primary-orange);
 }
 
 .welcome-section p {
-    color: #6c757d;
-    font-size: 1.2em;
-    max-width: 700px;
-    line-height: 1.6;
+    color: var(--medium-gray-text);
+    font-size: 1.3em;
+    max-width: 800px;
+    line-height: 1.7;
+    margin-bottom: 30px;
 }
+
+.welcome-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
 
 /* Action Buttons Grid (Cards) */
 .action-buttons-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 300px para cards */
-    gap: 30px; /* Mais espaço entre cards */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
     width: 100%;
     margin-bottom: 40px;
 }
 
 .action-card {
-    background-color: #f8f9fa; /* Fundo claro para o card */
+    background-color: var(--light-background);
     border: 1px solid #e0e0e0;
-    border-radius: 12px;
+    border-radius: 15px;
     padding: 30px;
     text-align: center;
     cursor: pointer;
@@ -168,42 +247,42 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 220px; /* Altura mínima para cards */
-    text-decoration: none; /* Caso mude para <a> */
+    justify-content: flex-start;
+    min-height: 250px;
+    text-decoration: none;
     color: inherit;
 }
 
 .action-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    background-color: #e9ecef; /* Um pouco mais escuro no hover */
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    background-color: #eef1f4;
 }
 
 .action-card .icon-large {
-    font-size: 3.5em; /* Ícones grandes */
-    color: #FF5722; /* Cor principal */
-    margin-bottom: 20px;
+    font-size: 4em;
+    color: var(--primary-orange);
+    margin-bottom: 25px;
 }
 
 .action-card h3 {
-    font-size: 1.7em;
-    color: #343a40;
-    margin-bottom: 10px;
+    font-size: 1.8em;
+    color: var(--dark-elements);
+    margin-bottom: 12px;
     font-weight: 700;
 }
 
 .action-card p {
-    font-size: 1em;
-    color: #6c757d;
-    line-height: 1.5;
-    flex-grow: 1; /* Para que o parágrafo ocupe espaço e alinhe os cards */
+    font-size: 1.1em;
+    color: var(--medium-gray-text);
+    line-height: 1.6;
+    flex-grow: 1;
 }
 
 /* Specific card styles based on roles */
 .action-card.admin-card {
     background-color: #e0f7fa; /* Cor de fundo para admin */
-    border-color: #00bcd4;
+    border-color: #00bcd4; /* Azul para admin */
 }
 .action-card.admin-card .icon-large {
     color: #00bcd4;
@@ -214,7 +293,7 @@ body {
 
 .action-card.ong-card {
     background-color: #fff3e0; /* Cor de fundo para ONG */
-    border-color: #ff9800;
+    border-color: #ff9800; /* Laranja mais suave para ONG */
 }
 .action-card.ong-card .icon-large {
     color: #ff9800;
@@ -226,11 +305,11 @@ body {
 
 /* Footer */
 .main-footer {
-    background-color: #343a40; /* Fundo escuro */
-    color: #f8f9fa;
+    background-color: var(--dark-footer-background);
+    color: var(--light-background);
     padding: 30px 20px;
     text-align: center;
-    margin-top: auto; /* Empurra o footer para o final da página */
+    margin-top: auto;
 }
 
 .footer-content {
@@ -248,7 +327,7 @@ body {
 }
 
 .social-links a {
-    color: #f8f9fa;
+    color: var(--light-background);
     font-size: 1.5em;
     margin: 0 15px;
     text-decoration: none;
@@ -256,7 +335,7 @@ body {
 }
 
 .social-links a:hover {
-    color: #FF5722; /* Laranja no hover */
+    color: var(--primary-orange);
 }
 
 
@@ -278,14 +357,17 @@ body {
         margin-top: 15px;
     }
     .welcome-section h1 {
-        font-size: 2.5em;
+        font-size: 2.8em;
+    }
+    .welcome-section p {
+        font-size: 1.1em;
     }
     .action-buttons-grid {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px;
     }
     .action-card {
-        min-height: 200px;
+        min-height: 220px;
         padding: 25px;
     }
 }
@@ -295,21 +377,28 @@ body {
         font-size: 1.4em;
     }
     .welcome-section h1 {
-        font-size: 2em;
+        font-size: 2.2em;
     }
     .welcome-section p {
         font-size: 1em;
     }
     .action-buttons-grid {
-        grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+        grid-template-columns: 1fr;
     }
     .action-card {
         min-height: 180px;
     }
     .action-card h3 {
-        font-size: 1.5em;
+        font-size: 1.6em;
     }
     .action-card .icon-large {
-        font-size: 3em;
+        font-size: 3.5em;
+    }
+    .hero-image {
+        max-width: 100%;
+    }
+    .welcome-actions {
+        flex-direction: column;
+        gap: 15px;
     }
 }
