@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     break;
                 case 'adocao':
                     // Corrigido para GestaoPet.html
-                    targetPage = 'GestaoPet.html'; 
+                    targetPage = 'pet-control.html'; 
                     break;
                 case 'petshops':
                     targetPage = 'pet-shops.html';
