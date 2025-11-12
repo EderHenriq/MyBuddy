@@ -780,7 +780,7 @@ async function fetchPets(filters = {}) {
             const errorText = await res.text();
             if (res.status === 401) {
                 alert("Sessão expirada ou não autenticada. Faça login novamente.");
-                // Opcional: window.location.href = '/login_screen.html'; // Redireciona
+                 window.location.href = '/login_screen.html'; // Redireciona
             }
             throw new Error(`Erro ao buscar pets: ${res.status} - ${errorText}`);
         }
@@ -884,6 +884,8 @@ async function manifestarInteresseNoPet(petId, mensagem) {
             const errorData = await response.json();
             throw new Error(errorData.message || "Erro ao manifestar interesse.");
         }
+
+        fetchPets();
 
         //alert("Interesse manifestado com sucesso!");
         // Fechar modal ou atualizar UI
@@ -1107,7 +1109,6 @@ if (goToInterestsPageBtn) {
                     // O backend retorna a URL completa, precisamos extrair apenas o nome do arquivo
                     const fullImageUrl = await res.text();
                     imageUrl = fullImageUrl.split('/').pop();
-                    alert("Imagem enviada com sucesso!");
                 } catch (err) {
                     console.error("Erro no upload da imagem:", err);
                     alert(`Erro no upload da imagem: ${err.message}`);
@@ -1202,4 +1203,22 @@ if (goToInterestsPageBtn) {
             }, 300);
         });
     }
+    // NOVO: Fechar modal de Mensagem de Sucesso
+if (closeSuccessMessageModalBtn) {
+    closeSuccessMessageModalBtn.addEventListener("click", () => closeModal(successMessageModal));
+}
+window.addEventListener("click", (e) => {
+    if (e.target === successMessageModal) closeModal(successMessageModal);
+});
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal(successMessageModal);
+});
+
+// NOVO: Botão "Ver Meus Interesses" no modal de sucesso
+if (goToInterestsPageBtn) {
+    goToInterestsPageBtn.addEventListener("click", () => {
+        closeModal(successMessageModal);
+        window.location.href = 'GestaoInteresseAdoacao.html'; 
+    });
+}
 });

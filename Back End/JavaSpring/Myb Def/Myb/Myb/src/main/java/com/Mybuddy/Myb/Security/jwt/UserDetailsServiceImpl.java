@@ -44,4 +44,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // Constrói e retorna um UserDetailsImpl (classe que implementa UserDetails)
         // Usado pelo Spring Security para autenticar e gerenciar permissões do usuário
     }
+
 }

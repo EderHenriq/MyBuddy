@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     targetPage = 'home.html';
                     break;
                 case 'adocao':
-                    // Corrigido para GestaoPet.html
                     targetPage = 'pet-control.html'; 
                     break;
                 case 'petshops':
@@ -164,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else if (isOng && organizacaoId) {
             return `http://localhost:8080/api/ongs/me/interesses`;
         } else if (isAdotante && userId) {
-            return "http://localhost:8080/api/interesses/usuarios/me/interesses";
+            return "http://localhost:8080/api/usuarios/me/interesses";
         }
         return null;
     }
@@ -198,10 +197,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         interessesContainer.innerHTML = "<p>Carregando...</p>";
         const endpointInteresses = getInteressesEndpoint();
 
+        console.log("DEBUG (Frontend - fetchInteresses): Endpoint a ser chamado:", endpointInteresses); //Log de teste
+
         if (!endpointInteresses) {
             showNotification("Você não tem permissão para visualizar interesses ou dados de usuário ausentes.", "error");
             setTimeout(() => {
-                window.location.href = "home.html";
+                window.location.href = "login_screen.html";
             }, 1500);
             return;
         }

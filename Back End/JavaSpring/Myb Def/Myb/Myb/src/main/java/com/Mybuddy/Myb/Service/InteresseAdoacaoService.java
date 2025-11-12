@@ -114,10 +114,10 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
 
     @Transactional(readOnly = true)
     public List<InteresseResponse> listarInteressesPorOrganizacao(Long organizacaoId) {
-        // 1. Encontrar todos os pets desta organização
+        //  Encontrar todos os pets desta organização
         List<Pet> petsDaOng = petRepo.findByOrganizacaoId(organizacaoId);
 
-        // 2. Para cada pet, encontrar seus interesses
+        //  Para cada pet, encontrar seus interesses
         return petsDaOng.stream()
                 .flatMap(pet -> interesseRepo.findByPet(pet).stream()) // Combina todos os interesses de todos os pets
                 .map(InteresseAdoacaoMapper::toResponse)

@@ -65,15 +65,10 @@ public class MybApplication {
 				// Mapeia qualquer URL que comece com /uploads/** para a pasta física configurada em uploadDir
 				registry.addResourceHandler("/uploads/**")
 						.addResourceLocations("file:" + uploadDir + "/");
-				// Exemplo: se uploadDir = "C:/meus_arquivos",
-				// acessar http://localhost:8080/uploads/foto.jpg servirá o arquivo físico C:/meus_arquivos/foto.jpg
 			}
 
-            @Override // NOVO MÉTODO
+            @Override
             public void addViewControllers(ViewControllerRegistry registry) {
-                // Mapeia "/api/" para uma view vazia. Isso pode ajudar o DispatcherServlet
-                // a reconhecer que tudo sob "/api/" é para ser tratado por controllers,
-                // e não como recurso estático, priorizando o RequestMappingHandlerMapping.
                 registry.addViewController("/api/").setViewName("forward:/error"); // Ou apenas uma string vazia, mas "forward:/error" é mais comum
                 registry.addViewController("/api/**").setViewName("forward:/error"); // Pode ser necessário para pegar subcaminhos
             }

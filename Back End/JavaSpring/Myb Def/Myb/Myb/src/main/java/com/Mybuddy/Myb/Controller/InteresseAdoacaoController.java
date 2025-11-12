@@ -9,10 +9,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api")
@@ -57,15 +60,10 @@ public class InteresseAdoacaoController {
     @GetMapping("/usuarios/me/interesses")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<InteresseResponse>> listarMeusInteresses(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        System.out.println("-----> DEBUG (Controller - listarMeusInteresses): MÉTODO ACESSADO!"); // LOG CRÍTICO AQUI
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
-            System.err.println("ERRO CRÍTICO (Controller - listarMeusInteresses): userDetails é null!");
             throw new IllegalStateException("Detalhes do usuário autenticado não disponíveis.");
         }
-        System.out.println("DEBUG (Controller - listarMeusInteresses): Usuario ID recuperado: " + userDetails.getId());
-        System.out.println("DEBUG (Controller - listarMeusInteresses): Usuario Email recuperado: " + userDetails.getEmail());
 
         Long usuarioId = userDetails.getId();
         var resp = service.listarPorUsuario(usuarioId);
@@ -75,7 +73,6 @@ public class InteresseAdoacaoController {
     @GetMapping("/interesses")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<InteresseResponse>> listarTodos() {
-        System.out.println("-----> DEBUG (Controller - listarTodos): MÉTODO ACESSADO!"); // NOVO LOG
         var resp = service.listarTodos();
         return ResponseEntity.ok(resp);
     }
@@ -85,9 +82,7 @@ public class InteresseAdoacaoController {
     public ResponseEntity<List<InteresseResponse>> listarInteressesDaMinhaOng(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        System.out.println("-----> DEBUG (Controller - listarInteressesDaMinhaOng): MÉTODO ACESSADO!"); // NOVO LOG
         if (userDetails == null) {
-            System.err.println("ERRO CRÍTICO (Controller - listarInteressesDaMinhaOng): userDetails é null!");
             throw new IllegalStateException("Detalhes do usuário autenticado não disponíveis.");
         }
         System.out.println("DEBUG (Controller - listarInteressesDaMinhaOng): ONG Usuario ID recuperado: " + userDetails.getId());

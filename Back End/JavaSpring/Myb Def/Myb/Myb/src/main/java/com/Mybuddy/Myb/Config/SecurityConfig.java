@@ -87,7 +87,7 @@ public class SecurityConfig {
                                 // Permite acesso irrestrito ao diretório /uploads/** para servir imagens estáticas
                                 .requestMatchers("/uploads/**").permitAll()
                                 // ADICIONADO: Especifica que o endpoint do adotante é uma API e requer autenticação
-                                .requestMatchers("/api/interesses/usuarios/me/interesses").permitAll() // <-- CORREÇÃO CRÍTICA AQUI
+                                .requestMatchers("/api/interesses/usuarios/me/interesses").authenticated()
                                 // --- ADIÇÃO PARA H2 CONSOLE ---
                                 .requestMatchers("/h2-console/**").permitAll() // Permite acesso ao console do H2
                                 // -----------------------------
