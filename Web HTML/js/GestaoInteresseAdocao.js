@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     targetPage = 'pet-shops.html';
                     break;
                 case 'servicos':
-                    targetPage = 'veterinarios-e-servicos.html';
+                    targetPage = 'servicos.html';
                     break;
                 case 'meus-interesses':
                     targetPage = 'GestaoInteresseAdoacao.html';

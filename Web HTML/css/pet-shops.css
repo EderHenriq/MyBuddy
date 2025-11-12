@@ -1,0 +1,318 @@
+/* pet-shops.css */
+
+/* Definição de Cores - Coloque isso no seu global.css ou um arquivo de variáveis */
+:root {
+    --primary-color: #FD7915; /* Laranja MyBuddy */
+    --text-dark: #272728;
+    --text-light: #666; /* Um pouco mais claro que o dark */
+    --bg-light: #f9f9f9; /* Fundo cinza claro */
+    --bg-white: #fff;
+    --border-color: #eee;
+    --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.05);
+    --hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------------------------------- */
+/* GLOBAL STYLES (ASSUMIDOS DO SEU GLOBAL.CSS ou HOME.CSS) */
+/* Seções do Header e Footer, estilos básicos de body, etc. */
+/* É crucial que seu `global.css` (ou `home.css`) contenha os estilos para:
+   - `body` (font-family, margin, padding, background-color)
+   - `.main-header`, `.header-content`, `.logo`, `.nav-links`, `.nav-links a`, `.nav-links a.active`,
+     `.profile-area`, `.user-name-display`, `#userNameOrEmail`, `.logout-btn`
+   - `.page-content` (max-width, margin: auto, padding) - este é o contêiner central
+   - `h1`, `p` e outros elementos tipográficos base
+*/
+
+/* Exemplo de estilos que deveriam estar no seu GLOBAL.CSS */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-light); /* Fundo padrão */
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.main-header {
+    background-color: var(--bg-white);
+    padding: 15px 0;
+    box-shadow: var(--shadow-light);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-content {
+    max-width: 1200px; /* Largura do seu header */
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px; /* Ajuste o tamanho do logo */
+    vertical-align: middle;
+}
+.logo h1 { /* Se você tem o h1 do MyBuddy junto com o logo */
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 1.8em;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+.logo a {
+    text-decoration: none; /* Remover sublinhado do link do logo */
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-dark);
+    margin-left: 25px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding-bottom: 5px; /* Para o sublinhado */
+    position: relative;
+}
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+.nav-links a.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.profile-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name-display {
+    color: var(--text-light);
+    font-weight: 400;
+}
+.user-name-display #userNameOrEmail {
+    font-weight: 600;
+    color: var(--text-dark); /* Ou var(--primary-color) para destaque */
+}
+
+.logout-btn {
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+.logout-btn:hover {
+    background-color: #e56054; /* Um tom ligeiramente mais escuro */
+}
+
+/* Contêiner principal da página, replicando a largura da sua home */
+.page-content {
+    max-width: 1000px; /* Ajuste conforme a largura real do conteúdo da sua home */
+    margin: 30px auto; /* Centraliza e adiciona margem vertical */
+    padding: 0 20px; /* Padding nas laterais para telas menores */
+}
+
+/* ---------------------------------- */
+/* ESTILOS ESPECÍFICOS DA PÁGINA PET SHOPS */
+
+/* Seção Hero */
+.hero-pet-shops {
+    text-align: center;
+    padding: 60px 0;
+    background-color: var(--bg-white); /* Fundo branco para a seção hero */
+    margin-bottom: 30px; /* Espaço entre o hero e o grid */
+    border-radius: 10px; /* Bordas arredondadas para a seção */
+    box-shadow: var(--shadow-light); /* Sombra suave */
+}
+
+.hero-title {
+    font-size: 2.8em; /* Tamanho maior para o título principal */
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centraliza o ícone e o texto */
+    gap: 15px;
+}
+
+.hero-title i {
+    color: var(--primary-color);
+    font-size: 1.1em;
+}
+
+.hero-title .highlight {
+    color: var(--primary-color); /* Aplica a cor laranja na palavra destaque */
+}
+
+.hero-subtitle {
+    font-size: 1.1em;
+    color: var(--text-light);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+/* Grid de Pet Shops */
+.pet-shops-listing {
+    padding: 20px 0; /* Padding interno para a seção de listagem */
+}
+
+.pet-shops-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Grid responsivo com cards maiores */
+    gap: 25px; /* Espaço entre os cards */
+}
+
+/* Estilo do Card de Pet Shop */
+.pet-shop-card {
+    background-color: var(--bg-white);
+    border-radius: 10px;
+    box-shadow: var(--shadow-light);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none; /* Se o card for clicável, remover sublinhado */
+    color: inherit; /* Manter a cor do texto padrão */
+}
+
+.pet-shop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--hover-shadow);
+}
+
+.pet-shop-image-container {
+    height: 200px; /* Altura um pouco maior para a imagem */
+    overflow: hidden;
+    position: relative;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.pet-shop-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.pet-shop-card:hover .pet-shop-image {
+    transform: scale(1.05);
+}
+
+.pet-shop-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.pet-shop-name {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--text-dark); /* Nome do pet shop mais escuro */
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.pet-shop-detail {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    color: var(--text-light);
+    font-size: 0.95em;
+}
+
+.pet-shop-detail i {
+    color: var(--primary-color); /* Ícones com a cor primária */
+    margin-right: 12px;
+    font-size: 1.1em;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.pet-shop-detail:last-child {
+    margin-bottom: 0;
+}
+
+/* Mensagens de informação */
+.info-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-light);
+    font-style: italic;
+    padding: 30px;
+    font-size: 1.2em;
+    background-color: var(--bg-white);
+    border-radius: 10px;
+    box-shadow: var(--shadow-light);
+    margin-top: 20px;
+}
+
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 10px;
+    }
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    .nav-links a {
+        margin: 0 10px;
+    }
+    .profile-area {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .hero-title {
+        font-size: 2em;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .hero-title i {
+        font-size: 1em;
+    }
+    .hero-subtitle {
+        font-size: 1em;
+    }
+    .pet-shops-grid {
+        grid-template-columns: 1fr;
+    }
+    .pet-shop-card {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    .page-content {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.6em;
+    }
+    .hero-subtitle {
+        font-size: 0.9em;
+    }
+    .pet-shop-name {
+        font-size: 1.3em;
+    }
+    .pet-shop-detail {
+        font-size: 0.9em;
+    }
+}

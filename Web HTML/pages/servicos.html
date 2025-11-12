@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços para Pets em Maringá - MyBuddy</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/servicos.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="../src/assets/icons/logo-provisoria.png" type="image/x-icon">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <a href="./home.html">
+                    <img src="../src/assets/icons/logo-provisoria.png" alt="MyBuddy Logo">
+                    <h1>MyBuddy</h1>
+                </a>
+            </div>
+            <nav class="nav-links">
+                <a href="./home.html">Home</a>
+                <a href="./pet-control.html">Adotar</a>
+                <a href="./pet-shops.html">Pet Shops</a>
+                <a href="./servicos.html" class="active">Serviços</a> 
+                <a href="./GestaoInteresseAdoacao.html">Meus Interesses</a>
+            </nav>
+            <div class="profile-area">
+                <span class="user-name-display">Olá, <span id="userNameOrEmail">ONG!</span></span>
+                <button class="logout-btn" id="logoutButton">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <section class="hero-section hero-servicos">
+            <h1 class="hero-title">
+                <i class="fas fa-handshake"></i> Encontre <span class="highlight">Serviços para Pets</span> em Maringá
+            </h1>
+            <p class="hero-subtitle">Descubra as melhores clínicas veterinárias, spas e hotéis para garantir o bem-estar do seu Buddy.</p>
+        </section>
+        
+        <section class="servicos-listing">
+            <div class="category-filter">
+                <button class="filter-btn active" data-category="all">Todos</button>
+                <button class="filter-btn" data-category="clinica">Clínicas Veterinárias</button>
+                <button class="filter-btn" data-category="spa">Spas de Pet</button>
+                <button class="filter-btn" data-category="hotel">Hotéis de Pet</button>
+            </div>
+
+            <div class="servicos-grid" id="servicosGrid">
+                <div id="loadingMessage" class="info-message">Carregando serviços...</div>
+                <div id="noServicosMessage" class="info-message" style="display: none;">Nenhum serviço encontrado para a categoria selecionada.</div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/servicos.js"></script> </body>
+</html>

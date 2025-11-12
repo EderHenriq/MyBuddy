@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Shops em Maringá - MyBuddy</title>
+    <link rel="stylesheet" href="../css/global.css"> <link rel="stylesheet" href="../css/pet-shops.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="../src/assets/icons/logo-provisoria.png" type="image/x-icon">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <a href="./home.html">
+                    <img src="../src/assets/icons/logo-provisoria.png" alt="MyBuddy Logo">
+                    <h1>MyBuddy</h1> </a>
+            </div>
+            <nav class="nav-links">
+                <a href="./home.html">Home</a>
+                <a href="./pet-control.html">Adotar</a>
+                <a href="./pet-shops.html" class="active">Pet Shops</a>
+                <a href="./servicos.html">Serviços</a>
+                <a href="./GestaoInteresseAdoacao.html">Meus Interesses</a>
+            </nav>
+            <div class="profile-area">
+                <span class="user-name-display">Olá, <span id="userNameOrEmail">ONG!</span></span> <button class="logout-btn" id="logoutButton">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-content"> <section class="hero-section hero-pet-shops">
+            <h1 class="hero-title">
+                <i class="fas fa-store"></i> As melhores <span class="highlight">Pet Shops</span> em Maringá
+            </h1>
+            <p class="hero-subtitle">Encontre tudo o que seu Buddy precisa: produtos, banho, tosa e atendimento especializado.</p>
+        </section>
+        
+        <section class="pet-shops-listing">
+            <div class="pet-shops-grid" id="petShopsGrid">
+                <div id="loadingMessage" class="info-message">Carregando pet shops...</div>
+                <div id="noPetShopsMessage" class="info-message" style="display: none;">Nenhuma pet shop encontrada no momento.</div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/pet-shops.js"></script>
+</body>
+</html>

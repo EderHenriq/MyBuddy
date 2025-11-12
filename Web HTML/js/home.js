@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             localStorage.clear();
-            navigateTo('./login-screen.html');
+            navigateTo('login_screen.html');
         });
     }
 
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     navigateTo('./perfilADM.html');
                 } else if (userRoles.includes('ROLE_ONG')) {
                     navigateTo('./perfilONG.html');
-                } else { // Assume ROLE_ADOTANTE ou perfil padrão
+                } else { 
                     navigateTo('perfilAdotante.html');
                 }
             } else {
@@ -120,10 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     navigateTo('pet-control.html');
                     break;
                 case 'petshops':
-                    alert('Página de Pet Shops em construção!');
+                     navigateTo('pet-shops.html');
                     break;
                 case 'servicos':
-                    alert('Página de Serviços (Veterinários, etc.) em construção!');
+                    navigateTo('servicos.html');;
                     break;
                 case 'meus-interesses':
                     navigateTo('GestaoInteresseAdoacao.html');
@@ -145,10 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         navigateTo('pet-control.html');
                         break;
                     case 'petshops':
-                        alert('Página de Pet Shops em construção!');
+                        navigateTo('pet-shops.html');
                         break;
                     case 'servicos':
-                        alert('Página de Veterinários & Hospitais em construção!');
+                        navigateTo('servicos.html');
                         break;
                     case 'perdidos-achados':
                         alert('Página de Pets Perdidos & Achados em construção!');

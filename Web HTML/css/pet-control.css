@@ -53,7 +53,7 @@ body {
 
 .nav-item {
     text-decoration: none;
-    color: #495057; /* Cor do texto padrão mais escura para melhor contraste */
+    color: #000000; /* Cor do texto padrão mais escura para melhor contraste */
     font-weight: 600;
     padding: 8px 0;
     position: relative;
@@ -105,7 +105,7 @@ body {
 .user-greeting {
     margin-left: 10px;
     font-weight: 600;
-    color: #495057;
+    color: #495057; /* Cor escura para o nome do usuário */
 }
 
 .logout-btn {
@@ -205,11 +205,11 @@ body {
     color: #e66a00;
 }
 
-.primary-btn {
+/* Botões de Ação Geral (usados para "Adicionar novo Pet" e "Mostrar Filtros") */
+.primary-btn, .secondary-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #FF5722;
     border: none;
     color: #fff;
     font-weight: 600;
@@ -217,6 +217,10 @@ body {
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.primary-btn {
+    background-color: #FF5722; /* Laranja MyBuddy */
 }
 
 .primary-btn:hover {
@@ -225,17 +229,7 @@ body {
 }
 
 .secondary-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     background-color: #6c757d; /* Cinza para botão secundário */
-    border: none;
-    color: #fff;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .secondary-btn:hover {
@@ -243,28 +237,25 @@ body {
     transform: translateY(-2px);
 }
 
-
 /* --- Pets Cards Wrapper - O principal foco de mudança --- */
 .pets-cards-wrapper {
-    display: grid;
-    /* Define um grid responsivo que tenta encaixar o máximo de colunas
-       de 300px, mas permite que elas encolham e cresçam. */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-    gap: 25px; /* Espaço entre os cards */
-    padding: 10px; /* Adiciona padding para os cards não colarem nas bordas do main-container */
-    align-items: start; /* Alinha os itens no início, evita esticar cards de conteúdo menor */
+    display: grid; /* Ativa o layout de grid */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Define as colunas do grid */
+    gap: 20px; /* Espaçamento entre os cards */
+    padding: 20px; /* Espaçamento interno do contêiner dos cards */
+    justify-content: center; /* Centraliza os itens do grid se houver espaço extra */
+    max-width: 1200px; /* Largura máxima para o grid (opcional, mas recomendado para leitura) */
+    margin: 0 auto; /* Centraliza o grid na página */
 }
 
 .pets-card {
-    background-color: #ffffff; /* Fundo branco para o card */
-    border: none; /* Remove a borda padrão */
-    border-radius: 12px;
-    overflow: hidden; 
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra mais destacada */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Garante que todos os cards tenham a mesma altura */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Garante que a imagem não vaze */
+    display: flex; /* Para organizar o conteúdo do card (imagem + info) */
+    flex-direction: column; /* Coloca a imagem acima das informações */
+    height: 100%; /* Garante que todos os cards tenham a mesma altura em uma linha */
 }
 
 .pets-card:hover {
@@ -302,7 +293,7 @@ body {
     line-height: 1.5;
 }
 
-/* Estilo para a label e valor dos detalhes, como no concorrente */
+/* Estilo para a label e valor dos detalhes */
 .pet-info p strong {
     color: #343a40; /* Destacar a label */
     font-weight: 600;
@@ -312,45 +303,77 @@ body {
     display: flex;
     justify-content: center; /* Centraliza os botões */
     margin-top: 20px; /* Mais espaço acima dos botões */
-    gap: 15px; /* Mais espaço entre os botões */
+    gap: 10px; /* Espaço entre os botões */
     padding: 0 15px 15px; /* Padding para os botões não colarem na borda inferior */
     flex-shrink: 0;
+    flex-wrap: wrap; /* Permite que os botões quebrem linha */
 }
 
-/* Modificação para o botão "Manifestar Interesse" */
-.pet-actions .manifestar-interesse-btn { /* Nova classe para o botão de interesse */
-    background-color: #28a745; /* Cor verde para interesse */
-    border: none;
-    color: #fff;
-    padding: 12px 25px; /* Padding maior para o botão */
-    border-radius: 30px; /* Borda mais arredondada */
+/* Estilo base para os botões dentro de .pet-actions (View, Edit, Delete, Manifestar) */
+.pet-actions button {
+    flex: 1 1 auto; /* Permite que os botões cresçam/diminuam e quebrem linha */
+    min-width: 100px; /* Largura mínima para botões menores */
+    padding: 10px 15px; /* Padding ajustado */
+    border-radius: 8px; /* Bordas arredondadas */
+    font-size: 0.9em; /* Tamanho da fonte */
+    font-weight: 600;
     cursor: pointer;
-    font-size: 1.1em; /* Fonte maior */
-    font-weight: 700;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    flex: 1; /* Ocupa o espaço disponível, se houver outros botões */
-    max-width: 250px; /* Limita a largura para não ficar gigante em telas grandes */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex; /* Para alinhar ícone e texto */
+    align-items: center; /* Alinha verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+    border: none; /* Remove bordas padrão */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil para os botões */
 }
 
-.pet-actions .manifestar-interesse-btn:hover {
-    background-color: #218838; /* Verde mais escuro no hover */
-    transform: translateY(-2px);
+.pet-actions button i {
+    margin-right: 5px; /* Espaço entre o ícone e o texto */
 }
 
-/* Os botões de CRUD (Edit/Delete) se essa página for de gestão do tutor */
+/* Estilos específicos para o botão "Ver detalhes" (cor #FD7915) */
+.pet-actions .view-details {
+    background-color: #FD7915; /* Laranja mais escuro conforme solicitado */
+    color: #fff;
+}
+
+.pet-actions .view-details:hover {
+    background-color: #e36a10; /* Laranja mais escuro no hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos específicos para o botão "Editar" (amarelo) */
 .pet-actions .pet-edit {
-    background-color: #FFC107; /* Amarelo para editar */
+    background-color: #FFC107; /* Amarelo */
     color: #343a40; /* Texto escuro no botão amarelo */
 }
 .pet-actions .pet-edit:hover {
     background-color: #e0a800;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* Estilos específicos para o botão "Excluir" (vermelho) */
 .pet-actions .pet-delete {
     background-color: #dc3545; 
+    color: #fff;
 }
 .pet-actions .pet-delete:hover {
     background-color: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos específicos para o botão "Manifestar Interesse" (verde) */
+.pet-actions .manifestar-interesse { /* Usei a classe 'manifestar-interesse' que você usou no último exemplo */
+    background-color: #28a745; /* Verde para interesse */
+    color: #fff;
+}
+
+.pet-actions .manifestar-interesse:hover {
+    background-color: #218838; /* Verde mais escuro no hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 
@@ -384,7 +407,6 @@ body {
 .modal-content.filter-modal-content {
     max-width: 450px; 
 }
-
 
 .close-button {
     position: absolute;
@@ -448,12 +470,7 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(255, 87, 34, 0.25);
 }
 
-.add-pet-content button[type="submit"], .apply-filters-btn {
-    margin-top: 20px;
-    width: 100%;
-    /* Reusa estilos de primary-btn */
-}
-
+/* Fotos Preview */
 .photos-preview {
     display: flex;
     flex-wrap: wrap;
@@ -493,8 +510,7 @@ body {
     }
 }
 
-
-/* --- Responsividade (Apenas para o header e elementos que quebram, o layout principal já é fluido) --- */
+/* --- Responsividade --- */
 @media (max-width: 992px) {
     .main-header {
         padding: 10px 20px;
@@ -511,7 +527,7 @@ body {
         justify-content: center;
         margin-top: 15px;
     }
-    .main-container { /* Reduz um pouco o padding em telas menores */
+    .main-container {
         padding: 20px 15px;
     }
     .pet-management-actions {
@@ -526,7 +542,6 @@ body {
     .search-wrapper {
         width: 100%;
     }
-    /* Cards já são responsivos com auto-fill */
     .modal-content {
         max-width: 95%;
         padding: 20px;
@@ -548,15 +563,14 @@ body {
     .header-icon {
         font-size: 1.4em;
     }
-    /* Em telas muito pequenas, 1 coluna é o ideal */
     .pets-cards-wrapper {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Em telas muito pequenas, 1 coluna é o ideal */
     }
     .pet-actions {
         flex-direction: column;
         gap: 10px;
     }
-    .pet-actions .manifestar-interesse-btn {
+    .pet-actions button {
         max-width: 100%; /* Permite ocupar toda a largura disponível */
     }
 }
@@ -591,10 +605,9 @@ body {
     border-bottom: 1px dashed #e9ecef;
 }
 
-.details-item.full-width { /* Para itens que precisam ocupar a largura total */
+.details-item.full-width {
     grid-column: 1 / -1; /* Ocupa todas as colunas */
 }
-
 
 .details-item:last-child {
     border-bottom: none; 
@@ -615,7 +628,7 @@ body {
 
 .details-image-container {
     width: 100%;
-    height: 300px; /* Aumentar a altura da imagem no modal de detalhes */
+    height: 300px;
     overflow: hidden;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -633,7 +646,7 @@ body {
     background-color: #f8f9fa; /* Fundo para imagens com 'contain' */
 }
 
-/* --- FORM CHECKBOX/RADIO STYLES (para os campos booleanos) --- */
+/* --- FORM CHECKBOX/RADIO STYLES --- */
 .checkbox-group {
     display: flex;
     gap: 20px;
@@ -729,21 +742,7 @@ input[type="file"] {
     padding: 8px; 
 }
 
-/* Footer (Exemplo - se quiser adicionar um rodapé) */
-.main-footer {
-    padding: 20px;
-    text-align: center;
-    background-color: #f1f1f1;
-    color: #6c757d;
-    font-size: 0.9em;
-    margin-top: 40px;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
-}
-
 /* --- Modal de Mensagem de Sucesso (para "Interesse Manifestado") --- */
-/* Manteremos os estilos do modal de mensagem.
-   A remoção da exibição será feita no JS.
-   Para o HTML, ele continuará lá, mas o JS não o mostrará. */
 .message-modal {
     display: none; 
     position: fixed;
@@ -807,4 +806,19 @@ input[type="file"] {
 
 .message-modal-content .modal-action-btn:hover {
     background-color: #218838;
+}
+
+/* Classes para os botões "Adicionar novo Pet" e "Mostrar Filtros" para corresponderem aos estilos primary-btn e secondary-btn */
+#openAddPetModalBtn {
+    /* Já usa primary-btn */
+    padding: 12px 25px; /* Ajusta o padding para ser mais como os botões de ação top */
+    font-size: 1.1em;
+    border-radius: 30px; /* Mantém arredondado */
+}
+
+#openFilterModalBtn {
+    /* Já usa secondary-btn */
+    padding: 12px 25px; /* Ajusta o padding para ser mais como os botões de ação top */
+    font-size: 1.1em;
+    border-radius: 30px; /* Mantém arredondado */
 }

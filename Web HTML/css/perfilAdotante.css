@@ -1,397 +1,485 @@
+/* Importação de fontes (exemplo, se você usa alguma) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 :root {
-    --green: #556B2F;
-    --orange: #E67E22;
-    --beige: #F5DEB3;
-    --white: #F4F4F4;
-    --black: #2C3E50;
-    --gray-light: #E5E7EB;
-    --gray-medium: #9CA3AF;
-    --gray-dark: #6B7280;
+    --primary-color: #ff6f61; /* Laranja MyBuddy */
+    --secondary-color: #fdd835; /* Amarelo */
+    --success-color: #66bb6a; /* Verde */
+    --danger-color: #ef5350; /* Vermelho */
+    --text-dark: #333;
+    --text-light: #666;
+    --bg-light: #f9f9f9;
+    --bg-white: #fff;
+    --border-color: #eee;
+    --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
-
-* {
+/* Base Geral */
+body {
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: var(--white);
-    color: var(--black);
+    background-color: var(--bg-light);
+    color: var(--text-dark);
     line-height: 1.6;
-    padding: 20px;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 900px; /* Ajuste para a largura desejada do conteúdo principal */
+    margin: 30px auto;
+    padding: 0 20px;
 }
 
-/* Profile Header */
-.profile-header {
-    background: white;
-    border-radius: 16px;
-    padding: 32px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+/* Header (replicado do pet-control ou styles.css global) */
+.main-header {
+    background-color: var(--bg-white);
+    box-shadow: var(--shadow-light);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 24px;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px; /* Ajuste o tamanho da logo */
+}
+
+.nav-links a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 10px 15px;
+    margin: 0 5px;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+.nav-links a.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.profile-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name-display {
+    color: var(--text-dark);
+    font-size: 0.95em;
+}
+
+.user-name-display #userNameOrEmail {
+    font-weight: 600;
+    color: var(--primary-color); /* Para destacar o nome/email */
+}
+
+.logout-btn {
+    background-color: var(--danger-color);
+    color: var(--bg-white);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #e53935; /* Tom mais escuro de vermelho */
+}
+
+
+/* Profile Header Section */
+.profile-header {
+    background-color: var(--bg-white);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alinha o botão "Editar" ao topo */
+    margin-bottom: 30px;
+    position: relative; /* Para posicionar o botão de upload do avatar */
 }
 
 .profile-main-info {
     display: flex;
-    gap: 24px;
-    flex: 1;
+    align-items: center;
+    gap: 25px;
 }
 
 .avatar-wrapper {
-    flex-shrink: 0;
+    position: relative;
+    width: 120px; /* Tamanho do avatar */
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--primary-color); /* Borda destacando o avatar */
+    flex-shrink: 0; /* Impede que o avatar encolha */
 }
 
 .avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--gray-light);
-}
-
-.profile-details {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.profile-name {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--black);
-    margin: 0;
-}
-
-.profile-meta {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--gray-dark);
-    font-size: 0.9rem;
-}
-
-.meta-item svg {
-    color: var(--orange);
-}
-
-.profile-badges {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.badge-green {
-    background-color: rgba(85, 107, 47, 0.1);
-    color: var(--green);
-}
-
-.badge-orange {
-    background-color: rgba(230, 126, 34, 0.1);
-    color: var(--orange);
-}
-
-.profile-contact {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--gray-dark);
-    font-size: 0.9rem;
-}
-
-.contact-item svg {
-    color: var(--gray-medium);
-}
-
-.btn-edit {
-    padding: 12px 28px;
-    background-color: var(--orange);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-.btn-edit:hover {
-    background-color: #d35400;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
-}
-
-/* Stats Section */
-.stats-section {
-    background: white;
-    border-radius: 16px;
-    padding: 32px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-number {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-
-.stat-green {
-    color: var(--green);
-}
-
-.stat-orange {
-    color: var(--orange);
-}
-
-.stat-label {
-    color: var(--gray-dark);
-    font-size: 1rem;
-}
-
-.stat-divider {
-    width: 1px;
-    height: 60px;
-    background-color: var(--gray-light);
-}
-
-/* Pets Section */
-.pets-section {
-    margin-bottom: 32px;
-}
-
-.section-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--black);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.section-title svg {
-    color: var(--orange);
-}
-
-.pets-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-    gap: 20px;
-}
-
-.pet-card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    display: flex;
-    gap: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.pet-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.pet-image {
-    width: 140px;
-    height: 140px;
-    border-radius: 12px;
-    overflow: hidden;
-    flex-shrink: 0;
-    background-color: var(--beige);
-}
-
-.pet-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.pet-info {
-    flex: 1;
+.upload-avatar-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente */
+    color: var(--bg-white);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.upload-avatar-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.profile-details {
     display: flex;
     flex-direction: column;
-    gap: 12px;
 }
 
-.pet-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.pet-name {
-    font-size: 1.25rem;
+.profile-name {
+    font-size: 2.2em;
+    margin: 0 0 10px 0;
+    color: var(--text-dark);
     font-weight: 700;
-    color: var(--black);
-    margin-bottom: 2px;
 }
 
-.pet-breed {
-    color: var(--gray-dark);
-    font-size: 0.95rem;
-}
-
-.pet-type-badge {
-    background-color: rgba(85, 107, 47, 0.1);
-    color: var(--green);
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-.pet-details {
+.profile-meta, .profile-badges, .profile-contact {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+    gap: 15px;
+    margin-bottom: 10px;
 }
 
-.pet-detail {
+.meta-item, .contact-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-light);
+    font-size: 0.95em;
+}
+
+.meta-item i, .contact-item i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+/* Badges */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge-green {
+    background-color: #e8f5e9; /* Cor de fundo suave para o verde */
+    color: var(--success-color);
+}
+
+.badge-orange {
+    background-color: #fff3e0; /* Cor de fundo suave para o laranja */
+    color: var(--secondary-color);
+}
+
+.badge i {
+    font-size: 0.8em; /* Ajuste o tamanho dos ícones nos badges */
+}
+
+
+/* Botão Editar Perfil */
+.btn-edit {
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--gray-dark);
-    font-size: 0.9rem;
+    flex-shrink: 0; /* Impede que o botão encolha */
 }
 
-.pet-detail svg {
-    color: var(--orange);
+.btn-edit i {
+    font-size: 0.9em;
 }
 
-.btn-details {
-    margin-top: auto;
-    padding: 10px 20px;
-    background-color: transparent;
-    color: var(--green);
-    border: 2px solid var(--green);
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
+.btn-edit:hover {
+    background-color: #e55a50; /* Laranja mais escuro no hover */
+    transform: translateY(-1px);
+}
+
+/* Stats Section */
+.stats-section {
+    background-color: var(--bg-white);
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-light);
+    display: flex;
+    justify-content: space-around; /* Distribui o espaço igualmente */
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.stat-item {
+    text-align: center;
+    flex-grow: 1; /* Permite que os itens cresçam para preencher o espaço */
+}
+
+.stat-number {
+    font-size: 2.5em;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stat-green {
+    color: var(--success-color);
+}
+
+/* Removido stat-orange e stat-red pois só temos um item "Adotados" por enquanto */
+
+.stat-label {
+    font-size: 0.9em;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Seção de Pets Adotados */
+.pets-section {
+    background-color: var(--bg-white);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-light);
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 1.8em;
+    color: var(--text-dark);
+    margin-top: 0;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title i {
+    color: var(--primary-color);
+}
+
+.pets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Grid responsivo para pets */
+    gap: 20px;
+}
+
+/* Estilo para a mensagem de "Nenhum pet adotado" */
+#noAdoptedPetsMessage {
+    grid-column: 1 / -1; /* Ocupa todas as colunas do grid */
+    text-align: center;
+    color: var(--text-light);
+    font-style: italic;
+    padding: 20px;
+}
+
+/* --- Modal de Edição de Perfil --- */
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fica por cima de todo o conteúdo */
+    z-index: 1000; /* Garante que fique acima de outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Adiciona scroll se o conteúdo for muito grande */
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro semi-transparente */
+    justify-content: center; /* Centraliza o modal horizontalmente */
+    align-items: center; /* Centraliza o modal verticalmente */
+}
+
+.modal-content {
+    background-color: var(--bg-white);
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-light);
+    width: 90%;
+    max-width: 500px; /* Largura máxima do modal */
+    position: relative;
+    animation: fadeIn 0.3s ease-out; /* Animação de entrada */
+}
+
+.modal-content h2 {
+    color: var(--text-dark);
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 28px;
+    font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
-    align-self: flex-start;
+    transition: color 0.3s ease;
 }
 
-.btn-details:hover {
-    background-color: var(--green);
-    color: white;
+.close-button:hover,
+.close-button:focus {
+    color: var(--danger-color);
+    text-decoration: none;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-    .pets-grid {
-        grid-template-columns: 1fr;
-    }
+.form-group {
+    margin-bottom: 15px;
 }
 
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"] {
+    width: calc(100% - 24px); /* Considera o padding */
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1em;
+    color: var(--text-dark);
+    background-color: var(--bg-light);
+    transition: border-color 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="tel"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.form-group input[disabled] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    color: #6c757d;
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.primary-btn:hover {
+    background-color: #e55a50;
+    transform: translateY(-1px);
+}
+
+/* Animação para o modal */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsividade Básica */
 @media (max-width: 768px) {
-    body {
-        padding: 12px;
-    }
-
-    .profile-header {
+    .header-content {
         flex-direction: column;
-        padding: 24px;
+        gap: 15px;
+        text-align: center;
     }
-
-    .profile-main-info {
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .profile-area {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .profile-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
+        gap: 20px;
+        padding: 20px;
     }
-
-    .profile-details {
-        align-items: center;
+    .profile-main-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
     }
-
-    .profile-meta,
-    .profile-contact {
+    .profile-meta, .profile-badges, .profile-contact {
         justify-content: center;
     }
-
+    .profile-name {
+        font-size: 1.8em;
+    }
     .btn-edit {
         width: 100%;
+        max-width: 250px; /* Limita a largura do botão em telas pequenas */
     }
-
     .stats-section {
         flex-direction: column;
-        gap: 24px;
-        padding: 24px;
+        gap: 20px;
     }
-
     .stat-divider {
-        width: 80%;
-        height: 1px;
+        display: none; /* Esconde os divisores em telas menores */
     }
-
-    .pet-card {
-        flex-direction: column;
+    .stat-item {
+        width: 100%; /* Ocupa a largura total */
     }
-
-    .pet-image {
-        width: 100%;
-        height: 200px;
-    }
-
-    .btn-details {
-        width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .profile-name {
-        font-size: 1.5rem;
-    }
-
-    .stat-number {
-        font-size: 2.5rem;
-    }
-
     .section-title {
-        font-size: 1.25rem;
+        justify-content: center;
+    }
+    .pets-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
     }
 }

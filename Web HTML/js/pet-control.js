@@ -76,27 +76,16 @@ let currentRole = "ROLE_ADOTANTE"; // Role padrão, será atualizada pelo JS
 // FUNÇÕES AUXILIARES
 // ===========================================
 
-/**
- * Função genérica para abrir um modal.
- * @param {HTMLElement} modalElement O elemento DOM do modal.
- */
 function openModal(modalElement) {
     modalElement.style.display = "flex"; // Usa flex para centralizar
     document.body.style.overflow = "hidden"; // Impede o scroll da página
 }
 
-/**
- * Função genérica para fechar um modal.
- * @param {HTMLElement} modalElement O elemento DOM do modal.
- */
 function closeModal(modalElement) {
     modalElement.style.display = "none";
     document.body.style.overflow = "auto"; // Restaura o scroll da página
 }
 
-/**
- * Limpa o formulário de adicionar/editar pet.
- */
 function clearAddEditPetForm() {
     addEditPetForm.reset(); // Reseta todos os campos do formulário
     petIdInput.value = ''; // Garante que o ID hidden seja limpo
@@ -117,10 +106,6 @@ function clearAddEditPetForm() {
     if (submitPetBtn) submitPetBtn.style.display = 'block'; // Garante que o botão de submit aparece
 }
 
-/**
- * Exibe as miniaturas das imagens selecionadas no input de arquivo.
- * @param {FileList} files Os arquivos de imagem selecionados.
- */
 function displayImagePreviews(files) {
     photosPreview.innerHTML = ""; // Limpa prévias existentes
     if (files.length > 0) {
@@ -141,17 +126,10 @@ function displayImagePreviews(files) {
     }
 }
 
-/**
- * Verifica se o usuário está logado.
- * @returns {boolean} True se o token de acesso existir, false caso contrário.
- */
 function isLoggedIn() {
     return localStorage.getItem('accessToken') !== null;
 }
 
-/**
- * Atualiza o estado visual do header (botões de login/cadastro vs. área do perfil).
- */
 function updateHeaderUI() {
     if (isLoggedIn()) {
         if (authButtons) authButtons.style.display = 'none';
@@ -162,21 +140,12 @@ function updateHeaderUI() {
             userNameDisplay.textContent = `Olá, ${userName}`;
         }
 
-        // Opcional: Atualizar o link de perfil se houver uma página de perfil específica
-        // const userId = localStorage.getItem('userId');
-        // if (userProfileLink && userId) {
-        //     userProfileLink.href = `profile.html?id=${userId}`; // Exemplo
-        // }
-
     } else {
         if (authButtons) authButtons.style.display = 'flex'; // Ou 'block'
         if (profileArea) profileArea.style.display = 'none';
     }
 }
 
-/**
- * Realiza o logout do usuário.
- */
 function logout() {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
@@ -189,11 +158,6 @@ function logout() {
     window.location.href = 'login_screen.html';
 }
 
-/**
- * Mapeia o valor do Enum `StatusAdocao` para um texto amigável.
- * @param {string} status Enum `StatusAdocao` (ex: "EM_ADOCAO").
- * @returns {string} Texto amigável (ex: "Em Adoção Temporária").
- */
 function mapStatusAdocaoToFriendlyText(status) {
     if (!status) return "Não informado";
     switch (status.toUpperCase()) {
@@ -210,11 +174,6 @@ function mapStatusAdocaoToFriendlyText(status) {
     }
 }
 
-/**
- * Mapeia o valor do Enum `Especie` para um texto amigável.
- * @param {string} especie Enum `Especie` (ex: "CAO").
- * @returns {string} Texto amigável (ex: "Cachorro").
- */
 function mapEspecieToFriendlyText(especie) {
     if (!especie) return "Não informada";
     switch (especie.toUpperCase()) { // Converte para maiúsculas antes de comparar
@@ -239,20 +198,11 @@ function mapEspecieToFriendlyText(especie) {
         case "OUTROS":
         case "OTHER": // Se o backend envia "Other"
             return "Outros";
-        // Se houver outras espécies que você cadastrou no backend e que não estão na lista acima,
-        // adicione-as aqui também. Exemplo:
-        // case "DRAGAO":
-        //    return "Dragão";
         default:
             return "Não informada";
     }
 }
 
-/**
- * Mapeia o valor do Enum `Porte` para um texto amigável.
- * @param {string} porte Enum `Porte` (ex: "MEDIO").
- * @returns {string} Texto amigável (ex: "Médio").
- */
 function mapPorteToFriendlyText(porte) {
     if (!porte) return "Não informado";
     switch (porte.toUpperCase()) {
@@ -271,11 +221,6 @@ function mapPorteToFriendlyText(porte) {
     }
 }
 
-/**
- * Mapeia o valor do Enum `Pelagem` para um texto amigável.
- * @param {string} pelagem Enum `Pelagem` (ex: "CURTA").
- * @returns {string} Texto amigável (ex: "Curta").
- */
 function mapPelagemToFriendlyText(pelagem) {
     if (!pelagem || pelagem.trim() === '') return "Não informada";
     const normalizedPelagem = pelagem.toUpperCase().trim();
@@ -300,11 +245,6 @@ function mapPelagemToFriendlyText(pelagem) {
     }
 }
 
-/**
- * Mapeia o valor do Enum `Sexo` para um texto amigável.
- * @param {string} sexo Enum `Sexo` (ex: "MACHO").
- * @returns {string} Texto amigável (ex: "Macho").
- */
 function mapSexoToFriendlyText(sexo) {
     if (!sexo) return "Não informado";
     switch (sexo.toUpperCase()) {
@@ -319,11 +259,6 @@ function mapSexoToFriendlyText(sexo) {
     }
 }
 
-/**
- * Mapeia valores booleanos para texto amigável "Sim" / "Não".
- * @param {boolean} value Valor booleano.
- * @returns {string} "Sim" ou "Não".
- */
 function mapBooleanToText(value) {
     if (value === true) return 'Sim';
     if (value === false) return 'Não';
@@ -334,11 +269,6 @@ function mapBooleanToText(value) {
 // LÓGICA DE ROLES E PERMISSÕES
 // ===========================================
 
-/**
- * Obtém a role do usuário logado do localStorage.
- * Agora lida com o nome da chave 'userRoles' e o formato de array JSON.
- * @returns {string} A role principal do usuário (ex: "ROLE_ADOTANTE", "ROLE_ONG", "ROLE_ADMIN").
- */
 function getUserRole() {
     const rolesJson = localStorage.getItem('userRoles'); // Altera para 'userRoles' (plural)
     if (rolesJson) {
@@ -360,11 +290,6 @@ function getUserRole() {
     return 'ROLE_ADOTANTE'; // Fallback padrão se nada for encontrado ou houver erro
 }
 
-/**
- * Ajusta a visibilidade dos elementos da UI com base na role do usuário.
- * Esta função agora lida com os campos do formulário de adicionar/editar Pet
- * E a visibilidade dos botões de ação nos cards.
- */
 function applyRolePermissions() {
     currentRole = getUserRole(); // Atualiza a role
     console.log("Role do usuário logado:", currentRole);
@@ -421,9 +346,6 @@ function applyRolePermissions() {
 // GESTÃO DE ORGANIZAÇÕES
 // ===========================================
 
-/**
- * Busca todas as organizações do backend e popula os selects.
- */
 async function fetchOrganizations() {
     try {
         const token = localStorage.getItem('accessToken');
@@ -449,10 +371,6 @@ async function fetchOrganizations() {
     }
 }
 
-/**
- * Popula os elementos <select> com as organizações.
- * @param {Array<Object>} organizations Lista de objetos de organização { id: ..., nome: ... }.
- */
 function populateOrganizationSelects(organizations) {
     // Popula o select no formulário de Adicionar/Editar Pet
     if (petShelterSelect) {
@@ -485,10 +403,6 @@ function populateOrganizationSelects(organizations) {
 // GESTÃO DE PETS
 // ===========================================
 
-/**
- * Exibe um modal para que o adotante possa adicionar uma mensagem ao manifestar interesse.
- * @param {number} petId O ID do pet.
- */
 function showManifestInterestModal(petId) {
     const userMessage = prompt("Adicione uma mensagem para a ONG/Tutor :");
 
@@ -509,25 +423,15 @@ function showManifestInterestModal(petId) {
         });
 }
 
-/**
- * Cria e retorna um elemento de card de pet.
- * @param {Object} pet Objeto com os dados do pet.
- * @returns {HTMLElement} O elemento HTML do card do pet.
- */
 function createPetCard(pet) {
     const card = document.createElement("article");
     card.classList.add("pets-card");
     card.setAttribute("data-pet-id", pet.id);
-
-    // Corrigido para lidar com a URL completa vinda do backend ou apenas o nome do arquivo
-    // Assumimos que pet.fotosUrls é um array de strings [ "nome_do_arquivo.png" ]
     const imageUrlFromBackend = pet.fotosUrls && pet.fotosUrls.length > 0 ? pet.fotosUrls[0] : null;
 
     let finalImageUrl = '../src/assets/imgs/placeholder.jpg'; // Default para o placeholder local
 
     if (imageUrlFromBackend && typeof imageUrlFromBackend === 'string' && imageUrlFromBackend.length > 0) {
-        // Constrói a URL completa usando o BASE_URL do backend para os uploads
-        // API_BASE_URL.replace('/api', '') garante que removemos o /api do final, deixando apenas http://localhost:8080
         finalImageUrl = `${API_BASE_URL.replace('/api', '')}/uploads/${imageUrlFromBackend}`;
     }
 
@@ -544,9 +448,9 @@ function createPetCard(pet) {
             <p class="pet-status">Status: ${mapStatusAdocaoToFriendlyText(pet.statusAdocao)}</p>
             <p class="pet-organization">ONG/Tutor: ${organizationName}</p>
             <div class="pet-actions">
-                <button class="view-details primary-btn"><i class="fas fa-info-circle"></i> Ver detalhes</button>
-                <button class="pet-edit secondary-btn"><i class="fas fa-edit"></i> Editar</button>
-                <button class="pet-delete logout-btn"><i class="fas fa-trash-alt"></i> Excluir</button>
+                <button class="view-details card-action-btn"><i class="fas fa-info-circle"></i> Ver detalhes</button>
+                <button class="pet-edit card-action-btn"><i class="fas fa-edit"></i> Editar</button>
+                <button class="pet-delete card-action-btn"><i class="fas fa-trash-alt"></i> Excluir</button>
                 <button class="manifestar-interesse success-btn"><i class="fas fa-heart"></i> Manifestar Interesse</button>
             </div>
         </div>
@@ -607,10 +511,6 @@ function createPetCard(pet) {
     return card;
 }
 
-/**
- * Renderiza a lista de pets no container.
- * @param {Array<Object>} petsToRender A lista de pets a serem exibidos.
- */
 function renderPets(petsToRender) {
     petsContainer.innerHTML = ""; // Limpa os cards existentes
     if (petsToRender.length === 0) {
@@ -621,10 +521,6 @@ function renderPets(petsToRender) {
     }
 }
 
-/**
- * Preenche o formulário do modal de adicionar/editar com os dados de um pet.
- * @param {Object} pet O objeto pet para preencher o formulário.
- */
 function fillAddEditPetForm(pet) {
     clearAddEditPetForm(); // Limpa antes de preencher
     if (!pet) return;
@@ -652,11 +548,7 @@ function fillAddEditPetForm(pet) {
     // NOVO: Preenche o select de status de adoção
     document.getElementById("pet-availability").value = pet.statusAdocao || '';
 
-    // Preenche o select de organização com o ID da organização do pet
-    // O backend agora retorna o objeto `organizacao` dentro do `petResponse`,
-    // mas o `pet.organizacaoId` ainda é o caminho mais direto para o ID.
-    // Garantir que `pet.organizacaoId` está disponível.
-    if (pet.organizacaoId) { // Assumindo que o PetResponse ainda retorna organizacaoId
+    if (pet.organizacaoId) { 
         petShelterSelect.value = pet.organizacaoId;
     } else {
         petShelterSelect.value = ""; // Nenhuma organização selecionada
@@ -697,17 +589,11 @@ function fillAddEditPetForm(pet) {
     applyRolePermissions();
 }
 
-/**
- * Preenche e exibe o modal de detalhes do pet.
- * @param {Object} pet O objeto pet para exibir os detalhes.
- */
 function displayPetDetails(pet) {
     // Título do modal de detalhes
     detailsModalTitle.textContent = `Detalhes de ${pet.nome}`;
 
     // Imagem do pet
-    // Corrigido para lidar com a URL completa vinda do backend ou apenas o nome do arquivo
-    // Assumimos que pet.fotosUrls é um array de strings [ "nome_do_arquivo.png" ]
     const detailsImageUrlFromBackend = pet.fotosUrls && pet.fotosUrls.length > 0 ? pet.fotosUrls[0] : null;
 
     let finalDetailsImageUrl = '../src/assets/imgs/placeholder.jpg'; // Default para o placeholder local
@@ -735,10 +621,6 @@ function displayPetDetails(pet) {
 
     detailPetStatus.textContent = mapStatusAdocaoToFriendlyText(pet.statusAdocao);
 
-    // O backend agora envia `organizacao.nomeFantasia` diretamente dentro do DTO do pet
-    // Então, podemos acessar `pet.organizacao.nomeFantasia` se o `organizacao` for um objeto completo.
-    // Se o `organizacaoId` ainda estiver presente, usamos ele para buscar no `allOrganizations`.
-    // Priorizamos `pet.organizacao.nomeFantasia` se disponível.
     if (pet.organizacao && pet.organizacao.nomeFantasia) {
         detailPetShelter.textContent = pet.organizacao.nomeFantasia;
     } else {
@@ -752,11 +634,6 @@ function displayPetDetails(pet) {
     openModal(petDetailsModal); // Abre o modal de detalhes
 }
 
-
-/**
- * Busca os pets do backend, aplica filtros e renderiza.
- * @param {Object} [filters={}] Objeto com os filtros a serem aplicados.
- */
 async function fetchPets(filters = {}) {
     try {
         const queryParams = new URLSearchParams(filters).toString();
@@ -794,12 +671,6 @@ async function fetchPets(filters = {}) {
     }
 }
 
-/**
- * Envia um pet para o backend (cadastro ou edição).
- * @param {Object} petData Os dados do pet.
- * @param {string} method O método HTTP ('POST' para cadastro, 'PUT' para edição).
- * @param {number} [petId=null] O ID do pet se for uma edição.
- */
 async function sendPetToBackend(petData, method, petId = null) {
     try {
         const url = petId ? `${API_BASE_URL}/pets/${petId}` : `${API_BASE_URL}/pets`;
@@ -830,10 +701,6 @@ async function sendPetToBackend(petData, method, petId = null) {
     }
 }
 
-/**
- * Exclui um pet do backend.
- * @param {number} petId O ID do pet a ser excluído.
- */
 async function deletePet(petId) {
     try {
         const token = localStorage.getItem('accessToken');
@@ -857,10 +724,6 @@ async function deletePet(petId) {
     }
 }
 
-/**
- * Manifesta interesse em adotar um pet.
- * @param {number} petId O ID do pet no qual o usuário deseja manifestar interesse.
- */
 async function manifestarInteresseNoPet(petId, mensagem) {
     const jwtToken = localStorage.getItem("accessToken"); // Certifique-se de pegar o token aqui também!
 
@@ -871,11 +734,11 @@ async function manifestarInteresseNoPet(petId, mensagem) {
     }
 
     try {
-        const response = await fetch("http://localhost:8080/api/interesses", { // Ou use "http://localhost:8080/api/interesses"
+        const response = await fetch("http://localhost:8080/api/interesses", { 
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${jwtToken}` // <--- ISSO É CRUCIAL!
+                "Authorization": `Bearer ${jwtToken}` 
             },
             body: JSON.stringify({ petId: petId, mensagem: mensagem })
         });
@@ -903,7 +766,7 @@ async function manifestarInteresseNoPet(petId, mensagem) {
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("Script pet-control.js carregado!");
 
-    updateHeaderUI(); // <--- CHAME AQUI NO INÍCIO!
+    updateHeaderUI(); 
 
     // Adiciona o event listener para o botão de logout
     if (logoutButton) {
@@ -950,7 +813,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.key === "Escape") closeModal(addEditPetModal);
     });
 
-    // NOVO: Fechar modal de Detalhes do Pet
+    //Fechar modal de Detalhes do Pet
     if (closePetDetailsModalBtn) {
         closePetDetailsModalBtn.addEventListener("click", () => closeModal(petDetailsModal));
     }
@@ -966,7 +829,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.key === "Escape") closeModal(petDetailsModal);
     });
 
-    // NOVO: Fechar modal de Mensagem de Sucesso
+    // Fechar modal de Mensagem de Sucesso
 if (closeSuccessMessageModalBtn) {
     closeSuccessMessageModalBtn.addEventListener("click", () => closeModal(successMessageModal));
 }
@@ -977,7 +840,7 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal(successMessageModal);
 });
 
-// NOVO: Botão "Ver Meus Interesses" no modal de sucesso
+// Botão "Ver Meus Interesses" no modal de sucesso
 if (goToInterestsPageBtn) {
     goToInterestsPageBtn.addEventListener("click", () => {
         closeModal(successMessageModal);
@@ -1203,7 +1066,7 @@ if (goToInterestsPageBtn) {
             }, 300);
         });
     }
-    // NOVO: Fechar modal de Mensagem de Sucesso
+    //Fechar modal de Mensagem de Sucesso
 if (closeSuccessMessageModalBtn) {
     closeSuccessMessageModalBtn.addEventListener("click", () => closeModal(successMessageModal));
 }
@@ -1214,7 +1077,7 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal(successMessageModal);
 });
 
-// NOVO: Botão "Ver Meus Interesses" no modal de sucesso
+//Botão "Ver Meus Interesses" no modal de sucesso
 if (goToInterestsPageBtn) {
     goToInterestsPageBtn.addEventListener("click", () => {
         closeModal(successMessageModal);
