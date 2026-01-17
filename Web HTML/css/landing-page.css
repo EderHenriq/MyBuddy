@@ -13,7 +13,7 @@ body::-webkit-scrollbar {
 
 body{
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: #ffff;
+    background-color: #f4f4f4;
     color: #1a1a1a;
     line-height: 1.5;
 }
@@ -93,7 +93,7 @@ ul{
 }
 
 .btn-login {
-    background: linear-gradient(to bottom, #7f7e7f 20%, rgba(204, 198, 204, 0.14) 80%);
+    background: linear-gradient(to bottom, #acabac 0%, rgba(223, 221, 223, 0.14) 100%);
     padding: 6px 14px;
     color: #1E1E1E !important;
     border-radius: 50px;
@@ -231,8 +231,8 @@ ul{
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: repeat(2, 300px);
-    gap: 25px;
-    max-width: 1200px;
+    gap: 15px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 0 5%;
 }
@@ -242,7 +242,7 @@ ul{
     border-radius: 24px;
     overflow: hidden;
     height: 300px;
-    justify-content: flex-end;
+    justify-content: center;
     display: flex;
     flex-direction: column;
 }
@@ -263,16 +263,21 @@ ul{
     grid-row: 2;
 }
 
+.card-service:nth-child(1) h3 {
+    font-size: 2.5rem;
+}
+
+.card-service:nth-child(1) p {
+    bottom: 260px;
+    font-size: 0.8rem;
+}
+
 .card-service img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     filter: brightness(40%) blur(2px);
     transition: transform 0.5s ease;
-}
-
-.card-service:hover img {
-    transform: scale(1.05);
 }
 
 .card-service h3,
@@ -285,14 +290,165 @@ ul{
 }
 
 .card-service h3 {
-    bottom: 80px;
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .card-service p {
-    bottom: 40px;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 500;
     line-height: 1.4;
+    bottom: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+/* Efeito do Container de Parceiros */
+
+.partners {
+    width: 100%;
+    height: 250px;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 5%;
+}
+
+.header-partners {
+    color: #6e6e6e;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.partners-logos {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.partners-logos img {
+    width: 80px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Estilização dos Cards de Pets Disponíveis */
+
+.container-adoption {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 0;
+    background-color: #f4f4f4;
+    width: 100%;
+}
+
+.adoption-cards {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    gap: -20px;
+   
+}
+
+.card-adoption {
+    background: #FFFFFF;
+    border-radius: 35px;
+    padding: 0;
+    max-height: 450px;
+    width: 240px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    filter: blur(1.5px);
+    opacity: 0.8;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+
+.card-adoption.featured {
+    width: 280px;
+    transform: scale(1.15);
+    opacity: 1;
+    z-index: 10;
+    filter: blur(0px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55);
+}
+
+.card-adoption img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 0;
+    margin-bottom: 0;
+    display: block;
+}
+
+.card-adoption.card-adoption.featured img {
+    height: 250px;
+    object-position: 1% 50%;
+}
+
+.card-adoption h3, 
+.card-adoption p,
+.card-adoption .btn-information {
+    padding: 0 32px;
+}
+
+.card-adoption h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 18px;
+    margin-bottom: 8px;
+}
+
+.card-adoption p {
+    font-size: 0.95rem;
+    color: #555555;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    padding-top: 0;
+}
+
+.btn-information {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 20px auto;
+    font-weight: 600;
+    color: #000000;
+    padding-bottom: 20px;
+    text-decoration: none;
+}
+
+.pagination-dots {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    background-color: #e3e2e2;
+    width: fit-content;
+    margin: 10px auto;
+    padding: 8px 8px;
+    border-radius: 50px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: #a09f9f;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    background-color: #000000;
+}
+
