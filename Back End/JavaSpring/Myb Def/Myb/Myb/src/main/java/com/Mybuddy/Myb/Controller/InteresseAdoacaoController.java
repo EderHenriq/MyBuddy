@@ -6,12 +6,12 @@ import com.Mybuddy.Myb.DTO.RegistrarInteresseRequest;
 import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
 import com.Mybuddy.Myb.Service.InteresseAdoacaoService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +20,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class InteresseAdoacaoController {
+
+    private static final Logger logger = LoggerFactory.getLogger(InteresseAdoacaoController.class);
 
     private final InteresseAdoacaoService service;
 
@@ -33,13 +35,13 @@ public class InteresseAdoacaoController {
             @RequestBody @Valid RegistrarInteresseRequest req,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        System.out.println("-----> DEBUG (Controller - manifestarInteresse): MÉTODO ACESSADO!"); // NOVO LOG
+        logger.debug("manifestarInteresse: MÉTODO ACESSADO!");
         if (userDetails == null) {
-            System.err.println("ERRO CRÍTICO (Controller - manifestarInteresse): userDetails é null!");
+            logger.error("ERRO CRÍTICO (manifestarInteresse): userDetails é null!");
             throw new IllegalStateException("Detalhes do usuário autenticado não disponíveis.");
         }
-        System.out.println("DEBUG (Controller - manifestarInteresse): Usuario ID recuperado: " + userDetails.getId());
-        System.out.println("DEBUG (Controller - manifestarInteresse): Usuario Email recuperado: " + userDetails.getEmail());
+        logger.debug("manifestarInteresse: Usuario ID recuperado: {}", userDetails.getId());
+        logger.debug("manifestarInteresse: Usuario Email recuperado: {}", userDetails.getEmail());
 
         Long usuarioId = userDetails.getId();
         var resp = service.manifestarInteresse(usuarioId, req.petId(), req.mensagem());
@@ -52,7 +54,7 @@ public class InteresseAdoacaoController {
             @PathVariable Long id,
             @RequestBody @Valid AtualizarStatusRequest req
     ) {
-        System.out.println("-----> DEBUG (Controller - atualizarStatus): MÉTODO ACESSADO!"); // NOVO LOG
+        logger.debug("atualizarStatus: MÉTODO ACESSADO!");
         var resp = service.atualizarStatus(id, req.status());
         return ResponseEntity.ok(resp);
     }
@@ -85,8 +87,8 @@ public class InteresseAdoacaoController {
         if (userDetails == null) {
             throw new IllegalStateException("Detalhes do usuário autenticado não disponíveis.");
         }
-        System.out.println("DEBUG (Controller - listarInteressesDaMinhaOng): ONG Usuario ID recuperado: " + userDetails.getId());
-        System.out.println("DEBUG (Controller - listarInteressesDaMinhaOng): ONG Organizacao ID recuperado: " + userDetails.getOrganizacaoId());
+        logger.debug("listarInteressesDaMinhaOng: ONG Usuario ID recuperado: {}", userDetails.getId());
+        logger.debug("listarInteressesDaMinhaOng: ONG Organizacao ID recuperado: {}", userDetails.getOrganizacaoId());
 
         Long organizacaoId = userDetails.getOrganizacaoId();
         var resp = service.listarInteressesPorOrganizacao(organizacaoId);

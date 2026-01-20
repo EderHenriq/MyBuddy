@@ -74,6 +74,9 @@ public class Pet {
     // --- Construtores ---
     public Pet() {
         this.statusAdocao = StatusAdocao.DISPONIVEL;
+    }
+
+    public Pet(String nome, String raca, Integer idade, String especie, String porte, String cor, String pelagem, String sexo, Organizacao organizacao, boolean microchipado, boolean vacinado, boolean castrado, String cidade, String estado) {
         this.nome = nome;
         this.raca = raca;
         this.idade = idade;
@@ -82,14 +85,13 @@ public class Pet {
         this.cor = cor;
         this.pelagem = pelagem;
         this.sexo = sexo;
-        this.statusAdocao = (statusAdocao != null) ? statusAdocao : StatusAdocao.DISPONIVEL;
         this.organizacao = organizacao;
         this.microchipado = microchipado;
         this.vacinado = vacinado;
         this.castrado = castrado;
-        // temperamento removido
         this.cidade = cidade;
         this.estado = estado;
+        this.statusAdocao = StatusAdocao.DISPONIVEL;
     }
 
     // --- Getters e Setters ---

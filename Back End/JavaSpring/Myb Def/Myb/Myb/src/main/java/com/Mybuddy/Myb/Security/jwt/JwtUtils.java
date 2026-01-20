@@ -61,7 +61,7 @@ public class JwtUtils {
     // Método auxiliar privado para obter a chave de segurança para assinatura/verificação do JWT.
     private Key key() {
         // Decodifica a string 'jwtSecret' (que está em Base64) e gera uma chave HMAC SHA para ser usada com JJWT.
-        System.out.println("jwtSecret lido pelo Spring: [" + jwtSecret + "]");
+        logger.debug("jwtSecret lido pelo Spring: [{}]", jwtSecret);
         return Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecret));
     }
 
