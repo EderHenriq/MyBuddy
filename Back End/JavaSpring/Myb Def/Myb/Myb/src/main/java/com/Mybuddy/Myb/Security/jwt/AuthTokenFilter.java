@@ -35,12 +35,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();
-        logger.info("AuthTokenFilter: Processando requisição para URI: {}", requestURI); // NOVO LOG AQUI!
+        logger.debug("AuthTokenFilter: Processando requisição para URI: {}", requestURI);
 
         try {
             String jwt = parseJwt(request);
 
-            System.out.println("DEBUG (AuthTokenFilter): Token recebido no backend: " + jwt);
+            logger.debug("AuthTokenFilter: Token recebido no backend: {}", jwt);
 
 
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
@@ -61,7 +61,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 );
 
                 // --- LOG CRÍTICO AQUI ---
-                System.out.println("DEBUG (AuthTokenFilter): Autenticação criada para username: " + userDetails.getUsername() + " com roles: " + userDetails.getAuthorities());
+                logger.debug("AuthTokenFilter: Autenticação criada para username: {} com roles: {}", userDetails.getUsername(), userDetails.getAuthorities());
 
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -69,8 +69,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 // --- OUTRO LOG CRÍTICO AQUI ---
-                System.out.println("DEBUG (AuthTokenFilter): SecurityContextHolder setado para: " + SecurityContextHolder.getContext().getAuthentication().getName());
-                System.out.println("DEBUG (AuthTokenFilter): Principal no SecurityContextHolder é do tipo: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().getName()); // Novo log para verificar o tipo
+                if (logger.isDebugEnabled()) {
+                    logger.debug("AuthTokenFilter: SecurityContextHolder setado para: {}", SecurityContextHolder.getContext().getAuthentication().getName());
+                    logger.debug("AuthTokenFilter: Principal no SecurityContextHolder é do tipo: {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().getName());
+                }
             }
         } catch (Exception e) {
             logger.error("Não foi possível autenticar o usuário via JWT: {}", e.getMessage(), e);

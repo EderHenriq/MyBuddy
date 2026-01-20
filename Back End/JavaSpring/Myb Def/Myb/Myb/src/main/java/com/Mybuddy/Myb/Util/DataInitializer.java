@@ -8,6 +8,8 @@ import com.Mybuddy.Myb.Repository.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,8 @@ import java.util.Set;
 
 @Configuration
 public class DataInitializer {
+
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 
     private final UsuarioRepository usuarioRepository;
     private final RoleRepository roleRepository;
@@ -38,24 +42,24 @@ public class DataInitializer {
     @PostConstruct
     @Transactional
     public void initData() {
-        System.out.println("Iniciando inicialização de dados...");
+        logger.info("Iniciando inicialização de dados...");
 
         // 1. Garante que as Roles existem no banco de dados
         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                 .orElseGet(() -> {
-                    System.out.println("Criando ROLE_ADMIN...");
+                    logger.info("Criando ROLE_ADMIN...");
                     return roleRepository.save(new Role(ERole.ROLE_ADMIN));
                 });
 
         Role ongRole = roleRepository.findByName(ERole.ROLE_ONG)
                 .orElseGet(() -> {
-                    System.out.println("Criando ROLE_ONG...");
+                    logger.info("Criando ROLE_ONG...");
                     return roleRepository.save(new Role(ERole.ROLE_ONG));
                 });
 
         Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
                 .orElseGet(() -> {
-                    System.out.println("Criando ROLE_ADOTANTE...");
+                    logger.info("Criando ROLE_ADOTANTE...");
                     return roleRepository.save(new Role(ERole.ROLE_ADOTANTE));
                 });
 
@@ -63,7 +67,7 @@ public class DataInitializer {
         // A organização precisa existir antes de associarmos um usuário ONG a ela
         Organizacao myBuddyOrg = organizacaoRepository.findByCnpj("11.222.333/0001-44") // Use um CNPJ de teste
                 .orElseGet(() -> {
-                    System.out.println("Criando Organização MyBuddy...");
+                    logger.info("Criando Organização MyBuddy...");
                     Organizacao org = new Organizacao(
                             "MyBuddy ONG Principal",
                             "contato@mybuddy.com",
@@ -92,9 +96,9 @@ public class DataInitializer {
                     adminRoles
             );
             usuarioRepository.save(adminUser);
-            System.out.println("Usuário Admin (admin@mybuddy.com) criado com sucesso!");
+            logger.info("Usuário Admin (admin@mybuddy.com) criado com sucesso!");
         } else {
-            System.out.println("Usuário Admin (admin@mybuddy.com) já existe.");
+            logger.info("Usuário Admin (admin@mybuddy.com) já existe.");
         }
 
         // Cria usuário ONG de teste
@@ -111,9 +115,9 @@ public class DataInitializer {
                     ongRoles
             );
             usuarioRepository.save(ongUser);
-            System.out.println("Usuário ONG (ong@mybuddy.com) criado com sucesso!");
+            logger.info("Usuário ONG (ong@mybuddy.com) criado com sucesso!");
         } else {
-            System.out.println("Usuário ONG (ong@mybuddy.com) já existe.");
+            logger.info("Usuário ONG (ong@mybuddy.com) já existe.");
         }
 
         // Cria usuário ADOTANTE de teste
@@ -130,11 +134,11 @@ public class DataInitializer {
                     adotanteRoles
             );
             usuarioRepository.save(adotanteUser);
-            System.out.println("Usuário Adotante (adotante@mybuddy.com) criado com sucesso!");
+            logger.info("Usuário Adotante (adotante@mybuddy.com) criado com sucesso!");
         } else {
-            System.out.println("Usuário Adotante (adotante@mybuddy.com) já existe.");
+            logger.info("Usuário Adotante (adotante@mybuddy.com) já existe.");
         }
 
-        System.out.println("Finalizada inicialização de dados.");
+        logger.info("Finalizada inicialização de dados.");
     }
 }
