@@ -1,7 +1,9 @@
 package com.Mybuddy.Myb.Service;
 
+import com.Mybuddy.Myb.Model.Especie;
 import com.Mybuddy.Myb.Model.Pet;
-import com.Mybuddy.Myb.Model.StatusAdocao; // Importar o enum StatusAdocao
+import com.Mybuddy.Myb.Model.Porte;
+import com.Mybuddy.Myb.Model.StatusAdocao;
 import org.springframework.data.jpa.domain.Specification;
 
 public final class PetSpecification {
@@ -16,14 +18,14 @@ public final class PetSpecification {
             spec = spec.and(nomeContem(filtro.nome()));
         }
 
-        // Filtro por espécie exata (case-insensitive)
-        if (filtro.especie() != null && !filtro.especie().isBlank()) {
-            spec = spec.and(igualCaseInsensitive("especie", filtro.especie()));
+        // Filtro por espécie (Enum)
+        if (filtro.especie() != null) {
+            spec = spec.and(igualEspecie(filtro.especie()));
         }
 
-        // Filtro por porte exato (case-insensitive)
-        if (filtro.porte() != null && !filtro.porte().isBlank()) {
-            spec = spec.and(igualCaseInsensitive("porte", filtro.porte()));
+        // Filtro por porte (Enum)
+        if (filtro.porte() != null) {
+            spec = spec.and(igualPorte(filtro.porte()));
         }
 
         // Filtro por sexo exato (case-insensitive)
@@ -59,7 +61,17 @@ public final class PetSpecification {
         return (root, query, cb) -> cb.equal(cb.lower(root.get(campo)), valor.toLowerCase());
     }
 
-    // NOVO: Método para igualdade de StatusAdocao (Enum, case-sensitive é adequado)
+    // Método para igualdade de Especie (Enum)
+    private static Specification<Pet> igualEspecie(Especie especie) {
+        return (root, query, cb) -> cb.equal(root.get("especie"), especie);
+    }
+
+    // Método para igualdade de Porte (Enum)
+    private static Specification<Pet> igualPorte(Porte porte) {
+        return (root, query, cb) -> cb.equal(root.get("porte"), porte);
+    }
+
+    // Método para igualdade de StatusAdocao (Enum)
     private static Specification<Pet> igualStatusAdocao(StatusAdocao statusAdocao) {
         return (root, query, cb) -> cb.equal(root.get("statusAdocao"), statusAdocao);
     }

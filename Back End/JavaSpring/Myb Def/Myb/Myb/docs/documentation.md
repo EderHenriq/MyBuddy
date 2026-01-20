@@ -121,7 +121,8 @@ Registro de interesse de um usuário por um pet.
 
 ### Pets (`/api/pets`)
 *   `POST /`: Criar novo pet. **(Role: ONG, ADMIN)**
-*   `POST /upload-image`: Upload de imagem do pet (retorna nome do arquivo). **(Role: ONG, ADMIN)**
+*   `POST /upload-image`: Upload de uma imagem do pet (retorna nome do arquivo). **(Role: ONG, ADMIN)**
+*   `POST /upload-images`: Upload de múltiplas imagens (máx. 3, retorna lista de nomes). **(Role: ONG, ADMIN)**
 *   `GET /`: Listar pets com filtros (paginado). **(Autenticado)**
 *   `GET /{id}`: Detalhes de um pet. **(Autenticado)**
 *   `PUT /{id}`: Atualizar pet. **(Role: ADMIN ou ONG proprietária)**
@@ -187,9 +188,9 @@ Uma análise recente do código (realizada em Jan/2025) identificou pontos impor
 
 ### 🟡 Importante (Prioridade Média)
 1.  **Testes:** Ausência de testes unitários e de integração robustos.
-2.  **Performance:**
-    *   Possível problema de N+1 queries no método `listarInteressesPorOrganizacao`.
-    *   Upload de imagens permite apenas um arquivo por vez.
+2.  **Performance:** (RESOLVIDO)
+    *   ~~Possível problema de N+1 queries no método `listarInteressesPorOrganizacao`.~~ - Criadas queries com `JOIN FETCH` em `InteresseAdoacaoRepository`: `findByPetOrganizacaoIdWithFetch`, `findByUsuarioIdWithFetch` e `findAllWithFetch`.
+    *   ~~Upload de imagens permite apenas um arquivo por vez.~~ - Criado endpoint `POST /api/pets/upload-images` que aceita até 3 arquivos simultaneamente.
 3.  **Padronização:** (RESOLVIDO)
     *   ~~Uso inconsistente de injeção de dependência (mistura de `@Autowired` em campos e injeção por construtor).~~ - Padronizado para injeção por construtor em `UsuarioController`, `AuthTokenFilter` e `UsuarioService`.
     *   ~~Alguns campos fixos (Especie, Porte) deveriam ser Enums para garantir consistência.~~ - Criados os Enums `Especie` e `Porte` e atualizados `Pet`, `PetRequestDTO`, `PetFiltro` e `PetSpecification`.
