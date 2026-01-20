@@ -176,7 +176,7 @@ Registro de interesse de um usuário por um pet.
 
 Uma análise recente do código (realizada em Jan/2025) identificou pontos importantes para refatoração e melhoria antes do deploy em produção.
 
-### 🔴 Crítico (Prioridade Alta)
+### 🔴 Crítico (Prioridade Alta) (RESOLVIDO)
 1.  **Configurações Hardcoded:**
     *   O caminho de upload (`file.upload-dir`) está fixo para um diretório local específico. Necessário alterar para variável de ambiente ou caminho relativo.
     *   O `jwtSecret` está exposto no `application.properties`. Deve ser movido para variáveis de ambiente.
