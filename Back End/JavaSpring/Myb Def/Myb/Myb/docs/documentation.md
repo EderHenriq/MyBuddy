@@ -187,7 +187,11 @@ Uma análise recente do código (realizada em Jan/2025) identificou pontos impor
     *   O construtor da classe `Pet` possui atribuições incorretas (variáveis atribuídas a si mesmas), o que pode causar falhas na persistência.
 
 ### 🟡 Importante (Prioridade Média)
-1.  **Testes:** Ausência de testes unitários e de integração robustos.
+1.  **Testes:** (RESOLVIDO - Jan/2026)
+    *   ~~Ausência de testes unitários e de integração robustos.~~ - Implementados 42 testes (29 unitários + 13 de integração) cobrindo Services e Controllers principais.
+    *   Detalhes completos em `docs/TESTES.md`
+    *   Configurado Jacoco para relatório de cobertura de código
+    *   Testes incluem: PetService (11), UsuarioService (6), AuthService (6), InteresseAdocaoService (6), e Controllers (AuthController, PetController, InteresseAdocaoController)
 2.  **Performance:** (RESOLVIDO)
     *   ~~Possível problema de N+1 queries no método `listarInteressesPorOrganizacao`.~~ - Criadas queries com `JOIN FETCH` em `InteresseAdoacaoRepository`: `findByPetOrganizacaoIdWithFetch`, `findByUsuarioIdWithFetch` e `findAllWithFetch`.
     *   ~~Upload de imagens permite apenas um arquivo por vez.~~ - Criado endpoint `POST /api/pets/upload-images` que aceita até 3 arquivos simultaneamente.
