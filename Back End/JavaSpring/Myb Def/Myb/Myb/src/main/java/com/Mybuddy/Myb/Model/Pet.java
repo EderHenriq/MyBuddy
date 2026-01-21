@@ -24,11 +24,13 @@ public class Pet {
     @Column(nullable = false)
     private Integer idade; // Idade em anos, como visto no card de detalhes
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 40, nullable = false)
-    private String especie; // Ex: "CAO", "GATO" (usar enums no futuro pode ser melhor)
+    private Especie especie;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
-    private String porte; // Ex: "PEQUENO", "MEDIO", "GRANDE" (usar enums no futuro pode ser melhor)
+    private Porte porte;
 
     @Column(length = 30, nullable = false)
     private String cor;
@@ -76,7 +78,7 @@ public class Pet {
         this.statusAdocao = StatusAdocao.DISPONIVEL;
     }
 
-    public Pet(String nome, String raca, Integer idade, String especie, String porte, String cor, String pelagem, String sexo, Organizacao organizacao, boolean microchipado, boolean vacinado, boolean castrado, String cidade, String estado) {
+    public Pet(String nome, String raca, Integer idade, Especie especie, Porte porte, String cor, String pelagem, String sexo, Organizacao organizacao, boolean microchipado, boolean vacinado, boolean castrado, String cidade, String estado) {
         this.nome = nome;
         this.raca = raca;
         this.idade = idade;
@@ -107,11 +109,11 @@ public class Pet {
     public Integer getIdade() { return idade; }
     public void setIdade(Integer idade) { this.idade = idade; }
 
-    public String getEspecie() { return especie; }
-    public void setEspecie(String especie) { this.especie = especie; }
+    public Especie getEspecie() { return especie; }
+    public void setEspecie(Especie especie) { this.especie = especie; }
 
-    public String getPorte() { return porte; }
-    public void setPorte(String porte) { this.porte = porte; }
+    public Porte getPorte() { return porte; }
+    public void setPorte(Porte porte) { this.porte = porte; }
 
     public String getCor() { return cor; }
     public void setCor(String cor) { this.cor = cor; }
@@ -186,7 +188,7 @@ public class Pet {
         return "Pet{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", especie='" + especie + '\'' +
+                ", especie=" + especie +
                 ", statusAdocao=" + statusAdocao +
                 ", organizacaoId=" + (organizacao != null ? organizacao.getId() : "N/A") +
                 ", microchipado=" + microchipado +

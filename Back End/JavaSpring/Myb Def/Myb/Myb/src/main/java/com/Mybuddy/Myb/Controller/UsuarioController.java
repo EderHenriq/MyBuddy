@@ -2,7 +2,6 @@ package com.Mybuddy.Myb.Controller;
 
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +17,11 @@ import java.util.Optional;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')") // <<< ADICIONADO: Apenas ADMIN pode criar usuários diretamente

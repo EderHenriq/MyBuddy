@@ -239,10 +239,10 @@ public class PetService {
         return new PetResponse(
                 p.getId(),
                 p.getNome(),
-                p.getEspecie(),
+                p.getEspecie() != null ? p.getEspecie().name() : null,
                 p.getRaca(),
                 p.getIdade(),
-                p.getPorte(),
+                p.getPorte() != null ? p.getPorte().name() : null,
                 p.getCor(),
                 p.getPelagem(),
                 p.getSexo(),

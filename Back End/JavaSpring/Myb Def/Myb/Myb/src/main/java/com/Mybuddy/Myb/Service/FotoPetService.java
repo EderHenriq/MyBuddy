@@ -12,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -57,7 +59,26 @@ public class FotoPetService {
         }
     }
 
-    // Você pode adicionar outros métodos para carregar/deletar arquivos, se necessário
+    /**
+     * Armazena múltiplos arquivos de uma vez.
+     * @param files Lista de arquivos para upload
+     * @return Lista com os nomes dos arquivos salvos
+     * @throws IOException se houver erro ao salvar algum arquivo
+     */
+    public List<String> storeFiles(List<MultipartFile> files) throws IOException {
+        List<String> fileNames = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                String fileName = storeFile(file);
+                fileNames.add(fileName);
+            }
+        }
+
+        log.info("Upload múltiplo concluído. {} arquivos salvos.", fileNames.size());
+        return fileNames;
+    }
+
     public Path loadFileAsResource(String fileName) {
         return this.fileStorageLocation.resolve(fileName).normalize();
     }

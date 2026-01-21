@@ -75,6 +75,43 @@ public class PetController {
         }
     }
 
+    /**
+     * Endpoint para upload de múltiplas imagens de uma vez.
+     * Retorna a lista de nomes dos arquivos salvos no servidor.
+     * @param files Lista de arquivos de imagem (máximo 3).
+     * @return Lista com os nomes dos arquivos salvos ou mensagem de erro.
+     */
+    @PostMapping("/upload-images")
+    @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
+    public ResponseEntity<?> uploadImages(@RequestParam("files") List<MultipartFile> files) {
+        log.info("Recebida requisição de upload múltiplo: {} arquivos", files.size());
+
+        if (files.isEmpty()) {
+            return ResponseEntity.badRequest().body("Por favor selecione pelo menos um arquivo para upload.");
+        }
+
+        if (files.size() > 3) {
+            return ResponseEntity.badRequest().body("São permitidas no máximo 3 imagens por pet.");
+        }
+
+        // Verifica se algum arquivo está vazio
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body("Um ou mais arquivos estão vazios.");
+            }
+        }
+
+        try {
+            List<String> fileNames = fotoPetService.storeFiles(files);
+            log.info("Upload múltiplo concluído com sucesso: {}", fileNames);
+            return ResponseEntity.ok(fileNames);
+        } catch (Exception e) {
+            log.error("Falha ao fazer upload das imagens: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Falha ao fazer upload das imagens: " + e.getMessage());
+        }
+    }
+
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<PetResponse>> buscarPetsComFiltros(

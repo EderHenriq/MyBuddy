@@ -2,7 +2,6 @@ package com.Mybuddy.Myb.Service; // Declara o pacote onde esta classe de serviç
 
 import com.Mybuddy.Myb.Model.Usuario; // Importa a entidade Usuario, que representa um usuário no sistema.
 import com.Mybuddy.Myb.Repository.UsuarioRepository; // Importa o repositório para a entidade Usuario.
-import org.springframework.beans.factory.annotation.Autowired; // Importa a anotação para injeção de dependência.
 import org.springframework.stereotype.Service; // Importa a anotação @Service do Spring.
 
 import java.util.List; // Importa a interface List para lidar com coleções de objetos.
@@ -14,9 +13,11 @@ import java.util.Optional; // Importa a classe Optional para lidar com resultado
 @Service
 public class UsuarioService { // Declara a classe de serviço para Usuários.
 
-    // Anotação que realiza a injeção de dependência. O Spring fornecerá automaticamente uma instância de UsuarioRepository.
-    @Autowired
-    private UsuarioRepository usuarioRepository; // Declara uma variável para o serviço de usuário.
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     // Método para criar um novo usuário.
     public Usuario criarUsuario (Usuario usuario){

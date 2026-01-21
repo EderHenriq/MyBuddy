@@ -1,15 +1,17 @@
 package com.Mybuddy.Myb.Service;
 
-import com.Mybuddy.Myb.Model.StatusAdocao; // Importar o enum StatusAdocao
+import com.Mybuddy.Myb.Model.Especie;
+import com.Mybuddy.Myb.Model.Porte;
+import com.Mybuddy.Myb.Model.StatusAdocao;
 
 public record PetFiltro(
         String nome,
-        String especie,
-        String porte,
+        Especie especie,
+        Porte porte,
         String sexo,
         Integer idadeMin,
         Integer idadeMax,
-        StatusAdocao statusAdocao // Adicionado o campo statusAdocao
+        StatusAdocao statusAdocao
 ) {
     // Construtor compacto para definir valores padrão
     // Isso é útil se o filtro não for fornecido e você quiser um padrão no backend.
