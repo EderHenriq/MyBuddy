@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.*;
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -235,8 +236,8 @@ class PetServiceTest {
 
         Authentication authentication = mock(Authentication.class);
         when(authentication.isAuthenticated()).thenReturn(true);
-        when(authentication.getPrincipal()).thenReturn(new UserDetailsImpl(1L, "admin@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))));
-        when(authentication.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        when(authentication.getPrincipal()).thenReturn(new UserDetailsImpl(1L, "Admin", "admin@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_ADMIN")), null));
+        when(authentication.getAuthorities()).thenReturn((Collection) List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
 
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -262,8 +263,8 @@ class PetServiceTest {
 
         Authentication authentication = mock(Authentication.class);
         when(authentication.isAuthenticated()).thenReturn(true);
-        when(authentication.getPrincipal()).thenReturn(new UserDetailsImpl(1L, "ong@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_ONG"))));
-        when(authentication.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_ONG")));
+        when(authentication.getPrincipal()).thenReturn(new UserDetailsImpl(1L, "ONG User", "ong@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_ONG")), 1L));
+        when(authentication.getAuthorities()).thenReturn((Collection) List.of(new SimpleGrantedAuthority("ROLE_ONG")));
 
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -289,8 +290,8 @@ class PetServiceTest {
 
         Authentication authentication = mock(Authentication.class);
         when(authentication.isAuthenticated()).thenReturn(true);
-        when(authentication.getPrincipal()).thenReturn(new UserDetailsImpl(2L, "ong2@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_ONG"))));
-        when(authentication.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("ROLE_ONG")));
+        when(authentication.getPrincipal()).thenReturn(new UserDetailsImpl(2L, "ONG User 2", "ong2@test.com", "password", List.of(new SimpleGrantedAuthority("ROLE_ONG")), 2L));
+        when(authentication.getAuthorities()).thenReturn((Collection) List.of(new SimpleGrantedAuthority("ROLE_ONG")));
 
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);

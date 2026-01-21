@@ -31,8 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
-@DisplayName("Testes de Integração - InteresseAdocaoController")
-class InteresseAdocaoControllerIT {
+@DisplayName("Testes de Integração - InteresseAdoacaoController")
+class InteresseAdoacaoControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -156,7 +156,7 @@ class InteresseAdocaoControllerIT {
     @DisplayName("PUT /api/interesses/{id}/status - ONG deve aprovar interesse")
     void atualizarStatus_OngAprova_RetornaAprovado() throws Exception {
         // Arrange - Criar interesse primeiro
-        InteresseAdocao interesse = new InteresseAdocao();
+        InteresseAdoacao interesse = new InteresseAdoacao();
         interesse.setUsuario(usuarioAdotante);
         interesse.setPet(pet);
         interesse.setMensagem("Quero adotar");
@@ -179,7 +179,7 @@ class InteresseAdocaoControllerIT {
     @DisplayName("GET /api/usuarios/me/interesses - Deve listar meus interesses")
     void listarMeusInteresses_ComoAdotante_RetornaLista() throws Exception {
         // Arrange - Criar interesse primeiro
-        InteresseAdocao interesse = new InteresseAdocao();
+        InteresseAdoacao interesse = new InteresseAdoacao();
         interesse.setUsuario(usuarioAdotante);
         interesse.setPet(pet);
         interesse.setMensagem("Quero adotar");
@@ -198,7 +198,7 @@ class InteresseAdocaoControllerIT {
     @DisplayName("GET /api/ongs/me/interesses - ONG deve ver interesses recebidos")
     void listarInteressesOng_ComoOng_RetornaLista() throws Exception {
         // Arrange - Criar interesse primeiro
-        InteresseAdocao interesse = new InteresseAdocao();
+        InteresseAdoacao interesse = new InteresseAdoacao();
         interesse.setUsuario(usuarioAdotante);
         interesse.setPet(pet);
         interesse.setMensagem("Quero adotar");

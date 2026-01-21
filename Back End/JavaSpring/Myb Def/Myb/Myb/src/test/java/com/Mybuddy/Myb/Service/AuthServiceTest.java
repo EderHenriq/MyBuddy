@@ -72,7 +72,7 @@ class AuthServiceTest {
         signupRequest.setPassword("senha123");
 
         adotanteRole = new Role();
-        adotanteRole.setId(1);
+        adotanteRole.setId(1L);
         adotanteRole.setName(ERole.ROLE_ADOTANTE);
     }
 
@@ -155,7 +155,7 @@ class AuthServiceTest {
         signupRequest.setOrganizacaoEndereco("Rua Teste, 123");
 
         Role ongRole = new Role();
-        ongRole.setId(2);
+        ongRole.setId(2L);
         ongRole.setName(ERole.ROLE_ONG);
 
         Organizacao org = new Organizacao();
@@ -189,7 +189,7 @@ class AuthServiceTest {
         signupRequest.setOrganizacaoEndereco("Rua Teste, 123");
 
         Role ongRole = new Role();
-        ongRole.setId(2);
+        ongRole.setId(2L);
         ongRole.setName(ERole.ROLE_ONG);
 
         when(usuarioRepository.existsByEmail(signupRequest.getEmail())).thenReturn(false);

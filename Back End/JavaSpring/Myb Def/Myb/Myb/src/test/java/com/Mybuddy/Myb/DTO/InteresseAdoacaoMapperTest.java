@@ -1,5 +1,7 @@
-package com.Mybuddy.Myb.Dto;
+package com.Mybuddy.Myb.DTO;
 
+import com.Mybuddy.Myb.DTO.InteresseAdoacaoMapper;
+import com.Mybuddy.Myb.DTO.InteresseResponse;
 import com.Mybuddy.Myb.Model.InteresseAdoacao;
 import com.Mybuddy.Myb.Model.Pet;
 import com.Mybuddy.Myb.Model.Usuario;
@@ -15,8 +17,10 @@ public class InteresseAdoacaoMapperTest {
     @Test
     public void toResponse_mapsAllFieldsCorrectly() {
         // arrange: create modelo objects
-        //Usuario usuario = new Usuario("Maria", "maria@example.com", "12345");
-        //usuario.setId(42L);
+        Usuario usuario = new Usuario();
+        usuario.setId(42L);
+        usuario.setNome("Maria");
+        usuario.setEmail("maria@example.com");
 
         Pet pet = new Pet();
         pet.setId(99L);
@@ -42,7 +46,7 @@ public class InteresseAdoacaoMapperTest {
         assertEquals(42L, resp.usuario().id());
         assertEquals("Maria", resp.usuario().nome());
         assertNotNull(resp.pet());
-        assertEquals(99L, resp.pet().id());
+        assertEquals(99L, resp.pet().Id());
         assertEquals("Rex", resp.pet().nome());
         assertEquals(StatusInteresse.PENDENTE, resp.status());
         assertEquals("Quero adotar", resp.mensagem());
