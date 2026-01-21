@@ -341,8 +341,209 @@ src/
 
 ## 8. Próximos Passos
 
-1. Adicionar dependências de teste no `pom.xml`
-2. Implementar testes unitários dos Services
-3. Implementar testes de integração dos Controllers
-4. Configurar Jacoco para relatório de cobertura
+1. ✅ Adicionar dependências de teste no `pom.xml`
+2. ✅ Implementar testes unitários dos Services
+3. ✅ Implementar testes de integração dos Controllers
+4. ✅ Configurar Jacoco para relatório de cobertura
 5. Integrar testes no pipeline de CI/CD
+
+---
+
+## 9. Implementação Realizada (Janeiro/2026)
+
+### 9.1 Configuração de Dependências
+
+Foram adicionadas as seguintes dependências ao `pom.xml`:
+
+```xml
+<!-- Spring Security Test -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-test</artifactId>
+    <scope>test</scope>
+</dependency>
+
+<!-- Plugin Jacoco para cobertura de código -->
+<plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.11</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>prepare-agent</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+                <goal>report</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+### 9.2 Testes Unitários Implementados
+
+#### PetServiceTest
+**Localização:** `src/test/java/com/Mybuddy/Myb/Service/PetServiceTest.java`
+
+**Cenários cobertos (11 testes):**
+- ✅ Criar pet com dados válidos
+- ✅ Lançar exceção quando organização não existe
+- ✅ Lançar exceção quando organizacaoId é nulo
+- ✅ Atualizar pet existente com sucesso
+- ✅ Lançar exceção ao atualizar pet inexistente
+- ✅ Deletar pet disponível sem interesses
+- ✅ Lançar exceção ao deletar pet adotado
+- ✅ Lançar exceção ao deletar pet com interesses
+- ✅ Retornar true quando usuário é ADMIN
+- ✅ Retornar true quando ONG é dona do pet
+- ✅ Retornar false quando ONG não é dona do pet
+
+**Tecnologias utilizadas:** JUnit 5, Mockito, @ExtendWith(MockitoExtension.class)
+
+#### UsuarioServiceTest
+**Localização:** `src/test/java/com/Mybuddy/Myb/Service/UsuarioServiceTest.java`
+
+**Cenários cobertos (6 testes):**
+- ✅ Criar usuário com email único
+- ✅ Lançar exceção quando email já existe
+- ✅ Atualizar usuário existente
+- ✅ Lançar exceção ao atualizar usuário inexistente
+- ✅ Deletar usuário existente
+- ✅ Lançar exceção ao deletar usuário inexistente
+
+#### AuthServiceTest
+**Localização:** `src/test/java/com/Mybuddy/Myb/Service/AuthServiceTest.java`
+
+**Cenários cobertos (6 testes):**
+- ✅ Autenticar usuário com credenciais válidas
+- ✅ Gerar token JWT para autenticação
+- ✅ Registrar usuário com dados válidos
+- ✅ Lançar exceção quando email já existe
+- ✅ Criar ONG ao registrar usuário com role ONG
+- ✅ Lançar exceção quando CNPJ da ONG já existe
+
+#### InteresseAdocaoServiceTest
+**Localização:** `src/test/java/com/Mybuddy/Myb/Service/InteresseAdocaoServiceTest.java`
+
+**Cenários cobertos (6 testes):**
+- ✅ Registrar interesse válido com status PENDENTE
+- ✅ Lançar exceção quando pet já está adotado
+- ✅ Lançar exceção quando usuário já manifestou interesse
+- ✅ Aprovar interesse com sucesso
+- ✅ Rejeitar interesse com sucesso
+- ✅ Lançar exceção ao atualizar interesse inexistente
+
+### 9.3 Testes de Integração Implementados
+
+#### AuthControllerIT
+**Localização:** `src/test/java/com/Mybuddy/Myb/Controller/AuthControllerIT.java`
+
+**Endpoints testados (4 cenários):**
+- ✅ `POST /api/auth/cadastro` - Cadastro com sucesso (201 Created)
+- ✅ `POST /api/auth/cadastro` - Email duplicado (400 Bad Request)
+- ✅ `POST /api/auth/login` - Credenciais válidas (200 OK + JWT)
+- ✅ `POST /api/auth/login` - Senha incorreta (401 Unauthorized)
+
+**Anotações utilizadas:**
+- `@SpringBootTest(webEnvironment = RANDOM_PORT)`
+- `@AutoConfigureMockMvc`
+- `@Transactional`
+
+#### PetControllerIT
+**Localização:** `src/test/java/com/Mybuddy/Myb/Controller/PetControllerIT.java`
+
+**Endpoints testados (5 cenários):**
+- ✅ `POST /api/pets` - ONG cria pet (201 Created)
+- ✅ `GET /api/pets` - Listar pets com autenticação (200 OK)
+- ✅ `GET /api/pets/{id}` - Pet existe (200 OK)
+- ✅ `GET /api/pets/{id}` - Pet não existe (404 Not Found)
+- ✅ `DELETE /api/pets/{id}` - ADMIN deleta pet (204 No Content)
+
+**Características:**
+- Testes com autenticação JWT real
+- Múltiplos usuários com diferentes roles (ONG, ADMIN)
+- Banco de dados H2 em memória
+- Rollback automático via @Transactional
+
+#### InteresseAdocaoControllerIT
+**Localização:** `src/test/java/com/Mybuddy/Myb/Controller/InteresseAdocaoControllerIT.java`
+
+**Endpoints testados (4 cenários):**
+- ✅ `POST /api/interesses` - Registrar interesse (201 Created)
+- ✅ `PUT /api/interesses/{id}/status` - ONG aprova interesse (200 OK)
+- ✅ `GET /api/usuarios/me/interesses` - Listar meus interesses (200 OK)
+- ✅ `GET /api/ongs/me/interesses` - ONG lista interesses recebidos (200 OK)
+
+### 9.4 Estrutura Final de Testes
+
+```
+src/test/java/com/Mybuddy/Myb/
+├── Controller/                          # Testes de Integração
+│   ├── AuthControllerIT.java            (4 testes)
+│   ├── PetControllerIT.java             (5 testes)
+│   └── InteresseAdocaoControllerIT.java (4 testes)
+│
+├── Service/                             # Testes Unitários
+│   ├── PetServiceTest.java              (11 testes)
+│   ├── UsuarioServiceTest.java          (6 testes)
+│   ├── AuthServiceTest.java             (6 testes)
+│   └── InteresseAdocaoServiceTest.java  (6 testes)
+│
+└── DTO/
+    └── InteresseAdoacaoMapperTest.java  (existente)
+```
+
+**Total de testes implementados:** 42 testes novos
+
+### 9.5 Como Executar os Testes
+
+```bash
+# Executar todos os testes
+mvn test
+
+# Executar apenas testes unitários
+mvn test -Dtest="*Test"
+
+# Executar apenas testes de integração
+mvn test -Dtest="*IT"
+
+# Executar com relatório de cobertura (Jacoco)
+mvn test jacoco:report
+
+# Ver relatório de cobertura
+# Após executar, abrir: target/site/jacoco/index.html
+```
+
+### 9.6 Padrões e Boas Práticas Utilizadas
+
+1. **Nomenclatura:**
+   - Testes unitários: `*Test.java`
+   - Testes de integração: `*IT.java`
+   - Métodos: `metodo_Cenario_ResultadoEsperado()`
+
+2. **Estrutura AAA (Arrange-Act-Assert):**
+   - **Arrange:** Preparação dos dados e mocks
+   - **Act:** Execução do método testado
+   - **Assert:** Verificação dos resultados
+
+3. **Isolamento:**
+   - Testes unitários usam mocks (Mockito)
+   - Testes de integração usam banco H2 em memória
+   - @Transactional garante rollback automático
+
+4. **Anotações Descritivas:**
+   - `@DisplayName` para descrições legíveis
+   - Comentários explicativos quando necessário
+
+### 9.7 Próximos Passos Recomendados
+
+1. ✅ **Executar os testes em ambiente com internet** para validar todas as implementações
+2. Analisar relatório de cobertura Jacoco e ajustar metas se necessário
+3. Integrar testes no pipeline de CI/CD (GitHub Actions, Jenkins, etc.)
+4. Considerar adicionar testes de Repository se a cobertura ficar abaixo de 75%
+5. Implementar testes E2E (End-to-End) para fluxos críticos completos
