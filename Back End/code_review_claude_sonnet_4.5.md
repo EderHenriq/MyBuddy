@@ -282,7 +282,7 @@ Este code review analisa o backend da aplicação MyBuddy, uma plataforma RESTfu
 2. **Documentação JavaDoc**
    - Comentários claros nos métodos
 
-### 💝 InteresseAdoacaoController.java
+### 💝 InteresseAdocaoController.java
 
 #### ❌ Problemas Críticos
 
@@ -382,7 +382,7 @@ Este code review analisa o backend da aplicação MyBuddy, uma plataforma RESTfu
 3. **Logging Adequado**
    - Uso correto de Logger
 
-### 💝 InteresseAdoacaoService.java
+### 💝 InteresseAdocaoService.java
 
 #### ✅ Pontos Positivos
 
@@ -636,7 +636,7 @@ Este code review analisa o backend da aplicação MyBuddy, uma plataforma RESTfu
 ### ⚠️ Problemas Identificados
 
 1. **N+1 Queries**
-   - `InteresseAdoacaoService.listarInteressesPorOrganizacao()`
+   - `InteresseAdocaoService.listarInteressesPorOrganizacao()`
    - Solução: `@EntityGraph` ou queries com JOIN
 
 2. **Fetch Type**

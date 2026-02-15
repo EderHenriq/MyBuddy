@@ -1,9 +1,9 @@
 package com.Mybuddy.Myb.Service; // Declara o pacote onde esta classe de serviço está localizada.
 
-import com.Mybuddy.Myb.DTO.InteresseAdoacaoMapper; // Importa o mapper para converter entidades em DTOs de resposta.
+import com.Mybuddy.Myb.DTO.InteresseAdocaoMapper; // Importa o mapper para converter entidades em DTOs de resposta.
 import com.Mybuddy.Myb.DTO.InteresseResponse; // Importa o DTO de resposta para interesses de adoção.
-import com.Mybuddy.Myb.Model.*; // Importa todas as classes de modelo (entidades), incluindo InteresseAdoacao, Usuario, Pet, StatusInteresse, StatusAdocao.
-import com.Mybuddy.Myb.Repository.InteresseAdoacaoRepository; // Importa o repositório para a entidade InteresseAdoacao.
+import com.Mybuddy.Myb.Model.*; // Importa todas as classes de modelo (entidades), incluindo InteresseAdocao, Usuario, Pet, StatusInteresse, StatusAdocao.
+import com.Mybuddy.Myb.Repository.InteresseAdocaoRepository; // Importa o repositório para a entidade InteresseAdocao.
 import com.Mybuddy.Myb.Repository.PetRepository; // Importa o repositório para a entidade Pet.
 import com.Mybuddy.Myb.Repository.UsuarioRepository; // Importa o repositório para a entidade Usuario.
 import org.springframework.stereotype.Service; // Importa a anotação @Service do Spring.
@@ -16,15 +16,15 @@ import java.util.List; // Importa a interface List para lidar com coleções de 
 // Classes de serviço contêm a lógica de negócio principal da aplicação e atuam como intermediárias
 // entre os controladores e as camadas de persistência (repositórios).
 @Service
-public class InteresseAdoacaoService { // Declara a classe de serviço para Interesses de Adoção.
+public class InteresseAdocaoService { // Declara a classe de serviço para Interesses de Adoção.
 
     // Declara instâncias dos repositórios necessários. São marcados como 'final' para garantir que sejam inicializados uma vez.
-    private final InteresseAdoacaoRepository interesseRepo; // Repositório para operações com InteresseAdoacao.
+    private final InteresseAdocaoRepository interesseRepo; // Repositório para operações com InteresseAdocao.
     private final UsuarioRepository usuarioRepo; // Repositório para operações com Usuario.
     private final PetRepository petRepo; // Repositório para operações com Pet.
 
     // Construtor da classe. O Spring injeta automaticamente as dependências dos repositórios (Injeção por construtor).
-    public InteresseAdoacaoService(InteresseAdoacaoRepository interesseRepo,
+    public InteresseAdocaoService(InteresseAdocaoRepository interesseRepo,
                                    UsuarioRepository usuarioRepo,
                                    PetRepository petRepo) {
         this.interesseRepo = interesseRepo; // Inicializa o repositório de interesses.
@@ -59,8 +59,8 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
             throw new IllegalStateException("Você já manifestou interesse neste pet");
         }
 
-        // Cria uma nova instância de InteresseAdoacao após passar por todas as validações.
-        InteresseAdoacao interesse = new InteresseAdoacao();
+        // Cria uma nova instância de InteresseAdocao após passar por todas as validações.
+        InteresseAdocao interesse = new InteresseAdocao();
         interesse.setUsuario(usuario); // Associa o usuário encontrado ao interesse.
         interesse.setPet(pet); // Associa o pet encontrado ao interesse.
         interesse.setMensagem(mensagem); // Define a mensagem opcional do interesse.
@@ -70,7 +70,7 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
         // Salva o novo interesse de adoção no banco de dados através do repositório.
         var salvo = interesseRepo.save(interesse);
         // Converte a entidade salva para um DTO de resposta e o retorna ao controlador.
-        return InteresseAdoacaoMapper.toResponse(salvo);
+        return InteresseAdocaoMapper.toResponse(salvo);
     }
 
     // Anotação @Transactional indica que este método deve ser executado dentro de uma transação.
@@ -80,7 +80,7 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
     @Transactional
     public InteresseResponse atualizarStatus(Long interesseId, StatusInteresse novoStatus) {
         // Busca o interesse de adoção pelo ID. Se não encontrado, lança uma exceção IllegalArgumentException.
-        InteresseAdoacao interesse = interesseRepo.findById(interesseId)
+        InteresseAdocao interesse = interesseRepo.findById(interesseId)
                 .orElseThrow(() -> new IllegalArgumentException("Interesse não encontrado: " + interesseId));
 
         interesse.setStatus(novoStatus); // Atualiza o status do interesse com o novo status fornecido.
@@ -89,7 +89,7 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
         // Salva as alterações no interesse de adoção no banco de dados através do repositório.
         var salvo = interesseRepo.save(interesse);
         // Converte a entidade atualizada para um DTO de resposta e o retorna ao controlador.
-        return InteresseAdoacaoMapper.toResponse(salvo);
+        return InteresseAdocaoMapper.toResponse(salvo);
     }
 
     // Anotação @Transactional(readOnly = true) indica que este método é somente de leitura.
@@ -101,14 +101,14 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
         // Utiliza o método derivado do repositório que busca por usuarioId diretamente.
         return interesseRepo.findByUsuarioId(usuarioId)
                 .stream() // Converte a lista de entidades para um Stream para processamento funcional.
-                .map(InteresseAdoacaoMapper::toResponse) // Mapeia cada entidade InteresseAdoacao para um InteresseResponse DTO.
+                .map(InteresseAdocaoMapper::toResponse) // Mapeia cada entidade InteresseAdocao para um InteresseResponse DTO.
                 .toList(); // Coleta os DTOs em uma nova lista imutável e a retorna ao controlador.
     }
 
     @Transactional(readOnly = true)
     public List<InteresseResponse> listarTodos() {
         return interesseRepo.findAll().stream()
-                .map(InteresseAdoacaoMapper::toResponse)
+                .map(InteresseAdocaoMapper::toResponse)
                 .toList();
     }
 
@@ -120,7 +120,7 @@ public class InteresseAdoacaoService { // Declara a classe de serviço para Inte
         //  Para cada pet, encontrar seus interesses
         return petsDaOng.stream()
                 .flatMap(pet -> interesseRepo.findByPet(pet).stream()) // Combina todos os interesses de todos os pets
-                .map(InteresseAdoacaoMapper::toResponse)
+                .map(InteresseAdocaoMapper::toResponse)
                 .toList();
     }
 

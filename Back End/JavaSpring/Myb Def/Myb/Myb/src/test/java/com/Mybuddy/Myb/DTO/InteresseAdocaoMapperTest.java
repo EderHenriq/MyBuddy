@@ -1,6 +1,6 @@
 package com.Mybuddy.Myb.Dto;
 
-import com.Mybuddy.Myb.Model.InteresseAdoacao;
+import com.Mybuddy.Myb.Model.InteresseAdocao;
 import com.Mybuddy.Myb.Model.Pet;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Model.StatusInteresse;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class InteresseAdoacaoMapperTest {
+public class InteresseAdocaoMapperTest {
 
     @Test
     public void toResponse_mapsAllFieldsCorrectly() {
@@ -22,7 +22,7 @@ public class InteresseAdoacaoMapperTest {
         pet.setId(99L);
         pet.setNome("Rex");
 
-        InteresseAdoacao interesse = new InteresseAdoacao();
+        InteresseAdocao interesse = new InteresseAdocao();
         interesse.setId(7L);
         interesse.setUsuario(usuario);
         interesse.setPet(pet);
@@ -33,7 +33,7 @@ public class InteresseAdoacaoMapperTest {
         interesse.setAtualizadoEm(now.plusHours(1));
 
         // act
-        InteresseResponse resp = InteresseAdoacaoMapper.toResponse(interesse);
+        InteresseResponse resp = InteresseAdocaoMapper.toResponse(interesse);
 
         // assert
         assertNotNull(resp);

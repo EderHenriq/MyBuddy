@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     targetPage = 'servicos.html';
                     break;
                 case 'meus-interesses':
-                    targetPage = 'GestaoInteresseAdoacao.html';
+                    targetPage = 'GestaoInteresseAdocao.html';
                     break;
                 default:
                     console.warn('Navegação não configurada para:', pageLink);

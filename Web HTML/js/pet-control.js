@@ -846,7 +846,7 @@ if (goToInterestsPageBtn) {
         closeModal(successMessageModal);
         // Redireciona para a página de interesses de adoção
         // Assumindo que você terá uma página chamada 'meus-interesses.html'
-        window.location.href = 'GestaoInteresseAdoacao.html'; // Ajuste o nome do arquivo se for diferente
+        window.location.href = 'GestaoInteresseAdocao.html'; // Ajuste o nome do arquivo se for diferente
     });
 }
 
@@ -1081,7 +1081,7 @@ document.addEventListener("keydown", (e) => {
 if (goToInterestsPageBtn) {
     goToInterestsPageBtn.addEventListener("click", () => {
         closeModal(successMessageModal);
-        window.location.href = 'GestaoInteresseAdoacao.html'; 
+        window.location.href = 'GestaoInteresseAdocao.html'; 
     });
 }
 });

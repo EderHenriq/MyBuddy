@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     navigateTo('servicos.html');;
                     break;
                 case 'meus-interesses':
-                    navigateTo('GestaoInteresseAdoacao.html');
+                    navigateTo('GestaoInteresseAdocao.html');
                     break;
                 default:
                     console.warn('Navegação não configurada para:', pageLink);
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         alert('Página de Pets Perdidos & Achados em construção!');
                         break;
                     case 'meus-interesses':
-                        navigateTo('GestaoInteresseAdoacao.html');
+                        navigateTo('GestaoInteresseAdocao.html');
                         break;
                     case 'meus-pets':
                         navigateTo('pet-control.html');
