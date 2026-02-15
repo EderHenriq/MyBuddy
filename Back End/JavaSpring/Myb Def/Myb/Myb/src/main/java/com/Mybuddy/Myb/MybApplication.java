@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 public class MybApplication {
 
-	@Value("${file.upload-dir}") // Injeta o valor configurado no arquivo application.properties (por exemplo, file.upload-dir=uploads)
+	@Value("${file.upload-dir}")
 	private String uploadDir;
 
 	public static void main(String[] args) { // Método principal que inicia a aplicação Spring Boot
@@ -20,7 +20,7 @@ public class MybApplication {
 	}
 
 	
-	@Bean // Bean que configura o CORS (Cross-Origin Resource Sharing) e o acesso a arquivos estáticos
+	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 
@@ -28,7 +28,7 @@ public class MybApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 
                 // --- Configuração de CORS para rotas da API ---
-				// Permite que diferentes origens acessem a API (útil para comunicação entre frontend e backend)
+				// Permite que diferentes origens acessem a API
 				registry.addMapping("/api/**")
 						.allowedOrigins(
 								"null", // Permite chamadas vindas de arquivos locais (ex: file://)
@@ -44,7 +44,6 @@ public class MybApplication {
 						.allowCredentials(true);
 
 				// --- Configuração de CORS para acesso aos uploads ---
-				// Controla quem pode acessar os arquivos estáticos em /uploads/**
 				registry.addMapping("/uploads/**")
 						.allowedOrigins(
 								"null", // Permite acesso local (file://)
@@ -52,7 +51,7 @@ public class MybApplication {
 								"http://127.0.0.1:5500",
 								"http://localhost:8080"
 						)
-						// Apenas leitura (não permite POST ou DELETE diretamente aqui)
+						// Apenas leitura
 						.allowedMethods("GET", "HEAD")
 						.allowedHeaders("*")
 						// Como uploads são acessos públicos, geralmente não é necessário enviar credenciais
@@ -62,14 +61,13 @@ public class MybApplication {
 			// --- Configuração de mapeamento de arquivos estáticos (uploads) ---
 			@Override
 			public void addResourceHandlers(ResourceHandlerRegistry registry) {
-				// Mapeia qualquer URL que comece com /uploads/** para a pasta física configurada em uploadDir
 				registry.addResourceHandler("/uploads/**")
 						.addResourceLocations("file:" + uploadDir + "/");
 			}
 
             @Override
             public void addViewControllers(ViewControllerRegistry registry) {
-                registry.addViewController("/api/").setViewName("forward:/error"); // Ou apenas uma string vazia, mas "forward:/error" é mais comum
+                registry.addViewController("/api/").setViewName("forward:/error"); // Ou apenas uma string vazia
                 registry.addViewController("/api/**").setViewName("forward:/error"); // Pode ser necessário para pegar subcaminhos
             }
 		};

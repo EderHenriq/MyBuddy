@@ -97,29 +97,26 @@ public class InteresseAdocaoService { // Declara a classe de serviço para Inter
     // Método da BUDDY-91: Lista todos os interesses de adoção registrados por um usuário específico.
     @Transactional(readOnly = true)
     public List<InteresseResponse> listarPorUsuario(Long usuarioId) {
-        // Busca todos os interesses de adoção associados ao ID do usuário fornecido.
-        // Utiliza o método derivado do repositório que busca por usuarioId diretamente.
-        return interesseRepo.findByUsuarioId(usuarioId)
-                .stream() // Converte a lista de entidades para um Stream para processamento funcional.
-                .map(InteresseAdocaoMapper::toResponse) // Mapeia cada entidade InteresseAdocao para um InteresseResponse DTO.
-                .toList(); // Coleta os DTOs em uma nova lista imutável e a retorna ao controlador.
+        // Query com JOIN FETCH para evitar N+1 ao acessar Usuario e Pet no Mapper
+        return interesseRepo.findByUsuarioIdWithFetch(usuarioId)
+                .stream()
+                .map(InteresseAdocaoMapper::toResponse)
+                .toList();
     }
 
     @Transactional(readOnly = true)
     public List<InteresseResponse> listarTodos() {
-        return interesseRepo.findAll().stream()
+        // Query com JOIN FETCH para evitar N+1 ao acessar Usuario e Pet no Mapper
+        return interesseRepo.findAllWithFetch().stream()
                 .map(InteresseAdocaoMapper::toResponse)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<InteresseResponse> listarInteressesPorOrganizacao(Long organizacaoId) {
-        //  Encontrar todos os pets desta organização
-        List<Pet> petsDaOng = petRepo.findByOrganizacaoId(organizacaoId);
-
-        //  Para cada pet, encontrar seus interesses
-        return petsDaOng.stream()
-                .flatMap(pet -> interesseRepo.findByPet(pet).stream()) // Combina todos os interesses de todos os pets
+        // Query única com JOIN FETCH - evita N+1
+        return interesseRepo.findByPetOrganizacaoIdWithFetch(organizacaoId)
+                .stream()
                 .map(InteresseAdocaoMapper::toResponse)
                 .toList();
     }
