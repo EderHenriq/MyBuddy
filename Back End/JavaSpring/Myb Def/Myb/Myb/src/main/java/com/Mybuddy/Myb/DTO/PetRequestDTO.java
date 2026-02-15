@@ -1,5 +1,7 @@
 package com.Mybuddy.Myb.DTO;
 
+import com.Mybuddy.Myb.Model.Especie;
+import com.Mybuddy.Myb.Model.Porte;
 import com.Mybuddy.Myb.Model.StatusAdocao;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,9 +16,8 @@ public class PetRequestDTO {
     @Size(max = 80, message = "O nome deve ter no máximo 80 caracteres.")
     private String nome;
 
-    @NotBlank(message = "A espécie do pet é obrigatória.")
-    @Size(max = 40, message = "A espécie deve ter no máximo 40 caracteres.")
-    private String especie;
+    @NotNull(message = "A espécie do pet é obrigatória.")
+    private Especie especie;
 
     @NotBlank(message = "A raça do pet é obrigatória.")
     @Size(max = 60, message = "A raça deve ter no máximo 60 caracteres.")
@@ -30,9 +31,8 @@ public class PetRequestDTO {
     @Size(max = 30, message = "A cor deve ter no máximo 30 caracteres.")
     private String cor;
 
-    @NotBlank(message = "O porte do pet é obrigatório.")
-    @Size(max = 20, message = "O porte deve ter no máximo 20 caracteres.")
-    private String porte; // Pequeno, Médio, Grande
+    @NotNull(message = "O porte do pet é obrigatório.")
+    private Porte porte;
 
     @NotBlank(message = "O sexo do pet é obrigatório.")
     @Size(max = 10, message = "O sexo deve ter no máximo 10 caracteres.")
@@ -71,8 +71,8 @@ public class PetRequestDTO {
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
 
-    public String getEspecie() { return especie; }
-    public void setEspecie(String especie) { this.especie = especie; }
+    public Especie getEspecie() { return especie; }
+    public void setEspecie(Especie especie) { this.especie = especie; }
 
     public String getRaca() { return raca; }
     public void setRaca(String raca) { this.raca = raca; }
@@ -83,8 +83,8 @@ public class PetRequestDTO {
     public String getCor() { return cor; }
     public void setCor(String cor) { this.cor = cor; }
 
-    public String getPorte() { return porte; }
-    public void setPorte(String porte) { this.porte = porte; }
+    public Porte getPorte() { return porte; }
+    public void setPorte(Porte porte) { this.porte = porte; }
 
     public String getSexo() { return sexo; }
     public void setSexo(String sexo) { this.sexo = sexo; }
