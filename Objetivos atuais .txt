@@ -1,0 +1,172 @@
+1. Aplicativo móvel
+   - Flutter (aulas na facul sobre a linguagem)
+   - Vários destinos com uma única base de código       (Android, iOS, web, Windows, macOS e Linux)
+   - O Flutter compila o código para código de máquina nativo    - Design adaptativo e responsivo
+   
+￼
+2. Migração da tecnologia de HTML para Angular
+
+3. Implementação de marketplace para pet shops     (integração de pagamentos)
+
+  Entidades novas:
+
+* PetShop (cadastro, aprovação, CNPJ, endereço)
+* Produto (categorias, estoque, variações, fotos)
+* Carrinho (sessão, persistência)
+* Pedido (workflow: pendente → pago → separado → enviado → entregue)
+* Pagamento (múltiplos métodos, split)
+* Frete (integração Correios/Melhor Envio?)
+* Cupom de desconto (opcional mas esperado)
+
+
+ Regras de negócio:
+* Controle de estoque
+* Cálculo de frete
+* Comissão da plataforma
+* Repasse para pet shop
+* Cancelamento/estorno
+
+ Frontend:
+* Catálogo com filtros avançados
+* Página de produto
+* Carrinho responsivo
+* Checkout multi-step
+* Painel admin pet shop
+* Gestão de pedidos
+
+
+
+4. Espaço dedicado à doação monetária para animais de     estimação
+
+5. Finalização das telas de perfil e exibição de informações
+    pessoais
+
+6. Otimização de código
+
+7. Testes controlados
+
+8. Unificação da linguagem de design
+
+9. Implementação de infraestrutura (Docker)
+
+10. Implementação do Keycloak
+
+11. Página institucional (Quem somos, etc.)
+
+12. API Mercado Pago - implementação completa
+
+Fluxo:      1. Cliente compra produto de Pet Shop A      2. Pagamento vai para conta da plataforma (MyBuddy)      3. Mercado Pago divide automaticamente:          X% pra Pet Shop A - Y% comissão pra MyBuddy      4. Cada um recebe na sua conta
+    Precisa de aplicação Mercado Pago aprovada      (processo de homologação)
+
+
+13. Consultas ao banco de dados devem ser inferiores a 5       segundos
+
+Epics:
+
+- Ponto de Partida:
+    - Otimização de código (lombock)
+    - Implementação do Keycloak
+    - Migração da stack frontal para Angular
+        - Unificação da linguagem de design
+    - Implementação do Docker
+    - Revisão de código e regras de negócio
+
+
+- Meio da Jornada:
+
+    - API Mercado Pago - implementação completa
+    - Finalização de todas as telas com a nova stack
+    - Testes controlados - backend e frontend
+    - Espaço dedicado à doação monetária para animais de
+       estimação
+    - Aplicativo móvel
+    - Revisão de código e regras de negócio
+
+- Fim da Jornada:
+
+    - Revisão de código e regras de negócio
+    - Implementação do marketplace para pet shops (integração de pagamentos)
+    - Consultas ao banco de dados devem ser inferiores a 5 segundos
+    - API Mercado Pago - entrega com suporte para o marketplace por trás da aplicação   - KEYCLOAK
+
+  - GERENCIAMENTO DE USUÁRIOS
+  - NAO PRECISAMOS SE PREOCUPAR COM BANCO DE DADOS
+  - KUBERNETS, OPENJDK, DOCKER (A MAIS FACIL)
+  - DEFINIR A SENHA EM AMBIENTE DE PRODUÇÃO
+    UMA SENHA FORTE
+
+ - GERENCIAMENTO
+
+ - REALMS / DIVISÕES DO KEYCLOAK
+   - PODENDO GERENCIAR USUÁRIOS
+   - CLIENTS (ROLES DO REALMS)
+   - REALMS ROLE (DEFINIMOS OS ROLES PRINCIPAIS)
+   - USERS CONFIGURAÇÃO DE DETAIS, ROLES, CRÉDENTION
+   - REALM SETTING (OPEN ID ENDPOINT)
+   - {REALMS}
+   - X-WWW-FORM-URLENCODED [GERAR TOKEN TESTANDO]
+     [ENPOINT]
+
+EPIC 1: Ponto de Partida (200h totais)
+
+Tarefa	Horas	Justificativa de Tempo
+Otimização código + Lombok	20h	Refatorar 185 commits, aplicar Lombok em todas entities/DTOs, code review
+Keycloak - Setup	16h	Instalação, configuração Docker, setup realms, clients, roles
+Keycloak - Integração Backend	24h	Migrar Spring Security, adaptar filtros JWT, testes de autenticação
+Keycloak - Integração Frontend	16h	Configurar OpenID Connect, login flows, refresh token
+Angular - Setup Projeto	12h	CLI, estrutura modules, routing, guards, interceptors
+Angular - Componentes Base	20h	Header, Footer, Card, Modal, Form components
+Angular - Design System	24h	Definir tokens, criar biblioteca shared, documentar
+Docker - Compose Completo	16h	Dockerfiles (backend, frontend, keycloak), docker-compose, documentação
+Code Review + Documentação	24h	ADRs, atualizar README, CONTRIBUTING.md, commits bem escritos
+Testes Backend - Inicial	28h	Setup JUnit/Mockito, testes Service layer, 30% cobertura
+TOTAL EPIC 1	200h	~5 semanas de trabalho distribuído
+
+EPIC 2: Meio da Jornada (340h totais)
+
+Tarefa	Horas	Justificativa de Tempo
+Angular - Migração Telas Completa	80h	Landing, Login, Cadastro, Feed, Detalhes Pet, Perfil, Dashboard ONG, Busca Avançada
+Angular - Integração API	24h	Services, HTTP interceptors, error handling, loading states
+Mercado Pago - Estudos	12h	Ler documentação, sandbox, entender fluxos
+Mercado Pago - Backend	32h	SDK, entidade Doacao, endpoints, webhooks, testes
+Mercado Pago - Frontend	24h	Checkout Pro, modal doação, confirmação, histórico
+Espaço Doação	20h	Página institucional, relatórios transparência, dashboard ONG
+Flutter - Setup + Estudos	20h	Instalação, tutorial oficial, arquitetura (Provider/Riverpod)
+Flutter - Telas Principais	60h	Login, Cadastro, Feed, Detalhes, Perfil, Filtros
+Flutter - Integração API	24h	Dio/HTTP, auth token, refresh, error handling
+Flutter - Features Nativas	16h	Camera, galeria, upload imagens, permissions
+Testes - Backend Avançado	20h	Integration tests, aumentar pra 60% cobertura
+Testes - Frontend E2E	8h	Cypress básico, fluxos críticos
+TOTAL EPIC 2	340h	~8-9 semanas de trabalho distribuído
+
+EPIC 3: Fim da Jornada (260h totais)
+Tarefa	Horas	Justificativa de Tempo
+Marketplace - Planejamento	8h	Modelagem entidades, fluxos, wireframes
+Marketplace - Backend Entities	24h	PetShop, Produto, Pedido, Carrinho, migrations
+Marketplace - Backend CRUD	32h	Controllers, Services, Repositories, validações
+Marketplace - Backend Regras	24h	Controle estoque, cálculo total, status pedido
+Marketplace - Frontend Web	48h	Catálogo, Produto, Carrinho, Checkout, Painel PetShop
+Marketplace - Frontend Mobile	32h	Mesmas telas adaptadas pra Flutter
+Mercado Pago Split	32h	Estudar API, implementar, homologação, testes
+Performance DB	16h	Índices, EXPLAIN queries, otimizar N+1, cache
+Testes - Cobertura Final	16h	Atingir 70% backend, 50% frontend
+Documentação Final	12h	Swagger, manual deploy, arquitetura, vídeo demo
+Code Review Final	8h	Passar por tudo, refatorar débitos técnicos
+Buffer Imprevistos	8h	Bugs de última hora, ajustes apresentação
+TOTAL EPIC 3	260h	~6-7 semanas de trabalho distribuído
+
+Distribuição realista em 6 meses: 
+* Mês 1: 120h (setup, fundação) 
+* Mês 2: 140h (Angular + Keycloak) 
+* Mês 3: 140h (Mercado Pago + testes) 
+* Mês 4: 160h (Flutter completo) 
+* Mês 5: 140h (Marketplace) 
+* Mês 6: 100h (polimento + apresentação)
+
+Ferramenta de tracking: 
+* Toggl Track (free, simples) 
+* Clockify (free, relatórios bonitos)
+
+
+
+

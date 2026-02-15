@@ -102,7 +102,7 @@ Animais disponíveis para adoção.
 *   Booleanos: `microchipado`, `vacinado`, `castrado`.
 *   Localização: `cidade`, `estado`.
 
-### `InteresseAdoacao` (Tabela: `Interesses_adoacao`)
+### `InteresseAdocao` (Tabela: `Interesses_adoacao`)
 Registro de interesse de um usuário por um pet.
 *   `id`: Long (PK)
 *   `usuario`: Quem tem interesse (FK).

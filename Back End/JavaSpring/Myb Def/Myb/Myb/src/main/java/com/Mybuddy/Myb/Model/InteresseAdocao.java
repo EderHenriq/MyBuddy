@@ -9,7 +9,7 @@ import java.time.LocalDateTime; // Importa a classe LocalDateTime para lidar com
 @Table(name = "Interesses_adoacao") // Anotação JPA que especifica o nome da tabela no banco de dados para esta entidade.
 @Entity
 // Anotação JPA que marca esta classe como uma entidade, ou seja, uma classe que será mapeada para uma tabela no banco de dados.
-public class InteresseAdoacao { // Declara a classe que representa um interesse de adoção.
+public class InteresseAdocao { // Declara a classe que representa um interesse de adoção.
 
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Anotação JPA que configura a estratégia de geração de valor para a chave primária. IDENTITY usa a auto-incremento do banco de dados.
     @Id // Anotação JPA que marca este campo como a chave primária da entidade.
@@ -17,14 +17,14 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false) // Anotação JPA que define um relacionamento Muitos-para-Um.
     // fetch = FetchType.LAZY: O objeto relacionado (Usuário) será carregado do banco de dados apenas quando for acessado.
-    // optional = false: Indica que um InteresseAdoacao sempre deve estar associado a um Usuário.
+    // optional = false: Indica que um InteresseAdocao sempre deve estar associado a um Usuário.
     @JoinColumn(name = "usuario_id", nullable = false) // Anotação JPA que especifica a coluna da chave estrangeira na tabela "Interesses_adoacao" que referencia a tabela "Usuario".
     // nullable = false: Indica que esta coluna não pode ser nula.
     private Usuario usuario; // Campo que representa o usuário que manifestou o interesse.
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false) // Anotação JPA que define outro relacionamento Muitos-para-Um (com Pet).
     // fetch = FetchType.LAZY: O objeto relacionado (Pet) será carregado apenas quando acessado.
-    // optional = false: Indica que um InteresseAdoacao sempre deve estar associado a um Pet.
+    // optional = false: Indica que um InteresseAdocao sempre deve estar associado a um Pet.
     @JoinColumn(name = "pet_id", nullable = false) // Anotação JPA que especifica a coluna da chave estrangeira que referencia a tabela "Pet".
     // nullable = false: Indica que esta coluna não pode ser nula.
     private Pet pet; // Campo que representa o pet para o qual o interesse foi manifestado.
@@ -48,7 +48,7 @@ public class InteresseAdoacao { // Declara a classe que representa um interesse 
     @Column(name = "Atualizado_em") // Anotação JPA para a coluna no banco.
     private LocalDateTime AtualizadoEm; // Campo para armazenar a data e hora da última atualização do interesse.
 
-    public InteresseAdoacao() {} 
+    public InteresseAdocao() {} 
 
 
     public Long getId() { 

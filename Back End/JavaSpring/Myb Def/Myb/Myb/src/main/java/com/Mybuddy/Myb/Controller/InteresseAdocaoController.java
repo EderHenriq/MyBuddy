@@ -4,7 +4,7 @@ import com.Mybuddy.Myb.DTO.AtualizarStatusRequest;
 import com.Mybuddy.Myb.DTO.InteresseResponse;
 import com.Mybuddy.Myb.DTO.RegistrarInteresseRequest;
 import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
-import com.Mybuddy.Myb.Service.InteresseAdoacaoService;
+import com.Mybuddy.Myb.Service.InteresseAdocaoService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +19,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class InteresseAdoacaoController {
+public class InteresseAdocaoController {
 
-    private static final Logger logger = LoggerFactory.getLogger(InteresseAdoacaoController.class);
+    private static final Logger logger = LoggerFactory.getLogger(InteresseAdocaoController.class);
 
-    private final InteresseAdoacaoService service;
+    private final InteresseAdocaoService service;
 
-    public InteresseAdoacaoController(InteresseAdoacaoService service) {
+    public InteresseAdocaoController(InteresseAdocaoService service) {
         this.service = service;
     }
 

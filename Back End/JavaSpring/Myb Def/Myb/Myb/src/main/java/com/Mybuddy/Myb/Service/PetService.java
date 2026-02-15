@@ -7,7 +7,7 @@ import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Model.Pet;
 import com.Mybuddy.Myb.Model.StatusAdocao;
 import com.Mybuddy.Myb.Repository.FotoPetRepository;
-import com.Mybuddy.Myb.Repository.InteresseAdoacaoRepository;
+import com.Mybuddy.Myb.Repository.InteresseAdocaoRepository;
 import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
 import com.Mybuddy.Myb.Repository.PetRepository;
 import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
@@ -33,11 +33,11 @@ public class PetService {
     private static final Logger log = LoggerFactory.getLogger(PetService.class);
 
     private final PetRepository petRepository;
-    private final InteresseAdoacaoRepository interesseRepo;
+    private final InteresseAdocaoRepository interesseRepo;
     private final OrganizacaoRepository organizacaoRepository;
     private final FotoPetRepository fotoPetRepository;
 
-    public PetService(PetRepository petRepository, InteresseAdoacaoRepository interesseRepo,
+    public PetService(PetRepository petRepository, InteresseAdocaoRepository interesseRepo,
                       OrganizacaoRepository organizacaoRepository, FotoPetRepository fotoPetRepository) {
         this.petRepository = petRepository;
         this.interesseRepo = interesseRepo;

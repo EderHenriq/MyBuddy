@@ -2,7 +2,7 @@ package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.DTO.InteresseResponse;
 import com.Mybuddy.Myb.Model.*;
-import com.Mybuddy.Myb.Repository.InteresseAdoacaoRepository;
+import com.Mybuddy.Myb.Repository.InteresseAdocaoRepository;
 import com.Mybuddy.Myb.Repository.PetRepository;
 import com.Mybuddy.Myb.Repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,11 +20,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Testes Unitários - InteresseAdoacaoService")
-class InteresseAdoacaoServiceTest {
+@DisplayName("Testes Unitários - InteresseAdocaoService")
+class InteresseAdocaoServiceTest {
 
     @Mock
-    private InteresseAdoacaoRepository interesseRepo;
+    private InteresseAdocaoRepository interesseRepo;
 
     @Mock
     private UsuarioRepository usuarioRepo;
@@ -33,11 +33,11 @@ class InteresseAdoacaoServiceTest {
     private PetRepository petRepo;
 
     @InjectMocks
-    private InteresseAdoacaoService interesseAdocaoService;
+    private InteresseAdocaoService interesseAdocaoService;
 
     private Usuario usuario;
     private Pet pet;
-    private InteresseAdoacao interesse;
+    private InteresseAdocao interesse;
 
     @BeforeEach
     void setUp() {
@@ -51,7 +51,7 @@ class InteresseAdoacaoServiceTest {
         pet.setNome("Rex");
         pet.setStatusAdocao(StatusAdocao.DISPONIVEL);
 
-        interesse = new InteresseAdoacao();
+        interesse = new InteresseAdocao();
         interesse.setId(1L);
         interesse.setUsuario(usuario);
         interesse.setPet(pet);
@@ -66,7 +66,7 @@ class InteresseAdoacaoServiceTest {
         when(usuarioRepo.findById(1L)).thenReturn(Optional.of(usuario));
         when(petRepo.findById(1L)).thenReturn(Optional.of(pet));
         when(interesseRepo.existsByUsuarioAndPet(usuario, pet)).thenReturn(false);
-        when(interesseRepo.save(any(InteresseAdoacao.class))).thenReturn(interesse);
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
 
         // Act
         InteresseResponse response = interesseAdocaoService.manifestarInteresse(1L, 1L, "Gostaria de adotar");
@@ -76,7 +76,7 @@ class InteresseAdoacaoServiceTest {
         assertEquals(StatusInteresse.PENDENTE, response.status());
         verify(usuarioRepo).findById(1L);
         verify(petRepo).findById(1L);
-        verify(interesseRepo).save(any(InteresseAdoacao.class));
+        verify(interesseRepo).save(any(InteresseAdocao.class));
     }
 
     @Test
@@ -92,7 +92,7 @@ class InteresseAdoacaoServiceTest {
                 () -> interesseAdocaoService.manifestarInteresse(1L, 1L, "Mensagem"));
 
         assertTrue(exception.getMessage().contains("não está disponível"));
-        verify(interesseRepo, never()).save(any(InteresseAdoacao.class));
+        verify(interesseRepo, never()).save(any(InteresseAdocao.class));
     }
 
     @Test
@@ -108,7 +108,7 @@ class InteresseAdoacaoServiceTest {
                 () -> interesseAdocaoService.manifestarInteresse(1L, 1L, "Mensagem"));
 
         assertTrue(exception.getMessage().contains("já manifestou interesse"));
-        verify(interesseRepo, never()).save(any(InteresseAdoacao.class));
+        verify(interesseRepo, never()).save(any(InteresseAdocao.class));
     }
 
     @Test
@@ -116,8 +116,8 @@ class InteresseAdoacaoServiceTest {
     void atualizarStatus_AprovarInteresse_AtualizaParaAprovado() {
         // Arrange
         when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
-        when(interesseRepo.save(any(InteresseAdoacao.class))).thenAnswer(invocation -> {
-            InteresseAdoacao i = invocation.getArgument(0);
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenAnswer(invocation -> {
+            InteresseAdocao i = invocation.getArgument(0);
             i.setStatus(StatusInteresse.APROVADO);
             return i;
         });
@@ -129,7 +129,7 @@ class InteresseAdoacaoServiceTest {
         assertNotNull(response);
         assertEquals(StatusInteresse.APROVADO, response.status());
         verify(interesseRepo).findById(1L);
-        verify(interesseRepo).save(any(InteresseAdoacao.class));
+        verify(interesseRepo).save(any(InteresseAdocao.class));
     }
 
     @Test
@@ -137,8 +137,8 @@ class InteresseAdoacaoServiceTest {
     void atualizarStatus_RejeitarInteresse_AtualizaParaRejeitado() {
         // Arrange
         when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
-        when(interesseRepo.save(any(InteresseAdoacao.class))).thenAnswer(invocation -> {
-            InteresseAdoacao i = invocation.getArgument(0);
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenAnswer(invocation -> {
+            InteresseAdocao i = invocation.getArgument(0);
             i.setStatus(StatusInteresse.REJEITADO);
             return i;
         });
@@ -150,7 +150,7 @@ class InteresseAdoacaoServiceTest {
         assertNotNull(response);
         assertEquals(StatusInteresse.REJEITADO, response.status());
         verify(interesseRepo).findById(1L);
-        verify(interesseRepo).save(any(InteresseAdoacao.class));
+        verify(interesseRepo).save(any(InteresseAdocao.class));
     }
 
     @Test
@@ -165,6 +165,6 @@ class InteresseAdoacaoServiceTest {
 
         assertTrue(exception.getMessage().contains("não encontrado"));
         verify(interesseRepo).findById(1L);
-        verify(interesseRepo, never()).save(any(InteresseAdoacao.class));
+        verify(interesseRepo, never()).save(any(InteresseAdocao.class));
     }
 }
