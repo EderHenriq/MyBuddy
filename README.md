@@ -94,7 +94,7 @@ MyBuddy/
 | Davi Cassoli Lira | 24042075-2 |
 | Daniel Godinho | 24383624-2 |
 
-> Projeto de TCC — UniCesumar, Maringá-PR, 2025.
+> Projeto de Software — UniCesumar, Maringá-PR, 2025.
 
 ---
 
