@@ -4,7 +4,7 @@
 
 ### O HUB completo do ecossistema pet local
 
-MyBuddy é uma plataforma web que centraliza **adoção, serviços, eventos e marketplace pet** em um único lugar — conectando adotantes, ONGs, protetores, pet shops e clínicas veterinárias.
+MyBuddy é uma plataforma web que centraliza **adoção, serviços, eventos e marketplace pet** em um único lugar - conectando adotantes, ONGs, protetores, pet shops e clínicas veterinárias.
 
 <img src="https://ww2.kqed.org/pop/wp-content/uploads/sites/12/2016/11/unusual-animal-friendships-cute-gifs-8__605.gif" alt="gifpet" width="300" />
 
