@@ -1,0 +1,71 @@
+# ========================
+# macOS
+# ========================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ========================
+# IntelliJ IDEA / IDEs
+# ========================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.vscode/
+*.class
+
+# ========================
+# Maven / Build
+# ========================
+target/
+*.jar
+*.war
+*.ear
+*.log
+
+# ========================
+# Spring Boot
+# ========================
+application-local.properties
+application-local.yml
+*.env
+.env
+
+# ========================
+# Banco de dados local
+# ========================
+*.h2.db
+*.mv.db
+*.trace.db
+
+# ========================
+# Node / Frontend Angular
+# ========================
+node_modules/
+dist/
+.angular/
+.cache/
+package-lock.json
+
+# ========================
+# Flutter / Mobile
+# ========================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+*.g.dart
+
+# ========================
+# Arquivos temporários / OS
+# ========================
+Thumbs.db
+*.tmp
+*.bak
+*.swp
+~$*
