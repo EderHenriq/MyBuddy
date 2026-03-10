@@ -75,12 +75,12 @@ ONGs e protetores **lutam por visibilidade** em redes sociais desordenadas. Adot
 
 ```
 MyBuddy/
-├── Back End/              # Java 21 + Spring Boot 3 + Keycloak + Maven
-├── Web HTML/              # Frontend legado HTML/CSS/JS
-├── new Frontend - Angular/# Migração para Angular (em andamento)
-├── Banco de dados/        # Scripts SQL e migrations
-├── Documentação/          # Documentação acadêmica e técnica
-└── new Documentação/      # Documentação atualizada e roadmap
+├── Back End/                 # Java 21 + Spring Boot 3 + Keycloak + Maven
+├── Web HTML/                 # Frontend legado HTML/CSS/JS
+├── new Frontend - Angular/   # Migração para Angular (em andamento)
+├── Banco de dados/           # Scripts SQL e migrations
+├── Documentação/             # Documentação acadêmica e técnica
+└── new Documentação/         # Documentação atualizada e roadmap
 ```
 
 ---
@@ -94,7 +94,7 @@ MyBuddy/
 | Davi Cassoli Lira | 24042075-2 |
 | Daniel Godinho | 24383624-2 |
 
-> Projeto de Software — UniCesumar, Maringá-PR, 2025.
+> Projeto de Software — UniCesumar, Maringá-PR, 2026.
 
 ---
 
