@@ -66,6 +66,7 @@ ONGs e protetores **lutam por visibilidade** em redes sociais desordenadas. Adot
 
 </div>
 
+
 > **MongoDB** é o banco principal da plataforma (adoção, usuários, eventos, serviços).
 > **PostgreSQL** é utilizado especificamente no módulo Marketplace, dado o modelo relacional de produtos, pedidos e transações financeiras.
 
