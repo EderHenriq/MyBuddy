@@ -12,13 +12,13 @@ MyBuddy é uma plataforma web que centraliza **adoção, serviços, eventos e ma
 
 ---
 
-## 🎯 O Problema que Resolvemos
+##  O Problema que Resolvemos
 
 ONGs e protetores **lutam por visibilidade** em redes sociais desordenadas. Adotantes se perdem em **buscas ineficientes**. Tutores não encontram **serviços locais confiáveis**. O MyBuddy conecta todas essas pontas em um único ecossistema.
 
 ---
 
-## ✨ Funcionalidades
+##  Funcionalidades
 
 | Módulo | Descrição |
 |---|---|
@@ -31,7 +31,7 @@ ONGs e protetores **lutam por visibilidade** em redes sociais desordenadas. Adot
 
 ---
 
-## 🛠️ Stack Tecnológica
+##  Stack Tecnológica
 
 <div align="center">
 
@@ -71,7 +71,7 @@ ONGs e protetores **lutam por visibilidade** em redes sociais desordenadas. Adot
 
 ---
 
-## 🏗️ Estrutura do Repositório
+##  Estrutura do Repositório
 
 ```
 MyBuddy/
