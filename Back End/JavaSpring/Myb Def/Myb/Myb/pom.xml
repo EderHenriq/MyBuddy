@@ -59,6 +59,12 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Keycloak / OAuth2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
         <!-- Banco de dados -->
         <dependency>
             <groupId>com.h2database</groupId>
