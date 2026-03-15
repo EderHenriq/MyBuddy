@@ -1,4 +1,4 @@
-package com.Mybuddy.Myb;
+package Mybuddy.Myb;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
