@@ -63,7 +63,7 @@ public class Pet {
 
     @Column(nullable = false)
     private boolean castrado;     // true/false
-
+// teste
     // Campo 'temperamento' removido conforme sua solicitação
 
     @Column(length = 100, nullable = true)
