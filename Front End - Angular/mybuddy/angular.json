@@ -3,7 +3,8 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "analytics": "69878d02-87ba-4d6e-9d4f-b6b86789841c"
+    "analytics": "69878d02-87ba-4d6e-9d4f-b6b86789841c",
+    "schematicCollections": ["angular-eslint"]
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -30,9 +31,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
@@ -41,9 +40,7 @@
             "ssr": {
               "entry": "src/server.ts"
             },
-            "polyfills": [
-              "zone.js"
-            ]
+            "polyfills": ["zone.js"]
           },
           "configurations": {
             "production": {
@@ -83,6 +80,12 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
         }
       }
     }

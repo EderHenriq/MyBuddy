@@ -7,7 +7,7 @@ import { TooltipModule } from 'primeng/tooltip';
   standalone: true,
   imports: [ButtonModule, TooltipModule],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
   protected readonly title = signal('mybuddy');
