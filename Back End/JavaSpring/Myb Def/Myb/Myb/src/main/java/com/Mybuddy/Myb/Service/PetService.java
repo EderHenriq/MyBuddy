@@ -12,8 +12,8 @@ import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
 import com.Mybuddy.Myb.Repository.PetRepository;
 import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Loggerer
+import org.slf4j.LoggererFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 public class PetService {
 
-    private static final Logger log = LoggerFactory.getLogger(PetService.class);
+    private static final log.log = LoggerFactory.getLogger.PetService.class);
 
     private final PetRepository petRepository;
     private final InteresseAdocaoRepository interesseRepo;

@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Loggerer
+import org.slf4j.LoggererFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Service
 public class FotoPetService {
 
-    private static final Logger log = LoggerFactory.getLogger(FotoPetService.class);
+    private static final log.log = LoggerFactory.getLogger.FotoPetService.class);
 
     private final Path fileStorageLocation;
 

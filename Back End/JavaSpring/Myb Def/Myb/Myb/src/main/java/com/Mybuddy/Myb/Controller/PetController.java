@@ -26,7 +26,7 @@ import java.util.List;
 @RequestMapping("/api/pets")
 public class PetController {
 
-    private static final Logger log = LoggerFactory.getLogger(PetController.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrganizacaoController.class);
 
     private final PetService petService;
     private final FotoPetService fotoPetService;
@@ -45,7 +45,7 @@ public class PetController {
     @PostMapping
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
     public ResponseEntity<PetResponse> criar(@Valid @RequestBody PetRequestDTO petRequestDTO) {
-        log.info("Requisição para criar pet recebida: {}", petRequestDTO.getNome());
+        logger.info("Requisição para criar pet recebida: {}", petRequestDTO.getNome());
         PetResponse criadoResponse = petService.criarPet(petRequestDTO);
         return ResponseEntity.created(URI.create("/api/pets/" + criadoResponse.id())).body(criadoResponse);
     }
@@ -61,7 +61,7 @@ public class PetController {
     @PostMapping("/upload-image")
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
-        log.info("Recebida requisição de upload de imagem: {}", file.getOriginalFilename());
+        logger.info("Recebida requisição de upload de imagem: {}", file.getOriginalFilename());
         if (file.isEmpty()) {
             return new ResponseEntity<>("Por favor selecione um arquivo para upload.", HttpStatus.BAD_REQUEST);
         }
@@ -70,7 +70,7 @@ public class PetController {
             String fileName = fotoPetService.storeFile(file);
             return new ResponseEntity<>(fileName, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Falha ao fazer upload da imagem: {}", e.getMessage(), e);
+            logger.error("Falha ao fazer upload da imagem: {}", e.getMessage(), e);
             return new ResponseEntity<>("Falha ao fazer upload da imagem: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -84,7 +84,7 @@ public class PetController {
     @PostMapping("/upload-images")
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
     public ResponseEntity<?> uploadImages(@RequestParam("files") List<MultipartFile> files) {
-        log.info("Recebida requisição de upload múltiplo: {} arquivos", files.size());
+        logger.info("Recebida requisição de upload múltiplo: {} arquivos", files.size());
 
         if (files.isEmpty()) {
             return ResponseEntity.badRequest().body("Por favor selecione pelo menos um arquivo para upload.");
@@ -103,10 +103,10 @@ public class PetController {
 
         try {
             List<String> fileNames = fotoPetService.storeFiles(files);
-            log.info("Upload múltiplo concluído com sucesso: {}", fileNames);
+            logger.info("Upload múltiplo concluído com sucesso: {}", fileNames);
             return ResponseEntity.ok(fileNames);
         } catch (Exception e) {
-            log.error("Falha ao fazer upload das imagens: {}", e.getMessage(), e);
+            logger.error("Falha ao fazer upload das imagens: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Falha ao fazer upload das imagens: " + e.getMessage());
         }
@@ -117,7 +117,7 @@ public class PetController {
     public ResponseEntity<Page<PetResponse>> buscarPetsComFiltros(
             PetFiltro filtro,
             @PageableDefault(size = 10, sort = "id") Pageable pageable) {
-        log.info("Buscando pets com filtros. Página: {}, Tamanho: {}", pageable.getPageNumber(), pageable.getPageSize());
+        logger.info("Buscando pets com filtros. Página: {}, Tamanho: {}", pageable.getPageNumber(), pageable.getPageSize());
         Page<PetResponse> pets = petService.buscarComFiltrosDTO(filtro, pageable);
         return ResponseEntity.ok(pets);
     }
@@ -125,7 +125,7 @@ public class PetController {
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PetResponse> buscarPorId(@PathVariable Long id) {
-        log.info("Buscando pet por ID: {}", id);
+        logger.info("Buscando pet por ID: {}", id);
         return petService.buscarPetPorIdDTO(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -141,7 +141,7 @@ public class PetController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('ONG') and @petService.isPetOwnedByCurrentUser(#id, authentication.principal.organizacaoId))")
     public ResponseEntity<PetResponse> atualizar(@PathVariable Long id, @Valid @RequestBody PetRequestDTO petRequestDTO) {
-        log.info("Requisição para atualizar pet ID {}: {}", id, petRequestDTO.getNome());
+        logger.info("Requisição para atualizar pet ID {}: {}", id, petRequestDTO.getNome());
         PetResponse atualizadoResponse = petService.atualizarPet(id, petRequestDTO);
         return ResponseEntity.ok(atualizadoResponse);
     }
@@ -155,7 +155,7 @@ public class PetController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        log.info("Requisição para deletar pet ID: {}", id);
+        logger.info("Requisição para deletar pet ID: {}", id);
         petService.deletarPet(id);
         return ResponseEntity.noContent().build();
     }
@@ -171,11 +171,11 @@ public class PetController {
         // verifica se o usuário tem a role ADMIN
         if (userDetails.getOrganizacaoId() != null && !userDetails.getOrganizacaoId().equals(organizacaoId) &&
                 !userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            log.warn("Tentativa de acesso não autorizado aos pets da organização {} pelo usuário {}", organizacaoId, userDetails.getEmail());
+            logger.warn("Tentativa de acesso não autorizado aos pets da organização {} pelo usuário {}", organizacaoId, userDetails.getEmail());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        log.info("Buscando pets da organização por ID: {}", organizacaoId);
+        logger.info("Buscando pets da organização por ID: {}", organizacaoId);
         // AQUI: Chamada ao método que será implementado na sua classe PetService
         List<PetResponse> pets = petService.buscarPetsPorOrganizacaoId(organizacaoId);
         return ResponseEntity.ok(pets);

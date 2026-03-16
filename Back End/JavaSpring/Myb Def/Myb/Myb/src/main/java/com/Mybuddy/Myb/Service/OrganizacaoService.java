@@ -6,8 +6,8 @@ import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Loggerer
+import org.slf4j.LoggererFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class OrganizacaoService {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrganizacaoService.class);
+    private static final log.log.= LoggerFactory.getLogger.OrganizacaoService.class);
 
     private final OrganizacaoRepository organizacaoRepository;
 
@@ -36,20 +36,20 @@ public class OrganizacaoService {
      */
     @Transactional
     public Organizacao criarOrganizacao(Organizacao organizacao) {
-        logger.info("Tentando criar nova organização (via entidade): {}", organizacao.getNomeFantasia());
+        log.info("Tentando criar nova organização (via entidade): {}", organizacao.getNomeFantasia());
 
         if (organizacaoRepository.existsByCnpj(organizacao.getCnpj())) {
-            logger.warn("Criação de organização falhou: CNPJ {} já existe.", organizacao.getCnpj());
+            log.warn("Criação de organização falhou: CNPJ {} já existe.", organizacao.getCnpj());
             throw new ConflictException("CNPJ já cadastrado.");
         }
 
         if (organizacaoRepository.existsByEmailContato(organizacao.getEmailContato())) {
-            logger.warn("Criação de organização falhou: E-mail de contato {} já existe.", organizacao.getEmailContato());
+            log.warn("Criação de organização falhou: E-mail de contato {} já existe.", organizacao.getEmailContato());
             throw new ConflictException("E-mail de contato da organização já cadastrado.");
         }
 
         Organizacao savedOrganizacao = organizacaoRepository.save(organizacao);
-        logger.info("Organização criada com sucesso com ID: {}", savedOrganizacao.getId());
+        log.info("Organização criada com sucesso com ID: {}", savedOrganizacao.getId());
         return savedOrganizacao;
     }
 
@@ -62,17 +62,17 @@ public class OrganizacaoService {
      */
     @Transactional // Garante que a operação seja atômica
     public OrganizacaoResponseDTO criarOrganizacao(OrganizacaoRequestDTO requestDTO) {
-        logger.info("Tentando criar nova organização (via DTO): {}", requestDTO.getNomeFantasia());
+        log.info("Tentando criar nova organização (via DTO): {}", requestDTO.getNomeFantasia());
 
         // Validação de unicidade do CNPJ usando o método existsByCnpj do repositório
         if (organizacaoRepository.existsByCnpj(requestDTO.getCnpj())) {
-            logger.warn("Criação de organização falhou: CNPJ {} já existe.", requestDTO.getCnpj());
+            log.warn("Criação de organização falhou: CNPJ {} já existe.", requestDTO.getCnpj());
             throw new ConflictException("CNPJ já cadastrado.");
         }
 
         // Validação de unicidade do E-mail de Contato usando o método existsByEmailContato do repositório
         if (organizacaoRepository.existsByEmailContato(requestDTO.getEmailContato())) {
-            logger.warn("Criação de organização falhou: E-mail de contato {} já existe.", requestDTO.getEmailContato());
+            log.warn("Criação de organização falhou: E-mail de contato {} já existe.", requestDTO.getEmailContato());
             throw new ConflictException("E-mail de contato da organização já cadastrado.");
         }
 
@@ -88,7 +88,7 @@ public class OrganizacaoService {
         );
 
         Organizacao savedOrganizacao = organizacaoRepository.save(organizacao);
-        logger.info("Organização criada com sucesso com ID: {}", savedOrganizacao.getId());
+        log.info("Organização criada com sucesso com ID: {}", savedOrganizacao.getId());
         return new OrganizacaoResponseDTO(savedOrganizacao); // Mapeia a entidade salva para um DTO de resposta
     }
 
@@ -100,7 +100,7 @@ public class OrganizacaoService {
      */
     @Transactional(readOnly = true) // Otimização para operações de leitura
     public OrganizacaoResponseDTO buscarOrganizacaoPorId(Long id) {
-        logger.debug("Buscando organização com ID: {}", id);
+        log.debug("Buscando organização com ID: {}", id);
         // Usa findById e orElseThrow para lançar ResourceNotFoundException se não encontrar
         Organizacao organizacao = organizacaoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Organização não encontrada com ID: " + id));
@@ -114,7 +114,7 @@ public class OrganizacaoService {
      */
     @Transactional(readOnly = true)
     public Optional<Organizacao> buscarOrganizacaoPorCnpj(String cnpj) {
-        logger.debug("Buscando organização com CNPJ: {}", cnpj);
+        log.debug("Buscando organização com CNPJ: {}", cnpj);
         return organizacaoRepository.findByCnpj(cnpj);
     }
 
@@ -125,7 +125,7 @@ public class OrganizacaoService {
      */
     @Transactional(readOnly = true)
     public boolean existeOrganizacaoPorCnpj(String cnpj) {
-        logger.debug("Verificando existência de organização com CNPJ: {}", cnpj);
+        log.debug("Verificando existência de organização com CNPJ: {}", cnpj);
         return organizacaoRepository.existsByCnpj(cnpj);
     }
 
@@ -135,7 +135,7 @@ public class OrganizacaoService {
      */
     @Transactional(readOnly = true)
     public List<OrganizacaoResponseDTO> listarTodasOrganizacoes() {
-        logger.debug("Listando todas as organizações.");
+        log.debug("Listando todas as organizações.");
         // Busca todas as entidades e mapeia cada uma para um DTO de resposta
         return organizacaoRepository.findAll().stream()
                 .map(OrganizacaoResponseDTO::new) // Construtor de DTO que recebe a entidade
@@ -152,7 +152,7 @@ public class OrganizacaoService {
      */
     @Transactional
     public OrganizacaoResponseDTO atualizarOrganizacao(Long id, OrganizacaoRequestDTO requestDTO) {
-        logger.info("Tentando atualizar organização com ID: {}", id);
+        log.info("Tentando atualizar organização com ID: {}", id);
         // Busca a organização existente, lança exceção se não encontrar
         Organizacao organizacaoExistente = organizacaoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Organização não encontrada para atualização com ID: " + id));
@@ -161,7 +161,7 @@ public class OrganizacaoService {
         organizacaoRepository.findByCnpj(requestDTO.getCnpj())
                 .ifPresent(ong -> {
                     if (!ong.getId().equals(id)) { // Se o CNPJ já existe e pertence a OUTRA ONG
-                        logger.warn("Atualização de organização ID {} falhou: CNPJ {} já existe em outra organização.", id, requestDTO.getCnpj());
+                        log.warn("Atualização de organização ID {} falhou: CNPJ {} já existe em outra organização.", id, requestDTO.getCnpj());
                         throw new ConflictException("CNPJ já cadastrado para outra organização.");
                     }
                 });
@@ -170,7 +170,7 @@ public class OrganizacaoService {
         organizacaoRepository.findByEmailContato(requestDTO.getEmailContato())
                 .ifPresent(ong -> {
                     if (!ong.getId().equals(id)) { // Se o e-mail já existe e pertence a OUTRA ONG
-                        logger.warn("Atualização de organização ID {} falhou: E-mail de contato {} já existe em outra organização.", id, requestDTO.getEmailContato());
+                        log.warn("Atualização de organização ID {} falhou: E-mail de contato {} já existe em outra organização.", id, requestDTO.getEmailContato());
                         throw new ConflictException("E-mail de contato da organização já cadastrado para outra organização.");
                     }
                 });
@@ -185,7 +185,7 @@ public class OrganizacaoService {
         organizacaoExistente.setWebsite(requestDTO.getWebsite());
 
         Organizacao updatedOrganizacao = organizacaoRepository.save(organizacaoExistente);
-        logger.info("Organização com ID {} atualizada com sucesso.", id);
+        log.info("Organização com ID {} atualizada com sucesso.", id);
         return new OrganizacaoResponseDTO(updatedOrganizacao); // Mapeia a entidade atualizada para um DTO de resposta
     }
 
@@ -196,13 +196,13 @@ public class OrganizacaoService {
      */
     @Transactional
     public void deletarOrganizacao(Long id) {
-        logger.info("Tentando deletar organização com ID: {}", id);
+        log.info("Tentando deletar organização com ID: {}", id);
         // Verifica se a organização existe antes de tentar deletar
         if (!organizacaoRepository.existsById(id)) {
-            logger.warn("Deleção de organização falhou: Organização não encontrada com ID: {}", id);
+            log.warn("Deleção de organização falhou: Organização não encontrada com ID: {}", id);
             throw new ResourceNotFoundException("Organização não encontrada para deleção com ID: " + id);
         }
         organizacaoRepository.deleteById(id);
-        logger.info("Organização com ID {} deletada com sucesso.", id);
+        log.info("Organização com ID {} deletada com sucesso.", id);
     }
 }
