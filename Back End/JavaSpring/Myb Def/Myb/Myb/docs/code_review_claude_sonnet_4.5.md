@@ -235,7 +235,7 @@ Este code review analisa o backend da aplicação MyBuddy, uma plataforma RESTfu
    - Verificação de propriedade para ONGs
 
 2. **Logging Adequado**
-   - Uso de Logger em vez de System.out
+   - Uso de log.em vez de System.out
 
 3. **Paginação**
    - `Pageable` implementado corretamente
@@ -291,7 +291,7 @@ Este code review analisa o backend da aplicação MyBuddy, uma plataforma RESTfu
    System.out.println("-----> DEBUG (Controller - manifestarInteresse): MÉTODO ACESSADO!");
    ```
    - **Problema:** Logs de debug não devem ir para produção
-   - **Solução:** Usar Logger com nível DEBUG ou remover
+   - **Solução:** Usar log.com nível DEBUG ou remover
 
 2. **Validações Repetidas**
    ```java
@@ -463,7 +463,7 @@ Este code review analisa o backend da aplicação MyBuddy, uma plataforma RESTfu
    System.out.println("DEBUG (AuthTokenFilter): SecurityContextHolder setado...");
    ```
    - **Problema:** Múltiplos System.out.println
-   - **Solução:** Usar Logger com nível DEBUG
+   - **Solução:** Usar log.com nível DEBUG
 
 2. **@Autowired em Campos**
    - Sugestão: Usar injeção por construtor
@@ -574,7 +574,7 @@ Este code review analisa o backend da aplicação MyBuddy, uma plataforma RESTfu
 ### ❌ Problemas Encontrados
 
 1. **Uso Inconsistente**
-   - Alguns arquivos usam `Logger`
+   - Alguns arquivos usam `log.
    - Outros usam `System.out.println`
 
 2. **Logs de Debug em Produção**
@@ -589,7 +589,7 @@ Este code review analisa o backend da aplicação MyBuddy, uma plataforma RESTfu
 
 1. **Padronizar Logging**
    - Remover todos os `System.out.println`
-   - Usar Logger em todos os lugares
+   - Usar log.em todos os lugares
 
 2. **Configurar Logback**
    - Arquivo `logback-spring.xml` com diferentes configurações por profile
