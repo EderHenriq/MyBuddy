@@ -9,6 +9,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Role {
@@ -18,6 +19,7 @@ public class Role {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @NonNull
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false, unique = true)
     private ERole name;

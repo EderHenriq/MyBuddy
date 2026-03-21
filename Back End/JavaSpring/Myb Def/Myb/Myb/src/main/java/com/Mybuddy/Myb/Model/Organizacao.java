@@ -13,6 +13,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Organizacao {
