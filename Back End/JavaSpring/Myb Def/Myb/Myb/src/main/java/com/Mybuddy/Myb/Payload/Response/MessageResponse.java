@@ -1,12 +1,20 @@
 package com.Mybuddy.Myb.Payload.Response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
 public class MessageResponse {
     private String message;
+
+    // Construtor
+    public MessageResponse(String message) {
+        this.message = message;
+    }
+
+    // Getter
+    public String getMessage() {
+        return message;
+    }
+
+    // Setter
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

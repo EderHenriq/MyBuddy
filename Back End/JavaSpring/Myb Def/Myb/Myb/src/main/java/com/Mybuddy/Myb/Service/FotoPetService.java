@@ -41,30 +41,40 @@ public class FotoPetService {
         if (dotIndex > 0) {
             fileExtension = originalFileName.substring(dotIndex);
         }
-        String fileName = UUID.randomUUID().toString() + fileExtension;
+        String fileName = UUID.randomUUID().toString() + fileExtension; // Gera um nome único
 
         try {
+            // Verificar se o nome do arquivo contém caracteres inválidos
             if (fileName.contains("..")) {
                 throw new IOException("Nome do arquivo inválido: " + fileName);
             }
+
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             log.info("Arquivo salvo com sucesso: {}", targetLocation.toString());
-            return fileName;
+            return fileName; // Retorna o nome do arquivo salvo no servidor
         } catch (IOException ex) {
             log.error("Erro ao salvar o arquivo '{}': {}", originalFileName, ex.getMessage(), ex);
             throw new IOException("Não foi possível armazenar o arquivo " + originalFileName + ". Por favor, tente novamente!", ex);
         }
     }
 
+    /**
+     * Armazena múltiplos arquivos de uma vez.
+     * @param files Lista de arquivos para upload
+     * @return Lista com os nomes dos arquivos salvos
+     * @throws IOException se houver erro ao salvar algum arquivo
+     */
     public List<String> storeFiles(List<MultipartFile> files) throws IOException {
         List<String> fileNames = new ArrayList<>();
+
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
                 String fileName = storeFile(file);
                 fileNames.add(fileName);
             }
         }
+
         log.info("Upload múltiplo concluído. {} arquivos salvos.", fileNames.size());
         return fileNames;
     }

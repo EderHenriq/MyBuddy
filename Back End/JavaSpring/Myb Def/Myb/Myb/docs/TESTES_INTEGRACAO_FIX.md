@@ -79,7 +79,7 @@ public ResponseEntity<ErrorDetails> handleBadCredentialsException(
             "Credenciais inválidas",
             request.getDescription(false)
     );
-    log.error("Tentativa de login com credenciais inválidas: {}", ex.getMessage());
+    logger.error("Tentativa de login com credenciais inválidas: {}", ex.getMessage());
     return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED); // 401
 }
 ```
@@ -255,7 +255,7 @@ public ResponseEntity<ErrorDetails> handleAuthenticationException(
             "Credenciais inválidas. Verifique seu email e senha.",
             request.getDescription(false)
     );
-    log.warn("Falha de autenticação: {}", ex.getMessage());
+    logger.warn("Falha de autenticação: {}", ex.getMessage());
     return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED); // 401
 }
 ```

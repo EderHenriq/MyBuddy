@@ -5,31 +5,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// IMPORTANTE: Remova ou não adicione @CrossOrigin aqui se já configurou CORS globalmente
+// @CrossOrigin(origins = {"http://localhost:5500", "http://127.0.0.1:5500"}, maxAge = 3600, allowCredentials = "true")
 @RestController
-@RequestMapping("/api/teste")
+@RequestMapping("/api/teste") // Este é o prefixo da URL para este controller
 public class TesteAuthController {
 
-    @GetMapping("/autenticado")
-    @PreAuthorize("isAuthenticated()")
+    // Este endpoint requer QUALQUER usuário autenticado
+    @GetMapping("/autenticado") // A URL completa será /api/teste/autenticado
+    @PreAuthorize("isAuthenticated()") // Simplesmente verifica se o usuário está logado
     public String getMensagemAutenticada() {
-        return "Você está autenticado!";
+        return "Parabéns! Você está autenticado e acessou este recurso!";
     }
 
-    @GetMapping("/ong")
-    @PreAuthorize("hasRole('ONG')")
-    public String getMensagemOng() {
-        return "Você é uma ONG!";
+    // Este endpoint requer um usuário com a role ONG_USER ou ONG_ADMIN
+    // O usuário 'onguses' (que você logou) tem a role 'ONG_USER'
+    @GetMapping("/usuario") // A URL completa será /api/teste/usuario
+    @PreAuthorize("hasRole('ONG_USER') or hasRole('ONG_ADMIN')")
+    public String getMensagemUsuario() {
+        return "Olá, usuário ONG! Você tem permissão para ver isso.";
     }
 
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
+    // Este endpoint requer um usuário com a role ONG_ADMIN
+    @GetMapping("/admin") // A URL completa será /api/teste/admin
+    @PreAuthorize("hasRole('ONG_ADMIN')")
     public String getMensagemAdmin() {
-        return "Você é um Admin!";
-    }
-
-    @GetMapping("/adotante")
-    @PreAuthorize("hasRole('ADOTANTE')")
-    public String getMensagemAdotante() {
-        return "Você é um Adotante!";
+        return "Atenção administradores! Conteúdo secreto aqui.";
     }
 }
