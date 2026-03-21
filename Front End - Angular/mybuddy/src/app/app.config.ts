@@ -23,6 +23,9 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: MyBuddyPreset,
+        options: {
+          darkModeSelector: false,
+        },
       },
     }),
   ],
