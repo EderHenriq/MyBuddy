@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/organizacoes")
 public class OrganizacaoController {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrganizacaoController.class);
+    private static final Logger log = LoggerFactory.getLogger(OrganizacaoController.class);
 
     private final OrganizacaoService organizacaoService;
 
@@ -26,33 +26,33 @@ public class OrganizacaoController {
 
     @PostMapping
     public ResponseEntity<OrganizacaoResponseDTO> criarOrganizacao(@Valid @RequestBody OrganizacaoRequestDTO requestDTO) {
-        logger.info("Criando organização: {}", requestDTO.getNomeFantasia());
+        log.info("Criando organização: {}", requestDTO.getNomeFantasia());
         OrganizacaoResponseDTO createdOrganizacao = organizacaoService.criarOrganizacao(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrganizacao);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OrganizacaoResponseDTO> buscarOrganizacaoPorId(@PathVariable Long id) {
-        logger.info("Buscando organização ID: {}", id);
+        log.info("Buscando organização ID: {}", id);
         return ResponseEntity.ok(organizacaoService.buscarOrganizacaoPorId(id));
     }
 
     @GetMapping
     public ResponseEntity<List<OrganizacaoResponseDTO>> listarTodasOrganizacoes() {
-        logger.info("Listando todas as organizações.");
+        log.info("Listando todas as organizações.");
         return ResponseEntity.ok(organizacaoService.listarTodasOrganizacoes());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<OrganizacaoResponseDTO> atualizarOrganizacao(@PathVariable Long id,
                                                                        @Valid @RequestBody OrganizacaoRequestDTO requestDTO) {
-        logger.info("Atualizando organização ID: {}", id);
+        log.info("Atualizando organização ID: {}", id);
         return ResponseEntity.ok(organizacaoService.atualizarOrganizacao(id, requestDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarOrganizacao(@PathVariable Long id) {
-        logger.info("Deletando organização ID: {}", id);
+        log.info("Deletando organização ID: {}", id);
         organizacaoService.deletarOrganizacao(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,6 +1,5 @@
 package com.Mybuddy.Myb.Security.jwt;
 
-import com.Mybuddy.Myb.Controller.OrganizacaoController;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +18,7 @@ import java.io.IOException;
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrganizacaoController.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
@@ -49,11 +48,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                logger.debug("Usuário autenticado: {} | roles: {}",
+                log.debug("Usuário autenticado: {} | roles: {}",
                         userDetails.getUsername(), userDetails.getAuthorities());
             }
         } catch (Exception e) {
-            logger.error("Não foi possível autenticar o usuário via JWT: {}", e.getMessage(), e);
+            log.error("Não foi possível autenticar o usuário via JWT: {}", e.getMessage(), e);
         }
 
         filterChain.doFilter(request, response);

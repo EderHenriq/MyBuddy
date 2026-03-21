@@ -78,7 +78,6 @@ public class Pet {
     @Column(length = 100)
     private String estado;
 
-    // Construtor com status padrão DISPONIVEL
     public Pet(String nome, String raca, Integer idade, Especie especie, Porte porte,
                String cor, String pelagem, String sexo, Organizacao organizacao,
                boolean microchipado, boolean vacinado, boolean castrado,
@@ -100,7 +99,6 @@ public class Pet {
         this.statusAdocao = StatusAdocao.DISPONIVEL;
     }
 
-    // Métodos de negócio — mantidos pois têm lógica própria
     public void addFoto(FotoPet foto) {
         if (foto != null && !this.fotos.contains(foto)) {
             this.fotos.add(foto);
