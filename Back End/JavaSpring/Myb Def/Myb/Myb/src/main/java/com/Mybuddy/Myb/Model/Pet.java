@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(of = {"id", "nome", "especie", "statusAdocao", "microchipado", "vacinado", "castrado", "cidade", "estado"})
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Pet {
 

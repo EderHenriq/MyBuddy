@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(of = {"id", "nome", "email"})
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Usuario {
 

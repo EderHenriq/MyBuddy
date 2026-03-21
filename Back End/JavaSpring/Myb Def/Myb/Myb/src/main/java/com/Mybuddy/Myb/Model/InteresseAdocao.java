@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(of = {"id", "status", "mensagem", "criadoEm"})
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class InteresseAdocao {
 

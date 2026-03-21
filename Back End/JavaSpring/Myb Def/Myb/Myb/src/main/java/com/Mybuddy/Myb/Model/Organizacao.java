@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(of = {"id", "nomeFantasia", "cnpj", "emailContato", "endereco"})
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Organizacao {
 

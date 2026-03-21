@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(of = {"id", "url", "principal"})
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class FotoPet {
 
