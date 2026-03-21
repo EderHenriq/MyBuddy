@@ -1,0 +1,52 @@
+name: Bug Report
+description: Reporte um comportamento inesperado
+title: "fix: <descrição curta do bug>"
+labels: ["bug"]
+body:
+  - type: input
+    id: jira
+    attributes:
+      label: Card Jira
+      description: Link da task relacionada (se houver)
+      placeholder: "https://mybuddy.atlassian.net/browse/MYB-XXX"
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Módulo afetado
+      options:
+        - Backend (Java/Spring Boot)
+        - Frontend (Angular)
+        - Mobile (Flutter)
+        - Autenticação / JWT
+        - Infraestrutura
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do bug
+      description: O que acontece? O que deveria acontecer?
+      placeholder: |
+        **Comportamento atual:** ...
+        **Comportamento esperado:** ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+      placeholder: |
+        1. Acesse ...
+        2. Clique em ...
+        3. Observe o erro ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto adicional
+      description: Logs, screenshots, versão do ambiente...
