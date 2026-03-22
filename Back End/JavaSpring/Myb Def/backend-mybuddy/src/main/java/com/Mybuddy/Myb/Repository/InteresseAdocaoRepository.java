@@ -9,9 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-// Declara a interface do repositório de interesses de adoção.
-// Ao estender JpaRepository<InteresseAdocao, Long>, esta interface herda métodos CRUD prontos para a entidade InteresseAdocao.
-// O tipo Long representa o tipo do campo ID (chave primária).
 public interface InteresseAdocaoRepository extends JpaRepository<InteresseAdocao, Long> {
 
     // Busca todos os interesses do usuário informado (relacionamento ManyToOne com Usuario).
