@@ -12,24 +12,20 @@ import org.springframework.transaction.annotation.Transactional; // Importa a an
 import java.time.LocalDateTime; // Importa a classe LocalDateTime para registrar timestamps de criação e atualização.
 import java.util.List; // Importa a interface List para lidar com coleções de objetos.
 
-// Anotação @Service do Spring, que marca esta classe como um componente de serviço.
-// Classes de serviço contêm a lógica de negócio principal da aplicação e atuam como intermediárias
-// entre os controladores e as camadas de persistência (repositórios).
 @Service
-public class InteresseAdocaoService { // Declara a classe de serviço para Interesses de Adoção.
+public class InteresseAdocaoService {
 
-    // Declara instâncias dos repositórios necessários. São marcados como 'final' para garantir que sejam inicializados uma vez.
-    private final InteresseAdocaoRepository interesseRepo; // Repositório para operações com InteresseAdocao.
-    private final UsuarioRepository usuarioRepo; // Repositório para operações com Usuario.
-    private final PetRepository petRepo; // Repositório para operações com Pet.
 
-    // Construtor da classe. O Spring injeta automaticamente as dependências dos repositórios (Injeção por construtor).
+    private final InteresseAdocaoRepository interesseRepo;
+    private final UsuarioRepository usuarioRepo;
+    private final PetRepository petRepo;
+
     public InteresseAdocaoService(InteresseAdocaoRepository interesseRepo,
-                                   UsuarioRepository usuarioRepo,
-                                   PetRepository petRepo) {
-        this.interesseRepo = interesseRepo; // Inicializa o repositório de interesses.
-        this.usuarioRepo = usuarioRepo;     // Inicializa o repositório de usuários.
-        this.petRepo = petRepo;             // Inicializa o repositório de pets.
+                                  UsuarioRepository usuarioRepo,
+                                  PetRepository petRepo) {
+        this.interesseRepo = interesseRepo;
+        this.usuarioRepo = usuarioRepo;
+        this.petRepo = petRepo;
     }
 
     // Anotação @Transactional do Spring. Indica que este método deve ser executado dentro de uma transação.
@@ -59,7 +55,6 @@ public class InteresseAdocaoService { // Declara a classe de serviço para Inter
             throw new IllegalStateException("Você já manifestou interesse neste pet");
         }
 
-        // Cria uma nova instância de InteresseAdocao após passar por todas as validações.
         InteresseAdocao interesse = new InteresseAdocao();
         interesse.setUsuario(usuario); // Associa o usuário encontrado ao interesse.
         interesse.setPet(pet); // Associa o pet encontrado ao interesse.
@@ -73,13 +68,8 @@ public class InteresseAdocaoService { // Declara a classe de serviço para Inter
         return InteresseAdocaoMapper.toResponse(salvo);
     }
 
-    // Anotação @Transactional indica que este método deve ser executado dentro de uma transação.
-// Método da BUDDY-95: Permite atualizar o status de um interesse de adoção (PENDENTE → APROVADO/REJEITADO).
-// Inclui validações de negócio para garantir integridade do fluxo de adoção.
-// Normalmente usado por usuários com permissões de ONG ou ADMIN.
     @Transactional
     public InteresseResponse atualizarStatus(Long interesseId, StatusInteresse novoStatus) {
-        // Busca o interesse de adoção pelo ID. Se não encontrado, lança uma exceção IllegalArgumentException.
         InteresseAdocao interesse = interesseRepo.findById(interesseId)
                 .orElseThrow(() -> new IllegalArgumentException("Interesse não encontrado: " + interesseId));
 
@@ -92,9 +82,6 @@ public class InteresseAdocaoService { // Declara a classe de serviço para Inter
         return InteresseAdocaoMapper.toResponse(salvo);
     }
 
-    // Anotação @Transactional(readOnly = true) indica que este método é somente de leitura.
-    // Otimiza o desempenho, pois a transação não precisa gerenciar alterações e não bloqueia escritas.
-    // Método da BUDDY-91: Lista todos os interesses de adoção registrados por um usuário específico.
     @Transactional(readOnly = true)
     public List<InteresseResponse> listarPorUsuario(Long usuarioId) {
         // Query com JOIN FETCH para evitar N+1 ao acessar Usuario e Pet no Mapper
