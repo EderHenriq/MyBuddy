@@ -5,9 +5,10 @@ body {
   margin: 0;
   padding: 0;
   font-family: var(--font-family);
-};
+}
 
 :root {
+  //Tokens das paletas de cores definidas no escopo do projeto.
   --primary-color: #ff7b00;
   --secondary-color: #5d831c;
   --accent-color: #2C3E50;
@@ -15,4 +16,35 @@ body {
   --surface-ground: #f5f5f5; /*é usado no PrimeNG para definir a cor do background da página*/
   --text-color: #1e1e1e;
   --text-color-secondary: #2c3e50;
+
+
+  //Tokens de definição de espaçamento.
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  //Tokens das tipografias do projeto, incluindo fontes, tamanhos e pesos.
+  --font-family: 'Inter', sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  --line-height-sm: 1.25;
+  --line-height-md: 1.5;
+  --line-height-lg: 1.75;
 }
+
