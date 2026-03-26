@@ -1,0 +1,25 @@
+//Mixins de Responsividade para diferentes formatos de telas.
+
+$breakpoints: (
+  'mobile-sm': 320px, //Tamanho referência: iPhone SE (1ª geração)
+  'mobile-md': 375px, //Tamanho referência: iPhone 13 Mini, X e 11 Pro
+  'mobile-lg': 412px, //Tamanho referência: iPhone 12, 12 Pro, 13 e 13 Pro
+  'tablet-sm': 768px, //Tamanho referência: iPad (5ª geração)
+  'tablet-md': 1024px, //Tamanho referência: iPad Air (4ª geração)
+  'desktop-sm': 1200px, //Tamanho referência: MacBook Air (M1)
+  'desktop-md': 1440px, //Tamanho referência: MacBook Pro (13 polegadas)
+  'desktop-lg': 1920px //Tamanho referência: Monitores Full HD (1920x1080)
+);
+
+@mixin devices($breakpoints) {
+  $value: map.get($breakpoints, $breakpoint);
+
+  @if $value == null {
+    @warn "Breakpoint '#{$breakpoint}' não encontrado. Verificar no _mixins.scss se o nome está correto.";
+  }
+
+  @media (min-width: $value) {
+    @content;
+  }
+}
+
