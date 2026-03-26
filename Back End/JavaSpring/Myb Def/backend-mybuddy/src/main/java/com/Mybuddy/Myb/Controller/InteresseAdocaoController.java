@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class InteresseAdocaoController {
 
-    private static final Logger logger = LoggerFactory.getLogger(InteresseAdocaoController.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrganizacaoController.class);
 
     private final InteresseAdocaoService service;
 
