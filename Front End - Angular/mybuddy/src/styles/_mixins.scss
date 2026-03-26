@@ -8,18 +8,48 @@ $breakpoints: (
   'tablet-md': 1024px, //Tamanho referência: iPad Air (4ª geração)
   'desktop-sm': 1200px, //Tamanho referência: MacBook Air (M1)
   'desktop-md': 1440px, //Tamanho referência: MacBook Pro (13 polegadas)
-  'desktop-lg': 1920px //Tamanho referência: Monitores Full HD (1920x1080)
+  'desktop-lg': 1920px, //Tamanho referência: Monitores Full HD (1920x1080)
 );
 
-@mixin devices($breakpoints) {
+@mixin devices($breakpoint) {
   $value: map.get($breakpoints, $breakpoint);
 
   @if $value == null {
     @warn "Breakpoint '#{$breakpoint}' não encontrado. Verificar no _mixins.scss se o nome está correto.";
   }
-
-  @media (min-width: $value) {
-    @content;
+  else {
+    @media (min-width: $value) {
+      @content;
+    }
   }
 }
+
+//Mixins para o Flexbox geral.
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+@mixin flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+
+
 
