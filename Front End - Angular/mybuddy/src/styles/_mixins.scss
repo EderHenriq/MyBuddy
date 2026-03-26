@@ -50,6 +50,27 @@ $breakpoints: (
   gap: var(--spacing-md);
 }
 
+//Mixins para a tipográfia.
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin line-clamp($linhas) {
+  display: -webkit-box;
+  -webkit-line-clamp: $linhas;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  line-clamp: $linhas; //Implementação futura para navegadores que suportarem a propriedade nativa.
+}
+
+@mixin text-no-select {
+  user-select: none;
+}
 
 
 
