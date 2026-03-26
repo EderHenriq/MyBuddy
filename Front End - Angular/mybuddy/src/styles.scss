@@ -48,3 +48,61 @@ body {
   --line-height-lg: 1.75;
 }
 
+//Tokens de definição de escala tipográfica (h1-h6 e body caption).
+  h1 {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-sm);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h4 {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h5 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-light);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h6 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-thin);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  p {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-lg);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  .caption {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-light);
+    line-height: var(--line-height-sm);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+
