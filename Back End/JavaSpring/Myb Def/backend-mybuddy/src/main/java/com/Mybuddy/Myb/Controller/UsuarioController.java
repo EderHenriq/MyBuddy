@@ -1,6 +1,7 @@
 package com.Mybuddy.Myb.Controller;
 
 import com.Mybuddy.Myb.Model.Usuario;
+import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import com.Mybuddy.Myb.Service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,11 @@ import java.util.List;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final KeycloakUserSyncService keycloakUserSyncService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, KeycloakUserSyncService keycloakUserSyncService) {
         this.usuarioService = usuarioService;
+        this.keycloakUserSyncService = keycloakUserSyncService;
     }
 
     @PostMapping
@@ -40,9 +43,8 @@ public class UsuarioController {
     @GetMapping("/meu-perfil")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Usuario> getMeuPerfil(@AuthenticationPrincipal Jwt jwt) {
-        String keycloakId = jwt.getSubject();
-        // TODO MY-110: buscar usuário pelo keycloakId após sincronização
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        return ResponseEntity.ok(usuario);
     }
 
     @GetMapping("/{id}")
@@ -56,7 +58,6 @@ public class UsuarioController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario dadosUsuario) {
-        // TODO MY-110: permitir que o próprio usuário atualize após sincronização do keycloakId
         try {
             return ResponseEntity.ok(usuarioService.atualizarUsuario(id, dadosUsuario));
         } catch (IllegalStateException e) {
