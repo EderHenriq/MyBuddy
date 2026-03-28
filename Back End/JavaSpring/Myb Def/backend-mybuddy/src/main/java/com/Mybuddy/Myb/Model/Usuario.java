@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.security.Key;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +40,9 @@ public class Usuario {
     @JsonBackReference
     @ToString.Exclude
     private Organizacao organizacao;
+
+    @Column(name = "Keycloak_id", unique=true)
+    private String keycloakId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

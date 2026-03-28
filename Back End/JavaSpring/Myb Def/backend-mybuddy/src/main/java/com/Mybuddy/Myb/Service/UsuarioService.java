@@ -13,6 +13,7 @@ import java.util.Optional; // Importa a classe Optional para lidar com resultado
 @Service
 public class UsuarioService { // Declara a classe de serviço para Usuários.
 
+    public static final String KeycloakUserSyncService = null;
     private final UsuarioRepository usuarioRepository;
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
