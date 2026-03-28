@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 // Garante que a operação seja executada dentro de uma transação do banco
 
-@Service
+
 // Indica que esta classe é um serviço Spring, responsável por lógica de negócios relacionada a usuários
 public class UserDetailsServiceImpl implements UserDetailsService {
     // Implementa UserDetailsService, necessário para autenticação com Spring Security
