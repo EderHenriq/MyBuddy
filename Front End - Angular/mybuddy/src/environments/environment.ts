@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.mybuddyapp.com/api',
+  apiUrl: '/api',
   envName: 'production',
+  keycloakUrl: 'http://localhost:8080'
 };

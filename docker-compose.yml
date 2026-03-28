@@ -1,0 +1,74 @@
+services:
+
+  # ── MY-239: MongoDB ──────────────────────────────────────
+  mongodb:
+    image: mongo:7.0
+    container_name: mybuddy-mongodb
+    restart: unless-stopped
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+
+    # MY-243 → dados do MongoDB persistem entre reinicializações
+    volumes:
+      - mongodb-data:/data/db
+
+  # ── PostgreSQL (banco do Keycloak e do backend) ───────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: mybuddy-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+    # MY-243 → dados do PostgreSQL persistem entre reinicializações
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  # ── MY-242: Keycloak ──────────────────────────────────────
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: mybuddy-keycloak
+    restart: unless-stopped
+
+    command: start-dev
+
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
+      # Keycloak usando banco separado do backend
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${KEYCLOAK_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+      KC_HOSTNAME: localhost
+      KC_HTTP_PORT: 8080
+
+    ports:
+      - "${KEYCLOAK_PORT:-8080}:8080"
+
+    depends_on:
+      - postgres
+
+# ── MY-243: Declaração dos volumes ───────────────────────────
+# Dados salvos mesmo após "docker compose down"
+# Para apagar tudo: docker compose down -v
+volumes:
+  mongodb-data:
+    name: mybuddy_mongodb_data
+
+  postgres-data:
+    name: mybuddy_postgres_data
