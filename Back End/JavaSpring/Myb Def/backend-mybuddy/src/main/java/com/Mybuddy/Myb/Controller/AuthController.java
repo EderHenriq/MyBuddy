@@ -1,8 +1,10 @@
 package com.Mybuddy.Myb.Controller;
 
+import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
 import com.Mybuddy.Myb.Payload.Response.MessageResponse;
 import com.Mybuddy.Myb.Service.AuthService;
+import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,18 +16,19 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final KeycloakUserSyncService keycloakUserSyncService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, KeycloakUserSyncService keycloakUserSyncService) {
         this.authService = authService;
+        this.keycloakUserSyncService = keycloakUserSyncService;
     }
 
-    // TODO MY-105: endpoint /me para retornar dados do usuário autenticado via Keycloak
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(new MessageResponse("Usuário: " + jwt.getClaimAsString("preferred_username")));
+    public ResponseEntity<Usuario> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        return ResponseEntity.ok(usuario);
     }
 
-    // TODO MY-110: avaliar se cadastro será via Keycloak Admin API
     @PostMapping("/cadastro")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         try {
