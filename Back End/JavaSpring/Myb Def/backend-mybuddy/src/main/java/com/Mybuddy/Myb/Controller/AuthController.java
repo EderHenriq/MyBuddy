@@ -32,27 +32,28 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        // A lógica de autenticação pode ser movida para AuthService ou mantida aqui,
-        // dependendo da granularidade que você quer dar ao AuthService.
-        // Por simplicidade, vou manter a autenticação aqui e ajustar a resposta de login.
-        Authentication authentication = authService.authenticateUser(loginRequest); // Delega para AuthService
+        try {
+            Authentication authentication = authService.authenticateUser(loginRequest);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = authService.generateJwtToken(authentication); // Delega geração de JWT
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = authService.generateJwtToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
 
-        // Agora, se o userDetails tiver um ID de organização, ele será incluído no JwtResponse
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(), // Geralmente o email ou um nome de usuário único
-                userDetails.getEmail(),
-                roles,
-                userDetails.getOrganizacaoId())); // Inclui o ID da organização
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    roles,
+                    userDetails.getOrganizacaoId()));
+
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            return ResponseEntity.status(401).body(new MessageResponse("Credenciais inválidas."));
+        }
     }
 
     @PostMapping("/cadastro")
