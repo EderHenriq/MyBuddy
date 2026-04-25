@@ -1,8 +1,11 @@
 import {
   ApplicationConfig,
+  inject,
+  PLATFORM_ID,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
+
 import { provideRouter, withViewTransitions, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -15,6 +18,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 
 import { provideKeycloak } from 'keycloak-angular';
 import { environment } from '../environments/environment';
+import { isPlatformBrowser } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,7 +31,9 @@ export const appConfig: ApplicationConfig = {
 
       initOptions: {
         onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+        silentCheckSsoRedirectUri: isPlatformBrowser(inject(PLATFORM_ID))
+          ? `${window.location.origin}/silent-check-sso.html`
+          : '',
       },
     }),
     provideBrowserGlobalErrorListeners(),
