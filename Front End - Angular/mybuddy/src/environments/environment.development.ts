@@ -6,5 +6,6 @@ export const environment = {
         url: 'https://localhost:8080',
         realm: 'mybuddy',
         clientId: 'mybuddy-frontend',
+        silentCheckSsoRedirectUri: 'http://localhost:4200/silent-check-sso.html',
     },
 };
