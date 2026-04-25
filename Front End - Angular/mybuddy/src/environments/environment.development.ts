@@ -3,7 +3,7 @@ export const environment = {
     apiUrl: 'https://localhost:8081/api/',
     envName: 'Development',
     keycloak: {
-        url: 'https://localhost:8080',
+        url: 'http://localhost:8080',
         realm: 'mybuddy',
         clientId: 'mybuddy-frontend',
         silentCheckSsoRedirectUri: 'http://localhost:4200/silent-check-sso.html',
