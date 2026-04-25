@@ -1,4 +1,7 @@
+@use "sass:map";
+
 //Mixins de Responsividade para diferentes formatos de telas.
+
 
 $breakpoints: (
   'mobile-sm': 320px, //Tamanho referência: iPhone SE (1ª geração)
