@@ -2,6 +2,6 @@ package com.Mybuddy.Myb.DTO;
 
 
 public record PetResumoResponse (
-    Long Id,
-    String nome
+        Long Id,
+        String nome
 ){}
