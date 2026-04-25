@@ -1,6 +1,10 @@
 export const environment = {
-  production: true,
-  apiUrl: '/api',
-  envName: 'production',
-  keycloakUrl: 'http://localhost:8080'
+    production: true,
+    apiUrl: '/api',
+    envName: 'production',
+    keycloak: {
+        url: 'http://localhost:8080',
+        realm: 'mybuddy',
+        clientId: 'mybuddy-frontend',
+    },
 };
