@@ -12,6 +12,7 @@ $breakpoints: (
   'desktop-sm': 1200px, //Tamanho referência: MacBook Air (M1)
   'desktop-md': 1440px, //Tamanho referência: MacBook Pro (13 polegadas)
   'desktop-lg': 1920px, //Tamanho referência: Monitores Full HD (1920x1080)
+  'desktop-xl': 2560px, //Tamanho referência: Monitores 4K (3840x2160)
 );
 
 @mixin devices($breakpoint) {
@@ -28,6 +29,13 @@ $breakpoints: (
 }
 
 //Mixins para o Flexbox geral.
+
+@mixin flex-start {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
 
 @mixin flex-center {
   display: flex;
@@ -53,6 +61,13 @@ $breakpoints: (
   gap: var(--spacing-md);
 }
 
+@mixin flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 //Mixins para a tipográfia.
 
 @mixin truncate {
@@ -75,21 +90,50 @@ $breakpoints: (
   user-select: none;
 }
 
+@mixin heading-x1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+@mixin text-highlight {
+  color: var(--primary-color);
+}
+
 
 //Mixin de estilização dos Cards dos Pets.
 @mixin card-style {
-  background: #ffffff;
-  border-radius: 12px;
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
   padding: var(--spacing-md);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 @mixin card-hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform, box-shadow;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+//Mixin de desfoque e overlays
+@mixin overlay($opacity: 0.5, $blur: 0px) {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, $opacity);
+    border-radius: inherit;
+
+    @if $blur != 0 and $blur != 0px {
+      backdrop-filter: blur($blur);
+      -webkit-backdrop-filter: blur($blur); /* Adicionado para navegadores como o Safari*/
+    }
   }
 }
 

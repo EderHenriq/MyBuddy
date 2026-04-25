@@ -13,7 +13,8 @@ body {
   --secondary-color: #5d831c;
   --accent-color: #2C3E50;
 
-  --surface-ground: #f5f5f5; /*é usado no PrimeNG para definir a cor do background da página*/
+  --surface-ground: #f4f4f4; /*é usado no PrimeNG para definir a cor do background da página*/
+  --surface-card: #ffffff; /*é usado no PrimeNG para definir a cor de fundo dos cards*/
   --text-color: #1e1e1e;
   --text-color-secondary: #2c3e50;
 
@@ -27,6 +28,10 @@ body {
 
   //Tokens das tipografias do projeto, incluindo fontes, tamanhos e pesos.
   --font-family: 'Inter', sans-serif;
+  --font-family: 'SF Pro Display', sans-serif;
+  --font-family: 'SF Pro Text', sans-serif;
+  --font-family: 'SF Pro Rounded', sans-serif;
+  --font-family: 'SF Pro', sans-serif;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
@@ -46,6 +51,19 @@ body {
   --line-height-sm: 1.25;
   --line-height-md: 1.5;
   --line-height-lg: 1.75;
+
+  //Tokens de definição do border-radius e sombreamento
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-xxl: 36px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
+  --shadow-xxl: 0 25px 50px rgba(0, 0, 0, 0.25);
 }
 
 //Tokens de definição de escala tipográfica (h1-h6 e body caption).
