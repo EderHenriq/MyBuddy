@@ -13,8 +13,23 @@ import { MyBuddyPreset } from '../styles/mypreset';
 
 import { provideHttpClient, withFetch } from '@angular/common/http';
 
+import { provideKeycloak } from 'keycloak-angular';
+import { environment } from '../environments/environment';
+
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideKeycloak({
+      config: {
+        url: environment.keycloak.url,
+        realm: environment.keycloak.realm,
+        clientId: environment.keycloak.clientId,
+      },
+
+      initOptions: {
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+      },
+    }),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideClientHydration(withEventReplay()),
