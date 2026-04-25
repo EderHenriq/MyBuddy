@@ -15,7 +15,7 @@ class OrganizacaoTest {
                 "12345678000100", "44999999999", "Rua das Flores, 100",
                 "ONG dedicada à adoção", "www.amigodospets.com");
     }
-
+//ss
     @Test
     void deveCriarOrganizacaoComConstrutorCompleto() {
         assertThat(organizacao.getNomeFantasia()).isEqualTo("ONG Amigos dos Pets");
