@@ -1,33 +1,26 @@
 package com.Mybuddy.Myb.Controller;
 
-import com.Mybuddy.Myb.Model.Organizacao; // Manter, pois JwtResponse pode precisar
-import com.Mybuddy.Myb.Payload.Request.LoginRequest;
+import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
-import com.Mybuddy.Myb.Payload.Response.JwtResponse;
-import com.Mybuddy.Myb.Payload.Response.MessageResponse; // NOVO: Classe para respostas simples
-import com.Mybuddy.Myb.Service.AuthService; // NOVO: Injeta o AuthService
-import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
+import com.Mybuddy.Myb.Payload.Response.MessageResponse;
+import com.Mybuddy.Myb.Service.AuthService;
+import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import jakarta.validation.Valid;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    // Apenas Autowire o AuthService e o AuthenticationManager diretamente.
-    // O AuthService encapsulará os outros repositórios e o PasswordEncoder.
-    private final AuthService authService; // NOVO: Injeta o AuthService
+    private final AuthService authService;
+    private final KeycloakUserSyncService keycloakUserSyncService;
 
-    public AuthController(AuthService authService) { // Construtor com injeção de AuthService
+    public AuthController(AuthService authService, KeycloakUserSyncService keycloakUserSyncService) {
         this.authService = authService;
+        this.keycloakUserSyncService = keycloakUserSyncService;
     }
 
     @PostMapping("/login")
@@ -59,9 +52,9 @@ public class AuthController {
     @PostMapping("/cadastro")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         try {
-            authService.registerUser(signUpRequest); // Delega toda a lógica para AuthService
+            authService.registerUser(signUpRequest);
             return ResponseEntity.ok(new MessageResponse("Usuário registrado com sucesso!"));
-        } catch (RuntimeException e) { // Captura exceções de validação ou conflito do serviço
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }

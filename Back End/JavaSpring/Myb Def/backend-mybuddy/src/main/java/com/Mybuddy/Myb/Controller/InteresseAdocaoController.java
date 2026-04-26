@@ -3,8 +3,9 @@ package com.Mybuddy.Myb.Controller;
 import com.Mybuddy.Myb.DTO.AtualizarStatusRequest;
 import com.Mybuddy.Myb.DTO.InteresseResponse;
 import com.Mybuddy.Myb.DTO.RegistrarInteresseRequest;
-import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
+import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Service.InteresseAdocaoService;
+import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api")
@@ -24,27 +25,21 @@ public class InteresseAdocaoController {
     private static final Logger logger = LoggerFactory.getLogger(InteresseAdocaoController.class);
 
     private final InteresseAdocaoService service;
+    private final KeycloakUserSyncService keycloakUserSyncService;
 
-    public InteresseAdocaoController(InteresseAdocaoService service) {
+    public InteresseAdocaoController(InteresseAdocaoService service, KeycloakUserSyncService keycloakUserSyncService) {
         this.service = service;
+        this.keycloakUserSyncService = keycloakUserSyncService;
     }
 
     @PostMapping("/interesses")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<InteresseResponse> manifestarInteresse(
             @RequestBody @Valid RegistrarInteresseRequest req,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        logger.debug("manifestarInteresse: MÉTODO ACESSADO!");
-        if (userDetails == null) {
-            logger.error("ERRO CRÍTICO (manifestarInteresse): userDetails é null!");
-            throw new IllegalStateException("Detalhes do usuário autenticado não disponíveis.");
-        }
-        logger.debug("manifestarInteresse: Usuario ID recuperado: {}", userDetails.getId());
-        logger.debug("manifestarInteresse: Usuario Email recuperado: {}", userDetails.getEmail());
-
-        Long usuarioId = userDetails.getId();
-        var resp = service.manifestarInteresse(usuarioId, req.petId(), req.mensagem());
+            @AuthenticationPrincipal Jwt jwt) {
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        logger.debug("manifestarInteresse: Usuario ID: {}, Email: {}", usuario.getId(), usuario.getEmail());
+        var resp = service.manifestarInteresse(usuario.getId(), req.petId(), req.mensagem());
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }
 
@@ -52,8 +47,7 @@ public class InteresseAdocaoController {
     @PreAuthorize("hasAnyRole('ADMIN','ONG')")
     public ResponseEntity<InteresseResponse> atualizarStatus(
             @PathVariable Long id,
-            @RequestBody @Valid AtualizarStatusRequest req
-    ) {
+            @RequestBody @Valid AtualizarStatusRequest req) {
         logger.debug("atualizarStatus: MÉTODO ACESSADO!");
         var resp = service.atualizarStatus(id, req.status());
         return ResponseEntity.ok(resp);
@@ -62,13 +56,9 @@ public class InteresseAdocaoController {
     @GetMapping("/usuarios/me/interesses")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<InteresseResponse>> listarMeusInteresses(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if (userDetails == null) {
-            throw new IllegalStateException("Detalhes do usuário autenticado não disponíveis.");
-        }
-
-        Long usuarioId = userDetails.getId();
-        var resp = service.listarPorUsuario(usuarioId);
+            @AuthenticationPrincipal Jwt jwt) {
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        var resp = service.listarPorUsuario(usuario.getId());
         return ResponseEntity.ok(resp);
     }
 
@@ -82,15 +72,13 @@ public class InteresseAdocaoController {
     @GetMapping("/ongs/me/interesses")
     @PreAuthorize("hasRole('ONG')")
     public ResponseEntity<List<InteresseResponse>> listarInteressesDaMinhaOng(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        if (userDetails == null) {
-            throw new IllegalStateException("Detalhes do usuário autenticado não disponíveis.");
+            @AuthenticationPrincipal Jwt jwt) {
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        if (usuario.getOrganizacao() == null) {
+            throw new IllegalStateException("Usuário ONG não possui organização associada.");
         }
-        logger.debug("listarInteressesDaMinhaOng: ONG Usuario ID recuperado: {}", userDetails.getId());
-        logger.debug("listarInteressesDaMinhaOng: ONG Organizacao ID recuperado: {}", userDetails.getOrganizacaoId());
-
-        Long organizacaoId = userDetails.getOrganizacaoId();
+        Long organizacaoId = usuario.getOrganizacao().getId();
+        logger.debug("listarInteressesDaMinhaOng: ONG Organizacao ID: {}", organizacaoId);
         var resp = service.listarInteressesPorOrganizacao(organizacaoId);
         return ResponseEntity.ok(resp);
     }

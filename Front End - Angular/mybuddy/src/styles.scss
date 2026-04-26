@@ -1,8 +1,126 @@
-/* You can add global styles to this file, and also import other style files */
+
 @import "primeicons/primeicons.css";
 
 body {
   margin: 0;
   padding: 0;
   font-family: var(--font-family);
-};
+}
+
+:root {
+  //Tokens das paletas de cores definidas no escopo do projeto.
+  --primary-color: #ff7b00;
+  --secondary-color: #5d831c;
+  --accent-color: #2C3E50;
+
+  --surface-ground: #f4f4f4; /*é usado no PrimeNG para definir a cor do background da página*/
+  --surface-card: #ffffff; /*é usado no PrimeNG para definir a cor de fundo dos cards*/
+  --text-color: #1e1e1e;
+  --text-color-secondary: #2c3e50;
+
+
+  //Tokens de definição de espaçamento.
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  //Tokens das tipografias do projeto, incluindo fontes, tamanhos e pesos.
+  --font-family: 'Inter', sans-serif;
+  --font-family: 'SF Pro Display', sans-serif;
+  --font-family: 'SF Pro Text', sans-serif;
+  --font-family: 'SF Pro Rounded', sans-serif;
+  --font-family: 'SF Pro', sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  --line-height-sm: 1.25;
+  --line-height-md: 1.5;
+  --line-height-lg: 1.75;
+
+  //Tokens de definição do border-radius e sombreamento
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-xxl: 36px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
+  --shadow-xxl: 0 25px 50px rgba(0, 0, 0, 0.25);
+}
+
+//Tokens de definição de escala tipográfica (h1-h6 e body caption).
+  h1 {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-sm);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h4 {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h5 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h6 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-light);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  p {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-lg);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  .caption {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-light);
+    line-height: var(--line-height-sm);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+
