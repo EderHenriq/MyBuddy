@@ -38,9 +38,17 @@ services:
     # MY-243 → dados do PostgreSQL persistem entre reinicializações
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
 
     networks:
       - mybuddy-network
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mybuddy -d mybuddy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   # ── MY-242: Keycloak ──────────────────────────────────────
   keycloak:
@@ -72,6 +80,8 @@ services:
     networks:
       - mybuddy-network
 
+    volumes:
+      - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
 # ── MY-243: Declaração dos volumes ───────────────────────────
 # Dados salvos mesmo após "docker compose down"
 # Para apagar tudo: docker compose down -v
@@ -82,9 +92,6 @@ volumes:
   postgres-data:
     name: mybuddy_postgres_data
 
-  networks:
-    mybuddy-network:
-  
   backend-uploads:
     name: mybuddy_backend_uploads
 
