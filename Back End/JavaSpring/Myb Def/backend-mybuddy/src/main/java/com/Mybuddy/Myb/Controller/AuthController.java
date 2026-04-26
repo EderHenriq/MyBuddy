@@ -23,10 +23,30 @@ public class AuthController {
         this.keycloakUserSyncService = keycloakUserSyncService;
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<Usuario> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
-        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
-        return ResponseEntity.ok(usuario);
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authService.authenticateUser(loginRequest);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = authService.generateJwtToken(authentication);
+
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    roles,
+                    userDetails.getOrganizacaoId()));
+
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            return ResponseEntity.status(401).body(new MessageResponse("Credenciais inválidas."));
+        }
     }
 
     @PostMapping("/cadastro")
