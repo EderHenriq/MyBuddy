@@ -75,7 +75,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
-    void deveRetornar401QuandoEndpointLoginLegadoForAcessado() throws Exception {
+    void deveRetornar404QuandoEndpointLoginLegadoForAcessado() throws Exception {
         // O endpoint /api/auth/login foi removido — deve retornar 404
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
