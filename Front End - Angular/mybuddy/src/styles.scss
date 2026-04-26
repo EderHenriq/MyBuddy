@@ -1,9 +1,10 @@
+@use 'styles/grid' as *;
 @import "material-icons/iconfont/material-icons.css";
 
 body {
   margin: 0;
   padding: 0;
-  font-family: var(--font-family);
+  font-family: var(--font-family-primary);
 }
 
 :root {
@@ -26,11 +27,8 @@ body {
   --spacing-xl: 3rem;
 
   //Tokens das tipografias do projeto, incluindo fontes, tamanhos e pesos.
-  --font-family: 'Inter', sans-serif;
-  --font-family: 'SF Pro Display', sans-serif;
-  --font-family: 'SF Pro Text', sans-serif;
-  --font-family: 'SF Pro Rounded', sans-serif;
-  --font-family: 'SF Pro', sans-serif;
+  --font-family-primary: 'Inter', sans-serif;
+  --font-family-secondary: 'DM Sans', sans-serif;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
@@ -63,14 +61,6 @@ body {
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
   --shadow-xxl: 0 25px 50px rgba(0, 0, 0, 0.25);
-}
-
-//Container global para largura máxima e padding lateral
-.container {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-md);
 }
 
 //Tokens de definição de escala tipográfica (h1-h6 e body caption).
