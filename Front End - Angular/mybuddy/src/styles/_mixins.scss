@@ -1,0 +1,140 @@
+@use "sass:map";
+
+//Mixins de Responsividade para diferentes formatos de telas.
+
+
+$breakpoints: (
+  'mobile-sm': 320px, //Tamanho referência: iPhone SE (1ª geração)
+  'mobile-md': 375px, //Tamanho referência: iPhone 13 Mini, X e 11 Pro
+  'mobile-lg': 412px, //Tamanho referência: iPhone 12, 12 Pro, 13 e 13 Pro
+  'tablet-sm': 768px, //Tamanho referência: iPad (5ª geração)
+  'tablet-md': 1024px, //Tamanho referência: iPad Air (4ª geração)
+  'desktop-sm': 1200px, //Tamanho referência: MacBook Air (M1)
+  'desktop-md': 1440px, //Tamanho referência: MacBook Pro (13 polegadas)
+  'desktop-lg': 1920px, //Tamanho referência: Monitores Full HD (1920x1080)
+  'desktop-xl': 2560px, //Tamanho referência: Monitores 4K (3840x2160)
+);
+
+@mixin devices($breakpoint) {
+  $value: map.get($breakpoints, $breakpoint);
+
+  @if $value == null {
+    @warn "Breakpoint '#{$breakpoint}' não encontrado. Verificar no _mixins.scss se o nome está correto.";
+  }
+  else {
+    @media (min-width: $value) {
+      @content;
+    }
+  }
+}
+
+//Mixins para o Flexbox geral.
+
+@mixin flex-start {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+@mixin flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+@mixin flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+//Mixins para a tipográfia.
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin line-clamp($linhas) {
+  display: -webkit-box;
+  -webkit-line-clamp: $linhas;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  line-clamp: $linhas; //Implementação futura para navegadores que suportarem a propriedade nativa.
+}
+
+@mixin text-no-select {
+  user-select: none;
+}
+
+@mixin heading-x1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+@mixin text-highlight {
+  color: var(--primary-color);
+}
+
+
+//Mixin de estilização dos Cards dos Pets.
+@mixin card-style {
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+}
+
+@mixin card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform, box-shadow;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+//Mixin de desfoque e overlays
+@mixin overlay($opacity: 0.5, $blur: 0px) {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, $opacity);
+    border-radius: inherit;
+
+    @if $blur != 0 and $blur != 0px {
+      backdrop-filter: blur($blur);
+      -webkit-backdrop-filter: blur($blur); /* Adicionado para navegadores como o Safari*/
+    }
+  }
+}
+
+

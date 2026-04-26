@@ -1,4 +1,6 @@
 services:
+
+  # Banco de dados exclusivo para o Keycloak (dev local)
   postgres:
     image: postgres:16
     container_name: postegres-keycloak
@@ -8,9 +10,8 @@ services:
       POSTGRES_PASSWORD: keycloak
     ports:
       - 5432:5432
-    networks:
-      - mybuddy-network
 
+  # Keycloak (dev local sem Docker Compose principal)
   keycloak:
     image: quay.io/keycloak/keycloak:26.5.5
     pull_policy: if_not_present
@@ -27,11 +28,3 @@ services:
       - 8080:8080
     depends_on:
       - postgres
-    networks:
-      - mybuddy-network
-
-# ── MY-245: Declaração das redes ─────────────────────────────
-networks:
-  mybuddy-network:
-    name: mybuddy_network
-    driver: bridge
