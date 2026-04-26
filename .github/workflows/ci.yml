@@ -3,21 +3,15 @@ name: CI - MyBuddy Tests
 on:
   push:
     branches:
-      - develop
       - Developer
       - main
-      - 'MY-**'
-      - 'feature/**'
   pull_request:
     branches:
       - Developer
       - main
-      - 'feature/**'
-      - 'fix/**'
-      - 'MY-**'
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
