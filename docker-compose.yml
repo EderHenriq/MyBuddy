@@ -20,6 +20,13 @@ services:
 
     networks:
       - mybuddy-network
+    
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   # ── PostgreSQL (banco do Keycloak e do backend) ───────────
   postgres:
