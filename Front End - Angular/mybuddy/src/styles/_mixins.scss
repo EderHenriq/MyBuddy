@@ -68,6 +68,15 @@ $breakpoints: (
   gap: var(--spacing-sm);
 }
 
+//Mixin para o sistema de Grid
+
+@mixin grid-cols($cols: 12, $gap: var(--spacing-md)){
+  display: grid;
+  grid-template-columns: repeat($cols, 1fr);
+  gap: $gap;
+}
+
+
 //Mixins para a tipográfia.
 
 @mixin truncate {

@@ -1,0 +1,23 @@
+@use 'mixins' as *;
+
+//Container global do projeto
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+//Grid System
+
+.grid-2 {
+  @include grid-cols(2);
+}
+
+.grid-3 {
+  @include grid-cols(3);
+}
+
+.grid-4 {
+  @include grid-cols(4);
+}
