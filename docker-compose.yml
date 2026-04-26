@@ -22,7 +22,7 @@ services:
       - mybuddy-network
     
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
+      test: [ "CMD", "mongosh", "--username", "admin", "--password", "admin", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')", "--quiet" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -89,6 +89,13 @@ services:
 
     volumes:
       - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/realms/master || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 10
+      start_period: 60s 
 
   # ── MY-234: Backend Spring Boot ───────────────────────────
   backend:
