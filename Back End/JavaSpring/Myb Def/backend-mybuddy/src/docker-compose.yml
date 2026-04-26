@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: keycloak
     ports:
       - 5432:5432
+    networks:
+      - mybuddy-network
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.5.5
@@ -25,4 +27,11 @@ services:
       - 8080:8080
     depends_on:
       - postgres
+    networks:
+      - mybuddy-network
+
+networks:
+  mybuddy-network:
+    name: mybuddy_network
+    driver: bridge
 
