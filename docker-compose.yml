@@ -18,6 +18,9 @@ services:
     volumes:
       - mongodb-data:/data/db
 
+    networks:
+      - mybuddy-network
+
   # ── PostgreSQL (banco do Keycloak e do backend) ───────────
   postgres:
     image: postgres:16-alpine
@@ -35,6 +38,9 @@ services:
     # MY-243 → dados do PostgreSQL persistem entre reinicializações
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
+    networks:
+      - mybuddy-network
 
   # ── MY-242: Keycloak ──────────────────────────────────────
   keycloak:
@@ -63,6 +69,9 @@ services:
     depends_on:
       - postgres
 
+    networks:
+      - mybuddy-network
+
 # ── MY-243: Declaração dos volumes ───────────────────────────
 # Dados salvos mesmo após "docker compose down"
 # Para apagar tudo: docker compose down -v
@@ -72,3 +81,11 @@ volumes:
 
   postgres-data:
     name: mybuddy_postgres_data
+
+  networks:
+    mybuddy-network:
+
+networks:
+  mybuddy-network:
+   name: mybuddy_network
+   driver: bridge
