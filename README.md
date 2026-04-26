@@ -12,6 +12,25 @@ MyBuddy é uma plataforma web que centraliza **adoção, serviços, eventos e ma
 
 ---
 
+##  O Problema que Resolvemos
+
+ONGs e protetores **lutam por visibilidade** em redes sociais desordenadas. Adotantes se perdem em **buscas ineficientes**. Tutores não encontram **serviços locais confiáveis**. O MyBuddy conecta todas essas pontas em um único ecossistema.
+
+---
+
+##  Funcionalidades
+
+| Módulo | Descrição |
+|---|---|
+| 🐶 **Portal de Adoção** | Vitrine de animais com perfis detalhados e filtros por espécie, porte e localização |
+| 📅 **Feiras de Adoção** | Cadastro e divulgação de eventos locais por ONGs e protetores |
+| 🗺️ **Guia de Serviços** | Diretório geolocalizado de pet shops e clínicas veterinárias |
+| 🏪 **Marketplace** | Compra e venda de produtos e serviços pet com pagamento integrado |
+| 💰 **Doações** | Canal direto de apoio financeiro para ONGs e protetores cadastrados |
+| 🔐 **Autenticação** | Login federado via Keycloak com perfis para adotante, ONG e pet shop |
+
+---
+
 ## Setup do Ambiente
 
 ### Pré-requisitos
@@ -70,25 +89,6 @@ docker compose down -v
 - O realm `mybuddy` do Keycloak é importado automaticamente na primeira subida via `docker/keycloak/realm-export.json`
 - O banco `keycloak` é criado automaticamente via `docker/init-db.sql`
 - Dados do PostgreSQL e MongoDB persistem entre reinicializações via volumes Docker
-
----
-
-##  O Problema que Resolvemos
-
-ONGs e protetores **lutam por visibilidade** em redes sociais desordenadas. Adotantes se perdem em **buscas ineficientes**. Tutores não encontram **serviços locais confiáveis**. O MyBuddy conecta todas essas pontas em um único ecossistema.
-
----
-
-##  Funcionalidades
-
-| Módulo | Descrição |
-|---|---|
-| 🐶 **Portal de Adoção** | Vitrine de animais com perfis detalhados e filtros por espécie, porte e localização |
-| 📅 **Feiras de Adoção** | Cadastro e divulgação de eventos locais por ONGs e protetores |
-| 🗺️ **Guia de Serviços** | Diretório geolocalizado de pet shops e clínicas veterinárias |
-| 🏪 **Marketplace** | Compra e venda de produtos e serviços pet com pagamento integrado |
-| 💰 **Doações** | Canal direto de apoio financeiro para ONGs e protetores cadastrados |
-| 🔐 **Autenticação** | Login federado via Keycloak com perfis para adotante, ONG e pet shop |
 
 ---
 
