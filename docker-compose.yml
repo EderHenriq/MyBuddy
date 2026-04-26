@@ -136,7 +136,7 @@ services:
       - mybuddy-network
 
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8081 && echo -e 'GET /actuator/health HTTP/1.0\r\n\r\n' >&3 && cat <&3 | grep -q 'UP' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
