@@ -21,6 +21,13 @@ services:
     networks:
       - mybuddy-network
 
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
   # ── PostgreSQL (banco do Keycloak e do backend) ───────────
   postgres:
     image: postgres:16-alpine
@@ -41,6 +48,13 @@ services:
 
     networks:
       - mybuddy-network
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   # ── MY-242: Keycloak ──────────────────────────────────────
   keycloak:
@@ -71,6 +85,13 @@ services:
 
     networks:
       - mybuddy-network
+    
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/realms/master || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 10
+      start_period: 60s
 
 # ── MY-243: Declaração dos volumes ───────────────────────────
 # Dados salvos mesmo após "docker compose down"
@@ -82,10 +103,8 @@ volumes:
   postgres-data:
     name: mybuddy_postgres_data
 
-  networks:
-    mybuddy-network:
-
+# ── MY-245: Declaração das redes ─────────────────────────────
 networks:
   mybuddy-network:
-   name: mybuddy_network
-   driver: bridge
+    name: mybuddy_network
+    driver: bridge

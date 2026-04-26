@@ -30,8 +30,8 @@ services:
     networks:
       - mybuddy-network
 
+# ── MY-245: Declaração das redes ─────────────────────────────
 networks:
   mybuddy-network:
     name: mybuddy_network
     driver: bridge
-
