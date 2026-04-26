@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - develop
-      - main
       - Developer
+      - main
       - 'MY-**'
       - 'feature/**'
   pull_request:
@@ -15,6 +15,10 @@ on:
       - 'feature/**'
       - 'fix/**'
       - 'MY-**'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
