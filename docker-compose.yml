@@ -84,6 +84,9 @@ volumes:
 
   networks:
     mybuddy-network:
+  
+  backend-uploads:
+    name: mybuddy_backend_uploads
 
 networks:
   mybuddy-network:

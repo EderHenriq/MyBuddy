@@ -35,3 +35,65 @@ networks:
     name: mybuddy_network
     driver: bridge
 
+# ── MY-234: Backend Spring Boot ───────────────────────────
+  backend:
+    build:
+      context: ./Back End/JavaSpring/Myb Def/backend-mybuddy
+      dockerfile: Dockerfile
+    container_name: mybuddy-backend
+    restart: unless-stopped
+
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      MONGODB_URI: ${MONGODB_URI}
+      MONGODB_DATABASE: ${MONGODB_DATABASE}
+      KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+      UPLOAD_DIR: ${UPLOAD_DIR}
+
+    ports:
+      - "8081:8081"
+
+    volumes:
+      - backend-uploads:/app/uploads
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+
+    networks:
+      - mybuddy-network
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # ── MY-236: Frontend Angular ──────────────────────────────
+  frontend:
+    build:
+      context: ./Front End - Angular/mybuddy
+      dockerfile: dockerfile
+    container_name: mybuddy-frontend
+    restart: unless-stopped
+
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+    networks:
+      - mybuddy-network
+
