@@ -1,6 +1,5 @@
 package com.Mybuddy.Myb.Controller;
 
-import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
 import com.Mybuddy.Myb.Payload.Response.MessageResponse;
 import com.Mybuddy.Myb.Service.AuthService;
@@ -21,32 +20,6 @@ public class AuthController {
     public AuthController(AuthService authService, KeycloakUserSyncService keycloakUserSyncService) {
         this.authService = authService;
         this.keycloakUserSyncService = keycloakUserSyncService;
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        try {
-            Authentication authentication = authService.authenticateUser(loginRequest);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = authService.generateJwtToken(authentication);
-
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(item -> item.getAuthority())
-                    .collect(Collectors.toList());
-
-            return ResponseEntity.ok(new JwtResponse(jwt,
-                    userDetails.getId(),
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    roles,
-                    userDetails.getOrganizacaoId()));
-
-        } catch (org.springframework.security.core.AuthenticationException e) {
-            return ResponseEntity.status(401).body(new MessageResponse("Credenciais inválidas."));
-        }
     }
 
     @PostMapping("/cadastro")

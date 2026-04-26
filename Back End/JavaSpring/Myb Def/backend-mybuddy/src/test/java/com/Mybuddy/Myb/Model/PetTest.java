@@ -12,8 +12,15 @@ class PetTest {
 
     @BeforeEach
     void setUp() {
-        organizacao = new Organizacao("ONG Teste", "ong@teste.com", "12345678000100",
-                "44999999999", "Rua Teste, 123", "Descrição", "www.ong.com");
+        organizacao = Organizacao.builder()
+                .nomeFantasia("ONG Teste")
+                .emailContato("ong@teste.com")
+                .cnpj("12345678000100")
+                .telefoneContato("44999999999")
+                .endereco("Rua Teste, 123")
+                .descricao("Descrição")
+                .website("www.ong.com")
+                .build();
 
         pet = new Pet("Rex", "Labrador", 3, Especie.CAO, Porte.MEDIO, "Amarelo",
                 "CURTA", "MACHO", organizacao, true, true, false, "Maringá", "PR");

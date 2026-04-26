@@ -20,18 +20,11 @@ services:
 
     networks:
       - mybuddy-network
-    
-    healthcheck:
-      test: [ "CMD", "mongosh", "--username", "admin", "--password", "admin", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')", "--quiet" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
 
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD", "mongosh", "--username", "admin", "--password", "admin", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')", "--quiet"]
+      interval: 10s
+      timeout: 5s
       retries: 5
       start_period: 20s
 
@@ -56,13 +49,6 @@ services:
 
     networks:
       - mybuddy-network
-    
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U mybuddy -d mybuddy"]
@@ -77,7 +63,7 @@ services:
     container_name: mybuddy-keycloak
     restart: unless-stopped
 
-    command: start-dev
+    command: start-dev --import-realm
 
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
@@ -97,17 +83,11 @@ services:
       - "${KEYCLOAK_PORT:-8080}:8080"
 
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
     networks:
       - mybuddy-network
-    
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/realms/master || exit 1"]
-      interval: 30s
-      timeout: 15s
-      retries: 10
-      start_period: 60s
 
     volumes:
       - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json

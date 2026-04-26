@@ -11,9 +11,15 @@ class OrganizacaoTest {
 
     @BeforeEach
     void setUp() {
-        organizacao = new Organizacao("ONG Amigos dos Pets", "contato@ong.com",
-                "12345678000100", "44999999999", "Rua das Flores, 100",
-                "ONG dedicada à adoção", "www.amigodospets.com");
+        organizacao = Organizacao.builder()
+                .nomeFantasia("ONG Amigos dos Pets")
+                .emailContato("contato@ong.com")
+                .cnpj("12345678000100")
+                .telefoneContato("44999999999")
+                .endereco("Rua das Flores, 100")
+                .descricao("ONG dedicada à adoção")
+                .website("www.amigodospets.com")
+                .build();
     }
 //ss
     @Test

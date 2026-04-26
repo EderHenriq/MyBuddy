@@ -3,13 +3,16 @@ name: CI - MyBuddy Tests
 on:
   push:
     branches:
-      - develop
+      - Developer
       - main
-      - 'feature/**'
   pull_request:
     branches:
-      - develop
+      - Developer
       - main
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
