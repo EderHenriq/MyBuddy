@@ -28,7 +28,7 @@ const MyBuddyPreset = definePreset(Aura, {
       dark: {
         primary: {
           color: '{primary.500}',
-          contrastColor: '#ffffff',
+          contrastColor: '#3a3737',
           hoverColor: '{primary.600}',
           activeColor: '{primary.700}',
         },
