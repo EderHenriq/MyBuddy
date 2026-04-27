@@ -35,6 +35,30 @@ const MyBuddyPreset = definePreset(Aura, {
       },
     },
   },
+  components: {
+    inputtext: {
+      root: {
+        borderRadius: '8px',
+        borderColor: '#d9d9d9',
+        focusBorderColor: '#2d2d2d',
+      },
+    },
+    checkbox: {
+      root: {
+        checkedBackground: '#5d831c',
+        checkedBorderColor: '#5d831c',
+        focusBorderColor: '#5d831c',
+        checkedHoverBackground: '#4a6b16',
+        checkedHoverBorderColor: '#4a6b16',
+        focusRing: {
+          color: '#5d831c',
+        },
+      },
+      icon: {
+        checkedColor: '#ffffff',
+      },
+    },
+  },
 });
 
 export { MyBuddyPreset };
