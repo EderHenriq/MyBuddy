@@ -59,7 +59,7 @@ services:
 
   # ── MY-242: Keycloak ──────────────────────────────────────
   keycloak:
-    image: quay.io/keycloak/keycloak:26.0
+    image: quay.io/keycloak/keycloak:26.5.5
     container_name: mybuddy-keycloak
     restart: unless-stopped
 
