@@ -1,6 +1,28 @@
 //Estilos globais dos formulários do MyBuddy
 
-.p-inputtext {
+.p-inputtext, .p-select, .p-datepicker {
   width: 100%;
   font-family: var(--font-family-primary);
+
+  &::placeholder {
+    color: #999;
+    font-size: var(--font-size-sm);
+  }
+}
+
+.p-checkbox {
+  .p-checkbox-icon {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.p-inputgroup {
+  .p-inputgroup-addon {
+    background: #ffffff;
+    border-color: var(--border-color);
+    color: var(--text-color);
+    padding: 0 var(--spacing-sm);
+  }
 }
