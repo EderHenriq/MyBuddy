@@ -58,6 +58,32 @@ const MyBuddyPreset = definePreset(Aura, {
         checkedColor: '#ffffff',
       },
     },
+    button: {
+      root: {
+        secondary: {
+          background: '#efeeee',
+          borderColor: 'transparent',
+          hoverBackground: '#e0dfdf',
+          activeBackground: '#d4d3d3',
+        },
+      },
+    },
+    inputgroup: {
+      addon: {
+        background: '#ffffff',
+        borderColor: '#d9d9d9',
+        borderRadius: '8px',
+        color: '#1e1e1e',
+      },
+    },
+    autocomplete: {
+      dropdown: {
+        background: '#ffffff',
+        borderColor: '#d9d9d9',
+        borderRadius: '8px',
+        hoverBackground: '#f5f5f5',
+      },
+    },
   },
 });
 
