@@ -38,20 +38,22 @@ const MyBuddyPreset = definePreset(Aura, {
   components: {
     inputtext: {
       root: {
-        borderRadius: '8px',
-        borderColor: '#d9d9d9',
+        borderRadius: 'var(--radius-sm)',
+        borderColor: 'var(--border-color)',
+        hoverBorderColor: '#b3b3b3',
         focusBorderColor: '#2d2d2d',
       },
     },
     checkbox: {
       root: {
-        checkedBackground: '#5d831c',
-        checkedBorderColor: '#5d831c',
-        focusBorderColor: '#5d831c',
+        borderRadius: '4px',
+        checkedBackground: 'var(--secondary-color)',
+        checkedBorderColor: 'var(--secondary-color',
+        focusBorderColor: 'var(--secondary-color)',
         checkedHoverBackground: '#4a6b16',
         checkedHoverBorderColor: '#4a6b16',
         focusRing: {
-          color: '#5d831c',
+          color: 'var(--secondary-color)',
         },
       },
       icon: {
@@ -60,6 +62,7 @@ const MyBuddyPreset = definePreset(Aura, {
     },
     button: {
       root: {
+        borderRadius: 'var(--radius-sm)',
         secondary: {
           background: '#efeeee',
           borderColor: 'transparent',
@@ -71,16 +74,19 @@ const MyBuddyPreset = definePreset(Aura, {
     inputgroup: {
       addon: {
         background: '#ffffff',
-        borderColor: '#d9d9d9',
-        borderRadius: '8px',
-        color: '#1e1e1e',
+        borderColor: 'var(--border-color)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--text-color)',
       },
     },
     autocomplete: {
+      root: {
+        borderRadius: 'var(--radius-sm)',
+      },
       dropdown: {
         background: '#ffffff',
-        borderColor: '#d9d9d9',
-        borderRadius: '8px',
+        borderColor: 'var(--border-color)',
+        borderRadius: 'var(-radius-sm)',
         hoverBackground: '#f5f5f5',
       },
     },
