@@ -48,7 +48,7 @@ const MyBuddyPreset = definePreset(Aura, {
       root: {
         borderRadius: '4px',
         checkedBackground: 'var(--secondary-color)',
-        checkedBorderColor: 'var(--secondary-color',
+        checkedBorderColor: 'var(--secondary-color)',
         focusBorderColor: 'var(--secondary-color)',
         checkedHoverBackground: '#4a6b16',
         checkedHoverBorderColor: '#4a6b16',
@@ -86,7 +86,7 @@ const MyBuddyPreset = definePreset(Aura, {
       dropdown: {
         background: '#ffffff',
         borderColor: 'var(--border-color)',
-        borderRadius: 'var(-radius-sm)',
+        borderRadius: 'var(--radius-sm)',
         hoverBackground: '#f5f5f5',
       },
     },
