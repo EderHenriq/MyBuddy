@@ -103,6 +103,7 @@
 
 .components-exemple {
   @include flex-wrap;
+  align-items: center;
   gap: var(--spacing-xl);
   padding: var(--spacing-xl);
   background-color: var(--surface-ground);
@@ -111,14 +112,11 @@
   input {
     width: 300px;
   }
+}
 
-  & > * {
-    padding-right: var(--spacing-xl);
-    border-right: 1px solid var(--border-color);
-
-    &:last-child {
-      border-right: none;
-      padding-right: 0;
-    }
-  }
+.divider {
+  width: 1px;
+  height: 40px;
+  background-color: #ccc;
+  margin: 0 var(--spacing-md);
 }
