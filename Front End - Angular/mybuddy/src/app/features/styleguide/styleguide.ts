@@ -10,4 +10,6 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './styleguide.html',
   styleUrl: './styleguide.scss',
 })
-export class Styleguide {}
+export class Styleguide {
+  checked = false;
+}

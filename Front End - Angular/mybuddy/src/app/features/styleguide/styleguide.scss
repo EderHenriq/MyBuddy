@@ -1,21 +1,39 @@
 @use '../../../styles/mixins' as *;
 
+.styleguide-page {
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
 //Estilização dos cards do styleguide
 .card {
   display: flex;
   flex-direction: column;
   background-color: var(--surface-card);
   gap: var(--spacing-md);
-  margin: var(--spacing-xl) 0;
+  margin: var(--spacing-md) 0;
   padding: var(--spacing-xl);
   border-radius: var(--radius-xxl);
   box-shadow: var(--shadow-sm);
 }
 
 //Estilização dos títulos do styleguide
-.title {
+.titles {
   width: 100%;
   text-align: left;
+}
+
+.styleguide-header {
+  padding: var(--spacing-xl);
+
+
+  h1 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  p {
+    color: var(--text-color);
+  }
 }
 
 //Estilização da seção de cores do styleguide
@@ -104,6 +122,7 @@
 .components-exemple {
   @include flex-wrap;
   align-items: center;
+  justify-content: space-around;
   gap: var(--spacing-xl);
   padding: var(--spacing-xl);
   background-color: var(--surface-ground);
@@ -114,9 +133,16 @@
   }
 }
 
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--text-color-secondary);
+}
+
 .divider {
   width: 1px;
   height: 40px;
-  background-color: #ccc;
+  background-color: var(--border-color);
   margin: 0 var(--spacing-md);
 }
