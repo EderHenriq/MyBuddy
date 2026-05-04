@@ -20,6 +20,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/pets/pets').then(m => m.Pets),
   },
   {
+    // Rota para a página de styleguide
+    path: 'styleguide',
+    loadComponent: () => import('./features/styleguide/styleguide').then(m => m.Styleguide),
+  },
+  {
     // Rota para páginas não encontradas (404)
     path: '**',
     loadComponent: () => import('./shared/components/not-found/not-found').then(m => m.NotFound),
