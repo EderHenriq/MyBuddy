@@ -1,18 +1,35 @@
 .color-mybuddy {
-  background-color: var(--surface-ground);
-  color: var(--text-color);
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  align-items: center;
-  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-md);
+}
+
+.color-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 120px;
+}
+.color-box {
+  width: 80px;
+  height: 80px;
   border-radius: var(--radius-md);
 }
 
-.color-box {
-  width: 50px;
-  height: 50px;
-  border-radius: var(--radius-sm);
+.color-name {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+
+.color-name {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+
+.color-token {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--text-color-secondary);
 }
 
 .card {
