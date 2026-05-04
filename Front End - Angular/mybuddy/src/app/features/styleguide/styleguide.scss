@@ -1,17 +1,46 @@
+//Estilização dos cards do styleguide
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-card);
+  gap: var(--spacing-md);
+  margin: var(--spacing-xl) 0;
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xxl);
+  box-shadow: var(--shadow-sm);
+}
+
+//Estilização dos títulos do styleguide
+.title {
+  width: 100%;
+  text-align: left;
+}
+
+//Estilização da seção de cores do styleguide
+.color-pallete {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  background-color: var(--surface-ground);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+}
+
 .color-mybuddy {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-md);
+  justify-content: space-around;
 }
 
 .color-item {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-  width: 120px;
+  width: 150px;
 }
 .color-box {
-  width: 80px;
+  width: 100%;
   height: 80px;
   border-radius: var(--radius-md);
 }
@@ -19,26 +48,42 @@
 .color-name {
   font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-sm);
-}
-
-.color-name {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-sm);
+  margin: 0;
 }
 
 .color-token {
   font-family: var(--font-family-secondary);
   font-size: var(--font-size-sm);
   color: var(--text-color-secondary);
+  margin: 0;
+  white-space: nowrap;
 }
 
-.card {
-  background-color: var(--surface-card);
-  justify-content: flex-start;
-  align-items: center;
-  gap: 20px;
-  margin: 40px;
-  padding: 40px;
-  border-radius: var(--radius-xxl);
-  box-shadow: var(--shadow-sm);
+.color-hex {
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--text-color-secondary);
+  margin: 0;
+}
+
+//Estilização da seção de tipografia e icones do styleguide
+
+.testH1-H6 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  font-family: var(--font-family-secondary);
+  background-color: var(--surface-ground);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+}
+
+.icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  justify-content: space-around;
+  padding: var(--spacing-xl);
+  background-color: var(--surface-ground);
+  border-radius: var(--radius-xl);
 }
