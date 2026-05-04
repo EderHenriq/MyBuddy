@@ -1,3 +1,5 @@
+@use '../../../styles/mixins' as *;
+
 //Estilização dos cards do styleguide
 .card {
   display: flex;
@@ -86,4 +88,37 @@
   padding: var(--spacing-xl);
   background-color: var(--surface-ground);
   border-radius: var(--radius-xl);
+}
+
+//Estilização da seção de espaçamentos
+.spacing-scale {
+  @include flex-wrap;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: var(--spacing-xs);
+  background-color: var(--surface-ground);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+}
+
+.components-exemple {
+  @include flex-wrap;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  background-color: var(--surface-ground);
+  border-radius: var(--radius-xl);
+
+  input {
+    width: 300px;
+  }
+
+  & > * {
+    padding-right: var(--spacing-xl);
+    border-right: 1px solid var(--border-color);
+
+    &:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+  }
 }
