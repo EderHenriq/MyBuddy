@@ -27,20 +27,20 @@ body {
 
 
   //Tokens de definição de espaçamento.
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 3rem;
+  --spacing-xs: 0.5rem; //Equivalente a 8px
+  --spacing-sm: 1rem; //Equivalente a 16px
+  --spacing-md: 1.5rem; //Equivalente a 24px
+  --spacing-lg: 2rem; //Equivalente a 32px
+  --spacing-xl: 3rem; //Equivalente a 48px
 
   //Tokens das tipografias do projeto, incluindo fontes, tamanhos e pesos.
   --font-family-primary: 'Inter', sans-serif;
   --font-family-secondary: 'DM Sans', sans-serif;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --font-size-xxl: 2rem;
+  --font-size-sm: 0.875rem; //Equivalente a 14px
+  --font-size-md: 1rem; //Equivalente a 16px
+  --font-size-lg: 1.25rem; //Equivalente a 20px
+  --font-size-xl: 1.5rem; //Equivalente a 24px
+  --font-size-xxl: 2rem;  //Equivalente a 32px
 
   --font-weight-thin: 100;
   --font-weight-extralight: 200;

@@ -27,10 +27,10 @@
 
 //Estilização dos links rápidos do header
 .quick-links {
-  @include flex-end;
+  @include flex-center;
 
   ul {
-    @include flex-end;
+    @include flex-center;
     list-style: none;
     gap: var(--spacing-lg);
     padding: 0;
@@ -45,5 +45,38 @@
       }
     }
   };
+}
+
+//Estilização dos modais de perfil e notificações
+.quick-btn {
+  @include flex-center;
+  gap: var(--spacing-md);
+
+  .btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: var(--spacing-sm);
+    background-color: var(--text-color-white);
+    width: 45px;
+    height: 45px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    @include flex-center;
+
+    .material-icons {
+      font-size: var(--font-size-lg);
+      color: var(--text-color-black);
+    }
+  }
+
+  .profile-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
 }
 
