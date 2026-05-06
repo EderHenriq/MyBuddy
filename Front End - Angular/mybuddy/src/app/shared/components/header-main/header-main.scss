@@ -4,6 +4,14 @@
 .header {
   @include flex-between;
   padding: var(--spacing-xl) var(--spacing-md);
+  background-color: rgba(244, 244, 244, 0.65);
+  backdrop-filter: blur(8.75px);
+  -webkit-backdrop-filter: blur(8.75px); //Adicionado para navegadores como o Safari
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
 
 }
 
@@ -16,3 +24,26 @@
     font-weight: var(--font-weight-bold);
   }
 }
+
+//Estilização dos links rápidos do header
+.quick-links {
+  @include flex-end;
+
+  ul {
+    @include flex-end;
+    list-style: none;
+    gap: var(--spacing-lg);
+    padding: 0;
+
+    li {
+      a {
+        text-decoration: none;
+        color: var(--text-color-black);
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-medium);
+        transition: color 0.3s ease;
+      }
+    }
+  };
+}
+
