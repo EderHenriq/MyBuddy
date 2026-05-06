@@ -1,0 +1,18 @@
+@use '../../../../styles/mixins' as *;
+
+//Estilização do corpo do header
+.header {
+  @include flex-between;
+  padding: var(--spacing-xl) var(--spacing-md);
+
+}
+
+.logo-myb {
+  @include flex-center;
+  gap: var(--spacing-sm);
+
+  h1 {
+    font-size: var(--spacing-md);
+    font-weight: var(--font-weight-bold);
+  }
+}
