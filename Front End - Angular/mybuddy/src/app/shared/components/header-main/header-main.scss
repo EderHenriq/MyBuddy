@@ -45,9 +45,11 @@
     list-style: none;
     gap: var(--spacing-lg);
     padding: 0;
+    position: relative;
 
     li {
       position: relative;
+      z-index: 1;
 
       a {
         text-decoration: none;
@@ -57,22 +59,21 @@
         padding: var(--spacing-xs) var(--spacing-sm);
         border-radius: var(--radius-max);
         @include flex-center;
-
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         z-index: 1;
-
         background-color: transparent;
 
         &.active {
-          background-color: var(--primary-color);
           color: var(--text-color-white);
-          border-radius: var(--radius-max);
         }
+
+        transition: color 0.3s ease;
       }
     }
   }
 }
+
+//Pilula deslizante para indicar o link ativo
 
 //Estilização dos modais de perfil e notificações
 .quick-btn {
