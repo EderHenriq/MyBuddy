@@ -1,17 +1,28 @@
 <section>
   <header class="header">
     <div class="logo-myb">
-      <img src="/assets/logo/logo-provisoria.png" style="width: 80px; height: auto" alt="logo-mybuddy" class="logo-myb-img style" />
+      <img src="/assets/logo/logo-provisoria.png" alt="logo-mybuddy" class="logo-myb-img style" />
       <h1>MyBuddy</h1>
     </div>
 
     <nav>
       <div class="quick-links">
         <ul>
-          <li><a routerLink="home">Home</a></li>
-          <li><a routerLink="adotar">Adotar</a></li>
-          <li><a routerLink="eventos">Eventos</a></li>
-          <li><a routerLink="produtos">Produtos</a></li>
+          <li>
+            <a class="active" routerLink="/home" routerLinkActive="active">Home</a>
+          </li>
+          <li>
+            <a routerLink="/pets" routerLinkActive="active">Adotar</a>
+          </li>
+          <li>
+            <a routerLink="/eventos" routerLinkActive="active">Eventos</a>
+          </li>
+          <li>
+            <a routerLink="/produtos" routerLinkActive="active">Produtos</a>
+          </li>
+          <li>
+            <a routerLink="/sobre" routerLinkActive="active">Comunidade</a>
+          </li>
         </ul>
       </div>
     </nav>
