@@ -16,7 +16,7 @@
 }
 
 .logo-myb {
-  @include flex-center;
+  @include flex-start;
   gap: var(--spacing-sm);
 
   h1 {
