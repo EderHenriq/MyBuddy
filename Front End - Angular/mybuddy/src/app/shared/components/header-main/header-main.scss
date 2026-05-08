@@ -3,31 +3,30 @@
 //Estilização do corpo do header
 .header {
   @include flex-between;
-  padding: var(--spacing-xl) var(--spacing-md);
+  padding: 0 var(--spacing-md);
   background-color: rgba(244, 244, 244, 0.65);
   backdrop-filter: blur(8.75px);
   -webkit-backdrop-filter: blur(8.75px); //Adicionado para navegadores como o Safari
-
   position: sticky;
   top: 0;
   z-index: 1000;
   width: 100%;
+  height: 100px;
 }
 
 .logo-myb {
   @include flex-start;
-  gap: var(--spacing-sm);
-  width: 100px;
-  height: 100px;
+  gap: var(--spacing-xs);
 
   h1 {
     font-size: var(--spacing-md);
     font-weight: var(--font-weight-bold);
+    margin: 0;
   }
 
   .logo-myb-img {
-    width: 100%;
-    height: 100%;
+    width: 80px;
+    height: 80px;
     object-fit: contain;
   }
 }
@@ -36,15 +35,16 @@
 .quick-links {
   @include flex-center;
   background-color: var(--surface-card);
-  border-radius: var(--radius-max);
-  padding: var(--spacing-xxxs) var(--spacing-xs);
-  box-shadow: var(--shadow-md);
   height: 56px;
+  padding: var(--spacing-xs) var(--spacing-lg);
+  border-radius: var(--radius-max);
+  box-shadow: var(--shadow-navbar);
+  overflow: hidden;
 
   ul {
     @include flex-center;
     list-style: none;
-    gap: var(--spacing-xxs);
+    gap: var(--spacing-lg);
     padding: 0;
     position: relative;
 
@@ -53,50 +53,52 @@
       z-index: 1;
 
       a {
+        @include flex-center;
         text-decoration: none;
         color: var(--text-color-black);
-        font-size: var(--font-size-md);
+        font-size: var(--font-size-sm);
         font-weight: var(--font-weight-medium);
-        padding: var(--spacing-xs) var(--spacing-md);
+        line-height: var(--line-height-md);
+        padding: var(--spacing-xs);
+        white-space: nowrap;
+        cursor: pointer;
         border-radius: var(--radius-max);
-        @include flex-center;
         position: relative;
         z-index: 1;
         background-color: transparent;
+        transition: color 0.3s ease;
 
         &.active {
           color: var(--text-color-white);
         }
-
-        transition: color 0.3s ease;
+      }
       }
     }
-  }
 }
+
 
 //Pilula de destaque para o link ativo
 .sliding-pills {
   position: absolute;
-  top: 0;
-  height: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 40px;
   background-color: var(--primary-color);
   border-radius: var(--radius-max);
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-nav-active);
   z-index: 0;
   pointer-events: none;
   opacity: 0;
 
   transition:
-    left 0.35s cubic-bezier(0.4,0,0.2,1),
-    width 0.35s cubic-bezier(0.4,0,0.2,1),
+    left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.3s ease;
 
   &.visible {
     opacity: 1;
   }
-
 }
-
 
 //Estilização dos modais de perfil e notificações
 .quick-btn {

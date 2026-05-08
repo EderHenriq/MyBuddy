@@ -1,4 +1,3 @@
-<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <section>
   <header class="header">
     <div class="logo-myb">
@@ -11,9 +10,9 @@
         <ul>
           <div class="sliding-pills" [class.visible]="pillVisible" [style.left]="pillStyle.left" [style.width]="pillStyle.width"></div>
 
-          @for (link of links; track link.label; let i = $index) {
+          @for (link of links; track link.path) {
             <li>
-              <a #navLink style="cursor: pointer" [class.active]="activeIndex === i" (click)="onLinkClick(navLink, i)">
+              <a #navLink [routerLink]="link.path" routerLinkActive="active" (click)="onLinkClick(navLink)">
                 {{ link.label }}
               </a>
             </li>

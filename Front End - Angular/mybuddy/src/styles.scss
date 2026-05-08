@@ -3,13 +3,12 @@
 @use 'styles/forms' as *;
 @import "material-icons/iconfont/material-icons.css";
 
-
-
-body {
+html, body {
   margin: 0;
   padding: 0;
   font-family: var(--font-family-primary);
   background-color: var(--surface-ground);
+  width: 100%;
 }
 
 :root {
@@ -66,11 +65,15 @@ body {
   --radius-xxl: 36px;
   --radius-max: 100px;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05); //Sombra leve para elementos menores, como botões ou inputs.
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1); //Sombra moderada para elementos de destaque, como cards ou modais.
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15); //Sombra mais intensa para elementos que precisam de maior destaque, como pop-ups ou dropdowns.
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2); //Sombra forte para elementos que precisam de máxima atenção, como alertas ou notificações.
-  --shadow-xxl: 0 25px 50px rgba(0, 0, 0, 0.25); //Sombra muito forte para elementos que precisam de destaque extremo, como modais de confirmação ou mensagens de erro críticas.
+  //Tokens de definição de sombras
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xxl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --shadow-navbar: 0 0 8px rgba(0, 0, 0, 0.15);
+  --shadow-nav-active: 0 2px 8px rgba(0, 0, 0, 0.25);
 
   //Tokens de definição das cores das bordas
   --border-color: #d9d9d9;
