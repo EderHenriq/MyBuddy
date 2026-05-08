@@ -57,7 +57,7 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.routerSubscription.unsubscribe();
+    this.routerSubscription?.unsubscribe();
   }
 
   @HostListener('window:resize')
