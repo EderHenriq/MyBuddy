@@ -1,3 +1,4 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <section>
   <header class="header">
     <div class="logo-myb">
@@ -8,21 +9,15 @@
     <nav>
       <div class="quick-links">
         <ul>
-          <li>
-            <a class="active" routerLink="/home" routerLinkActive="active">Home</a>
-          </li>
-          <li>
-            <a routerLink="/pets" routerLinkActive="active">Adotar</a>
-          </li>
-          <li>
-            <a routerLink="/eventos" routerLinkActive="active">Eventos</a>
-          </li>
-          <li>
-            <a routerLink="/produtos" routerLinkActive="active">Produtos</a>
-          </li>
-          <li>
-            <a routerLink="/sobre" routerLinkActive="active">Comunidade</a>
-          </li>
+          <div class="sliding-pills" [class.visible]="pillVisible" [style.left]="pillStyle.left" [style.width]="pillStyle.width"></div>
+
+          @for (link of links; track link.label; let i = $index) {
+            <li>
+              <a #navLink style="cursor: pointer" [class.active]="activeIndex === i" (click)="onLinkClick(navLink, i)">
+                {{ link.label }}
+              </a>
+            </li>
+          }
         </ul>
       </div>
     </nav>

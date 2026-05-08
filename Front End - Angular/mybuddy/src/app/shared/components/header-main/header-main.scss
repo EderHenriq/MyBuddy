@@ -37,13 +37,14 @@
   @include flex-center;
   background-color: var(--surface-card);
   border-radius: var(--radius-max);
-  padding: var(--spacing-xxxs) var(--spacing-lg);
+  padding: var(--spacing-xxxs) var(--spacing-xs);
   box-shadow: var(--shadow-md);
+  height: 56px;
 
   ul {
     @include flex-center;
     list-style: none;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-xxs);
     padding: 0;
     position: relative;
 
@@ -56,7 +57,7 @@
         color: var(--text-color-black);
         font-size: var(--font-size-md);
         font-weight: var(--font-weight-medium);
-        padding: var(--spacing-xs) var(--spacing-sm);
+        padding: var(--spacing-xs) var(--spacing-md);
         border-radius: var(--radius-max);
         @include flex-center;
         position: relative;
@@ -73,7 +74,29 @@
   }
 }
 
-//Pilula deslizante para indicar o link ativo
+//Pilula de destaque para o link ativo
+.sliding-pills {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: var(--radius-max);
+  box-shadow: var(--shadow-xs);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+
+  transition:
+    left 0.35s cubic-bezier(0.4,0,0.2,1),
+    width 0.35s cubic-bezier(0.4,0,0.2,1),
+    opacity 0.3s ease;
+
+  &.visible {
+    opacity: 1;
+  }
+
+}
+
 
 //Estilização dos modais de perfil e notificações
 .quick-btn {
