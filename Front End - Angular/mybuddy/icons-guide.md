@@ -27,3 +27,28 @@ Uso no templete: <span class="material-icons">nome_do_icone</span>
 3. Verificar se os icones aparecem corretamente na tela.
 4. Conferir se há erros no console.
 5. Remover o código de teste após a validação.
+
+
+# Ícones do FontAwesome 
+
+Adicionamos o catalogo de icones do Font Awesome, para utilizar icones que não estão disponíveis no Material Icons
+
+Uso no templete: <i class="fab fa-nome_do_icone"></i>
+
+| Contexto       | Ícone      | Nome Font Awesome   |
+|----------------|------------|---------------------|
+| Instagram      | Instagram  | `fa-instagram`      |
+| LinkedIn       | LinkedIn   | `fa-linkedin`       |
+| X (Twitter)    | X          | `fa-x-twitter`      |
+
+# Como testar?
+
+1. Fazer checkout na branch e rodar `npm install`.
+2. Adicionar temporariamente no `app.html`:
+   <span class="material-icons">favorite</span>
+   <i class="fab fa-instagram"></i>
+   <i class="fab fa-linkedin"></i>
+   <i class="fab fa-x-twitter"></i>
+3. Verificar se os ícones aparecem corretamente na tela.
+4. Conferir se há erros no console.
+5. Remover o código de teste após a validação.
