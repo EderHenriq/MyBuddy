@@ -3,6 +3,11 @@ import { authGuard } from './core/guards/auth.guards';
 
 export const routes: Routes = [
   {
+    // Routes de testes de componentes
+    path: 'header-landing',
+    loadComponent: () => import('./shared/components/header-landing-page/header-landing-page').then(m => m.HeaderLandingPage),
+  },
+  {
     // Redirecionamento inicial para a rota 'home'
     path: '',
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),

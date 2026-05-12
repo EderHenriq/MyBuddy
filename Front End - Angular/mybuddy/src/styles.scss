@@ -3,13 +3,12 @@
 @use 'styles/forms' as *;
 @import "material-icons/iconfont/material-icons.css";
 
-
-
-body {
+html, body {
   margin: 0;
   padding: 0;
   font-family: var(--font-family-primary);
   background-color: var(--surface-ground);
+  width: 100%;
 }
 
 :root {
@@ -22,23 +21,27 @@ body {
   --surface-card: #ffffff; /*é usado no PrimeNG para definir a cor de fundo dos cards*/
   --text-color: #1e1e1e;
   --text-color-secondary: #2c3e50;
+  --text-color-black: #000000;
+  --text-color-white: #ffffff;
 
 
   //Tokens de definição de espaçamento.
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 3rem;
+  --spacing-xxxs: 0.125rem; //Equivalente a 2px
+  --spacing-xxs: 0.25rem; //Equivalente a 4px
+  --spacing-xs: 0.5rem; //Equivalente a 8px
+  --spacing-sm: 1rem; //Equivalente a 16px
+  --spacing-md: 1.5rem; //Equivalente a 24px
+  --spacing-lg: 2rem; //Equivalente a 32px
+  --spacing-xl: 3rem; //Equivalente a 48px
 
   //Tokens das tipografias do projeto, incluindo fontes, tamanhos e pesos.
   --font-family-primary: 'Inter', sans-serif;
   --font-family-secondary: 'DM Sans', sans-serif;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --font-size-xxl: 2rem;
+  --font-size-sm: 0.875rem; //Equivalente a 14px
+  --font-size-md: 1rem; //Equivalente a 16px
+  --font-size-lg: 1.25rem; //Equivalente a 20px
+  --font-size-xl: 1.5rem; //Equivalente a 24px
+  --font-size-xxl: 2rem;  //Equivalente a 32px
 
   --font-weight-thin: 100;
   --font-weight-extralight: 200;
@@ -60,12 +63,17 @@ body {
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-xxl: 36px;
+  --radius-max: 100px;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
-  --shadow-xxl: 0 25px 50px rgba(0, 0, 0, 0.25);
+  //Tokens de definição de sombras
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xxl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --shadow-navbar: 0 0 8px rgba(0, 0, 0, 0.15);
+  --shadow-nav-active: 0 2px 8px rgba(0, 0, 0, 0.25);
 
   //Tokens de definição das cores das bordas
   --border-color: #d9d9d9;
