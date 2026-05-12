@@ -1,0 +1,49 @@
+  @use '../../../../styles/mixins' as *;
+
+  :host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: flex-end;
+}
+
+  .footer {
+    @include flex-between;
+    align-items: flex-start;
+    padding: var(--spacing-xxl) var(--spacing-xxl) var(--spacing-xxxl);
+    gap: 96px;
+    width: 100%;
+    min-height: 426px;
+    background-color: var(--text-color);
+    box-shadow: 4px 1px 16px 4px rgba(0, 0, 0, 0.13);
+    border-radius: 36px 36px 0 0;
+  }
+
+  .footer-infos {
+    @include flex-between;
+    gap: var(--spacing-md);
+
+    h2 {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-color-white);
+    }
+
+    p {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-color-white);
+    }
+
+    ul {
+      @include flex-center;
+      text-decoration: none;
+      list-style: none;
+      padding: 0;
+      position: relative;
+
+
+    }
+  }
+
+
