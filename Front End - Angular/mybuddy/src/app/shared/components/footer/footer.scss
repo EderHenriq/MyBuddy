@@ -11,7 +11,6 @@
     @include flex-between;
     align-items: flex-start;
     padding: var(--spacing-xxl) var(--spacing-xxl) var(--spacing-xxxl);
-    gap: 96px;
     width: 100%;
     min-height: 426px;
     background-color: var(--text-color);
@@ -20,7 +19,7 @@
   }
 
   .footer-infos {
-    @include flex-between;
+    @include flex-column;
     gap: var(--spacing-md);
 
     h2 {
@@ -32,17 +31,44 @@
     p {
       font-size: var(--font-size-md);
       font-weight: var(--font-weight-medium);
-      color: var(--text-color-white);
+      color: #F1F2F9;
     }
 
     ul {
-      @include flex-center;
-      text-decoration: none;
+      @include flex-start;
       list-style: none;
       padding: 0;
       position: relative;
+    }
+  }
 
+  .footer-column {
+    @include flex-wrap;
+    list-style: none;
 
+    h3 {
+      color: var(--text-color-white);
+      margin-bottom: 0;
+    }
+
+    a {
+      color: #F1F2F9;
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: var(--primary-color);
+      }
+    }
+
+    .column1 {
+      @include flex-column;
+      gap: var(--spacing-xs);
+    }
+
+    .column2 {
+      @include flex-column;
+      gap: var(--spacing-xs);
     }
   }
 
