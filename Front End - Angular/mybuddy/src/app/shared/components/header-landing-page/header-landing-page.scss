@@ -38,3 +38,30 @@
     white-space: nowrap;
   }
 }
+
+//Estilização dos links rapidos
+
+.quick-links {
+  ul {
+    @include flex-center;
+    list-style: none;
+    gap: var(--spacing-xl);
+    padding: 0;
+    margin: 0;
+  }
+
+  li a {
+    text-decoration: none;
+    color: var(--text-color-black);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-md);
+    white-space: nowrap;
+    position: relative;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
+}
