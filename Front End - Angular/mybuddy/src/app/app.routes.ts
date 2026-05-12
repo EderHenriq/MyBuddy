@@ -4,8 +4,8 @@ import { authGuard } from './core/guards/auth.guards';
 export const routes: Routes = [
   {
     // Routes de testes de componentes
-    path: 'header-main',
-    loadComponent: () => import('./shared/components/header-main/header-main').then(m => m.HeaderMain),
+    path: 'header-landing',
+    loadComponent: () => import('./shared/components/header-landing-page/header-landing-page').then(m => m.HeaderLandingPage),
   },
   {
     // Redirecionamento inicial para a rota 'home'
