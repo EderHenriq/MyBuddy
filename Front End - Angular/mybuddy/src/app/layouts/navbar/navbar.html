@@ -1,0 +1,30 @@
+<header class="navbar-container">
+  <div class="navbar-content">
+
+    <!-- Logo Section -->
+    <div class="navbar-brand">
+      <img src="assets/logo/logo-provisoria.png" alt="MyBuddy Logo" class="brand-logo" />
+      <span class="brand-text">MyBuddy</span>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="navbar-menu">
+      <ul class="nav-links">
+        <li *ngFor="let item of navItems" class="nav-item" [class.active]="item.active" (click)="setActive(item)">
+          {{ item.label }}
+        </li>
+      </ul>
+    </nav>
+
+    <!-- User Actions -->
+    <div class="navbar-actions">
+      <button class="action-btn notification-btn">
+        <i class="fas fa-bell"></i>
+      </button>
+      <div class="profile-container">
+        <!-- User Profile Image -->
+        <img src="assets/logo/logo-provisoria.png" alt="User Profile" class="profile-img" />
+      </div>
+    </div>
+  </div>
+</header>
