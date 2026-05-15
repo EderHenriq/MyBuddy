@@ -2,7 +2,6 @@ package com.Mybuddy.Myb.Controller;
 
 import com.Mybuddy.Myb.DTO.PetRequestDTO;
 import com.Mybuddy.Myb.DTO.PetResponse;
-import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
 import com.Mybuddy.Myb.Service.FotoPetService;
 import com.Mybuddy.Myb.Service.PetFiltro;
 import com.Mybuddy.Myb.Service.PetService;
@@ -16,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,7 +105,7 @@ public class PetController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('ONG') and @petService.isPetOwnedByCurrentUser(#id, authentication.principal.organizacaoId))")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ONG')")
     public ResponseEntity<PetResponse> atualizar(@PathVariable Long id, @Valid @RequestBody PetRequestDTO petRequestDTO) {
         log.info("Requisição para atualizar pet ID {}: {}", id, petRequestDTO.getNome());
         return ResponseEntity.ok(petService.atualizarPet(id, petRequestDTO));
@@ -121,14 +121,12 @@ public class PetController {
 
     @GetMapping("/organizacao/{organizacaoId}")
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
-    public ResponseEntity<List<PetResponse>> getPetsByOrganizacao(@PathVariable Long organizacaoId,
-                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if (userDetails.getOrganizacaoId() != null && !userDetails.getOrganizacaoId().equals(organizacaoId) &&
-                !userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            log.warn("Tentativa de acesso não autorizado aos pets da organização {} pelo usuário {}", organizacaoId, userDetails.getEmail());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        log.info("Buscando pets da organização por ID: {}", organizacaoId);
+    public ResponseEntity<List<PetResponse>> getPetsByOrganizacao(
+            @PathVariable Long organizacaoId,
+            @AuthenticationPrincipal Jwt jwt) {
+        String keycloakId = jwt.getSubject();
+        log.info("Buscando pets da organização por ID: {} - solicitado por: {}", organizacaoId, keycloakId);
+        // TODO MY-110: validar se ONG pertence ao organizacaoId após sincronização
         return ResponseEntity.ok(petService.buscarPetsPorOrganizacaoId(organizacaoId));
     }
 }

@@ -2681,7 +2681,6 @@
   "keycloakVersion": "26.5.5",
   "userManagedAccessAllowed": false,
   "organizationsEnabled": false,
-  "verifiableCredentialsEnabled": false,
   "adminPermissionsEnabled": false,
   "clientProfiles": {
     "profiles": []

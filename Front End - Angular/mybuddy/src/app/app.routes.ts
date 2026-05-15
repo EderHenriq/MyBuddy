@@ -1,6 +1,12 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guards';
 
 export const routes: Routes = [
+  {
+    // Routes de testes de componentes
+    path: 'footer',
+    loadComponent: () => import('./shared/components/footer/footer').then(m => m.Footer),
+  },
   {
     // Redirecionamento inicial para a rota 'home'
     path: '',
@@ -9,12 +15,19 @@ export const routes: Routes = [
   {
     // Rota para a página inicial (home)
     path: 'home',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/home/home').then(m => m.Home),
   },
   {
     // Rota para a página de pets
     path: 'pets',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/pets/pets').then(m => m.Pets),
+  },
+  {
+    // Rota para a página de styleguide
+    path: 'styleguide',
+    loadComponent: () => import('./features/styleguide/styleguide').then(m => m.Styleguide),
   },
   {
     // Rota para páginas não encontradas (404)

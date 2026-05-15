@@ -1,4 +1,6 @@
 services:
+
+  # Banco de dados exclusivo para o Keycloak (dev local)
   postgres:
     image: postgres:16
     container_name: postegres-keycloak
@@ -9,6 +11,7 @@ services:
     ports:
       - 5432:5432
 
+  # Keycloak (dev local sem Docker Compose principal)
   keycloak:
     image: quay.io/keycloak/keycloak:26.5.5
     pull_policy: if_not_present
@@ -25,4 +28,3 @@ services:
       - 8080:8080
     depends_on:
       - postgres
-

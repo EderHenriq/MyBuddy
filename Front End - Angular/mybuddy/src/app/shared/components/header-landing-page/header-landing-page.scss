@@ -1,0 +1,124 @@
+@use '../../../../styles/mixins' as *;
+
+
+
+//Estilização do corpo do header
+.header-landing-page {
+  @include flex-between;
+  padding: 0 50px;
+  background-color:  rgba(244, 244, 244, 0.65);
+  backdrop-filter: blur(8.75px);
+  -webkit-backdrop-filter: blur(8.75px); //Adicionado para navegadores como o Safari
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 90px;
+
+  @include devices('desktop-sm') {
+    padding: 0 50px;
+  }
+}
+
+.logo {
+  a {
+    @include flex-start;
+    text-decoration: none;
+    gap: var(--spacing-xs);
+  }
+
+  .logo-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+  }
+
+  .logo-text {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-color-black);
+    white-space: nowrap;
+  }
+}
+
+//Estilização dos links rapidos
+
+.quick-links {
+  ul {
+    @include flex-center;
+    list-style: none;
+    gap: var(--spacing-xl);
+    padding: 0;
+    margin: 0;
+  }
+
+  li a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-md);
+    white-space: nowrap;
+    position: relative;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #9f520a;
+    }
+  }
+}
+
+//Estilização dos botões de logins
+.auth-btns {
+  @include flex-center;
+  gap: var(--spacing-sm);
+
+
+  .btn-primary {
+    background: linear-gradient(180deg, rgba(96,88,96,0.14) 4.55%, rgba(198, 182, 198, 0.196) 100%);
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-xs);
+    border-radius: var(--radius-max);
+    box-shadow: var(--shadow-sm);
+
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      color: #9f520a;
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .btn-secondary {
+    background: var(--primary-color);
+    text-decoration: none;
+    color: var(--text-color-white);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-xs);
+    border-radius: var(--radius-max);
+    box-shadow: var(--shadow-sm);
+    transition: color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      background-color: #e06e00;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+     &:active {
+      transform: translateY(0);
+    }
+  }
+
+}

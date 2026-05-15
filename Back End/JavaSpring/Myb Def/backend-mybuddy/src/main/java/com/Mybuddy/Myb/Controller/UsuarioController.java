@@ -1,13 +1,13 @@
 package com.Mybuddy.Myb.Controller;
 
 import com.Mybuddy.Myb.Model.Usuario;
-import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
+import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import com.Mybuddy.Myb.Service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +17,11 @@ import java.util.List;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final KeycloakUserSyncService keycloakUserSyncService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, KeycloakUserSyncService keycloakUserSyncService) {
         this.usuarioService = usuarioService;
+        this.keycloakUserSyncService = keycloakUserSyncService;
     }
 
     @PostMapping
@@ -40,12 +42,9 @@ public class UsuarioController {
 
     @GetMapping("/meu-perfil")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Usuario> getMeuPerfil() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return usuarioService.buscarUsuarioPorId(userDetails.getId())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Usuario> getMeuPerfil(@AuthenticationPrincipal Jwt jwt) {
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        return ResponseEntity.ok(usuario);
     }
 
     @GetMapping("/{id}")
@@ -57,7 +56,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or (#id == authentication.principal.id)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario dadosUsuario) {
         try {
             return ResponseEntity.ok(usuarioService.atualizarUsuario(id, dadosUsuario));

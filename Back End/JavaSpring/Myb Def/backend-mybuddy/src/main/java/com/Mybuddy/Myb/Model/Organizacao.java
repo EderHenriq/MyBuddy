@@ -45,11 +45,13 @@ public class Organizacao {
     @OneToMany(mappedBy = "organizacao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     @ToString.Exclude
+    @Builder.Default
     private Set<Pet> pets = new HashSet<>();
 
     @OneToMany(mappedBy = "organizacao", cascade = CascadeType.MERGE, orphanRemoval = false, fetch = FetchType.LAZY)
     @JsonManagedReference
     @ToString.Exclude
+    @Builder.Default
     private Set<Usuario> usuarios = new HashSet<>();
 
     // Métodos de negócio — mantidos pois gerenciam relacionamentos bidirecionais

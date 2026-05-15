@@ -1,18 +1,151 @@
+@use 'styles/grid' as *;
+@use 'styles/mixins' as *;
+@use 'styles/forms' as *;
+@import "material-icons/iconfont/material-icons.css";
+@import '@fortawesome/fontawesome-free/css/all.min.css';
 
-@import "primeicons/primeicons.css";
-
-body {
+html, body {
   margin: 0;
   padding: 0;
-  font-family: var(--font-family);
-};
+  font-family: var(--font-family-primary);
+  background-color: var(--surface-ground);
+  width: 100%;
+}
 
 :root {
+  //Tokens das paletas de cores definidas no escopo do projeto.
   --primary-color: #ff7b00;
   --secondary-color: #5d831c;
   --accent-color: #2C3E50;
 
-  --surface-ground: #f5f5f5; /*é usado no PrimeNG para definir a cor do background da página*/
+  --surface-ground: #f4f4f4; /*é usado no PrimeNG para definir a cor do background da página*/
+  --surface-card: #ffffff; /*é usado no PrimeNG para definir a cor de fundo dos cards*/
   --text-color: #1e1e1e;
   --text-color-secondary: #2c3e50;
+  --text-color-black: #000000;
+  --text-color-white: #ffffff;
+
+
+  //Tokens de definição de espaçamento.
+  --spacing-xxxs: 0.125rem; //Equivalente a 2px
+  --spacing-xxs: 0.25rem; //Equivalente a 4px
+  --spacing-xs: 0.5rem; //Equivalente a 8px
+  --spacing-sm: 1rem; //Equivalente a 16px
+  --spacing-md: 1.5rem; //Equivalente a 24px
+  --spacing-lg: 2rem; //Equivalente a 32px
+  --spacing-xl: 3rem; //Equivalente a 48px
+  --spacing-xxl: 4rem; //Equivalente a 64px;
+  --spacing-xxxl: 7.5rem; //Equivalente a 120px;
+
+  //Tokens das tipografias do projeto, incluindo fontes, tamanhos e pesos.
+  --font-family-primary: 'Inter', sans-serif;
+  --font-family-secondary: 'DM Sans', sans-serif;
+  --font-size-sm: 0.875rem; //Equivalente a 14px
+  --font-size-md: 1rem; //Equivalente a 16px
+  --font-size-lg: 1.25rem; //Equivalente a 20px
+  --font-size-xl: 1.5rem; //Equivalente a 24px
+  --font-size-xxl: 2rem;  //Equivalente a 32px
+
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  --line-height-sm: 1.25;
+  --line-height-md: 1.5;
+  --line-height-lg: 1.75;
+
+  //Tokens de definição do border-radius e sombreamento
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-xxl: 36px;
+  --radius-max: 100px;
+
+  //Tokens de definição de sombras
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xxl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --shadow-navbar: 0 0 8px rgba(0, 0, 0, 0.15);
+  --shadow-nav-active: 0 2px 8px rgba(0, 0, 0, 0.25);
+
+  //Tokens de definição das cores das bordas
+  --border-color: #d9d9d9;
+  --border-color-focus: var(--primary-color);
 }
+
+//Tokens de definição de escala tipográfica (h1-h6 e body caption).
+  h1 {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-sm);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h4 {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h5 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  h6 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-light);
+    line-height: var(--line-height-md);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  p {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-lg);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+  .caption {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-light);
+    line-height: var(--line-height-sm);
+    margin: 0 0 var(--spacing-md) 0;
+  }
+
+//Tokens dos icones do Material Icons
+.material-icons {
+  display: inline-flex !important;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+

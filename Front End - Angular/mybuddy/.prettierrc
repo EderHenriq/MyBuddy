@@ -1,5 +1,5 @@
 {
-  "printWidth": 100,
+  "printWidth": 150,
   "singleQuote": true,
   "trailingComma": "all",
   "tabWidth": 2,
@@ -7,6 +7,8 @@
   "bracketSpacing": true,
   "arrowParens": "avoid",
   "endOfLine": "auto",
+  "singleAttributePerLine": false,
+  "htmlWhitespaceSensitivity": "ignore",
   "overrides": [
     {
       "files": "*.html",

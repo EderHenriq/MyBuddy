@@ -55,7 +55,7 @@ public class Pet {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
-    private StatusAdocao statusAdocao;
+    private StatusAdocao statusAdocao = StatusAdocao.DISPONIVEL;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizacao_id", nullable = false)

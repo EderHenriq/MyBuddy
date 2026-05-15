@@ -31,6 +31,67 @@ ONGs e protetores **lutam por visibilidade** em redes sociais desordenadas. Adot
 
 ---
 
+## Setup do Ambiente
+
+### Pré-requisitos
+
+- Docker e Docker Compose instalados
+- Portas disponíveis: 80, 8080, 8081, 5432, 27017
+
+### Subindo o ambiente completo
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/EderHenriq/MyBuddy.git
+cd MyBuddy
+
+# 2. Configure as variáveis de ambiente
+cp .env.example .env
+# Edite o .env com suas configurações
+
+# 3. Suba todos os serviços
+docker compose up --build
+```
+
+Aguarde todos os containers ficarem `(healthy)`. A ordem de subida é garantida automaticamente:
+
+```
+PostgreSQL + MongoDB → Keycloak → Backend → Frontend
+```
+
+### Serviços disponíveis
+
+| Serviço | URL |
+|---|---|
+| Frontend Angular | http://localhost |
+| Backend API | http://localhost:8081 |
+| Keycloak Admin | http://localhost:8080 |
+| Health Check | http://localhost:8081/actuator/health |
+
+### Comandos úteis
+
+```bash
+# Ver status dos containers
+docker compose ps
+
+# Ver logs de um serviço
+docker logs mybuddy-backend --tail 50
+
+# Parar todos os serviços
+docker compose down
+
+# Parar e remover volumes (reset completo)
+docker compose down -v
+```
+
+### Observações
+
+- O realm `mybuddy` do Keycloak é importado automaticamente na primeira subida via `docker/keycloak/realm-export.json`
+- O banco `keycloak` é criado automaticamente via `docker/init-db.sql`
+- Dados do PostgreSQL e MongoDB persistem entre reinicializações via volumes Docker
+
+---
+
 ##  Stack Tecnológica
 
 <div align="center">

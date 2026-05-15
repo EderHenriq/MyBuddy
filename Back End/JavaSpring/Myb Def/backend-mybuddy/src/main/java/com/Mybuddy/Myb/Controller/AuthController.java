@@ -1,50 +1,25 @@
 package com.Mybuddy.Myb.Controller;
 
-import com.Mybuddy.Myb.Payload.Request.LoginRequest;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
-import com.Mybuddy.Myb.Payload.Response.JwtResponse;
 import com.Mybuddy.Myb.Payload.Response.MessageResponse;
-import com.Mybuddy.Myb.Security.jwt.UserDetailsImpl;
 import com.Mybuddy.Myb.Service.AuthService;
+import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
+    private final KeycloakUserSyncService keycloakUserSyncService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, KeycloakUserSyncService keycloakUserSyncService) {
         this.authService = authService;
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authService.authenticateUser(loginRequest);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = authService.generateJwtToken(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(new JwtResponse(
-                jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles,
-                userDetails.getOrganizacaoId()));
+        this.keycloakUserSyncService = keycloakUserSyncService;
     }
 
     @PostMapping("/cadastro")
