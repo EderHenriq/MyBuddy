@@ -2,6 +2,7 @@ export const environment = {
     production: true,
     apiUrl: '/api',
     envName: 'production',
+    mockApi: false,
     keycloak: {
         url: 'http://localhost:8080',
         realm: 'mybuddy',
