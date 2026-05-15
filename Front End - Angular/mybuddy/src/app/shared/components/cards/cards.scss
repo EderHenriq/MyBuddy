@@ -10,6 +10,7 @@
   .card-img {
     overflow: hidden;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: 0;
 
     img {
       width: 100%;
@@ -17,7 +18,56 @@
       object-fit: cover;
     }
   }
+
+  //Estilização do conteúdo do card
+  .card-header {
+    @include flex-start;
+
+    h2 {
+      font-size: var(--font-size-xxl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-color);
+      margin: 0;
+    }
+  }
+
+  .card-informations {
+    @include flex-start;
+
+    ul {
+      @include flex-column;
+      list-style: none;
+      gap: var(--spacing-md);
+      margin: 0;
+    }
+
+    li {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-regular);
+      text-decoration: none;
+    }
+  }
+
+  .card-actions {
+    @include flex-between;
+
+    .infos {
+      font-family: var(--font-family-secondary);
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-semibold);
+      background-color: transparent;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+    }
+
+    .favorite {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-max);
+      background-color: var(--primary-color);
+      border: none;
+      cursor: pointer;
+    }
+  }
 }
-
-//Estilização do conteúdo do card
-
