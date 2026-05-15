@@ -1,18 +1,18 @@
 <div class="card">
   <div class="card-img">
-    <img src="#" [alt]="" />
+    <img [src]="petTeste?.fotoPet" [alt]="petTeste?.nomePet" />
   </div>
 
   <div class="card-header">
-    <h2>Nome do Pet</h2>
+    <h2>{{ petTeste?.nomePet }}</h2>
   </div>
 
   <div class="card-informations">
     <ul>
-      <li>Idade: 2 anos</li>
-      <li>Raça: Vira-Lata</li>
-      <li>Sexo: Macho</li>
-      <li>Vacinado: Sim</li>
+      <li>Idade: {{ petTeste?.idade }}</li>
+      <li>Raça: {{ petTeste?.raca }}</li>
+      <li>Sexo: {{ petTeste?.sexo }}</li>
+      <li>Vacinado: {{ petTeste?.vacinado ? 'Sim' : 'Não' }}</li>
     </ul>
   </div>
 

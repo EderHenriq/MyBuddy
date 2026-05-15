@@ -1,16 +1,29 @@
 @use '../../../../styles/mixins' as *;
 
+:host {
+  display: block;
+  padding: 2rem;
+}
+
 //Estilização do corpo do Card
 
 .card {
   @include card-style;
   @include flex-column;
   @include card-hover;
+  width: 331px;
+  height: 482px;
+  padding: 18px;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: flex-start;
 
   .card-img {
     overflow: hidden;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     padding: 0;
+    margin: calc(-1 * var(--spacing-md));
+    margin-bottom: 0;
 
     img {
       width: 100%;
@@ -32,13 +45,13 @@
   }
 
   .card-informations {
-    @include flex-start;
-
     ul {
       @include flex-column;
       list-style: none;
       gap: var(--spacing-md);
       margin: 0;
+      padding: 0;
+
     }
 
     li {
