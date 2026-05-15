@@ -56,6 +56,13 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!-- Mercado-Pago-SDK -->
+        <dependency>
+            <groupId>com.mercadopago</groupId>
+            <artifactId>sdk-java</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        
         <!-- Keycloak / OAuth2 -->
         <dependency>
             <groupId>org.springdoc</groupId>
