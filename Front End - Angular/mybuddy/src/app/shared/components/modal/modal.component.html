@@ -1,0 +1,26 @@
+<p-dialog
+  [(visible)]="visible"
+  [header]="title"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: width }"
+  (onHide)="onHide()"
+>
+  <ng-content />
+
+  <ng-template #footer *ngIf="showFooter">
+    <p-button
+      [label]="cancelLabel"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="onCancel()"
+    />
+    <p-button
+      [label]="confirmLabel"
+      [severity]="confirmSeverity"
+      [loading]="loading"
+      (onClick)="onConfirm()"
+    />
+  </ng-template>
+</p-dialog>
