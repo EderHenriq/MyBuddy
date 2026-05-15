@@ -1,0 +1,66 @@
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-xxl) var(--spacing-md);
+  margin: 0 auto;
+  max-width: 400px;
+  width: 100%;
+}
+
+.empty-state-visual {
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .empty-state-image {
+    max-width: 200px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .empty-state-icon {
+    font-size: 80px;
+    color: var(--border-color);
+  }
+}
+
+.empty-state-content {
+  margin-bottom: var(--spacing-lg);
+
+  .empty-state-title {
+    color: var(--text-color);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .empty-state-description {
+    color: var(--text-color-secondary);
+    margin: 0;
+  }
+}
+
+.empty-state-action {
+  /* Usando a classe btn-primary global se existir, senão definimos base styles aqui */
+  background-color: var(--primary-color);
+  color: var(--text-color-white);
+  border: none;
+  border-radius: var(--radius-max);
+  padding: 12px var(--spacing-lg);
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  box-shadow: var(--shadow-sm);
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
