@@ -1,7 +1,6 @@
 package com.Mybuddy.Myb.Config;
 
 import org.springframework.context.annotation.Configuration;
-
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -13,6 +12,6 @@ public class MercadoPagoConfig {
 
     @PostConstruct
     public void init() {
-        System.setProperty("mercadopago.access_token", accessToken);
+        com.mercadopago.MercadoPagoConfig.setAccessToken(accessToken);
     }
 }
