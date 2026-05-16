@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 @Configuration
 public class MercadoPagoConfig {
     
-    @Value("${mercadopago.access_token}")
+    @Value("${mercadopago.access-token}")
     private String accessToken;
 
     @PostConstruct
