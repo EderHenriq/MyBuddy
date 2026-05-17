@@ -5,9 +5,19 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.Mybuddy.Myb.DTO.PaymentCreationResult;
+import com.Mybuddy.Myb.DTO.PaymentRequestDTO;
 import com.Mybuddy.Myb.Model.Payment;
 import com.Mybuddy.Myb.Model.PaymentStatus;
+import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Repository.PaymentRepository;
+import com.Mybuddy.Myb.Repository.PetRepository;
+import com.mercadopago.client.preference.PreferenceClient;
+import com.mercadopago.client.preference.PreferenceItemRequest;
+import com.mercadopago.client.preference.PreferenceRequest;
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
+import com.mercadopago.resources.preference.Preference;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +29,50 @@ import lombok.extern.slf4j.Slf4j;
 public class PaymentService {
     
     private final PaymentRepository paymentRepository;
+    private final PetRepository petRepository;
+
+    @Transactional
+    public PaymentCreationResult createPayment(Usuario usuario, PaymentRequestDTO request)
+            throws MPException, MPApiException {
+
+        var pet = request.petId() != null
+                ? petRepository.findById(request.petId())
+                        .orElseThrow(() -> new RuntimeException("Pet não encontrado: " + request.petId()))
+                : null;
+
+        PreferenceItemRequest item = PreferenceItemRequest.builder()
+                .title(request.description() != null ? request.description()
+                        : pet != null ? "Adoção - " + pet.getNome()
+                        : "Doação MyBuddy")
+                .quantity(1)
+                .unitPrice(request.amount())
+                .build();
+
+        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+                .items(List.of(item))
+                .build();
+
+        PreferenceClient client = new PreferenceClient();
+        Preference preference = client.create(preferenceRequest);
+
+        Payment payment = new Payment();
+        payment.setUsuario(usuario);
+        payment.setPet(pet);
+        payment.setAmount(request.amount());
+        payment.setMpPreferenceId(preference.getId());
+
+        Payment saved = paymentRepository.save(payment);
+
+        log.info("Payment criado: id={}, preferenceId={}", saved.getId(), saved.getMpPreferenceId());
+
+        return new PaymentCreationResult(saved, preference.getInitPoint());
+    }
+
+    public String getInitPoint(String preferenceId) throws MPException, MPApiException {
+        PreferenceClient client = new PreferenceClient();
+        Preference preference = client.get(preferenceId);
+        return preference.getInitPoint();
+    }
 
     @Transactional
     public Payment save(Payment payment) {

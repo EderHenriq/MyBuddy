@@ -18,9 +18,16 @@ public class KeycloakUserSyncService {
     @Transactional
     public Usuario syncUsuario(Jwt jwt) {
         String keycloakId = jwt.getSubject();
+        String email = jwt.getClaimAsString("email");
 
         return usuarioRepository.findByKeycloakId(keycloakId)
-                .orElseGet(() -> criarUsuarioDoKeycloak(jwt));
+                .orElseGet(() -> usuarioRepository.findByEmail(email)
+                        .map(usuario -> {
+                            usuario.setKeycloakId(keycloakId);
+                            return usuarioRepository.save(usuario);
+                        })
+                        .orElseGet(() -> criarUsuarioDoKeycloak(jwt))
+                );
     }
 
     private Usuario criarUsuarioDoKeycloak(Jwt jwt) {
