@@ -8,6 +8,7 @@ import com.Mybuddy.Myb.Model.Payment;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import com.Mybuddy.Myb.Service.PaymentService;
+import com.Mybuddy.Myb.Util.MercadoPagoWebhookValidator;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 
@@ -33,6 +34,7 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final KeycloakUserSyncService keycloakUserSyncService;
     private final ApplicationEventPublisher eventPublisher;
+    private final MercadoPagoWebhookValidator webhookValidator;
 
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
@@ -80,27 +82,39 @@ public class PaymentController {
     }
 
     @PostMapping("/webhook")
-    public ResponseEntity<Void> webhook(@RequestBody Map<String,
-         Object> payload, @RequestHeader Map<String, String> headers) {
-        
+    public ResponseEntity<Void> webhook (
+            @RequestBody Map<String, Object> payload,
+            @RequestHeader(value = "x-signature", required = false) String xSignature,
+            @RequestHeader(value = "x-request-id", required = false) String xRequestId){
+
         log.info("Webhook MP recebido: {}", payload);
+        
+        String dataId = null;
+        if (payload.get("data") instanceof Map<?, ?> data) {
+
+            dataId = String.valueOf(data.get("id"));
+        } else if (payload.get("id") != null) {
+            dataId = String.valueOf(payload.get("id"));
+        }
+
+        if (!webhookValidator.isValid(xSignature, xRequestId, dataId)) {
+            log.warn("Webhook rejeitado — assinatura inválida");
+            return ResponseEntity.status(401).build();
+        }
 
         String topic = (String) payload.get("topic");
         String type = (String) payload.get("type");
 
-        if ("payment".equals(topic) || "payment".equals(type)) {
-            Object dataId = payload.get("id");
-            if (dataId == null && payload.get("data") instanceof Map<?,?> data) {
-                dataId = data.get("id");
-            }
-            if (dataId != null) {
-                eventPublisher.publishEvent(
-                    new PaymentWebhookEvent(this, dataId.toString(), topic != null ? topic : type)
-                );
-            } else {
-                log.warn("Webhook MP recebido sem ID: {}", payload);
-            }
+        if ("payment".equals(topic) || "payment.updated".equals(type)) {
+            eventPublisher.publishEvent(
+                new PaymentWebhookEvent(this, dataId, topic != null ? topic : type
+
+            ));
+        } else {
+            log.info("Webhook MP ignorado — topic ou type não tratado. topic={}, type={}", topic, type);
         }
+
+
         return ResponseEntity.ok().build();
     }
 }
