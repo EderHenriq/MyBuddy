@@ -35,11 +35,15 @@ public class PaymentService {
     public PaymentCreationResult createPayment(Usuario usuario, PaymentRequestDTO request)
             throws MPException, MPApiException {
 
-        var pet = petRepository.findById(request.petId())
-                .orElseThrow(() -> new RuntimeException("Pet não encontrado: " + request.petId()));
+        var pet = request.petId() != null
+                ? petRepository.findById(request.petId())
+                        .orElseThrow(() -> new RuntimeException("Pet não encontrado: " + request.petId()))
+                : null;
 
         PreferenceItemRequest item = PreferenceItemRequest.builder()
-                .title(request.description() != null ? request.description() : "Adoção - " + pet.getNome())
+                .title(request.description() != null ? request.description()
+                        : pet != null ? "Adoção - " + pet.getNome()
+                        : "Doação MyBuddy")
                 .quantity(1)
                 .unitPrice(request.amount())
                 .build();

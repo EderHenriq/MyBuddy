@@ -31,7 +31,7 @@ public class Payment {
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_id", nullable = false)
+    @JoinColumn(name = "pet_id", nullable = true)
     private Pet pet;
 
     @Column(nullable = false, precision = 10, scale = 2)

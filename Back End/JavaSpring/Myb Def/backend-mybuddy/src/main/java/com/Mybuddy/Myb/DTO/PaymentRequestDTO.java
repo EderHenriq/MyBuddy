@@ -1,12 +1,10 @@
 package com.Mybuddy.Myb.DTO;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public record PaymentRequestDTO(
 
-    @NotNull(message = "petId é obrigatório")
     Long petId,
 
     @NotNull(message = "amount é obrigatório")
