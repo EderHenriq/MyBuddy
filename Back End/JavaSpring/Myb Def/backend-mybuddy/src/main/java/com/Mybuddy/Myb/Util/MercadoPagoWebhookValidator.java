@@ -17,6 +17,10 @@ public class MercadoPagoWebhookValidator {
     private String webhookSecret;
 
     public boolean isValid(String xSignature, String xRequestId, String dataId) {
+
+        log.info("Validando webhook. xSignature={}, webhookSecret presente={}", 
+            xSignature, webhookSecret != null && !webhookSecret.equals("webhook-placeholder"));
+
         try{
             if(xSignature == null || xSignature.isBlank()) {
                 log.warn("x-signature ausente no Weebhook MP. requestId={}", xRequestId);
@@ -39,7 +43,7 @@ public class MercadoPagoWebhookValidator {
                 return false;
             }
 
-            String manifest = "id" + dataId + ";requestId" + xRequestId + ";ts" + ts + ";";
+            String manifest = "id:" + dataId + ";request-id:" + xRequestId + ";ts:" + ts + ";";
 
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(new SecretKeySpec(webhookSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
