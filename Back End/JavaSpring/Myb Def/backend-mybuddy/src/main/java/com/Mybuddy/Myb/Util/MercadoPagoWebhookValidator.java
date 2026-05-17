@@ -17,10 +17,6 @@ public class MercadoPagoWebhookValidator {
     private String webhookSecret;
 
     public boolean isValid(String xSignature, String xRequestId, String dataId) {
-
-        log.info("Validando webhook. xSignature={}, webhookSecret presente={}", 
-            xSignature, webhookSecret != null && !webhookSecret.equals("webhook-placeholder"));
-
         try{
             if(xSignature == null || xSignature.isBlank()) {
                 log.warn("x-signature ausente no Weebhook MP. requestId={}", xRequestId);
