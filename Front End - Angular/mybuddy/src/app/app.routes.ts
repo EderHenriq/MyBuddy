@@ -4,8 +4,8 @@ import { authGuard } from './core/guards/auth.guards';
 export const routes: Routes = [
   {
     // Routes de testes de componentes
-    path: 'footer',
-    loadComponent: () => import('./shared/components/footer/footer').then(m => m.Footer),
+    path: 'card',
+    loadComponent: () => import('./shared/components/cards/cards').then(m => m.Cards),
   },
   {
     // Redirecionamento inicial para a rota 'home'

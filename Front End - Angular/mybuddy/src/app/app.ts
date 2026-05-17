@@ -3,12 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
-import { Navbar } from './layouts/navbar/navbar';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, InputTextModule, CheckboxModule, FormsModule, Navbar],
+  imports: [RouterOutlet, InputTextModule, CheckboxModule, FormsModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
