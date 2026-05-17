@@ -49,7 +49,7 @@ public class PaymentController {
                 saved.getMpPreferenceId(),
                 saved.getMpPaymentId(),
                 saved.getUsuario().getId(),
-                saved.getPet().getId(),
+                saved.getPet() != null ? saved.getPet().getId() : null,
                 saved.getAmount(),
                 saved.getStatus(),
                 result.initPoint(),
