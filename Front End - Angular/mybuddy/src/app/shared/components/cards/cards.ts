@@ -9,13 +9,4 @@ import { Component, Input } from '@angular/core';
 })
 export class Cards {
   @Input() pet?: Pet;
-
-  petTeste: Pet = {
-    fotoPet: 'assets/placeholders/pets/Kira.jpg',
-    nomePet: 'Kira',
-    idade: '5 anos',
-    raca: 'Vira-Lata',
-    sexo: 'Fêmea',
-    vacinado: true,
-  };
 }
