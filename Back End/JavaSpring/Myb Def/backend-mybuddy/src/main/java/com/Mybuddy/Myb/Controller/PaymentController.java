@@ -98,8 +98,8 @@ public class PaymentController {
         }
 
         if (!webhookValidator.isValid(xSignature, xRequestId, dataId)) {
-            log.warn("Webhook rejeitado — assinatura inválida");
-            return ResponseEntity.status(401).build();
+            log.warn("Webhook MP recebido com assinatura inválida — ignorando. requestId={}", xRequestId);
+            return ResponseEntity.ok().build();
         }
 
         String topic = (String) payload.get("topic");
@@ -107,13 +107,10 @@ public class PaymentController {
 
         if ("payment".equals(topic) || "payment".equals(type)) {
             eventPublisher.publishEvent(
-                new PaymentWebhookEvent(this, dataId, topic != null ? topic : type
-
-            ));
+                new PaymentWebhookEvent(this, dataId, topic != null ? topic : type));
         } else {
             log.info("Webhook MP ignorado — topic ou type não tratado. topic={}, type={}", topic, type);
         }
-
 
         return ResponseEntity.ok().build();
     }
