@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-modal',
   standalone: true,
+  host: { ngSkipHydration: 'true' },
   imports: [CommonModule, DialogModule, ButtonModule],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',

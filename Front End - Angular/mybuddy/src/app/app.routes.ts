@@ -4,8 +4,8 @@ import { authGuard } from './core/guards/auth.guards';
 export const routes: Routes = [
   {
     // Routes de testes de componentes
-    path: 'card',
-    loadComponent: () => import('./shared/components/cards/cards').then(m => m.Cards),
+    path: 'modal',
+    loadComponent: () => import('./shared/components/modal/modal-test.component').then(m => m.ModalTestComponent),
   },
   {
     // Redirecionamento inicial para a rota 'home'

@@ -90,6 +90,22 @@ const MyBuddyPreset = definePreset(Aura, {
         hoverBackground: '#f5f5f5',
       },
     },
+    dialog: {
+      root: {
+        borderRadius: 'var(--radius-xl)',
+        shadow: 'var(--shadow-xl)',
+      },
+      header: {
+        padding: 'var(--spacing-md) var(--spacing-md)',
+      },
+      content: {
+        padding: 'var(--spacing-md)',
+      },
+      footer: {
+        padding: 'var(--spacing-md)',
+        gap: 'var(--spacing-sm)',
+      },
+    },
   },
 });
 

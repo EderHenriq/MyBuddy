@@ -7,20 +7,16 @@
   [style]="{ width: width }"
   (onHide)="onHide()"
 >
-  <ng-content />
+  <div class="myb-dialog">
+    <ng-content />
+  </div>
 
-  <ng-template #footer *ngIf="showFooter">
-    <p-button
-      [label]="cancelLabel"
-      severity="secondary"
-      [outlined]="true"
-      (onClick)="onCancel()"
-    />
-    <p-button
-      [label]="confirmLabel"
-      [severity]="confirmSeverity"
-      [loading]="loading"
-      (onClick)="onConfirm()"
-    />
-  </ng-template>
+  @if (showFooter) {
+    <ng-templete pTemplate="footer">
+      <div class="myb-footer-actions">
+        <p-button [label]="cancelLabel" severity="secondary" outlined="true" onclick="oncancel()"></p-button>
+        <p-button [label]="confirmLabel" [severity]="confirmSeverity" [loading]="loading" (onClick)="onConfirm()"></p-button>
+      </div>
+    </ng-templete>
+  }
 </p-dialog>
