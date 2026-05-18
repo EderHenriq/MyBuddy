@@ -105,7 +105,7 @@ public class PaymentController {
         String topic = (String) payload.get("topic");
         String type = (String) payload.get("type");
 
-        if ("payment".equals(topic) || "payment.updated".equals(type)) {
+        if ("payment".equals(topic) || "payment".equals(type)) {
             eventPublisher.publishEvent(
                 new PaymentWebhookEvent(this, dataId, topic != null ? topic : type
 
