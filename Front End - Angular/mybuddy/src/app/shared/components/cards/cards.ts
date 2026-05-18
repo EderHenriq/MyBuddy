@@ -1,4 +1,4 @@
-import { Pet } from './../../models/pets.model';
+import { Pet } from '../../../core/models/pet.model';
 import { Component, Input } from '@angular/core';
 
 @Component({

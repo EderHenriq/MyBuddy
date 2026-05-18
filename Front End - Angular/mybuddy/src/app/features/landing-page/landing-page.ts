@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HeaderLandingPage } from "@shared/components/header-landing-page/header-landing-page";
+import { HeaderLandingPage } from '@shared/components/header-landing-page/header-landing-page';
 
 @Component({
   selector: 'app-landing-page',
