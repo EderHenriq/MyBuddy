@@ -22,6 +22,6 @@ export const cacheInterceptor: HttpInterceptorFn = (req, next) => {
         // Invalida o cache após 5 minutos
         setTimeout(() => cache.delete(req.urlWithParams), 5 * 60 * 1000);
       }
-    })
+    }),
   );
 };

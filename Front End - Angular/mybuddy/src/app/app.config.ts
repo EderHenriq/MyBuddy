@@ -1,8 +1,4 @@
-import {
-  ApplicationConfig,
-  provideBrowserGlobalErrorListeners,
-  provideZoneChangeDetection,
-} from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withViewTransitions, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -21,16 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([
-        mockInterceptor,
-        cacheInterceptor,
-        retryInterceptor,
-        errorInterceptor,
-        loadingInterceptor
-      ])
-    ),
+    provideHttpClient(withFetch(), withInterceptors([mockInterceptor, cacheInterceptor, retryInterceptor, errorInterceptor, loadingInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     providePrimeNG({
       theme: {
