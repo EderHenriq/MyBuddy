@@ -1,48 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { Component } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { inject } from '@angular/core';
 import { ToastService, ToastMessage } from '../../services/toast/toast';
 
 @Component({
   selector: 'app-toast',
   standalone: true,
-  imports: [CommonModule],
+  imports: [NgClass],
   templateUrl: './toast.html',
-  styleUrls: ['./toast.scss'],
-  animations: [
-    trigger('toastAnimation', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(100%) scale(0.95)' }),
-        animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))
-      ]),
-      transition(':leave', [
-        animate('250ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ opacity: 0, transform: 'translateY(100%) scale(0.95)' }))
-      ])
-    ])
-  ]
+  styleUrl: './toast.scss',
 })
-export class Toast implements OnInit {
-  toasts: ToastMessage[] = [];
+export class Toast {
+  private ToastService = inject(ToastService);
 
-  constructor(public toastService: ToastService) {}
-
-  ngOnInit() {
-    this.toastService.toasts$.subscribe(toasts => {
-      this.toasts = toasts;
-    });
-  }
+  toasts = toSignal(this.ToastService.toasts$, { initialValue: [] as ToastMessage[] });
 
   removeToast(id: string) {
-    this.toastService.remove(id);
+    this.ToastService.remove(id);
   }
-  
+
   getIcon(type: string): string {
-    switch(type) {
-      case 'success': return 'check_circle';
-      case 'error': return 'error';
-      case 'warning': return 'warning';
-      case 'info': return 'info';
-      default: return 'info';
-    }
+    const icons: Record<string, string> = {
+      sucess: 'check_circle',
+      error: 'error',
+      warning: 'warning',
+      info: 'info',
+    };
+
+    return icons[type] ?? 'info';
   }
 }
