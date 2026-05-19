@@ -65,7 +65,10 @@ public class PaymentService {
 
         log.info("Payment criado: id={}, preferenceId={}", saved.getId(), saved.getMpPreferenceId());
 
-        return new PaymentCreationResult(saved, preference.getInitPoint());
+        String initPoint = preference.getSandboxInitPoint() != null
+                ? preference.getSandboxInitPoint()
+                : preference.getInitPoint();
+        return new PaymentCreationResult(saved, initPoint);
     }
 
     public String getInitPoint(String preferenceId) throws MPException, MPApiException {
