@@ -1,8 +1,6 @@
-import { Component } from '@angular/core';
-
+import { Component, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { inject } from '@angular/core';
-import  Keycloak from 'keycloak-js';
+import { AuthService } from '../../core/services/auth.services';
 
 @Component({
   selector: 'app-home',
@@ -12,11 +10,9 @@ import  Keycloak from 'keycloak-js';
 })
 export class Home {
   private http = inject(HttpClient);
-  private keycloak = inject(Keycloak);
+  public authService = inject(AuthService);
 
-  logout(){
-    this.keycloak.logout({
-      redirectUri: 'http://localhost:4200'
-    });
+  logout() {
+    this.authService.logout();
   }
 }

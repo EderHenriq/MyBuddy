@@ -62,11 +62,11 @@
     transition: all 0.3s ease;
 
     &:hover {
-      color: #FF8B00;
+      color: var(--primary-color);
     }
 
     &.active {
-      background-color: #FF8B00;
+      background-color: var(--primary-color);
       color: #ffffff;
       font-weight: 600;
     }
@@ -96,7 +96,7 @@
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      color: #FF8B00;
+      color: var(--primary-color);
     }
     
     i {
@@ -114,7 +114,7 @@
     transition: border-color 0.2s ease;
 
     &:hover {
-      border-color: #FF8B00;
+      border-color: var(--primary-color);
     }
 
     .profile-img {

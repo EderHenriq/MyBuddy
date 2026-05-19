@@ -1,2 +1,165 @@
-<p>home works!</p>
-<button (click)="logout()">Logout</button>
+<div class="dashboard-container">
+  <div class="dashboard-content">
+    
+    <!-- HEADER DA TELA -->
+    <header class="dashboard-header">
+      <div class="welcome-section">
+        <h1 class="welcome-title">
+          Olá, <span class="highlight">{{ authService.currentUser()?.nome || 'Usuário' }}</span>!
+        </h1>
+        <p class="welcome-subtitle">
+          Bem-vindo de volta ao seu painel administrativo no MyBuddy.
+        </p>
+      </div>
+
+      <button (click)="logout()" class="btn-logout">
+        <i class="pi pi-sign-out"></i> Sair da Conta
+      </button>
+    </header>
+
+    <!-- CARDS DE METRICAS RAPIDAS -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon icon-pets">
+          <i class="pi pi-heart-fill"></i>
+        </div>
+        <div class="metric-data">
+          <span class="metric-value">12</span>
+          <span class="metric-label">Pets Acompanhados</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon icon-events">
+          <i class="pi pi-calendar"></i>
+        </div>
+        <div class="metric-data">
+          <span class="metric-value">3</span>
+          <span class="metric-label">Consultas Agendadas</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon icon-messages">
+          <i class="pi pi-envelope"></i>
+        </div>
+        <div class="metric-data">
+          <span class="metric-value">5</span>
+          <span class="metric-label">Novas Mensagens</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO PRINCIPAL DOURADA/GLASSMORPHISM -->
+    <div class="main-sections">
+      
+      <!-- DETALHES DO PERFIL LOGADO -->
+      <div class="profile-details-card">
+        <h2 class="section-title">
+          <i class="pi pi-user-edit"></i> Detalhes do seu Perfil
+        </h2>
+        
+        <div class="details-list">
+          <div class="detail-item">
+            <span class="detail-label">Nome Completo:</span>
+            <span class="detail-value">{{ authService.currentUser()?.nome }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">E-mail Cadastrado:</span>
+            <span class="detail-value">{{ authService.currentUser()?.email }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Telefone:</span>
+            <span class="detail-value">{{ authService.currentUser()?.telefone || 'Não informado' }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Nível de Acesso (Roles):</span>
+            <span class="detail-value badge">
+              {{ authService.getUserRoles().join(', ') }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO CONDICIONAL: DETALHES DA ONG (SE FOR ONG) -->
+      @if (authService.currentUser()?.organizacao) {
+        <div class="org-details-card">
+          <h2 class="section-title text-green">
+            <i class="pi pi-home"></i> Informações da sua ONG
+          </h2>
+
+          <div class="details-list">
+            <div class="detail-item">
+              <span class="detail-label">Nome Fantasia:</span>
+              <span class="detail-value text-highlight">
+                {{ authService.currentUser()?.organizacao?.nomeFantasia }}
+              </span>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-label">CNPJ da Instituição:</span>
+              <span class="detail-value">{{ authService.currentUser()?.organizacao?.cnpj }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="detail-label">E-mail para Contato:</span>
+              <span class="detail-value">{{ authService.currentUser()?.organizacao?.emailContato }}</span>
+            </div>
+
+            @if (authService.currentUser()?.organizacao?.telefoneContato) {
+              <div class="detail-item">
+                <span class="detail-label">Telefone Comercial:</span>
+                <span class="detail-value">{{ authService.currentUser()?.organizacao?.telefoneContato }}</span>
+              </div>
+            }
+
+            <div class="detail-item">
+              <span class="detail-label">Sede / Endereço:</span>
+              <span class="detail-value">{{ authService.currentUser()?.organizacao?.endereco }}</span>
+            </div>
+
+            @if (authService.currentUser()?.organizacao?.descricao) {
+              <div class="detail-item full-width">
+                <span class="detail-label">Propósito / Biografia:</span>
+                <p class="detail-desc">{{ authService.currentUser()?.organizacao?.descricao }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      } @else {
+        <!-- SEÇÃO MOCK: ADOTANTE RECOMENDAÇÕES -->
+        <div class="recommendations-card">
+          <h2 class="section-title text-orange">
+            <i class="pi pi-sparkles"></i> Sugestões de Adoção para Você
+          </h2>
+          <p class="rec-intro">Com base no seu perfil de adotante, veja pets próximos precisando de um lar:</p>
+          
+          <div class="rec-pets-list">
+            <div class="rec-pet-item">
+              <span class="pet-avatar"><i class="pi pi-github"></i></span>
+              <div class="pet-info">
+                <span class="pet-name">Nevasca</span>
+                <span class="pet-details">Samoieda • 2 anos • Macho</span>
+              </div>
+              <span class="match-badge">98% Match</span>
+            </div>
+
+            <div class="rec-pet-item">
+              <span class="pet-avatar"><i class="pi pi-github"></i></span>
+              <div class="pet-info">
+                <span class="pet-name">Paçoca</span>
+                <span class="pet-details">Vira-lata • 6 meses • Fêmea</span>
+              </div>
+              <span class="match-badge">90% Match</span>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+
+  </div>
+</div>

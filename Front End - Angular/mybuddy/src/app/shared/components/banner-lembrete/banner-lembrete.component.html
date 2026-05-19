@@ -1,0 +1,13 @@
+<div class="lembrete-card">
+  <div class="icon-container">
+    <img *ngIf="iconImage" [src]="iconImage" alt="Lembrete Icon" />
+    <i *ngIf="!iconImage" class="fas fa-bell placeholder-icon"></i>
+  </div>
+  <div class="content-container">
+    <h4 class="lembrete-title">{{ title }}</h4>
+    <p class="lembrete-subtitle">{{ subtitle }}</p>
+  </div>
+  <div class="action-container">
+    <button class="action-btn" (click)="actionClick.emit()">{{ buttonText }}</button>
+  </div>
+</div>

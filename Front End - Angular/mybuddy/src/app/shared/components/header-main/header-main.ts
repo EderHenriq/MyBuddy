@@ -29,6 +29,8 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
 
   pillStyle: { left: string; width: string } = { left: '0px', width: '0px' };
   pillVisible = false;
+  showHeader = true;
+  hoveredIndex = -1;
 
   readonly links = [
     { path: '/home', label: 'Home' },
@@ -39,6 +41,23 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   ];
 
   private routerSubscription!: Subscription;
+
+  constructor() {
+    const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+    if (isBrowser) {
+      this.checkRoute(this.router.url);
+      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: any) => {
+        this.checkRoute(event.urlAfterRedirects || event.url);
+      });
+    }
+  }
+
+  checkRoute(url: string): void {
+    const publicPaths = ['/auth', '/styleguide', '/institucional'];
+    const isRoot = url === '/' || url === '';
+    const isPublic = publicPaths.some(path => url.startsWith(path));
+    this.showHeader = !isRoot && !isPublic;
+  }
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platform)) {
@@ -68,44 +87,56 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
     this.updatePillPosition();
   }
 
+  setHoverIndex(index: number, event: HTMLElement): void {
+    this.hoveredIndex = index;
+    this.movePill(event);
+  }
+
+  resetPill(): void {
+    this.hoveredIndex = -1;
+    this.updatePillPosition();
+  }
+
   updatePillPosition(): void {
     if (!isPlatformBrowser(this.platform)) {
       return;
+    }
+
+    if (this.hoveredIndex !== -1) {
+      const hoveredElement = this.navLinks.toArray()[this.hoveredIndex];
+      if (hoveredElement) {
+        this.movePill(hoveredElement.nativeElement);
+        return;
+      }
     }
 
     const activeElement = this.navLinks.find(link => link.nativeElement.classList.contains('active'));
 
     if (!activeElement) {
       this.pillVisible = false;
+      this.cdr.detectChanges();
       return;
     }
 
-    const nav = activeElement.nativeElement.closest('ul') as HTMLElement;
-    if (!nav) return;
-
-    const navRect = nav.getBoundingClientRect();
-    const linkRect = activeElement.nativeElement.getBoundingClientRect();
-
-    this.pillStyle = {
-      left: `${linkRect.left - navRect.left}px`,
-      width: `${linkRect.width}px`,
-    };
-    this.pillVisible = true;
+    this.movePill(activeElement.nativeElement);
   }
 
   onLinkClick(event: HTMLElement): void {
-    if (!isPlatformBrowser(this.platform)) {
-      return;
-    }
-    const nav = event.closest('ul') as HTMLElement;
+    this.movePill(event);
+  }
+
+  private movePill(element: HTMLElement): void {
+    if (!isPlatformBrowser(this.platform)) return;
+    const nav = element.closest('ul') as HTMLElement;
     if (!nav) return;
     const navRect = nav.getBoundingClientRect();
-    const linkRect = event.getBoundingClientRect();
+    const linkRect = element.getBoundingClientRect();
 
     this.pillStyle = {
       left: `${linkRect.left - navRect.left}px`,
       width: `${linkRect.width}px`,
     };
     this.pillVisible = true;
+    this.cdr.detectChanges();
   }
 }

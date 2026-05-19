@@ -1,0 +1,18 @@
+<div class="pet-card">
+  <div class="pet-image" [style.backgroundImage]="'url(' + imageUrl + ')'"></div>
+  <div class="pet-content">
+    <h3 class="pet-name">{{ name }}</h3>
+    <div class="pet-details">
+      <span class="detail-item"><strong>Idade:</strong> {{ age }}</span>
+      <span class="detail-item"><strong>Raça:</strong> {{ breed }}</span>
+      <span class="detail-item"><strong>Sexo:</strong> {{ sex }}</span>
+      <span class="detail-item"><strong>Vacinado:</strong> {{ vaccinated }}</span>
+    </div>
+    <div class="pet-actions">
+      <a class="info-link" (click)="infoClick.emit()">Mais Informações &rarr;</a>
+      <button class="favorite-btn" (click)="favoriteClick.emit()">
+        <i class="fas fa-heart"></i>
+      </button>
+    </div>
+  </div>
+</div>

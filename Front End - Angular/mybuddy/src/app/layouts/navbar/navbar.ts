@@ -10,15 +10,9 @@ import { RouterModule } from '@angular/router';
 })
 export class Navbar {
   navItems = [
-    { label: 'Home', link: '/', active: true },
-    { label: 'Adotar', link: '/adotar', active: false },
-    { label: 'Eventos', link: '/eventos', active: false },
-    { label: 'Produtos', link: '/produtos', active: false },
-    { label: 'Comunidade', link: '/comunidade', active: false },
+    { label: 'Home', link: '/home' },
+    { label: 'Adotar', link: '/pets' },
+    { label: 'Marketplace', link: '/marketplace' },
+    { label: 'Doações', link: '/doacoes' },
   ];
-
-  setActive(item: any) {
-    this.navItems.forEach(i => i.active = false);
-    item.active = true;
-  }
 }
