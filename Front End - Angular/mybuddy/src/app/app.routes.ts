@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guards';
 
 export const routes: Routes = [
-
   // ═══════════════════════════════════════════════════════════════
   // 1. ROTAS PÚBLICAS (Acesso livre, sem necessidade de login)
   // ═══════════════════════════════════════════════════════════════
@@ -214,7 +213,6 @@ export const routes: Routes = [
     path: 'styleguide',
     loadComponent: () => import('./features/styleguide/styleguide').then(m => m.Styleguide),
   },
-
 
   // Rota 404 — Deve ser sempre a última
   {

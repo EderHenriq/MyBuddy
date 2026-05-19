@@ -1,14 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  QueryList,
-  ViewChildren,
-  AfterViewInit,
-  HostListener,
-  inject,
-  PLATFORM_ID,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChildren, AfterViewInit, HostListener, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 

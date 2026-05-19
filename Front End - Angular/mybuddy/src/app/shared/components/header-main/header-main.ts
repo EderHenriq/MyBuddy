@@ -43,10 +43,10 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   private routerSubscription!: Subscription;
 
   constructor() {
-    const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+    const isBrowser = isPlatformBrowser(this.platform);
     if (isBrowser) {
       this.checkRoute(this.router.url);
-      this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: any) => {
+      this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe(event => {
         this.checkRoute(event.urlAfterRedirects || event.url);
       });
     }

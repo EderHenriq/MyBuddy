@@ -13,6 +13,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         console.error('[Error Interceptor] Erro no servidor (500+).', error.message);
       }
       return throwError(() => error);
-    })
+    }),
   );
 };

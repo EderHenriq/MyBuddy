@@ -8,7 +8,8 @@
     <div class="hero-content">
       <h2 class="hero-title">Cuidar começa com conexão.</h2>
       <p class="hero-subtitle">
-        Encontre tutores, veterinários e serviços para o seu pet.<br />
+        Encontre tutores, veterinários e serviços para o seu pet.
+        <br />
         Tudo em um lugar
       </p>
 
@@ -29,17 +30,16 @@
     <div class="signup-card">
       <div class="card-header">
         <img src="/assets/logo/logo-provisoria.png" alt="MyBuddy Icon" class="card-icon" />
-        <h1 class="form-title">Cadastre-se no <span class="highlight">MyBuddy</span></h1>
+        <h1 class="form-title">
+          Cadastre-se no
+          <span class="highlight">MyBuddy</span>
+        </h1>
         <p class="form-subtitle">{{ profileTitle() }}</p>
       </div>
 
       <div class="profile-selector" aria-label="Tipo de cadastro">
         @for (option of profileOptions; track option.value) {
-          <button
-            type="button"
-            class="profile-option"
-            [class.active]="selectedProfile() === option.value"
-            (click)="selectProfile(option.value)">
+          <button type="button" class="profile-option" [class.active]="selectedProfile() === option.value" (click)="selectProfile(option.value)">
             <span class="option-title">{{ option.label }}</span>
             <span class="option-helper">{{ option.helper }}</span>
           </button>
@@ -112,10 +112,23 @@
             }
           </div>
 
-          <div class="input-group" [class.error]="(registerForm.hasError('passwordMismatch') || registerForm.get('confirmPassword')?.invalid) && registerForm.get('confirmPassword')?.touched">
+          <div
+            class="input-group"
+            [class.error]="
+              (registerForm.hasError('passwordMismatch') || registerForm.get('confirmPassword')?.invalid) &&
+              registerForm.get('confirmPassword')?.touched
+            "
+          >
             <label class="input-label" for="confirmPassword">Confirmar senha</label>
             <div class="input-wrapper">
-              <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="************" autocomplete="new-password" required />
+              <input
+                id="confirmPassword"
+                type="password"
+                formControlName="confirmPassword"
+                placeholder="************"
+                autocomplete="new-password"
+                required
+              />
             </div>
             @if (registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
               <span class="validation-error">As senhas não coincidem</span>
@@ -126,7 +139,10 @@
         @if (isBusinessProfile()) {
           <div class="business-fields">
             <div class="form-row">
-              <div class="input-group" [class.error]="registerForm.get('organizacaoNomeFantasia')?.invalid && registerForm.get('organizacaoNomeFantasia')?.touched">
+              <div
+                class="input-group"
+                [class.error]="registerForm.get('organizacaoNomeFantasia')?.invalid && registerForm.get('organizacaoNomeFantasia')?.touched"
+              >
                 <label class="input-label" for="organizacaoNomeFantasia">{{ organizationLabel() }}</label>
                 <div class="input-wrapper">
                   <input id="organizacaoNomeFantasia" type="text" formControlName="organizacaoNomeFantasia" placeholder="Nome fantasia" required />
@@ -155,10 +171,19 @@
             </div>
 
             <div class="form-row">
-              <div class="input-group" [class.error]="registerForm.get('organizacaoEmailContato')?.invalid && registerForm.get('organizacaoEmailContato')?.touched">
+              <div
+                class="input-group"
+                [class.error]="registerForm.get('organizacaoEmailContato')?.invalid && registerForm.get('organizacaoEmailContato')?.touched"
+              >
                 <label class="input-label" for="organizacaoEmailContato">{{ emailContatoLabel() }}</label>
                 <div class="input-wrapper">
-                  <input id="organizacaoEmailContato" type="email" formControlName="organizacaoEmailContato" placeholder="contato@mybuddy.com" required />
+                  <input
+                    id="organizacaoEmailContato"
+                    type="email"
+                    formControlName="organizacaoEmailContato"
+                    placeholder="contato@mybuddy.com"
+                    required
+                  />
                 </div>
                 @if (registerForm.get('organizacaoEmailContato')?.invalid && registerForm.get('organizacaoEmailContato')?.touched) {
                   <span class="validation-error">Insira um e-mail de contato válido</span>
@@ -179,7 +204,10 @@
               </div>
             </div>
 
-            <div class="input-group" [class.error]="registerForm.get('organizacaoEndereco')?.invalid && registerForm.get('organizacaoEndereco')?.touched">
+            <div
+              class="input-group"
+              [class.error]="registerForm.get('organizacaoEndereco')?.invalid && registerForm.get('organizacaoEndereco')?.touched"
+            >
               <label class="input-label" for="organizacaoEndereco">{{ enderecoLabel() }}</label>
               <div class="input-wrapper">
                 <input id="organizacaoEndereco" type="text" formControlName="organizacaoEndereco" placeholder="Rua, número, cidade/UF" required />
@@ -200,7 +228,13 @@
 
         <label class="terms-label">
           <input type="checkbox" formControlName="terms" />
-          <span>Eu aceito os <a href="#">Termos de Serviço</a> e a <a href="#">Política de Privacidade</a>.</span>
+          <span>
+            Eu aceito os
+            <a href="#">Termos de Serviço</a>
+            e a
+            <a href="#">Política de Privacidade</a>
+            .
+          </span>
         </label>
 
         <button type="submit" class="btn btn-signup" [disabled]="registerForm.invalid || isLoading()">
@@ -213,7 +247,8 @@
         </button>
 
         <p class="login-prompt">
-          Já tem uma conta? <a routerLink="/auth/login">Entrar</a>
+          Já tem uma conta?
+          <a routerLink="/auth/login">Entrar</a>
         </p>
       </form>
     </div>

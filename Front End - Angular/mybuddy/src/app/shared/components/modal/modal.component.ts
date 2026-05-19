@@ -22,12 +22,12 @@ export class ModalComponent {
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() confirm = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
+  @Output() modalCancel = new EventEmitter<void>();
 
   onHide(): void {
     this.visible = false;
     this.visibleChange.emit(false);
-    this.cancel.emit();
+    this.modalCancel.emit();
   }
 
   onConfirm(): void {
@@ -37,6 +37,6 @@ export class ModalComponent {
   onCancel(): void {
     this.visible = false;
     this.visibleChange.emit(false);
-    this.cancel.emit();
+    this.modalCancel.emit();
   }
 }

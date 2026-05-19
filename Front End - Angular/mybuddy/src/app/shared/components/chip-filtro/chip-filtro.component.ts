@@ -6,12 +6,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './chip-filtro.component.html',
-  styleUrl: './chip-filtro.component.scss'
+  styleUrl: './chip-filtro.component.scss',
 })
 export class ChipFiltroComponent {
-  @Input() label: string = '';
-  @Input() iconClass: string = '';
-  @Input() active: boolean = false;
-  
+  @Input() label = '';
+  @Input() iconClass = '';
+  @Input() active = false;
+
   @Output() chipClick = new EventEmitter<void>();
 }

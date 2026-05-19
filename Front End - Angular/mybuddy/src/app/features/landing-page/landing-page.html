@@ -6,19 +6,19 @@
     <div class="hero-grid">
       <div class="hero-text-col">
         <h1 class="hero-title">
-          Adote aqui o seu<br>
-          Buddy <span class="highlight">perfeito</span>
+          Adote aqui o seu
+          <br />
+          Buddy
+          <span class="highlight">perfeito</span>
         </h1>
-        <p class="hero-description">
-          Conectamos você a pets que precisam de um lar, feiras de adoção, veterinários e tudo o que seu amigo precisa.
-        </p>
+        <p class="hero-description">Conectamos você a pets que precisam de um lar, feiras de adoção, veterinários e tudo o que seu amigo precisa.</p>
         <div class="hero-actions">
           <a routerLink="/auth/login" class="btn btn-cta">Encontrar meu Buddy</a>
         </div>
       </div>
       <div class="hero-image-col">
         <div class="hero-image-wrapper">
-          <img src="/assets/landing-page/woman_with_puppy.png" alt="Mulher feliz abraçando filhote de bulldog" class="hero-img">
+          <img src="/assets/landing-page/woman_with_puppy.png" alt="Mulher feliz abraçando filhote de bulldog" class="hero-img" />
         </div>
       </div>
     </div>
@@ -28,7 +28,11 @@
   <section class="services-section" id="servicos">
     <div class="section-header">
       <p class="section-subtitle">Conheça nossos serviços</p>
-      <h2 class="section-title">Tudo o que seu pet <span class="highlight">precisa</span>, em um só lugar.</h2>
+      <h2 class="section-title">
+        Tudo o que seu pet
+        <span class="highlight">precisa</span>
+        , em um só lugar.
+      </h2>
     </div>
 
     <div class="services-grid">
@@ -38,8 +42,8 @@
           [title]="'Eventos'"
           [subtitle]="'Feiras de adoção, campanhas de vacina, etc.'"
           [imageUrl]="services[1].imageUrl"
-          class="service-card-item card-eventos">
-        </app-card-categoria>
+          class="service-card-item card-eventos"
+        ></app-card-categoria>
       </div>
       <!-- Coluna da Direita: Dois cards empilhados -->
       <div class="services-right-col">
@@ -47,14 +51,14 @@
           [title]="'Veterinários'"
           [subtitle]="'Encontre clínicas próximas a você.'"
           [imageUrl]="services[0].imageUrl"
-          class="service-card-item card-veterinarios">
-        </app-card-categoria>
+          class="service-card-item card-veterinarios"
+        ></app-card-categoria>
         <app-card-categoria
           [title]="'Petshops'"
           [subtitle]="'Hotéis, escolas e muito mais.'"
           [imageUrl]="services[2].imageUrl"
-          class="service-card-item card-petshops">
-        </app-card-categoria>
+          class="service-card-item card-petshops"
+        ></app-card-categoria>
       </div>
     </div>
   </section>
@@ -66,22 +70,26 @@
       <!-- We use gorgeous inline SVG logos from Logoipsum to look completely professional -->
       <div class="partner-logo">
         <svg width="150" height="40" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M24 10C24 4.47715 28.4772 0 34 0H116C121.523 0 126 4.47715 126 10V30C126 35.5228 121.523 40 116 40H34C28.4772 40 24 35.5228 24 30V10Z" fill="#E2E8F0" opacity="0.3"/>
-          <circle cx="15" cy="20" r="10" fill="currentColor"/>
-          <rect x="35" y="15" width="80" height="10" rx="3" fill="currentColor"/>
+          <path
+            d="M24 10C24 4.47715 28.4772 0 34 0H116C121.523 0 126 4.47715 126 10V30C126 35.5228 121.523 40 116 40H34C28.4772 40 24 35.5228 24 30V10Z"
+            fill="#E2E8F0"
+            opacity="0.3"
+          />
+          <circle cx="15" cy="20" r="10" fill="currentColor" />
+          <rect x="35" y="15" width="80" height="10" rx="3" fill="currentColor" />
         </svg>
       </div>
       <div class="partner-logo">
         <svg width="150" height="40" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="15" cy="20" r="10" fill="none" stroke="currentColor" stroke-width="4"/>
-          <circle cx="20" cy="20" r="5" fill="currentColor"/>
-          <rect x="40" y="15" width="70" height="10" rx="3" fill="currentColor"/>
+          <circle cx="15" cy="20" r="10" fill="none" stroke="currentColor" stroke-width="4" />
+          <circle cx="20" cy="20" r="5" fill="currentColor" />
+          <rect x="40" y="15" width="70" height="10" rx="3" fill="currentColor" />
         </svg>
       </div>
       <div class="partner-logo">
         <svg width="150" height="40" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="5" y="10" width="20" height="20" rx="4" fill="currentColor"/>
-          <rect x="35" y="15" width="90" height="10" rx="3" fill="currentColor"/>
+          <rect x="5" y="10" width="20" height="20" rx="4" fill="currentColor" />
+          <rect x="35" y="15" width="90" height="10" rx="3" fill="currentColor" />
         </svg>
       </div>
     </div>
@@ -91,7 +99,11 @@
   <section class="pets-section" id="adotar">
     <div class="section-header">
       <p class="section-subtitle">Conheça nossos pets.</p>
-      <h2 class="section-title">Seu <span class="highlight">novo amigo</span> está esperando por um lar.</h2>
+      <h2 class="section-title">
+        Seu
+        <span class="highlight">novo amigo</span>
+        está esperando por um lar.
+      </h2>
     </div>
 
     <!-- Customized Carousel Layout -->
@@ -105,8 +117,8 @@
               [age]="pet.age"
               [breed]="pet.breed"
               [sex]="pet.sex"
-              [vaccinated]="pet.vaccinated">
-            </app-card-pet>
+              [vaccinated]="pet.vaccinated"
+            ></app-card-pet>
           </div>
         }
       </div>
@@ -128,7 +140,11 @@
   <section class="map-section">
     <div class="map-grid">
       <div class="map-text-col">
-        <h2 class="map-title">Veja feiras de adoção <span class="highlight">próximas</span> a você</h2>
+        <h2 class="map-title">
+          Veja feiras de adoção
+          <span class="highlight">próximas</span>
+          a você
+        </h2>
         <p class="map-description">
           Encontre o evento mais perto da sua casa. Navegue pelo mapa para localizar o petshop/ong disponível na sua região.
         </p>
@@ -143,11 +159,11 @@
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14629.742352528775!2d-46.666666!3d-23.555555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDMzJzIwLjAiUyA0NsKwMzknNTkuOSJX!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
             width="100%"
             height="100%"
-            style="border:0; border-radius: var(--radius-lg);"
+            style="border: 0; border-radius: var(--radius-lg)"
             allowfullscreen=""
             loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
           <div class="map-overlay-pin">
             <span class="material-icons pin-icon">place</span>
           </div>
@@ -159,7 +175,10 @@
   <!-- SECTION 6: FAQ ACCORDION -->
   <section class="faq-section">
     <div class="section-header">
-      <h2 class="faq-headline"><span class="highlight">Antes</span> de você adotar...</h2>
+      <h2 class="faq-headline">
+        <span class="highlight">Antes</span>
+        de você adotar...
+      </h2>
     </div>
 
     <div class="faq-container">

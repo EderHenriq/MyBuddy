@@ -1,6 +1,5 @@
 <header class="navbar-container">
   <div class="navbar-content">
-
     <!-- Logo Section -->
     <a class="navbar-brand" routerLink="/">
       <img src="assets/logo/logo-provisoria.png" alt="MyBuddy Logo" class="brand-logo" />
@@ -15,7 +14,8 @@
           class="nav-item"
           [routerLink]="item.link"
           routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: item.link === '/home' }">
+          [routerLinkActiveOptions]="{ exact: item.link === '/home' }"
+        >
           {{ item.label }}
         </li>
       </ul>

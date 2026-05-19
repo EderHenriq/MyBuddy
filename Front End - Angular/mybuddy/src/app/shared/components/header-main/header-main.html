@@ -13,13 +13,15 @@
 
             @for (link of links; track link.path; let i = $index) {
               <li>
-                <a #navLink 
-                   [routerLink]="link.path" 
-                   routerLinkActive="active" 
-                   [class.active-hover]="hoveredIndex === i"
-                   [class.hover-override]="hoveredIndex !== -1 && hoveredIndex !== i"
-                   (mouseenter)="setHoverIndex(i, navLink)"
-                   (click)="onLinkClick(navLink)">
+                <a
+                  #navLink
+                  [routerLink]="link.path"
+                  routerLinkActive="active"
+                  [class.active-hover]="hoveredIndex === i"
+                  [class.hover-override]="hoveredIndex !== -1 && hoveredIndex !== i"
+                  (mouseenter)="setHoverIndex(i, navLink)"
+                  (click)="onLinkClick(navLink)"
+                >
                   {{ link.label }}
                 </a>
               </li>

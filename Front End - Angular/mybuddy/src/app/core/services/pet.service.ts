@@ -4,7 +4,7 @@ import { Pet } from '../models/pet.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PetService {
   private api = inject(ApiService);

@@ -6,16 +6,16 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './card-pet.component.html',
-  styleUrl: './card-pet.component.scss'
+  styleUrl: './card-pet.component.scss',
 })
 export class CardPetComponent {
-  @Input() imageUrl: string = '';
-  @Input() name: string = '';
-  @Input() age: string = '';
-  @Input() breed: string = '';
-  @Input() sex: string = '';
-  @Input() vaccinated: string = 'Sim';
-  
+  @Input() imageUrl = '';
+  @Input() name = '';
+  @Input() age = '';
+  @Input() breed = '';
+  @Input() sex = '';
+  @Input() vaccinated = 'Sim';
+
   @Output() infoClick = new EventEmitter<void>();
   @Output() favoriteClick = new EventEmitter<void>();
 }

@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.services';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +22,7 @@ export class Login {
   constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
@@ -49,16 +49,16 @@ export class Login {
             this.isLoading.set(false);
             this.router.navigate(['/home']);
           },
-          error: (err) => {
+          error: () => {
             this.isLoading.set(false);
             this.errorMessage.set('Erro ao carregar dados do perfil. Tente novamente.');
-          }
+          },
         });
       },
-      error: (err) => {
+      error: () => {
         this.isLoading.set(false);
         this.errorMessage.set('E-mail ou senha incorretos. Tente novamente.');
-      }
+      },
     });
   }
 }

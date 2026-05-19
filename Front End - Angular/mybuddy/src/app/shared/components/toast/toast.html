@@ -1,8 +1,5 @@
 <div class="toast-container">
-  <div *ngFor="let toast of toasts" 
-       class="toast-item" 
-       [ngClass]="'toast-' + toast.type"
-       @toastAnimation>
+  <div *ngFor="let toast of toasts" class="toast-item" [ngClass]="'toast-' + toast.type" @toastAnimation>
     <div class="toast-icon">
       <span class="material-icons">{{ getIcon(toast.type) }}</span>
     </div>

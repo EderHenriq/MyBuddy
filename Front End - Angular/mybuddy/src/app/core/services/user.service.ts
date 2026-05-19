@@ -4,7 +4,7 @@ import { User } from '../models/user.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private api = inject(ApiService);

@@ -1,165 +1,228 @@
-<div class="dashboard-container">
-  <div class="dashboard-content">
-    
-    <!-- HEADER DA TELA -->
-    <header class="dashboard-header">
-      <div class="welcome-section">
-        <h1 class="welcome-title">
-          Olá, <span class="highlight">{{ authService.currentUser()?.nome || 'Usuário' }}</span>!
-        </h1>
-        <p class="welcome-subtitle">
-          Bem-vindo de volta ao seu painel administrativo no MyBuddy.
-        </p>
-      </div>
+<main class="home-page">
+  <section class="home-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-kicker">Seja bem vindo, {{ authService.currentUser()?.nome || 'Usuário' }}</p>
+      <h1>
+        Conectar, cuidar e
+        <span>comemorar.</span>
+      </h1>
+      <p class="hero-subtitle">Tudo isso em um só lugar</p>
+    </div>
+  </section>
 
-      <button (click)="logout()" class="btn-logout">
-        <i class="pi pi-sign-out"></i> Sair da Conta
-      </button>
-    </header>
+  <section class="home-shell">
+    <div class="search-panel">
+      <label class="search-box" for="home-search">
+        <input id="home-search" type="search" placeholder="O que você procura?" />
+        <span class="material-icons">search</span>
+      </label>
 
-    <!-- CARDS DE METRICAS RAPIDAS -->
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-icon icon-pets">
-          <i class="pi pi-heart-fill"></i>
-        </div>
-        <div class="metric-data">
-          <span class="metric-value">12</span>
-          <span class="metric-label">Pets Acompanhados</span>
-        </div>
-      </div>
+      <div class="panel-divider"></div>
 
-      <div class="metric-card">
-        <div class="metric-icon icon-events">
-          <i class="pi pi-calendar"></i>
-        </div>
-        <div class="metric-data">
-          <span class="metric-value">3</span>
-          <span class="metric-label">Consultas Agendadas</span>
-        </div>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-icon icon-messages">
-          <i class="pi pi-envelope"></i>
-        </div>
-        <div class="metric-data">
-          <span class="metric-value">5</span>
-          <span class="metric-label">Novas Mensagens</span>
-        </div>
-      </div>
+      <nav class="quick-actions" aria-label="Atalhos da home">
+        <a routerLink="/pets" class="quick-action">
+          <span>Meus Pets</span>
+          <span class="material-icons">pets</span>
+        </a>
+        <a routerLink="/adotante/favoritos" class="quick-action">
+          <span>Favoritos</span>
+          <span class="material-icons">favorite</span>
+        </a>
+        <a routerLink="/adotante/interesses" class="quick-action">
+          <span>Mensagens</span>
+          <span class="material-icons">chat_bubble_outline</span>
+        </a>
+        <a routerLink="/adotante/interesses" class="quick-action">
+          <span>Solicitações</span>
+          <span class="material-icons">assignment</span>
+        </a>
+      </nav>
     </div>
 
-    <!-- SEÇÃO PRINCIPAL DOURADA/GLASSMORPHISM -->
-    <div class="main-sections">
-      
-      <!-- DETALHES DO PERFIL LOGADO -->
-      <div class="profile-details-card">
-        <h2 class="section-title">
-          <i class="pi pi-user-edit"></i> Detalhes do seu Perfil
-        </h2>
-        
-        <div class="details-list">
-          <div class="detail-item">
-            <span class="detail-label">Nome Completo:</span>
-            <span class="detail-value">{{ authService.currentUser()?.nome }}</span>
-          </div>
+    <section class="section-block">
+      <h2 class="section-title">Encontre tudo para o seu melhor amigo</h2>
+      <div class="category-grid">
+        @for (category of categories; track category.label) {
+          <a class="category-card" routerLink="/pets" [style.background-image]="'url(' + category.imageUrl + ')'">
+            <span>{{ category.label }}</span>
+          </a>
+        }
+      </div>
+    </section>
 
-          <div class="detail-item">
-            <span class="detail-label">E-mail Cadastrado:</span>
-            <span class="detail-value">{{ authService.currentUser()?.email }}</span>
+    <section class="reminders-grid" aria-label="Lembretes">
+      @for (reminder of reminders; track reminder.title) {
+        <article class="reminder-card">
+          <img [src]="reminder.iconUrl" [alt]="reminder.title" />
+          <div>
+            <h3>{{ reminder.title }}</h3>
+            <p>{{ reminder.text }}</p>
           </div>
+          <button type="button">Agendar</button>
+        </article>
+      }
+    </section>
 
-          <div class="detail-item">
-            <span class="detail-label">Telefone:</span>
-            <span class="detail-value">{{ authService.currentUser()?.telefone || 'Não informado' }}</span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">Nível de Acesso (Roles):</span>
-            <span class="detail-value badge">
-              {{ authService.getUserRoles().join(', ') }}
-            </span>
-          </div>
-        </div>
+    <section class="section-block">
+      <div class="section-heading-row">
+        <h2 class="section-title">Novos buddys esperando por um lar</h2>
+        <a routerLink="/pets" class="text-link">
+          Veja mais pets disponíveis
+          <span class="material-icons">arrow_forward</span>
+        </a>
       </div>
 
-      <!-- SEÇÃO CONDICIONAL: DETALHES DA ONG (SE FOR ONG) -->
-      @if (authService.currentUser()?.organizacao) {
-        <div class="org-details-card">
-          <h2 class="section-title text-green">
-            <i class="pi pi-home"></i> Informações da sua ONG
-          </h2>
+      <div class="pets-grid">
+        @for (pet of pets; track pet.name) {
+          <article class="pet-card">
+            <img [src]="pet.imageUrl" [alt]="pet.name" />
+            <div class="pet-card-body">
+              <h3>{{ pet.name }}</h3>
+              <ul>
+                <li>Idade: {{ pet.age }}</li>
+                <li>Raça: {{ pet.breed }}</li>
+                <li>Sexo: {{ pet.sex }}</li>
+                <li>Vacinado: {{ pet.vaccinated }}</li>
+              </ul>
+              <div class="pet-card-footer">
+                <a routerLink="/pets" class="pet-info-link">
+                  Mais Informações
+                  <span class="material-icons">arrow_forward</span>
+                </a>
+                <button type="button" [attr.aria-label]="'Favoritar ' + pet.name">
+                  <span class="material-icons">favorite_border</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
 
-          <div class="details-list">
-            <div class="detail-item">
-              <span class="detail-label">Nome Fantasia:</span>
-              <span class="detail-value text-highlight">
-                {{ authService.currentUser()?.organizacao?.nomeFantasia }}
+    <section class="donation-banner">
+      <div>
+        <h2>Possui um pet para doação?</h2>
+        <p>Cadastre e se conecte com famílias que buscam por novos companheiros</p>
+      </div>
+      <a routerLink="/ong/pets">
+        Cadastrar Pet
+        <span class="material-icons">open_in_new</span>
+      </a>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading-row">
+        <h2 class="section-title">Próximos eventos de Pets</h2>
+        <a routerLink="/public/eventos" class="text-link">
+          Explore mais eventos
+          <span class="material-icons">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="events-grid">
+        @for (event of events; track event.title) {
+          <article class="event-card">
+            <time>
+              <strong>{{ event.day }}</strong>
+              <span>{{ event.month }}</span>
+            </time>
+            <div>
+              <h3>{{ event.title }}</h3>
+              <p>{{ event.location }}</p>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="services-map-grid">
+      <article class="nearby-vets-card">
+        <h2>Veterinários próximos</h2>
+        <div class="title-line"></div>
+        <div class="vet-list">
+          @for (vet of vets; track vet.name) {
+            <div class="vet-item">
+              <img [src]="vet.avatarUrl" [alt]="vet.name" />
+              <div class="vet-info">
+                <h3>{{ vet.name }}</h3>
+                <p>{{ vet.distance }} - {{ vet.status }}</p>
+              </div>
+              <span class="vet-rating">
+                <span class="material-icons">star_outline</span>
+                {{ vet.rating }}
               </span>
             </div>
-
-            <div class="detail-item">
-              <span class="detail-label">CNPJ da Instituição:</span>
-              <span class="detail-value">{{ authService.currentUser()?.organizacao?.cnpj }}</span>
-            </div>
-
-            <div class="detail-item">
-              <span class="detail-label">E-mail para Contato:</span>
-              <span class="detail-value">{{ authService.currentUser()?.organizacao?.emailContato }}</span>
-            </div>
-
-            @if (authService.currentUser()?.organizacao?.telefoneContato) {
-              <div class="detail-item">
-                <span class="detail-label">Telefone Comercial:</span>
-                <span class="detail-value">{{ authService.currentUser()?.organizacao?.telefoneContato }}</span>
-              </div>
-            }
-
-            <div class="detail-item">
-              <span class="detail-label">Sede / Endereço:</span>
-              <span class="detail-value">{{ authService.currentUser()?.organizacao?.endereco }}</span>
-            </div>
-
-            @if (authService.currentUser()?.organizacao?.descricao) {
-              <div class="detail-item full-width">
-                <span class="detail-label">Propósito / Biografia:</span>
-                <p class="detail-desc">{{ authService.currentUser()?.organizacao?.descricao }}</p>
-              </div>
-            }
-          </div>
+          }
         </div>
-      } @else {
-        <!-- SEÇÃO MOCK: ADOTANTE RECOMENDAÇÕES -->
-        <div class="recommendations-card">
-          <h2 class="section-title text-orange">
-            <i class="pi pi-sparkles"></i> Sugestões de Adoção para Você
-          </h2>
-          <p class="rec-intro">Com base no seu perfil de adotante, veja pets próximos precisando de um lar:</p>
-          
-          <div class="rec-pets-list">
-            <div class="rec-pet-item">
-              <span class="pet-avatar"><i class="pi pi-github"></i></span>
-              <div class="pet-info">
-                <span class="pet-name">Nevasca</span>
-                <span class="pet-details">Samoieda • 2 anos • Macho</span>
-              </div>
-              <span class="match-badge">98% Match</span>
-            </div>
+      </article>
 
-            <div class="rec-pet-item">
-              <span class="pet-avatar"><i class="pi pi-github"></i></span>
-              <div class="pet-info">
-                <span class="pet-name">Paçoca</span>
-                <span class="pet-details">Vira-lata • 6 meses • Fêmea</span>
-              </div>
-              <span class="match-badge">90% Match</span>
-            </div>
-          </div>
+      <article class="map-card">
+        <div class="map-frame">
+          <iframe
+            title="Mapa de feiras de adoção"
+            [src]="mapUrl"
+            width="100%"
+            height="100%"
+            style="border: 0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
         </div>
-      }
+        <div class="map-card-body">
+          <h2>Feiras de adoção próximas a você</h2>
+          <p>
+            Milhares de Buddies estão esperando por um novo capítulo. Descubra quem combina mais com a sua rotina e comece uma história de amizade
+            hoje.
+          </p>
+          <a routerLink="/public/eventos">Ver no mapa</a>
+        </div>
+      </article>
+    </section>
 
+    <section class="products-section">
+      <div class="products-heading">
+        <h2>Conheça nossos produtos</h2>
+        <p>There are many variations of passages of Lorem Ipsum available but the majority have suffered alteration in some form.</p>
+      </div>
+
+      <div class="products-grid">
+        @for (product of products; track product.label) {
+          <a routerLink="/marketplace" class="product-card">
+            <img [src]="product.imageUrl" [alt]="product.label" />
+            <span>{{ product.label }}</span>
+          </a>
+        }
+      </div>
+
+      <a routerLink="/marketplace" class="products-button">Veja mais produtos</a>
+    </section>
+  </section>
+
+  <footer class="home-footer">
+    <div class="footer-brand">
+      <h2>MyBuddy</h2>
+      <p>Uma plataforma que conecta humanos a pets que precisam de um lar.</p>
+      <div class="social-links">
+        <a routerLink="/" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a routerLink="/" aria-label="Linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a routerLink="/" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+      </div>
     </div>
 
-  </div>
-</div>
+    <nav class="footer-links" aria-label="Links do rodapé">
+      <div>
+        <h3>Sobre nós</h3>
+        <a routerLink="/">Blog</a>
+        <a routerLink="/">Quem somos</a>
+        <a routerLink="/">Dúvidas</a>
+      </div>
+      <div>
+        <h3>Fale com a gente</h3>
+        <a routerLink="/">Contact</a>
+        <a routerLink="/">Support</a>
+        <a routerLink="/">Legal</a>
+      </div>
+    </nav>
+  </footer>
+</main>

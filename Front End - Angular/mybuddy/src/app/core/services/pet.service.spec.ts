@@ -12,11 +12,7 @@ describe('PetService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        PetService,
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+      providers: [PetService, provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(PetService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -31,9 +27,7 @@ describe('PetService', () => {
   });
 
   it('should fetch pets', () => {
-    const mockPets: Pet[] = [
-      { id: '1', ownerId: '1', name: 'Rex', species: 'Dog' }
-    ];
+    const mockPets: Pet[] = [{ id: '1', ownerId: '1', name: 'Rex', species: 'Dog' }];
 
     service.getAll().subscribe(pets => {
       expect(pets.length).toBe(1);

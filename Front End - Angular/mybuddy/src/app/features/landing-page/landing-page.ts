@@ -30,14 +30,7 @@ interface FaqItem {
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    HeaderLandingPage,
-    CardCategoriaComponent,
-    CardPetComponent,
-    Footer,
-  ],
+  imports: [CommonModule, RouterModule, HeaderLandingPage, CardCategoriaComponent, CardPetComponent, Footer],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.scss',
 })
@@ -101,17 +94,20 @@ Todo o processo é gratuito e feito para garantir que você e o pet tenham o mel
     },
     {
       question: 'O MyBuddy é pago?',
-      answer: 'Não! O MyBuddy é uma plataforma 100% gratuita para adotantes e ONGs parceiras. Nosso objetivo é facilitar a adoção e o cuidado animal.',
+      answer:
+        'Não! O MyBuddy é uma plataforma 100% gratuita para adotantes e ONGs parceiras. Nosso objetivo é facilitar a adoção e o cuidado animal.',
       expanded: false,
     },
     {
       question: 'O pet vem com vacinas atualizadas?',
-      answer: 'Sim, a maioria das ONGs parceiras entrega o pet com a vacinação básica em dia e castrado. Essa informação é sempre detalhada no perfil de cada pet.',
+      answer:
+        'Sim, a maioria das ONGs parceiras entrega o pet com a vacinação básica em dia e castrado. Essa informação é sempre detalhada no perfil de cada pet.',
       expanded: false,
     },
     {
       question: 'Posso devolver o pet se não me adaptar?',
-      answer: 'Caso haja problemas de adaptação, a ONG parceira prestará todo o suporte necessário. A devolução responsável pode ser alinhada diretamente com a instituição.',
+      answer:
+        'Caso haja problemas de adaptação, a ONG parceira prestará todo o suporte necessário. A devolução responsável pode ser alinhada diretamente com a instituição.',
       expanded: false,
     },
     {

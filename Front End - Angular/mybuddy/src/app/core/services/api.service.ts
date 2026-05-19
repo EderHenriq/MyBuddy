@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
   private http = inject(HttpClient);
@@ -14,11 +14,11 @@ export class ApiService {
     return this.http.get<T>(`${this.baseUrl}${path}`, { params });
   }
 
-  post<T>(path: string, body: any): Observable<T> {
+  post<T>(path: string, body: unknown): Observable<T> {
     return this.http.post<T>(`${this.baseUrl}${path}`, body);
   }
 
-  put<T>(path: string, body: any): Observable<T> {
+  put<T>(path: string, body: unknown): Observable<T> {
     return this.http.put<T>(`${this.baseUrl}${path}`, body);
   }
 

@@ -1,9 +1,23 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.services';
+import { AuthService } from '@core/services/auth.service';
 
 type ProfileType = 'ADOTANTE' | 'ONG' | 'PETSHOP';
+
+interface CadastroPayload {
+  nome: string;
+  email: string;
+  telefone: string;
+  password?: string;
+  roles: ProfileType[];
+  organizacaoCnpj?: string;
+  organizacaoNomeFantasia?: string;
+  organizacaoEmailContato?: string;
+  organizacaoEndereco?: string;
+  organizacaoTelefoneContato?: string;
+  organizacaoDescricao?: string;
+}
 
 @Component({
   selector: 'app-cadastro-escolha-perfil',
@@ -27,21 +41,24 @@ export class CadastroEscolhaPerfil {
     { value: 'PETSHOP', label: 'Petshop', helper: 'Ofereco produtos ou servicos.' },
   ];
 
-  registerForm: FormGroup = this.fb.group({
-    nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-    email: ['', [Validators.required, Validators.email]],
-    telefone: ['', [Validators.required, Validators.pattern(/^\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}$/)]],
-    password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(40)]],
-    confirmPassword: ['', [Validators.required]],
-    terms: [false, [Validators.requiredTrue]],
+  registerForm: FormGroup = this.fb.group(
+    {
+      nome: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      email: ['', [Validators.required, Validators.email]],
+      telefone: ['', [Validators.required, Validators.pattern(/^\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}$/)]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(40)]],
+      confirmPassword: ['', [Validators.required]],
+      terms: [false, [Validators.requiredTrue]],
 
-    organizacaoNomeFantasia: [''],
-    organizacaoCnpj: [''],
-    organizacaoEmailContato: [''],
-    organizacaoEndereco: [''],
-    organizacaoTelefoneContato: [''],
-    organizacaoDescricao: [''],
-  }, { validators: this.passwordMatchValidator });
+      organizacaoNomeFantasia: [''],
+      organizacaoCnpj: [''],
+      organizacaoEmailContato: [''],
+      organizacaoEndereco: [''],
+      organizacaoTelefoneContato: [''],
+      organizacaoDescricao: [''],
+    },
+    { validators: this.passwordMatchValidator },
+  );
 
   constructor() {
     this.updateProfileValidators();
@@ -87,7 +104,7 @@ export class CadastroEscolhaPerfil {
       : 'Conte um pouco sobre seus produtos, servicos e especialidades...';
   }
 
-  onTelefoneInput(event: Event, fieldName: string = 'telefone'): void {
+  onTelefoneInput(event: Event, fieldName = 'telefone'): void {
     const target = event.target as HTMLInputElement;
     let input = target.value.replace(/\D/g, '');
     if (input.length > 11) input = input.substring(0, 11);
@@ -134,7 +151,7 @@ export class CadastroEscolhaPerfil {
     const values = this.registerForm.value;
     const profile = this.selectedProfile();
 
-    const payload: any = {
+    const payload: CadastroPayload = {
       nome: values.nome,
       email: values.email,
       telefone: values.telefone,
@@ -159,7 +176,7 @@ export class CadastroEscolhaPerfil {
           this.router.navigate(['/auth/login']);
         }, 2000);
       },
-      error: (err) => {
+      error: err => {
         this.isLoading.set(false);
         this.errorMessage.set(err.error?.message || 'Erro ao realizar cadastro. Verifique os dados e tente novamente.');
       },
@@ -169,7 +186,7 @@ export class CadastroEscolhaPerfil {
   private updateProfileValidators(): void {
     const businessValidators = {
       organizacaoNomeFantasia: [Validators.required, Validators.minLength(3)],
-      organizacaoCnpj: [Validators.required, Validators.pattern(/^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/)],
+      organizacaoCnpj: [Validators.required, Validators.pattern(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/)],
       organizacaoEmailContato: [Validators.required, Validators.email],
       organizacaoEndereco: [Validators.required],
     };
@@ -187,10 +204,13 @@ export class CadastroEscolhaPerfil {
     });
 
     if (!this.isBusinessProfile()) {
-      this.registerForm.patchValue({
-        organizacaoTelefoneContato: '',
-        organizacaoDescricao: '',
-      }, { emitEvent: false });
+      this.registerForm.patchValue(
+        {
+          organizacaoTelefoneContato: '',
+          organizacaoDescricao: '',
+        },
+        { emitEvent: false },
+      );
     }
   }
 

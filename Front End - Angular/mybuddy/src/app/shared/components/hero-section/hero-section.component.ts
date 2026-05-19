@@ -6,8 +6,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './hero-section.component.html',
-  styleUrl: './hero-section.component.scss'
+  styleUrl: './hero-section.component.scss',
 })
 export class HeroSectionComponent {
-  @Input() userName: string = 'Usuário';
+  @Input() userName = 'Usuário';
 }

@@ -6,13 +6,13 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './banner-lembrete.component.html',
-  styleUrl: './banner-lembrete.component.scss'
+  styleUrl: './banner-lembrete.component.scss',
 })
 export class BannerLembreteComponent {
-  @Input() title: string = '';
-  @Input() subtitle: string = '';
-  @Input() iconImage: string = '';
-  @Input() buttonText: string = 'Agendar';
-  
+  @Input() title = '';
+  @Input() subtitle = '';
+  @Input() iconImage = '';
+  @Input() buttonText = 'Agendar';
+
   @Output() actionClick = new EventEmitter<void>();
 }
