@@ -8,16 +8,16 @@ import { CommonModule } from '@angular/common';
   styleUrl: './skeleton.scss',
 })
 export class Skeleton {
-  @Input() width: string = '100%';
-  @Input() height: string = '20px';
+  @Input() width = '100%';
+  @Input() height = '20px';
   @Input() shape: 'rectangle' | 'circle' = 'rectangle';
-  @Input() borderRadius: string = '8px';
+  @Input() borderRadius = '8px';
 
   get computedStyle() {
     return {
       width: this.width,
       height: this.height,
-      borderRadius: this.shape === 'circle' ? '50%' : this.borderRadius
+      borderRadius: this.shape === 'circle' ? '50%' : this.borderRadius,
     };
   }
 }

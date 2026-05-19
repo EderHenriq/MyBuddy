@@ -3,10 +3,11 @@ import { InputText } from 'primeng/inputtext';
 import { Checkbox } from 'primeng/checkbox';
 import { Button } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
+import { Skeleton } from '@shared/components/skeleton/skeleton';
 
 @Component({
   selector: 'app-styleguide',
-  imports: [InputText, Checkbox, Button, FormsModule],
+  imports: [InputText, Checkbox, Button, FormsModule, Skeleton],
   templateUrl: './styleguide.html',
   styleUrl: './styleguide.scss',
 })
