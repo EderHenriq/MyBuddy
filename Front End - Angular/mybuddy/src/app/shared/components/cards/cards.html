@@ -1,0 +1,29 @@
+<div class="card">
+  <div class="card-img">
+    <img [src]="pet?.fotoPet" [alt]="pet?.nomePet" />
+  </div>
+
+  <div class="card-header">
+    <h2>{{ pet?.nomePet }}</h2>
+  </div>
+
+  <div class="card-informations">
+    <ul>
+      <li>Idade: {{ pet?.idade }}</li>
+      <li>Raça: {{ pet?.raca }}</li>
+      <li>Sexo: {{ pet?.sexo }}</li>
+      <li>Vacinado: {{ pet?.vacinado ? 'Sim' : 'Não' }}</li>
+    </ul>
+  </div>
+
+  <footer class="card-actions">
+    <button class="infos">
+      Mais informações
+      <span class="material-icons">arrow_forward</span>
+    </button>
+
+    <button class="favorite">
+      <span class="material-icons">favorite</span>
+    </button>
+  </footer>
+</div>

@@ -31,6 +31,9 @@ jobs:
       - name: Rodar testes com Maven
         run: mvn test
         working-directory: "Back End/JavaSpring/Myb Def/backend-mybuddy"
+        env:
+          MERCADOPAGO_ACCESS_TOKEN: ${{ secrets.MERCADOPAGO_ACCESS_TOKEN }}
+
 
       - name: Publicar relatório do Jacoco
         uses: actions/upload-artifact@v4

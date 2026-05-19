@@ -8,6 +8,11 @@ export const routes: Routes = [
 
   // Landing Page — Página de apresentação do app
   {
+    // Routes de testes de componentes
+    path: 'card',
+    loadComponent: () => import('./shared/components/cards/cards').then(m => m.Cards),
+  },
+  {
     path: '',
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),
   },

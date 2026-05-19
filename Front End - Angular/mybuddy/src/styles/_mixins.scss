@@ -114,7 +114,7 @@ $breakpoints: (
 @mixin card-style {
   background: var(--surface-card);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm);
   box-shadow: var(--shadow-md);
 }
 

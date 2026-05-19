@@ -1,5 +1,28 @@
 services:
 
+# ── ngrok: túnel para webhook do MP ──────────────────────
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: mybuddy-ngrok
+    restart: unless-stopped
+    command: http mybuddy-backend:8081 --log=stdout
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    ports:
+      - "4040:4040"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - mybuddy-network
+    
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4040/api/tunnels | grep -q 'public_url'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
   # ── MY-239: MongoDB ──────────────────────────────────────
   mongodb:
     image: mongo:7.0
@@ -28,7 +51,7 @@ services:
       retries: 5
       start_period: 20s
 
-  # ── PostgreSQL (banco do Keycloak e do backend) ───────────
+  # ── PostgreSQL (banco do backend) ───────────
   postgres:
     image: postgres:16-alpine
     container_name: mybuddy-postgres
@@ -118,6 +141,9 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
       UPLOAD_DIR: ${UPLOAD_DIR}
+      MERCADOPAGO_ACCESS_TOKEN: ${MERCADOPAGO_ACCESS_TOKEN}
+      MERCADOPAGO_WEBHOOK_SECRET: ${MERCADOPAGO_WEBHOOK_SECRET}
+
 
     ports:
       - "8081:8081"
