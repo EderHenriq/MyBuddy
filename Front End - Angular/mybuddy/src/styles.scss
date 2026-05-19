@@ -149,3 +149,19 @@ html, body {
   font-size: 20px;
 }
 
+// Estilização do Modal
+.p-dialog-footer {
+  justify-content: center !important;
+  gap: var(--spacing-sm) !important;
+}
+
+.p-dialog-header {
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.myb-dialog-blur {
+  backdrop-filter: blur(6px) !important;
+  background: rgba(0,0,0,0.3) !important;
+}
