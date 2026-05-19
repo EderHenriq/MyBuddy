@@ -3,11 +3,6 @@ import { authGuard } from './core/guards/auth.guards';
 
 export const routes: Routes = [
   {
-    // Routes de testes de componentes
-    path: 'modal',
-    loadComponent: () => import('./shared/components/modal/modal-test.component').then(m => m.ModalTestComponent),
-  },
-  {
     // Redirecionamento inicial para a rota 'home'
     path: '',
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),
