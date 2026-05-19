@@ -12,11 +12,7 @@ describe('UserService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        UserService,
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+      providers: [UserService, provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(UserService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -31,9 +27,7 @@ describe('UserService', () => {
   });
 
   it('should fetch users', () => {
-    const mockUsers: User[] = [
-      { id: '1', name: 'Eder', email: 'eder@test.com' }
-    ];
+    const mockUsers: User[] = [{ id: '1', name: 'Eder', email: 'eder@test.com' }];
 
     service.getAll().subscribe(users => {
       expect(users.length).toBe(1);

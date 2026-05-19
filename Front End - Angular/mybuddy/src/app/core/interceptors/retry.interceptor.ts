@@ -11,7 +11,7 @@ export const retryInterceptor: HttpInterceptorFn = (req, next) => {
           return timer(1000 * retryCount); // Delay crescente: 1s, 2s
         }
         throw error; // Propaga os erros 4xx imediatamente
-      }
-    })
+      },
+    }),
   );
 };

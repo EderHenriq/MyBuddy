@@ -9,7 +9,7 @@ const MyBuddyPreset = definePreset(Aura, {
       200: '#ffcc80',
       300: '#ffb74d',
       400: '#f0a346',
-      500: '#ff7b00',
+      500: '#ff7900',
       600: '#cc6200',
       700: '#994a00',
       800: '#663100',
@@ -38,7 +38,7 @@ const MyBuddyPreset = definePreset(Aura, {
   components: {
     inputtext: {
       root: {
-        borderRadius: 'var(--radius-sm)',
+        borderRadius: '999px',
         borderColor: 'var(--border-color)',
         hoverBorderColor: '#b3b3b3',
         focusBorderColor: '#2d2d2d',
@@ -62,7 +62,7 @@ const MyBuddyPreset = definePreset(Aura, {
     },
     button: {
       root: {
-        borderRadius: 'var(--radius-sm)',
+        borderRadius: '999px',
         secondary: {
           background: '#efeeee',
           borderColor: 'transparent',
@@ -75,18 +75,18 @@ const MyBuddyPreset = definePreset(Aura, {
       addon: {
         background: '#ffffff',
         borderColor: 'var(--border-color)',
-        borderRadius: 'var(--radius-sm)',
+        borderRadius: '999px',
         color: 'var(--text-color)',
       },
     },
     autocomplete: {
       root: {
-        borderRadius: 'var(--radius-sm)',
+        borderRadius: '999px',
       },
       dropdown: {
         background: '#ffffff',
         borderColor: 'var(--border-color)',
-        borderRadius: 'var(--radius-sm)',
+        borderRadius: '999px',
         hoverBackground: '#f5f5f5',
       },
     },

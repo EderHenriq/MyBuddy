@@ -8,16 +8,16 @@ import { CommonModule } from '@angular/common';
   styleUrl: './loading-spinner.scss',
 })
 export class LoadingSpinner {
-  @Input() size: string = '40px';
-  @Input() color: string = '#FF8B00';
-  @Input() borderSize: string = '4px';
+  @Input() size = '40px';
+  @Input() color = '#FF8B00';
+  @Input() borderSize = '4px';
 
   get computedStyle() {
     return {
       width: this.size,
       height: this.size,
       borderWidth: this.borderSize,
-      borderTopColor: this.color
+      borderTopColor: this.color,
     };
   }
 }

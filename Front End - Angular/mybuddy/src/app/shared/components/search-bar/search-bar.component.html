@@ -1,0 +1,6 @@
+<div class="search-bar-container">
+  <input type="text" class="search-input" [placeholder]="placeholder" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+  <button class="search-btn" (click)="onSearch()">
+    <i class="fas fa-search"></i>
+  </button>
+</div>

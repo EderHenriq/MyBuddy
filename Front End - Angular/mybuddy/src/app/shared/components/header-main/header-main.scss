@@ -63,17 +63,25 @@
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-medium);
         line-height: var(--line-height-md);
-        padding: var(--spacing-xs);
+        padding: var(--spacing-xs) var(--spacing-sm);
         white-space: nowrap;
         cursor: pointer;
         border-radius: var(--radius-max);
         position: relative;
         z-index: 1;
         background-color: transparent;
-        transition: color 0.3s ease;
+        transition: color 0.25s ease;
 
         &.active {
           color: var(--text-color-white);
+        }
+
+        &.active-hover {
+          color: var(--text-color-white) !important;
+        }
+
+        &.hover-override {
+          color: var(--text-color-black) !important;
         }
       }
       }
