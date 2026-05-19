@@ -1,6 +1,6 @@
+import { DialogModule } from 'primeng/dialog';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
@@ -20,15 +20,15 @@ export class ModalComponent {
   @Input() cancelLabel = 'Cancelar';
   @Input() confirmSeverity: 'primary' | 'secondary' | 'danger' = 'primary';
   @Input() loading = false;
+  @Input() backdropBlur = false;
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() confirm = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
 
   onHide(): void {
-    this.visible = false;
     this.visibleChange.emit(false);
-    this.cancel.emit();
+    this.cancelled.emit();
   }
 
   onConfirm(): void {
@@ -36,8 +36,7 @@ export class ModalComponent {
   }
 
   onCancel(): void {
-    this.visible = false;
     this.visibleChange.emit(false);
-    this.cancel.emit();
+    this.cancelled.emit();
   }
 }

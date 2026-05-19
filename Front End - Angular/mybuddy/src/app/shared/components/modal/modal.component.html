@@ -11,12 +11,12 @@
     <ng-content />
   </div>
 
-  @if (showFooter) {
-    <ng-templete pTemplate="footer">
+  <ng-template pTemplate="footer">
+    @if (showFooter) {
       <div class="myb-footer-actions">
-        <p-button [label]="cancelLabel" severity="secondary" outlined="true" onclick="oncancel()"></p-button>
+        <p-button [label]="cancelLabel" severity="secondary" [outlined]="true" (onClick)="onCancel()"></p-button>
         <p-button [label]="confirmLabel" [severity]="confirmSeverity" [loading]="loading" (onClick)="onConfirm()"></p-button>
       </div>
-    </ng-templete>
-  }
+    }
+  </ng-template>
 </p-dialog>

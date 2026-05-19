@@ -1,3 +1,9 @@
+@use '/src/styles/mixins' as *;
+
 :host {
   display: contents;
+}
+
+.myb-footer-actions {
+  @include flex-center;
 }
