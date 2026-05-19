@@ -16,6 +16,7 @@ Uso no templete: <span class="material-icons">nome_do_icone</span>
 | Usuário        | Pessoa           | `person_outline`                                 |
 | Ordenar        | Três listas      | `filter_list`                                    |
 | Setas          | Arco direcional  | `keyboard_arrow_right/left/up/down`              |
+| Não Encontrado | Lupa com X       | `search_off`                                     |
 
 # Como testar?
 

@@ -1,8 +1,8 @@
+@use '../../../../styles/mixins' as *;
+
 .empty-state-container {
-  display: flex;
+  @include flex-center;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   text-align: center;
   padding: var(--spacing-xxl) var(--spacing-md);
   margin: 0 auto;
@@ -10,11 +10,10 @@
   width: 100%;
 }
 
+//Estilização do Ícone
 .empty-state-visual {
+  @include flex-center;
   margin-bottom: var(--spacing-lg);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   .empty-state-image {
     max-width: 200px;
@@ -23,7 +22,7 @@
   }
 
   .empty-state-icon {
-    font-size: 80px;
+    font-size: calc(var(--font-size-xl) * 2.5);
     color: var(--border-color);
   }
 }
@@ -34,27 +33,36 @@
   .empty-state-title {
     color: var(--text-color);
     margin-bottom: var(--spacing-xs);
+
+    h3 {
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+    }
   }
 
   .empty-state-description {
+    font-size: var(--font-size-md);
     color: var(--text-color-secondary);
+    line-height: 145%;
     margin: 0;
   }
 }
 
 .empty-state-action {
-  /* Usando a classe btn-primary global se existir, senão definimos base styles aqui */
   background-color: var(--primary-color);
   color: var(--text-color-white);
   border: none;
   border-radius: var(--radius-max);
-  padding: 12px var(--spacing-lg);
+
+  padding:  var(--spacing-sm) var(--spacing-lg);
   font-family: var(--font-family-primary);
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-md);
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
   box-shadow: var(--shadow-sm);
+
+  transition: opacity 0.2s cubic-bezier(0.4,0,0.2,1), transform 0.1s cubic-bezier(0.4, 0, 0.2,1);
 
   &:hover {
     opacity: 0.9;
