@@ -3,6 +3,11 @@ import { authGuard } from './core/guards/auth.guards';
 
 export const routes: Routes = [
   {
+    //Rota testes
+    path: 'empty-state',
+    loadComponent: () => import('./shared/components/empty-state/empty-state').then(m => m.EmptyState),
+  },
+  {
     // Redirecionamento inicial para a rota 'home'
     path: '',
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),
@@ -21,7 +26,7 @@ export const routes: Routes = [
   },
   {
     // Rota para a página de styleguide
-    path: 'styleguide',
+    path: 'style-guide',
     loadComponent: () => import('./features/styleguide/styleguide').then(m => m.Styleguide),
   },
   {
