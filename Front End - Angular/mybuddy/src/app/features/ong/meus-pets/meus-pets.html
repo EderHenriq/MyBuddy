@@ -1,1 +1,42 @@
-<p>meus-pets works!</p>
+<main class="ong-pets-page">
+  <div class="page-header">
+    <div class="header-titles">
+      <h1>Meus Pets Cadastrados</h1>
+      <p>Gerencie os animais que sua ONG disponibiliza para adoção.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/ong/pets/novo" class="btn-primary">
+        <i class="fas fa-plus"></i> Cadastrar Novo Pet
+      </a>
+    </div>
+  </div>
+
+  <section class="pets-content">
+    @if (myPets.length > 0) {
+      <div class="pets-grid">
+        @for (pet of myPets; track pet.id) {
+          <app-card-pet
+            [imageUrl]="pet.imageUrl"
+            [name]="pet.name"
+            [age]="pet.age"
+            [breed]="pet.breed"
+            [sex]="pet.sex"
+            [vaccinated]="pet.vaccinated"
+            [ongMode]="true"
+            (editClick)="editPet(pet)"
+            (deleteClick)="deletePet(pet)"
+          ></app-card-pet>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <i class="fas fa-paw"></i>
+        <h3>Nenhum pet cadastrado</h3>
+        <p>Você ainda não tem pets cadastrados para adoção. Comece agora!</p>
+        <a routerLink="/ong/pets/novo" class="btn-primary">Cadastrar Primeiro Pet</a>
+      </div>
+    }
+  </section>
+</main>
+
+<app-footer></app-footer>

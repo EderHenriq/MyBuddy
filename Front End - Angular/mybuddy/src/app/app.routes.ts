@@ -64,6 +64,16 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/login/login').then(m => m.Login),
   },
   {
+    path: 'ong/pets',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/ong/meus-pets/meus-pets').then(m => m.MeusPets),
+  },
+  {
+    path: 'ong/pets/novo',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/ong/cadastrar-pet/cadastrar-pet').then(m => m.CadastrarPet),
+  },
+  {
     // Rota para páginas não encontradas (404)
     path: '**',
     loadComponent: () => import('./shared/components/not-found/not-found').then(m => m.NotFound),
