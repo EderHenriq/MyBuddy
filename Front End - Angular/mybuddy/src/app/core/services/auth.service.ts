@@ -101,6 +101,15 @@ export class AuthService {
     );
   }
 
+  updateProfile(payload: any): Observable<any> {
+    const profileUrl = `${environment.apiUrl}usuarios/meu-perfil`;
+    return this.http.put<any>(profileUrl, payload).pipe(
+      tap(profile => {
+        this.currentUser.set(profile);
+      }),
+    );
+  }
+
   logout() {
     this.inMemoryToken = null;
     this.deleteCookie('mybuddy_session');

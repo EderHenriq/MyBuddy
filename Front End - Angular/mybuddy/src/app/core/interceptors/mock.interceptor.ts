@@ -49,6 +49,8 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
       roleToken = 'mock-jwt-ong';
     } else if (bodyStr.includes('username=petshop') || bodyStr.includes('petshop%40')) {
       roleToken = 'mock-jwt-petshop';
+    } else if (bodyStr.includes('username=admin') || bodyStr.includes('admin%40')) {
+      roleToken = 'mock-jwt-admin';
     }
 
     const mockTokenResponse = {
@@ -112,9 +114,62 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
           website: 'www.petcharmoso.com',
         },
       };
+    } else if (authHeader.includes('mock-jwt-admin')) {
+      userProfile = {
+        id: 4,
+        nome: 'Administrador MyBuddy',
+        email: 'admin@mybuddy.com',
+        telefone: '(11) 96666-6666',
+        roles: [{ id: 4, name: 'ROLE_ADMIN' }],
+        organizacao: null,
+      };
     }
 
     return of(new HttpResponse({ status: 200, body: userProfile })).pipe(delay(400));
+  }
+
+  if (req.url.includes('/api/usuarios/meu-perfil') && req.method === 'PUT') {
+    const authHeader = req.headers.get('Authorization') || '';
+    const body = (req.body ?? {}) as Record<string, unknown>;
+    const organization = (body['organizacao'] ?? {}) as Record<string, unknown>;
+    const isOng = authHeader.includes('mock-jwt-ong');
+    const isPetshop = authHeader.includes('mock-jwt-petshop');
+    const isAdmin = authHeader.includes('mock-jwt-admin');
+    const role = isAdmin
+      ? { id: 4, name: 'ROLE_ADMIN' }
+      : isOng
+        ? { id: 2, name: 'ROLE_ONG' }
+        : isPetshop
+          ? { id: 3, name: 'ROLE_PETSHOP' }
+          : { id: 1, name: 'ROLE_ADOTANTE' };
+
+    const updatedProfile: Record<string, unknown> = {
+      id: isAdmin ? 4 : isOng ? 2 : isPetshop ? 3 : 1,
+      nome: body['nome'],
+      email: body['email'],
+      telefone: body['telefone'],
+      fotoPerfil: body['fotoPerfil'],
+      aceitaMensagens: body['aceitaMensagens'],
+      perfilPublico: body['perfilPublico'],
+      notificacoesEmail: body['notificacoesEmail'],
+      roles: [role],
+      organizacao: null,
+    };
+
+    if (isOng || isPetshop) {
+      updatedProfile['organizacao'] = {
+        id: organization['id'] ?? (isOng ? 10 : 20),
+        cnpj: organization['cnpj'] ?? body['cnpj'],
+        nomeFantasia: organization['nomeFantasia'] ?? body['nomeFantasia'],
+        emailContato: organization['emailContato'] ?? body['emailContato'],
+        telefoneContato: organization['telefoneContato'] ?? body['telefoneContato'],
+        endereco: organization['endereco'] ?? body['endereco'],
+        descricao: organization['descricao'] ?? body['descricao'],
+        website: organization['website'] ?? body['website'],
+      };
+    }
+
+    return of(new HttpResponse({ status: 200, body: updatedProfile })).pipe(delay(500));
   }
 
   return next(req);

@@ -1,28 +1,203 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
+import { Footer } from '@shared/components/footer/footer';
 import { AuthService } from '@core/services/auth.service';
+
+type ProfileTab = 'inicio' | 'dados' | 'pets' | 'favoritos' | 'mensagens' | 'configuracoes';
+type RoleKey = 'ADOTANTE' | 'ONG' | 'PETSHOP' | 'ADMIN';
+
+interface BackendRole {
+  id?: number;
+  name?: string;
+}
+
+interface BackendOrganization {
+  id?: number;
+  nomeFantasia?: string;
+  emailContato?: string;
+  cnpj?: string;
+  telefoneContato?: string;
+  endereco?: string;
+  descricao?: string;
+  website?: string;
+}
+
+interface BackendUserProfile {
+  id?: number;
+  nome?: string;
+  name?: string;
+  email?: string;
+  telefone?: string;
+  endereco?: string;
+  documento?: string;
+  descricao?: string;
+  website?: string;
+  fotoPerfil?: string;
+  aceitaMensagens?: boolean;
+  perfilPublico?: boolean;
+  notificacoesEmail?: boolean;
+  roles?: Array<string | BackendRole>;
+  organizacao?: BackendOrganization | null;
+  petshop?: BackendOrganization | null;
+}
+
+interface ProfileUser {
+  id?: number;
+  name: string;
+  displayName: string;
+  role: string;
+  roleKey: RoleKey;
+  email: string;
+  phone: string;
+  profilePic: string;
+  acceptsMessages: boolean;
+  publicProfile: boolean;
+  emailNotifications: boolean;
+  organization: BackendOrganization | null;
+}
+
+interface ProfilePet {
+  name: string;
+  age: string;
+  breed: string;
+  sex: string;
+  vaccinated: string;
+  imageUrl: string;
+  badgeText: string;
+  badgeType: 'adoption' | 'adopted' | '';
+  isFavorite: boolean;
+  showTopHeart: boolean;
+}
+
+interface ProfileMessage {
+  from: string;
+  preview: string;
+  date: string;
+  unread: boolean;
+}
+
+interface ProfilePermission {
+  label: string;
+  enabled: boolean;
+}
+
+interface ProfileField {
+  label: string;
+  icon: string;
+  value: string;
+}
+
+interface ProfileRoleConfig {
+  label: string;
+  descriptionFallback: string;
+  managesPets: boolean;
+  businessProfile: boolean;
+  businessNameLabel: string;
+  businessDocumentLabel: string;
+  businessEmailLabel: string;
+  businessPhoneLabel: string;
+  businessAddressLabel: string;
+  businessDescriptionLabel: string;
+}
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, CardPetComponent],
+  imports: [CommonModule, ReactiveFormsModule, CardPetComponent, Footer],
   templateUrl: './perfil.html',
   styleUrl: './perfil.scss',
 })
 export class Perfil implements OnInit {
-  private authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
 
-  user = {
-    name: 'Carregando...',
-    role: '',
-    email: '',
-    phone: '',
-    address: 'São Paulo, SP',
-    profilePic: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=300'
+  readonly activeTab = signal<ProfileTab>('inicio');
+  readonly isEditing = signal(false);
+  readonly isSaving = signal(false);
+  readonly saveMessage = signal('');
+  readonly user = signal<ProfileUser>(this.emptyUser());
+
+  readonly roleConfigs: Record<RoleKey, ProfileRoleConfig> = {
+    ADOTANTE: {
+      label: 'Adotante',
+      descriptionFallback: 'Complete seu perfil para facilitar conversas com ONGs e acompanhar pets favoritados.',
+      managesPets: false,
+      businessProfile: false,
+      businessNameLabel: '',
+      businessDocumentLabel: '',
+      businessEmailLabel: '',
+      businessPhoneLabel: '',
+      businessAddressLabel: '',
+      businessDescriptionLabel: '',
+    },
+    ONG: {
+      label: 'ONG',
+      descriptionFallback: 'Complete os dados da organização para transmitir confiança aos adotantes.',
+      managesPets: true,
+      businessProfile: true,
+      businessNameLabel: 'Nome fantasia da ONG',
+      businessDocumentLabel: 'CNPJ da ONG',
+      businessEmailLabel: 'E-mail de contato da ONG',
+      businessPhoneLabel: 'Telefone de contato da ONG',
+      businessAddressLabel: 'Endereço da ONG',
+      businessDescriptionLabel: 'Descrição da ONG',
+    },
+    PETSHOP: {
+      label: 'Petshop',
+      descriptionFallback: 'Complete os dados comerciais para divulgar serviços e receber contatos.',
+      managesPets: true,
+      businessProfile: true,
+      businessNameLabel: 'Nome fantasia do Petshop',
+      businessDocumentLabel: 'CNPJ do Petshop',
+      businessEmailLabel: 'E-mail de contato do Petshop',
+      businessPhoneLabel: 'Telefone de contato do Petshop',
+      businessAddressLabel: 'Endereço do Petshop',
+      businessDescriptionLabel: 'Descrição do Petshop',
+    },
+    ADMIN: {
+      label: 'Administrador',
+      descriptionFallback: 'Perfil administrativo com acesso ampliado para gestão da plataforma.',
+      managesPets: true,
+      businessProfile: false,
+      businessNameLabel: '',
+      businessDocumentLabel: '',
+      businessEmailLabel: '',
+      businessPhoneLabel: '',
+      businessAddressLabel: '',
+      businessDescriptionLabel: '',
+    },
   };
 
-  buddies = [
+  readonly profileForm = this.fb.nonNullable.group({
+    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', [Validators.required, Validators.minLength(8)]],
+    profilePic: ['', [Validators.required]],
+    organizationName: [''],
+    organizationEmail: [''],
+    organizationPhone: [''],
+    organizationCnpj: [''],
+    organizationAddress: [''],
+    organizationDescription: ['', [Validators.maxLength(500)]],
+    organizationWebsite: [''],
+    acceptsMessages: [true],
+    publicProfile: [true],
+    emailNotifications: [true],
+  });
+
+  readonly navItems: { id: ProfileTab; label: string; icon: string }[] = [
+    { id: 'inicio', label: 'Início do Perfil', icon: 'fas fa-home' },
+    { id: 'dados', label: 'Meus Dados', icon: 'far fa-user' },
+    { id: 'pets', label: 'Meus Pets', icon: 'fas fa-paw' },
+    { id: 'favoritos', label: 'Meus Favoritos', icon: 'far fa-heart' },
+    { id: 'mensagens', label: 'Minhas Mensagens', icon: 'far fa-comment-dots' },
+    { id: 'configuracoes', label: 'Configurações', icon: 'fas fa-cog' },
+  ];
+
+  readonly buddies = signal<ProfilePet[]>([
     {
       name: 'Paçoca',
       age: '5 anos',
@@ -31,9 +206,9 @@ export class Perfil implements OnInit {
       vaccinated: 'Sim',
       imageUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=500',
       badgeText: 'Em processo de adoção',
-      badgeType: 'adoption' as const,
+      badgeType: 'adoption',
       isFavorite: true,
-      showTopHeart: false
+      showTopHeart: false,
     },
     {
       name: 'Jade',
@@ -43,13 +218,13 @@ export class Perfil implements OnInit {
       vaccinated: 'Sim',
       imageUrl: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=500',
       badgeText: 'Adotado',
-      badgeType: 'adopted' as const,
+      badgeType: 'adopted',
       isFavorite: true,
-      showTopHeart: false
-    }
-  ];
+      showTopHeart: false,
+    },
+  ]);
 
-  favorites = [
+  readonly favorites = signal<ProfilePet[]>([
     {
       name: 'Nevasca',
       age: '3 anos',
@@ -58,9 +233,9 @@ export class Perfil implements OnInit {
       vaccinated: 'Sim',
       imageUrl: 'https://images.unsplash.com/photo-1618826411640-d6df44dd3f7a?auto=format&fit=crop&q=80&w=500',
       badgeText: '',
-      badgeType: '' as const,
+      badgeType: '',
       isFavorite: true,
-      showTopHeart: true
+      showTopHeart: true,
     },
     {
       name: 'Thor',
@@ -70,74 +245,317 @@ export class Perfil implements OnInit {
       vaccinated: 'Sim',
       imageUrl: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=500',
       badgeText: '',
-      badgeType: '' as const,
+      badgeType: '',
       isFavorite: true,
-      showTopHeart: true
+      showTopHeart: true,
+    },
+  ]);
+
+  readonly messages = signal<ProfileMessage[]>([
+    {
+      from: 'Equipe MyBuddy',
+      preview: 'Seu perfil está pronto para receber recomendações.',
+      date: 'Hoje',
+      unread: true,
     },
     {
-      name: 'Francesca',
-      age: '4 anos',
-      breed: 'SRD',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=500',
-      badgeText: '',
-      badgeType: '' as const,
-      isFavorite: true,
-      showTopHeart: true
+      from: 'Cão Sem Dono',
+      preview: 'Recebemos sua solicitação de contato sobre a Jade.',
+      date: 'Ontem',
+      unread: false,
     },
-    {
-      name: 'Armindo',
-      age: '2 anos',
-      breed: 'Rex',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=500',
-      badgeText: '',
-      badgeType: '' as const,
-      isFavorite: true,
-      showTopHeart: true
+  ]);
+
+  readonly roleConfig = computed(() => this.roleConfigs[this.user().roleKey]);
+  readonly isBusinessProfile = computed(() => this.roleConfig().businessProfile);
+  readonly canManagePets = computed(() => this.roleConfig().managesPets);
+
+  readonly userFields = computed<ProfileField[]>(() => [
+    { label: 'Nome', icon: 'far fa-user', value: this.user().name },
+    { label: 'E-mail', icon: 'far fa-envelope', value: this.user().email },
+    { label: 'Telefone', icon: 'fas fa-phone-alt', value: this.user().phone },
+  ]);
+
+  readonly roleFields = computed<ProfileField[]>(() => {
+    const org = this.user().organization;
+    if (!this.isBusinessProfile() || !org) {
+      return [];
     }
-  ];
+
+    return [
+      { label: this.roleConfig().businessNameLabel, icon: 'fas fa-store', value: org.nomeFantasia || '' },
+      { label: this.roleConfig().businessDocumentLabel, icon: 'far fa-id-card', value: org.cnpj || '' },
+      { label: this.roleConfig().businessEmailLabel, icon: 'far fa-envelope', value: org.emailContato || '' },
+      { label: this.roleConfig().businessPhoneLabel, icon: 'fas fa-phone-alt', value: org.telefoneContato || '' },
+      { label: this.roleConfig().businessAddressLabel, icon: 'fas fa-map-marker-alt', value: org.endereco || '' },
+      { label: 'Website', icon: 'fas fa-link', value: org.website || '' },
+    ].filter(field => field.value);
+  });
+
+  readonly profileDescription = computed(() => this.user().organization?.descricao || this.roleConfig().descriptionFallback);
+
+  readonly rolePermissions = computed<ProfilePermission[]>(() => {
+    const permissionsByRole: Record<RoleKey, ProfilePermission[]> = {
+      ADOTANTE: [
+        { label: 'Favoritar pets', enabled: true },
+        { label: 'Enviar mensagens para ONGs e petshops', enabled: true },
+        { label: 'Gerenciar pets para adoção', enabled: false },
+        { label: 'Administrar usuários', enabled: false },
+      ],
+      ONG: [
+        { label: 'Gerenciar pets para adoção', enabled: true },
+        { label: 'Receber contatos de adotantes', enabled: true },
+        { label: 'Publicar perfil institucional', enabled: true },
+        { label: 'Administrar usuários', enabled: false },
+      ],
+      PETSHOP: [
+        { label: 'Gerenciar pets parceiros', enabled: true },
+        { label: 'Receber contatos comerciais', enabled: true },
+        { label: 'Publicar perfil comercial', enabled: true },
+        { label: 'Administrar usuários', enabled: false },
+      ],
+      ADMIN: [
+        { label: 'Administrar usuários', enabled: true },
+        { label: 'Gerenciar organizações', enabled: true },
+        { label: 'Gerenciar pets da plataforma', enabled: true },
+        { label: 'Acompanhar interesses de adoção', enabled: true },
+      ],
+    };
+
+    return permissionsByRole[this.user().roleKey];
+  });
+
+  readonly stats = computed(() => [
+    { label: this.canManagePets() ? 'Pets gerenciados' : 'Buddies acompanhados', value: this.buddies().length },
+    { label: 'Favoritos', value: this.favorites().length },
+    { label: 'Mensagens não lidas', value: this.messages().filter(message => message.unread).length },
+  ]);
 
   get buddiesTitle(): string {
-    const roles = this.authService.getUserRoles();
-    if (roles.includes('ROLE_ONG') || roles.includes('ROLE_PETSHOP')) {
-      return 'Animais Disponíveis';
-    }
-    return 'Meus Buddies';
+    if (this.user().roleKey === 'ADMIN') return 'Pets da plataforma';
+    if (this.canManagePets()) return 'Animais disponíveis';
+    return 'Meus buddies';
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const profile = this.authService.currentUser();
     if (profile) {
       this.setupProfile(profile);
-    } else {
-      this.authService.getProfile().subscribe(data => {
-        this.setupProfile(data);
-      });
+      return;
     }
+
+    this.authService.getProfile().subscribe(data => {
+      this.setupProfile(data);
+    });
   }
 
-  private setupProfile(profile: any) {
-    this.user.name = profile.nome || profile.nomeFantasia || 'Usuário MyBuddy';
-    this.user.email = profile.email || '';
-    this.user.phone = profile.telefone || profile.telefoneContato || '';
-    
-    const roles = this.authService.getUserRoles();
-    
-    if (roles.includes('ROLE_ONG')) {
-      this.user.role = 'ONG';
-      this.user.address = profile.organizacao?.endereco || 'Endereço não informado';
-      this.user.profilePic = 'https://images.unsplash.com/photo-1542382257-80da9fb9f5c4?auto=format&fit=crop&q=80&w=300';
-    } else if (roles.includes('ROLE_PETSHOP')) {
-      this.user.role = 'Petshop';
-      this.user.address = profile.petshop?.endereco || 'Endereço não informado';
-      this.user.profilePic = 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=300';
-    } else {
-      this.user.role = 'Tutora';
-      this.user.address = 'São Paulo, SP';
-      this.user.profilePic = 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=300';
+  selectTab(tab: ProfileTab): void {
+    this.activeTab.set(tab);
+    this.saveMessage.set('');
+  }
+
+  startEditing(): void {
+    this.isEditing.set(true);
+    this.selectTab('dados');
+    this.applyRoleValidators();
+    this.patchForm(this.user());
+  }
+
+  cancelEditing(): void {
+    this.isEditing.set(false);
+    this.saveMessage.set('');
+    this.patchForm(this.user());
+  }
+
+  saveProfile(): void {
+    this.applyRoleValidators();
+
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      return;
     }
+
+    const formValue = this.profileForm.getRawValue();
+    const organizationPayload: BackendOrganization | null = this.isBusinessProfile()
+      ? {
+          id: this.user().organization?.id,
+          nomeFantasia: formValue.organizationName,
+          emailContato: formValue.organizationEmail,
+          cnpj: formValue.organizationCnpj,
+          telefoneContato: formValue.organizationPhone,
+          endereco: formValue.organizationAddress,
+          descricao: formValue.organizationDescription,
+          website: formValue.organizationWebsite,
+        }
+      : null;
+
+    const payload = {
+      id: this.user().id,
+      nome: formValue.name,
+      email: formValue.email,
+      telefone: formValue.phone,
+      fotoPerfil: formValue.profilePic,
+      aceitaMensagens: formValue.acceptsMessages,
+      perfilPublico: formValue.publicProfile,
+      notificacoesEmail: formValue.emailNotifications,
+      organizacao: organizationPayload,
+      // Campos espelhados para facilitar a transição enquanto o endpoint de update não existe no back.
+      nomeFantasia: organizationPayload?.nomeFantasia,
+      emailContato: organizationPayload?.emailContato,
+      telefoneContato: organizationPayload?.telefoneContato,
+      cnpj: organizationPayload?.cnpj,
+      endereco: organizationPayload?.endereco,
+      descricao: organizationPayload?.descricao,
+      website: organizationPayload?.website,
+    };
+
+    this.isSaving.set(true);
+    this.authService
+      .updateProfile(payload)
+      .pipe(finalize(() => this.isSaving.set(false)))
+      .subscribe({
+        next: updatedProfile => {
+          this.setupProfile(updatedProfile);
+          this.isEditing.set(false);
+          this.saveMessage.set('Perfil atualizado com sucesso.');
+        },
+        error: () => {
+          this.saveMessage.set('Não foi possível salvar agora. Tente novamente em instantes.');
+        },
+      });
+  }
+
+  removeFavorite(petName: string): void {
+    this.favorites.update(pets => pets.filter(pet => pet.name !== petName));
+  }
+
+  markAllMessagesAsRead(): void {
+    this.messages.update(messages => messages.map(message => ({ ...message, unread: false })));
+  }
+
+  isFieldInvalid(field: keyof typeof this.profileForm.controls): boolean {
+    const control = this.profileForm.controls[field];
+    return control.invalid && (control.dirty || control.touched);
+  }
+
+  private setupProfile(profile: BackendUserProfile): void {
+    const roles = this.normalizeRoles(profile.roles);
+    const roleKey = this.resolveRoleKey(roles);
+    const organization = profile.organizacao ?? profile.petshop ?? null;
+    const nextUser: ProfileUser = {
+      id: profile.id,
+      name: profile.nome || profile.name || 'Usuário MyBuddy',
+      displayName: this.resolveDisplayName(roleKey, profile, organization),
+      email: profile.email || '',
+      phone: profile.telefone || '',
+      role: this.roleConfigs[roleKey].label,
+      roleKey,
+      profilePic: profile.fotoPerfil || this.resolveDefaultPicture(roleKey),
+      acceptsMessages: profile.aceitaMensagens ?? true,
+      publicProfile: profile.perfilPublico ?? true,
+      emailNotifications: profile.notificacoesEmail ?? true,
+      organization,
+    };
+
+    this.user.set(nextUser);
+    this.applyRoleValidators();
+    this.patchForm(nextUser);
+  }
+
+  private patchForm(user: ProfileUser): void {
+    this.profileForm.reset({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      profilePic: user.profilePic,
+      organizationName: user.organization?.nomeFantasia || '',
+      organizationEmail: user.organization?.emailContato || '',
+      organizationPhone: user.organization?.telefoneContato || '',
+      organizationCnpj: user.organization?.cnpj || '',
+      organizationAddress: user.organization?.endereco || '',
+      organizationDescription: user.organization?.descricao || '',
+      organizationWebsite: user.organization?.website || '',
+      acceptsMessages: user.acceptsMessages,
+      publicProfile: user.publicProfile,
+      emailNotifications: user.emailNotifications,
+    });
+  }
+
+  private applyRoleValidators(): void {
+    const businessValidators: Partial<Record<keyof typeof this.profileForm.controls, ValidatorFn[]>> = {
+      organizationName: [Validators.required, Validators.minLength(3)],
+      organizationEmail: [Validators.required, Validators.email],
+      organizationPhone: [Validators.required, Validators.minLength(8)],
+      organizationCnpj: [Validators.required, Validators.minLength(14)],
+      organizationAddress: [Validators.required, Validators.minLength(5)],
+    };
+
+    Object.entries(businessValidators).forEach(([field, validators]) => {
+      const control = this.profileForm.controls[field as keyof typeof this.profileForm.controls];
+      if (this.isBusinessProfile()) {
+        control.setValidators(validators);
+      } else {
+        control.clearValidators();
+      }
+      control.updateValueAndValidity({ emitEvent: false });
+    });
+  }
+
+  private normalizeRoles(roles: BackendUserProfile['roles']): string[] {
+    if (!Array.isArray(roles)) {
+      return this.authService.getUserRoles();
+    }
+
+    return roles.map(role => {
+      if (typeof role === 'string') return this.normalizeRoleName(role);
+      if (role?.name) return this.normalizeRoleName(role.name);
+      return '';
+    });
+  }
+
+  private normalizeRoleName(role: string): string {
+    const upperRole = role.toUpperCase();
+    return upperRole.startsWith('ROLE_') ? upperRole : `ROLE_${upperRole}`;
+  }
+
+  private resolveRoleKey(roles: string[]): RoleKey {
+    if (roles.includes('ROLE_ADMIN')) return 'ADMIN';
+    if (roles.includes('ROLE_ONG')) return 'ONG';
+    if (roles.includes('ROLE_PETSHOP')) return 'PETSHOP';
+    return 'ADOTANTE';
+  }
+
+  private resolveDisplayName(role: RoleKey, profile: BackendUserProfile, organization: BackendOrganization | null): string {
+    if (this.roleConfigs[role].businessProfile) {
+      return organization?.nomeFantasia || profile.nome || 'Usuário MyBuddy';
+    }
+
+    return profile.nome || profile.name || 'Usuário MyBuddy';
+  }
+
+  private resolveDefaultPicture(role: RoleKey): string {
+    const pictures: Record<RoleKey, string> = {
+      ADOTANTE: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=300',
+      ONG: 'https://images.unsplash.com/photo-1542382257-80da9fb9f5c4?auto=format&fit=crop&q=80&w=300',
+      PETSHOP: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=300',
+      ADMIN: 'https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&q=80&w=300',
+    };
+    return pictures[role];
+  }
+
+  private emptyUser(): ProfileUser {
+    return {
+      name: 'Carregando...',
+      displayName: 'Carregando...',
+      role: '',
+      roleKey: 'ADOTANTE',
+      email: '',
+      phone: '',
+      profilePic: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=300',
+      acceptsMessages: true,
+      publicProfile: true,
+      emailNotifications: true,
+      organization: null,
+    };
   }
 }
