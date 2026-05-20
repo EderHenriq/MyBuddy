@@ -36,6 +36,29 @@ export const routes: Routes = [
     loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil),
   },
   {
+    path: 'auth/cadastro',
+    loadComponent: () => import('./features/auth/cadastro-escolha-perfil/cadastro-escolha-perfil').then(m => m.CadastroEscolhaPerfil),
+  },
+  {
+    path: 'auth/cadastro/adotante',
+    redirectTo: 'auth/cadastro',
+    pathMatch: 'full',
+  },
+  {
+    path: 'auth/cadastro/ong',
+    redirectTo: 'auth/cadastro',
+    pathMatch: 'full',
+  },
+  {
+    path: 'auth/cadastro/petshop',
+    redirectTo: 'auth/cadastro',
+    pathMatch: 'full',
+  },
+  {
+    path: 'auth/recuperar-senha',
+    loadComponent: () => import('./features/auth/recuperar-senha/recuperar-senha').then(m => m.RecuperarSenha),
+  },
+  {
     // Rota para a tela de login
     path: 'auth/login',
     loadComponent: () => import('./features/auth/login/login').then(m => m.Login),
