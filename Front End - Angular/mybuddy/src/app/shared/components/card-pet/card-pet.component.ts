@@ -15,7 +15,10 @@ export class CardPetComponent {
   @Input() breed = '';
   @Input() sex = '';
   @Input() vaccinated = 'Sim';
-
+  @Input() badgeText = '';
+  @Input() badgeType: 'adoption' | 'adopted' | '' = '';
+  @Input() isFavorite = false;
+  @Input() showTopHeart = false;
   @Output() infoClick = new EventEmitter<void>();
   @Output() favoriteClick = new EventEmitter<void>();
 }

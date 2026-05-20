@@ -1,0 +1,276 @@
+.profile-page-container {
+  background-color: var(--surface-ground, #f8f9fa);
+  min-height: 100vh;
+  padding-bottom: 3rem;
+}
+
+/* Advanced Search Bar */
+.advanced-search-bar {
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 2rem;
+
+  .search-input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    width: 300px;
+
+    i {
+      color: #888;
+      margin-right: 0.5rem;
+    }
+
+    input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 0.875rem;
+    }
+  }
+
+  .filter-dropdowns {
+    display: flex;
+    gap: 0.5rem;
+
+    .filter-btn {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 999px;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #f5f5f5;
+      }
+    }
+  }
+}
+
+/* Profile Layout */
+.profile-layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Sidebar */
+.profile-sidebar {
+  width: 250px;
+  background-color: #ffffff;
+  border-radius: var(--radius-xl, 24px);
+  padding: 1.5rem 1rem;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      color: #333;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      i {
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+      }
+
+      &:hover {
+        background-color: #fff3e0;
+        color: #ff7900;
+      }
+
+      &.active {
+        background-color: #fff3e0;
+        color: #ff7900;
+      }
+    }
+  }
+}
+
+/* Main Content */
+.profile-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Profile Header Card */
+.profile-header-card {
+  background-color: #ffffff;
+  border-radius: var(--radius-xl, 24px);
+  overflow: hidden;
+  box-shadow: var(--shadow-md, 0 4px 6px rgba(0,0,0,0.1));
+
+  .cover-photo {
+    height: 150px;
+    background: linear-gradient(135deg, #a88be3 0%, #d8b4e2 100%);
+  }
+
+  .profile-info-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 2rem 2rem;
+    margin-top: -60px;
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid #ffffff;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333;
+      margin: 0;
+    }
+
+    .profile-role {
+      font-size: 1rem;
+      color: #888;
+      margin: 0.25rem 0 1.5rem;
+    }
+
+    .btn-edit-profile {
+      background-color: transparent;
+      border: 2px solid #ff7900;
+      color: #ff7900;
+      border-radius: 999px;
+      padding: 0.5rem 2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #ff7900;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+/* Meus Dados Card */
+.my-data-card {
+  background-color: #ffffff;
+  border-radius: var(--radius-xl, 24px);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 1.5rem;
+  }
+
+  .data-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .data-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .data-label {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .data-field {
+        display: flex;
+        align-items: center;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        gap: 1rem;
+
+        i {
+          color: #888;
+          font-size: 1.2rem;
+        }
+
+        .data-value {
+          font-size: 1rem;
+          color: #555;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+/* Meus Pets Section */
+.my-pets-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1rem;
+
+  .section-main-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #ff7900;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .section-subtitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    text-align: left;
+    
+    &.mt-4 {
+      margin-top: 3rem;
+    }
+  }
+
+  .pets-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    width: 100%;
+  }
+}

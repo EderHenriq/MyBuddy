@@ -19,7 +19,7 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
   },
   {
-    path: 'styleguide',
+    path: 'style-guide',
     renderMode: RenderMode.Prerender,
   },
 

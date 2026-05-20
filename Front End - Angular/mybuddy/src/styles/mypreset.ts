@@ -62,11 +62,7 @@ const MyBuddyPreset = definePreset(Aura, {
     },
     button: {
       root: {
-<<<<<<< HEAD
-        borderRadius: 'var(--radius-xl)',
-=======
         borderRadius: '999px',
->>>>>>> origin/Developer
         secondary: {
           background: '#efeeee',
           borderColor: 'transparent',

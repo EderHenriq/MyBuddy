@@ -1,0 +1,125 @@
+<div class="profile-page-container">
+  <!-- Search/Filter Bar -->
+  <div class="advanced-search-bar">
+    <div class="search-input-wrapper">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Buscar pets" />
+    </div>
+    <div class="filter-dropdowns">
+      <button class="filter-btn">Raças <i class="fas fa-chevron-down"></i></button>
+      <button class="filter-btn">Localização <i class="fas fa-chevron-down"></i></button>
+      <button class="filter-btn">Ordenar <i class="fas fa-chevron-down"></i></button>
+      <button class="filter-btn">ONG/Protetor <i class="fas fa-chevron-down"></i></button>
+    </div>
+  </div>
+
+  <div class="profile-layout">
+    <!-- Sidebar -->
+    <aside class="profile-sidebar">
+      <nav class="sidebar-nav">
+        <a class="nav-item active">
+          <i class="fas fa-home"></i> Início do Perfil
+        </a>
+        <a class="nav-item">
+          <i class="far fa-user"></i> Meus Dados
+        </a>
+        <a class="nav-item">
+          <i class="fas fa-paw"></i> Meus Pets
+        </a>
+        <a class="nav-item">
+          <i class="far fa-heart"></i> Meus Favoritos
+        </a>
+        <a class="nav-item">
+          <i class="far fa-comment-dots"></i> Minhas Mensagens
+        </a>
+        <a class="nav-item">
+          <i class="fas fa-cog"></i> Configurações
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="profile-content">
+      
+      <!-- Profile Header Card -->
+      <section class="profile-header-card">
+        <div class="cover-photo"></div>
+        <div class="profile-info-overlay">
+          <img [src]="user.profilePic" alt="Profile Picture" class="profile-avatar" />
+          <h1 class="profile-name">{{ user.name }}</h1>
+          <p class="profile-role">{{ user.role }}</p>
+          <button class="btn-edit-profile">Editar Perfil</button>
+        </div>
+      </section>
+
+      <!-- Meus Dados Card -->
+      <section class="my-data-card">
+        <h2 class="card-title">Meus Dados</h2>
+        <div class="data-list">
+          <div class="data-item">
+            <span class="data-label">E-mail</span>
+            <div class="data-field">
+              <i class="far fa-envelope"></i>
+              <span class="data-value">{{ user.email }}</span>
+            </div>
+          </div>
+          <div class="data-item">
+            <span class="data-label">Telefone</span>
+            <div class="data-field">
+              <i class="fas fa-phone-alt"></i>
+              <span class="data-value">{{ user.phone }}</span>
+            </div>
+          </div>
+          <div class="data-item">
+            <span class="data-label">Endereço</span>
+            <div class="data-field">
+              <i class="fas fa-map-marker-alt"></i>
+              <span class="data-value">{{ user.address }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Meus Pets Section -->
+      <section class="my-pets-section">
+        <h2 class="section-main-title">Meus Pets</h2>
+        
+        <h3 class="section-subtitle">{{ buddiesTitle }}</h3>
+        <div class="pets-grid">
+          @for (pet of buddies; track pet.name) {
+            <app-card-pet
+              [imageUrl]="pet.imageUrl"
+              [name]="pet.name"
+              [age]="pet.age"
+              [breed]="pet.breed"
+              [sex]="pet.sex"
+              [vaccinated]="pet.vaccinated"
+              [badgeText]="pet.badgeText"
+              [badgeType]="pet.badgeType"
+              [isFavorite]="pet.isFavorite"
+              [showTopHeart]="pet.showTopHeart"
+            ></app-card-pet>
+          }
+        </div>
+
+        <h3 class="section-subtitle mt-4">Pets Favoritados</h3>
+        <div class="pets-grid">
+          @for (pet of favorites; track pet.name) {
+            <app-card-pet
+              [imageUrl]="pet.imageUrl"
+              [name]="pet.name"
+              [age]="pet.age"
+              [breed]="pet.breed"
+              [sex]="pet.sex"
+              [vaccinated]="pet.vaccinated"
+              [badgeText]="pet.badgeText"
+              [badgeType]="pet.badgeType"
+              [isFavorite]="pet.isFavorite"
+              [showTopHeart]="pet.showTopHeart"
+            ></app-card-pet>
+          }
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

@@ -30,6 +30,17 @@ export const routes: Routes = [
     loadComponent: () => import('./features/styleguide/styleguide').then(m => m.Styleguide),
   },
   {
+    // Rota para a página de perfil do usuário
+    path: 'perfil',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil),
+  },
+  {
+    // Rota para a tela de login
+    path: 'auth/login',
+    loadComponent: () => import('./features/auth/login/login').then(m => m.Login),
+  },
+  {
     // Rota para páginas não encontradas (404)
     path: '**',
     loadComponent: () => import('./shared/components/not-found/not-found').then(m => m.NotFound),
