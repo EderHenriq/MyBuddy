@@ -1,1 +1,84 @@
-<p>pets works!</p>
+<main class="adoption-page">
+  <section class="search-panel" aria-label="Busca e filtros principais">
+    <label class="search-field">
+      <input type="search" placeholder="Buscar pets" />
+      <span class="material-icons">search</span>
+    </label>
+
+    <span class="panel-divider" aria-hidden="true"></span>
+
+    <div class="quick-filter-list">
+      <button type="button" class="quick-filter">
+        <span>Favoritos</span>
+        <i class="fa-solid fa-heart"></i>
+      </button>
+      <button type="button" class="quick-filter">
+        <span>Localização</span>
+        <span class="material-icons">keyboard_arrow_down</span>
+      </button>
+      <button type="button" class="quick-filter">
+        <span>Ordenar</span>
+        <span class="material-icons">list</span>
+      </button>
+      <button type="button" class="quick-filter">
+        <span>ONG/Protetor</span>
+        <span class="material-icons">person_search</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="adoption-content">
+    <aside class="filters-card" aria-label="Filtros de pets">
+      @for (group of filterGroups; track group.title; let last = $last) {
+        <div class="filter-group">
+          <h2>{{ group.title }}</h2>
+          <div class="filter-options">
+            @for (option of group.options; track option) {
+              <label class="filter-option">
+                <input type="checkbox" />
+                <span>{{ option }}</span>
+              </label>
+            }
+          </div>
+        </div>
+        @if (!last) {
+          <hr />
+        }
+      }
+    </aside>
+
+    <div class="pets-area">
+      <div class="pets-grid">
+        @for (pet of pets; track pet.name) {
+          <app-card-pet
+            [imageUrl]="pet.imageUrl"
+            [name]="pet.name"
+            [age]="pet.age"
+            [breed]="pet.breed"
+            [sex]="pet.sex"
+            [vaccinated]="pet.vaccinated"
+            [isFavorite]="pet.isFavorite"
+            (favoriteClick)="toggleFavorite(pet)"
+          ></app-card-pet>
+        }
+      </div>
+
+      <nav class="pagination" aria-label="Paginação de pets">
+        <button type="button" class="page-arrow disabled" aria-label="Página anterior">
+          <span class="material-icons">arrow_back</span>
+        </button>
+        <button type="button" class="page-number active">1</button>
+        <button type="button" class="page-number">2</button>
+        <button type="button" class="page-number">3</button>
+        <span>...</span>
+        <button type="button" class="page-number">12</button>
+        <button type="button" class="page-number">13</button>
+        <button type="button" class="page-arrow" aria-label="Próxima página">
+          <span class="material-icons">arrow_forward</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>

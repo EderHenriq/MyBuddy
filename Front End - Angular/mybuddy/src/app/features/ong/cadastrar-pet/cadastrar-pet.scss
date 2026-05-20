@@ -1,0 +1,303 @@
+:host {
+  display: block;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.cadastrar-pet-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.7rem 2rem 4rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a4a4a;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--primary-color, #ff7900);
+    }
+  }
+
+  .header-titles {
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1e1e1e;
+      margin: 0 0 0.5rem 0;
+    }
+
+    p {
+      color: #777777;
+      margin: 0;
+      font-size: 1rem;
+    }
+  }
+}
+
+.form-section {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 24px;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+}
+
+.pet-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e1e1e;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      padding: 0.8rem 1rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1rem;
+      color: #1e1e1e;
+      background-color: #fafafa;
+      transition: all 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary-color, #ff7900);
+        background-color: #ffffff;
+        box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.1);
+      }
+
+      &.is-invalid {
+        border-color: #d32f2f;
+        background-color: #fff0f0;
+      }
+    }
+  }
+
+  .form-checkbox-group {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem 0;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+    margin: 0.5rem 0;
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: #4a4a4a;
+      cursor: pointer;
+      position: relative;
+      padding-left: 30px;
+      user-select: none;
+
+      input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+
+        &:checked ~ .checkmark {
+          background-color: var(--primary-color, #ff7900);
+          border-color: var(--primary-color, #ff7900);
+
+          &:after {
+            display: block;
+          }
+        }
+      }
+
+      .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 22px;
+        width: 22px;
+        background-color: #fafafa;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &:after {
+          content: "";
+          position: absolute;
+          display: none;
+          left: 6px;
+          top: 2px;
+          width: 5px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+        }
+      }
+      
+      &:hover input ~ .checkmark {
+        border-color: var(--primary-color, #ff7900);
+      }
+    }
+  }
+
+  .photo-upload-group {
+    .upload-area {
+      border: 2px dashed #cccccc;
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      background-color: #fafafa;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--primary-color, #ff7900);
+        background-color: #fff9f5;
+        
+        i, p {
+          color: var(--primary-color, #ff7900);
+        }
+      }
+
+      i {
+        font-size: 3rem;
+        color: #aaaaaa;
+        margin-bottom: 1rem;
+        transition: color 0.2s ease;
+      }
+
+      p {
+        margin: 0;
+        font-weight: 600;
+        color: #777777;
+        transition: color 0.2s ease;
+      }
+    }
+
+    .image-preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+
+      .preview-box {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .remove-btn {
+          position: absolute;
+          top: 4px;
+          right: 4px;
+          width: 24px;
+          height: 24px;
+          background: rgba(0,0,0,0.6);
+          color: white;
+          border: none;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 0.8rem;
+          transition: background 0.2s ease;
+
+          &:hover {
+            background: #d32f2f;
+          }
+        }
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f0f0f0;
+
+    .btn-secondary {
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 700;
+      color: #4a4a4a;
+      background-color: #f0f0f0;
+      border: none;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #e0e0e0;
+      }
+    }
+
+    .btn-primary {
+      padding: 0.8rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      background-color: var(--primary-color, #ff7900);
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+
+      &:hover {
+        background-color: #e66d00;
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .pet-form .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .form-section {
+    padding: 1.5rem;
+  }
+  
+  .pet-form .form-checkbox-group {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

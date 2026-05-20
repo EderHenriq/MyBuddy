@@ -1,1 +1,128 @@
-<p>cadastrar-pet works!</p>
+<main class="cadastrar-pet-page">
+  <div class="page-header">
+    <div class="header-titles">
+      <a routerLink="/ong/pets" class="back-link"><i class="fas fa-arrow-left"></i> Voltar</a>
+      <h1>Cadastrar Novo Pet</h1>
+      <p>Preencha as informações do animal para disponibilizá-mo para adoção.</p>
+    </div>
+  </div>
+
+  <section class="form-section">
+    <form [formGroup]="petForm" (ngSubmit)="onSubmit()" class="pet-form">
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nome">Nome do Pet *</label>
+          <input type="text" id="nome" formControlName="nome" placeholder="Ex: Bob" [class.is-invalid]="f['nome'].invalid && f['nome'].touched" />
+        </div>
+        <div class="form-group">
+          <label for="especie">Espécie *</label>
+          <select id="especie" formControlName="especie" [class.is-invalid]="f['especie'].invalid && f['especie'].touched">
+            <option value="" disabled selected>Selecione...</option>
+            <option value="CACHORRO">Cachorro</option>
+            <option value="GATO">Gato</option>
+            <option value="OUTRO">Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="raca">Raça *</label>
+          <input type="text" id="raca" formControlName="raca" placeholder="Ex: Poodle" [class.is-invalid]="f['raca'].invalid && f['raca'].touched" />
+        </div>
+        <div class="form-group">
+          <label for="idade">Idade (anos) *</label>
+          <input type="number" id="idade" formControlName="idade" min="0" placeholder="Ex: 2" [class.is-invalid]="f['idade'].invalid && f['idade'].touched" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sexo">Sexo *</label>
+          <select id="sexo" formControlName="sexo" [class.is-invalid]="f['sexo'].invalid && f['sexo'].touched">
+            <option value="" disabled selected>Selecione...</option>
+            <option value="Macho">Macho</option>
+            <option value="Fêmea">Fêmea</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="porte">Porte *</label>
+          <select id="porte" formControlName="porte" [class.is-invalid]="f['porte'].invalid && f['porte'].touched">
+            <option value="" disabled selected>Selecione...</option>
+            <option value="PEQUENO">Pequeno</option>
+            <option value="MEDIO">Médio</option>
+            <option value="GRANDE">Grande</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="cor">Cor Principal *</label>
+          <input type="text" id="cor" formControlName="cor" placeholder="Ex: Preto" [class.is-invalid]="f['cor'].invalid && f['cor'].touched" />
+        </div>
+        <div class="form-group">
+          <label for="pelagem">Tipo de Pelagem</label>
+          <input type="text" id="pelagem" formControlName="pelagem" placeholder="Ex: Curta, Longa" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="cidade">Cidade *</label>
+          <input type="text" id="cidade" formControlName="cidade" placeholder="Ex: São Paulo" [class.is-invalid]="f['cidade'].invalid && f['cidade'].touched" />
+        </div>
+        <div class="form-group">
+          <label for="estado">Estado *</label>
+          <input type="text" id="estado" formControlName="estado" placeholder="Ex: SP" [class.is-invalid]="f['estado'].invalid && f['estado'].touched" />
+        </div>
+      </div>
+
+      <div class="form-checkbox-group">
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="vacinado" />
+          <span class="checkmark"></span>
+          Vacinado
+        </label>
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="castrado" />
+          <span class="checkmark"></span>
+          Castrado
+        </label>
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="microchipado" />
+          <span class="checkmark"></span>
+          Microchipado
+        </label>
+      </div>
+
+      <div class="form-group photo-upload-group">
+        <label>Fotos do Pet (Adicione uma foto chamativa!)</label>
+        <div class="upload-area" onclick="document.getElementById('fileUpload').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Clique ou arraste fotos aqui</p>
+          <input type="file" id="fileUpload" hidden accept="image/*" (change)="onFileChange($event)" />
+        </div>
+        
+        @if (uploadedImages.length > 0) {
+          <div class="image-preview-container">
+            @for (img of uploadedImages; track img; let i = $index) {
+              <div class="preview-box">
+                <img [src]="img" alt="Preview" />
+                <button type="button" class="remove-btn" (click)="removeImage(i)"><i class="fas fa-times"></i></button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/ong/pets" class="btn-secondary">Cancelar</a>
+        <button type="submit" class="btn-primary">Salvar Pet</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<app-footer></app-footer>
