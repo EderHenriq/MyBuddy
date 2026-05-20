@@ -62,7 +62,11 @@ const MyBuddyPreset = definePreset(Aura, {
     },
     button: {
       root: {
+<<<<<<< HEAD
+        borderRadius: 'var(--radius-xl)',
+=======
         borderRadius: '999px',
+>>>>>>> origin/Developer
         secondary: {
           background: '#efeeee',
           borderColor: 'transparent',
@@ -88,6 +92,22 @@ const MyBuddyPreset = definePreset(Aura, {
         borderColor: 'var(--border-color)',
         borderRadius: '999px',
         hoverBackground: '#f5f5f5',
+      },
+    },
+    dialog: {
+      root: {
+        borderRadius: 'var(--radius-xl)',
+        shadow: 'var(--shadow-xl)',
+      },
+      header: {
+        padding: 'var(--spacing-md) var(--spacing-md)',
+      },
+      content: {
+        padding: 'var(--spacing-md)',
+      },
+      footer: {
+        padding: 'var(--spacing-md)',
+        gap: 'var(--spacing-sm)',
       },
     },
   },

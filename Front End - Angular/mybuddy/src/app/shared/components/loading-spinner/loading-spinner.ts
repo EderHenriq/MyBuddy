@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-loading-spinner',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './loading-spinner.html',
   styleUrl: './loading-spinner.scss',
 })
 export class LoadingSpinner {
   @Input() size = '40px';
-  @Input() color = '#FF8B00';
+  @Input() color = '#ff7b00';
   @Input() borderSize = '4px';
 
   get computedStyle() {

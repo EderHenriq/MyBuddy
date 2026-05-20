@@ -1,9 +1,11 @@
 <div class="error-page-container">
   <div class="error-content-card">
     <div class="error-visual">
-      <!-- Se houver código de erro, exibe grande, senão ícone genérico -->
-      <h1 *ngIf="errorCode" class="error-code">{{ errorCode }}</h1>
-      <span *ngIf="!errorCode" class="material-icons error-icon">sentiment_very_dissatisfied</span>
+      @if (errorCode) {
+        <h1 class="error-code">{{ errorCode }}</h1>
+      } @else {
+        <span class="material-icons error-icon">sentiment_very_dissatisfied</span>
+      }
     </div>
 
     <div class="error-text">
@@ -11,8 +13,8 @@
       <p class="error-description">{{ description }}</p>
     </div>
 
-    <button *ngIf="actionLabel" class="btn-primary error-action" (click)="onActionClick()">
-      {{ actionLabel }}
-    </button>
+    @if (actionLabel) {
+      <button class="btn-primary error-action" (click)="onActionClick()">{{ actionLabel }}</button>
+    }
   </div>
 </div>

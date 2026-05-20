@@ -1,3 +1,5 @@
+@use '../../../../styles/mixins' as *;
+
 .toast-container {
   position: fixed;
   bottom: var(--spacing-md);
@@ -22,14 +24,25 @@
   position: relative;
   overflow: hidden;
   border-left: 6px solid;
+
+  animation: toastSlideIn 0.3s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(100%) scale(0.95);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .toast-icon {
+  @include flex-center;
   margin-right: var(--spacing-xs);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
+
   .material-icons {
     font-size: 24px;
   }
@@ -41,7 +54,7 @@
   flex-direction: column;
 
   .toast-title {
-    margin: 0 0 4px 0;
+    margin: 0 0 var(--spacing-xxs, 4px) 0;
     font-weight: var(--font-weight-semibold);
     color: var(--text-color);
   }
@@ -61,17 +74,15 @@
   color: #999;
   padding: 0;
   margin-left: var(--spacing-xs);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s, color 0.2s;
+  @include flex-center;
+  border-radius: var(--radius-max);
+  transition: background-color 0.2s cubic-bezier(0.4,0,0.2,1), color 0.2s cubic-bezier(0.4,0,0.2,1);
 
   &:hover {
     background-color: rgba(0,0,0,0.05);
     color: var(--text-color);
   }
-  
+
   .material-icons {
     font-size: 18px;
   }

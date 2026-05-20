@@ -1,11 +1,12 @@
+import { DialogModule } from 'primeng/dialog';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
+  host: { ngSkipHydration: 'true' },
   imports: [CommonModule, DialogModule, ButtonModule],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
@@ -19,15 +20,15 @@ export class ModalComponent {
   @Input() cancelLabel = 'Cancelar';
   @Input() confirmSeverity: 'primary' | 'secondary' | 'danger' = 'primary';
   @Input() loading = false;
+  @Input() backdropBlur = false;
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() confirm = new EventEmitter<void>();
-  @Output() modalCancel = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
 
   onHide(): void {
-    this.visible = false;
     this.visibleChange.emit(false);
-    this.modalCancel.emit();
+    this.cancelled.emit();
   }
 
   onConfirm(): void {
@@ -35,8 +36,7 @@ export class ModalComponent {
   }
 
   onCancel(): void {
-    this.visible = false;
     this.visibleChange.emit(false);
-    this.modalCancel.emit();
+    this.cancelled.emit();
   }
 }

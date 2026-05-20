@@ -1,15 +1,18 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '@core/services/auth.service';
+import Keycloak from 'keycloak-js';
 
 export const authGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
+  const keycloak = inject(Keycloak);
   const router = inject(Router);
 
-  if (authService.isLoggedIn()) {
+  if (keycloak.authenticated) {
     return true;
   }
 
-  router.navigate(['/auth/login']);
+  keycloak.login({
+    redirectUri: window.location.origin + '/home',
+  });
+
   return false;
 };

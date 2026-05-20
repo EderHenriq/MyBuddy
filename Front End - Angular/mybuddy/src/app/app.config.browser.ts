@@ -1,10 +1,13 @@
 import { ApplicationConfig, mergeApplicationConfig } from '@angular/core';
 import { environment } from '../environments/environment';
 import { appConfig } from './app.config';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideKeycloak, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG } from 'keycloak-angular';
 
 const browserConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     {
       provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
       useValue: [

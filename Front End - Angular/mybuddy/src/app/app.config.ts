@@ -7,7 +7,6 @@ import { providePrimeNG } from 'primeng/config';
 import { MyBuddyPreset } from '../styles/mypreset';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { mockInterceptor } from './core/interceptors/mock.interceptor';
-import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { cacheInterceptor } from './core/interceptors/cache.interceptor';
 import { retryInterceptor } from './core/interceptors/retry.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
@@ -18,10 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([mockInterceptor, authInterceptor, cacheInterceptor, retryInterceptor, errorInterceptor, loadingInterceptor]),
-    ),
+    provideHttpClient(withFetch(), withInterceptors([mockInterceptor, cacheInterceptor, retryInterceptor, errorInterceptor, loadingInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     providePrimeNG({
       theme: {

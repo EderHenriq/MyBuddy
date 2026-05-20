@@ -16,6 +16,8 @@ export class ToastService {
   private toastsSubject = new BehaviorSubject<ToastMessage[]>([]);
   public toasts$: Observable<ToastMessage[]> = this.toastsSubject.asObservable();
 
+  constructor() {}
+
   show(toast: Omit<ToastMessage, 'id'>) {
     const id = Math.random().toString(36).substring(2, 9);
     const newToast: ToastMessage = { ...toast, id, duration: toast.duration || 5000 };

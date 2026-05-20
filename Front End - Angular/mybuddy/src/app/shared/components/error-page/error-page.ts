@@ -1,10 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-error-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './error-page.html',
   styleUrls: ['./error-page.scss'],
 })
