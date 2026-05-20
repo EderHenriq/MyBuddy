@@ -21,7 +21,7 @@ $breakpoints: (
   @if $value == null {
     @warn "Breakpoint '#{$breakpoint}' não encontrado. Verificar no _mixins.scss se o nome está correto.";
   }
-  else {
+  @else {
     @media (min-width: $value) {
       @content;
     }

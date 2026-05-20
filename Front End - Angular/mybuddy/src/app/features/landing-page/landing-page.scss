@@ -1,0 +1,667 @@
+@use '../../../styles/mixins' as *;
+
+.landing-content {
+  background-color: #fafafa;
+  min-height: 100vh;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  color: var(--text-color-black, #1a1a1a);
+}
+
+.highlight {
+  color: var(--primary-color, #ff7a00);
+  position: relative;
+  font-weight: 800;
+}
+
+// Global button styles
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  font-size: var(--font-size-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  border-radius: var(--radius-max, 50px);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+
+  &-cta {
+    background-color: var(--primary-color, #ff7a00);
+    color: var(--text-color-white, #ffffff);
+    box-shadow: 0 4px 14px rgba(255, 122, 0, 0.4);
+
+    &:hover {
+      background-color: #e06e00;
+      box-shadow: 0 6px 20px rgba(255, 122, 0, 0.6);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION 1: HERO (Mobile-First)
+// ═══════════════════════════════════════════════════════════════
+.hero-section {
+  position: relative;
+  background-color: #3d3142;
+  color: #ffffff;
+  padding: 120px 20px 60px 20px;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  overflow: hidden;
+
+  @include devices('tablet-sm') {
+    padding: 140px 40px 80px 40px;
+    border-bottom-left-radius: 60px;
+    border-bottom-right-radius: 60px;
+  }
+
+  @include devices('desktop-sm') {
+    padding: 160px 80px 100px 80px;
+    border-bottom-left-radius: 120px;
+    border-bottom-right-radius: 120px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+
+    @include devices('tablet-sm') {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      text-align: left;
+    }
+  }
+
+  .hero-text-col {
+    z-index: 2;
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      color: #ffffff;
+
+      @include devices('tablet-sm') {
+        font-size: 40px;
+      }
+      @include devices('desktop-sm') {
+        font-size: 56px;
+      }
+    }
+
+    .hero-description {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #e2e8f0;
+      margin-bottom: 36px;
+      max-width: 500px;
+      margin: 0 auto 36px auto;
+
+      @include devices('tablet-sm') {
+        font-size: 18px;
+        margin: 0 0 36px 0;
+      }
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+
+      @include devices('tablet-sm') {
+        justify-content: flex-start;
+      }
+    }
+  }
+
+  .hero-image-col {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    width: 100%;
+
+    @include devices('tablet-sm') {
+      justify-content: flex-end;
+    }
+
+    .hero-image-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 540px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      @include devices('tablet-sm') {
+        justify-content: flex-end;
+      }
+
+      .hero-img {
+        width: 100%;
+        height: auto;
+        max-height: 480px;
+        object-fit: contain;
+        display: block;
+        transition: transform 0.5s ease;
+
+        &:hover {
+          transform: scale(1.04);
+        }
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION 2: SERVICES
+// ═══════════════════════════════════════════════════════════════
+// Shared Section Header Style
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+
+  @include devices('tablet-sm') {
+    margin-bottom: 60px;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--primary-color, #ff7a00);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1a1a1a;
+    max-width: 600px;
+    margin: 0 auto;
+
+    @include devices('tablet-sm') {
+      font-size: 36px;
+    }
+  }
+}
+
+.services-section {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @include devices('tablet-sm') {
+    padding: 100px 40px;
+  }
+
+  .services-grid {
+    // Force recompilation with the fixed mixin
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @include devices('tablet-sm') {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      height: 520px;
+    }
+  }
+
+  .services-left-col {
+    height: 100%;
+  }
+
+  .services-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+
+    @include devices('tablet-sm') {
+      gap: 24px;
+      height: 100%;
+    }
+  }
+
+  .service-card-item {
+    display: block;
+    border-radius: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .card-veterinarios, .card-petshops {
+    height: 240px;
+    @include devices('tablet-sm') {
+      height: calc(50% - 12px);
+    }
+  }
+
+  .card-eventos {
+    height: 380px;
+    @include devices('tablet-sm') {
+      height: 100%;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION 3: PARTNERS
+// ═══════════════════════════════════════════════════════════════
+.partners-section {
+  background-color: #f1f3f5;
+  padding: 40px 20px;
+  text-align: center;
+
+  .partners-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .partners-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+
+    @include devices('tablet-sm') {
+      gap: 60px;
+    }
+
+    .partner-logo {
+      color: #adb5bd;
+      transition: color 0.3s ease, transform 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        color: #ff7a00;
+        transform: scale(1.08);
+      }
+
+      svg {
+        max-height: 32px;
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION 4: PETS CAROUSEL
+// ═══════════════════════════════════════════════════════════════
+.pets-section {
+  padding: 60px 20px;
+  background-color: #fafafa;
+  overflow: hidden;
+
+  @include devices('tablet-sm') {
+    padding: 100px 40px;
+  }
+
+  .carousel-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .carousel-track {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 40px 0;
+    min-height: 480px;
+    width: 100%;
+    overflow-x: auto;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    @include devices('tablet-sm') {
+      gap: 40px;
+      overflow-x: visible;
+    }
+  }
+
+  .carousel-slide {
+    flex: 0 0 260px;
+    max-width: 260px;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                opacity 0.4s ease, 
+                box-shadow 0.4s ease;
+    cursor: pointer;
+    opacity: 0.55;
+    transform: scale(0.85);
+
+    @include devices('tablet-sm') {
+      flex: 0 0 320px;
+      max-width: 320px;
+    }
+
+    app-card-pet {
+      pointer-events: none;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &.activeSlide {
+      opacity: 1;
+      transform: scale(1.15) translateY(-10px);
+      z-index: 5;
+
+      app-card-pet {
+        ::ng-deep .pet-card {
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 10px 30px rgba(255, 122, 0, 0.25);
+          border: 1px solid rgba(255, 122, 0, 0.3);
+        }
+      }
+    }
+  }
+
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #dee2e6;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+
+      &:hover {
+        background-color: #adb5bd;
+      }
+
+      &.active {
+        background-color: var(--primary-color, #ff7a00);
+        transform: scale(1.2);
+      }
+    }
+  }
+
+  .view-all-container {
+    text-align: center;
+    margin-top: 40px;
+
+    .view-all-link {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      text-decoration: none;
+      transition: color 0.2s ease, transform 0.2s ease;
+      display: inline-block;
+
+      &:hover {
+        color: var(--primary-color, #ff7a00);
+        transform: translateX(5px);
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION 5: ADOPTION FAIRS & MAP
+// ═══════════════════════════════════════════════════════════════
+.map-section {
+  padding: 60px 20px;
+  background-color: #ffffff;
+
+  @include devices('tablet-sm') {
+    padding: 100px 40px;
+  }
+
+  .map-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+
+    @include devices('tablet-sm') {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 60px;
+      text-align: left;
+    }
+  }
+
+  .map-text-col {
+    .map-title {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #1a1a1a;
+      margin-bottom: 24px;
+
+      @include devices('tablet-sm') {
+        font-size: 40px;
+      }
+    }
+
+    .map-description {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #6c757d;
+      margin-bottom: 36px;
+      max-width: 480px;
+      margin: 0 auto 36px auto;
+
+      @include devices('tablet-sm') {
+        margin: 0 0 36px 0;
+      }
+    }
+
+    .map-actions {
+      display: flex;
+      justify-content: center;
+
+      @include devices('tablet-sm') {
+        justify-content: flex-start;
+      }
+    }
+  }
+
+  .map-visual-col {
+    .map-container-mock {
+      position: relative;
+      height: 280px;
+      border-radius: 24px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      border: 1px solid #e9ecef;
+
+      @include devices('tablet-sm') {
+        height: 380px;
+      }
+    }
+
+    .map-overlay-pin {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+
+      .pin-icon {
+        font-size: 48px;
+        color: var(--primary-color, #ff7a00);
+        text-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        animation: bounce 2s infinite;
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SECTION 6: FAQ ACCORDION
+// ═══════════════════════════════════════════════════════════════
+.faq-section {
+  padding: 60px 20px 80px 20px;
+  background-color: #fafafa;
+
+  @include devices('tablet-sm') {
+    padding: 100px 40px 140px 40px;
+  }
+
+  .faq-headline {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    color: #1a1a1a;
+
+    @include devices('tablet-sm') {
+      font-size: 40px;
+      margin-bottom: 60px;
+    }
+  }
+
+  .faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .faq-item {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    border: 1px solid #eef0f2;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+      border-color: rgba(255, 122, 0, 0.15);
+    }
+
+    &.expanded {
+      border-color: rgba(255, 122, 0, 0.25);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+
+      .faq-trigger {
+        background-color: rgba(255, 122, 0, 0.02);
+        .faq-arrow {
+          color: var(--primary-color, #ff7a00);
+          transform: rotate(0);
+        }
+      }
+
+      .faq-content {
+        max-height: 300px;
+        padding: 20px;
+        border-top: 1px solid #eef0f2;
+
+        @include devices('tablet-sm') {
+          padding: 24px;
+        }
+      }
+    }
+  }
+
+  .faq-trigger {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s ease;
+
+    @include devices('tablet-sm') {
+      padding: 22px 28px;
+    }
+
+    .faq-question {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+
+      @include devices('tablet-sm') {
+        font-size: 18px;
+      }
+    }
+
+    .faq-arrow {
+      font-size: 24px;
+      color: #adb5bd;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+  }
+
+  .faq-content {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 20px;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @include devices('tablet-sm') {
+      padding: 0 28px;
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #495057;
+      white-space: pre-line;
+      margin: 0;
+    }
+  }
+}
+
+// Bounce animation for map pin
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

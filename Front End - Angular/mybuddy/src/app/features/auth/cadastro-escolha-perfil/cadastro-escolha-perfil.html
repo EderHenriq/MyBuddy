@@ -1,1 +1,256 @@
-<p>cadastro-escolha-perfil works!</p>
+<div class="signup-container">
+  <section class="signup-hero">
+    <header class="brand-header">
+      <img src="/assets/logo/logo-provisoria.png" alt="MyBuddy Logo" class="brand-logo" />
+      <span class="brand-name">MyBuddy</span>
+    </header>
+
+    <div class="hero-content">
+      <h2 class="hero-title">Cuidar começa com conexão.</h2>
+      <p class="hero-subtitle">
+        Encontre tutores, veterinários e serviços para o seu pet.
+        <br />
+        Tudo em um lugar
+      </p>
+
+      <div class="hero-pills">
+        <span class="pill">Adoção</span>
+        <span class="pill">Veterinários</span>
+        <span class="pill">Serviços para seu pet</span>
+        <span class="pill">Comunidades</span>
+      </div>
+    </div>
+
+    <div class="hero-image-wrapper">
+      <img src="/assets/landing-page/woman_with_puppy.png" alt="Mulher com cachorrinho" class="hero-bg-img" />
+    </div>
+  </section>
+
+  <section class="signup-form-side">
+    <div class="signup-card">
+      <div class="card-header">
+        <img src="/assets/logo/logo-provisoria.png" alt="MyBuddy Icon" class="card-icon" />
+        <h1 class="form-title">
+          Cadastre-se no
+          <span class="highlight">MyBuddy</span>
+        </h1>
+        <p class="form-subtitle">{{ profileTitle() }}</p>
+      </div>
+
+      <div class="profile-selector" aria-label="Tipo de cadastro">
+        @for (option of profileOptions; track option.value) {
+          <button type="button" class="profile-option" [class.active]="selectedProfile() === option.value" (click)="selectProfile(option.value)">
+            <span class="option-title">{{ option.label }}</span>
+            <span class="option-helper">{{ option.helper }}</span>
+          </button>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <div class="alert alert-error">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      @if (successMessage()) {
+        <div class="alert alert-success">
+          <i class="pi pi-check-circle"></i>
+          <span>{{ successMessage() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="signup-form">
+        <div class="input-group" [class.error]="registerForm.get('nome')?.invalid && registerForm.get('nome')?.touched">
+          <label class="input-label" for="nome">Nome completo</label>
+          <div class="input-wrapper">
+            <input id="nome" type="text" formControlName="nome" placeholder="Seu nome" autocomplete="name" required />
+          </div>
+          @if (registerForm.get('nome')?.invalid && registerForm.get('nome')?.touched) {
+            <span class="validation-error">O nome deve ter entre 3 e 100 caracteres</span>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="input-group" [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            <label class="input-label" for="email">Email</label>
+            <div class="input-wrapper">
+              <input id="email" type="email" formControlName="email" placeholder="you@example.com" autocomplete="email" required />
+            </div>
+            @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+              <span class="validation-error">Insira um e-mail válido</span>
+            }
+          </div>
+
+          <div class="input-group" [class.error]="registerForm.get('telefone')?.invalid && registerForm.get('telefone')?.touched">
+            <label class="input-label" for="telefone">Telefone</label>
+            <div class="input-wrapper">
+              <input
+                id="telefone"
+                type="text"
+                formControlName="telefone"
+                placeholder="(44) 99999-9999"
+                autocomplete="tel"
+                (input)="onTelefoneInput($event)"
+                required
+              />
+            </div>
+            @if (registerForm.get('telefone')?.invalid && registerForm.get('telefone')?.touched) {
+              <span class="validation-error">Formato: (XX) XXXXX-XXXX</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group" [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            <label class="input-label" for="password">Senha</label>
+            <div class="input-wrapper">
+              <input id="password" type="password" formControlName="password" placeholder="************" autocomplete="new-password" required />
+            </div>
+            @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+              <span class="validation-error">A senha deve ter entre 6 e 40 caracteres</span>
+            }
+          </div>
+
+          <div
+            class="input-group"
+            [class.error]="
+              (registerForm.hasError('passwordMismatch') || registerForm.get('confirmPassword')?.invalid) &&
+              registerForm.get('confirmPassword')?.touched
+            "
+          >
+            <label class="input-label" for="confirmPassword">Confirmar senha</label>
+            <div class="input-wrapper">
+              <input
+                id="confirmPassword"
+                type="password"
+                formControlName="confirmPassword"
+                placeholder="************"
+                autocomplete="new-password"
+                required
+              />
+            </div>
+            @if (registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
+              <span class="validation-error">As senhas não coincidem</span>
+            }
+          </div>
+        </div>
+
+        @if (isBusinessProfile()) {
+          <div class="business-fields">
+            <div class="form-row">
+              <div
+                class="input-group"
+                [class.error]="registerForm.get('organizacaoNomeFantasia')?.invalid && registerForm.get('organizacaoNomeFantasia')?.touched"
+              >
+                <label class="input-label" for="organizacaoNomeFantasia">{{ organizationLabel() }}</label>
+                <div class="input-wrapper">
+                  <input id="organizacaoNomeFantasia" type="text" formControlName="organizacaoNomeFantasia" placeholder="Nome fantasia" required />
+                </div>
+                @if (registerForm.get('organizacaoNomeFantasia')?.invalid && registerForm.get('organizacaoNomeFantasia')?.touched) {
+                  <span class="validation-error">Informe o nome fantasia</span>
+                }
+              </div>
+
+              <div class="input-group" [class.error]="registerForm.get('organizacaoCnpj')?.invalid && registerForm.get('organizacaoCnpj')?.touched">
+                <label class="input-label" for="organizacaoCnpj">{{ cnpjLabel() }}</label>
+                <div class="input-wrapper">
+                  <input
+                    id="organizacaoCnpj"
+                    type="text"
+                    formControlName="organizacaoCnpj"
+                    placeholder="00.000.000/0000-00"
+                    (input)="onCnpjInput($event)"
+                    required
+                  />
+                </div>
+                @if (registerForm.get('organizacaoCnpj')?.invalid && registerForm.get('organizacaoCnpj')?.touched) {
+                  <span class="validation-error">Formato: XX.XXX.XXX/XXXX-XX</span>
+                }
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div
+                class="input-group"
+                [class.error]="registerForm.get('organizacaoEmailContato')?.invalid && registerForm.get('organizacaoEmailContato')?.touched"
+              >
+                <label class="input-label" for="organizacaoEmailContato">{{ emailContatoLabel() }}</label>
+                <div class="input-wrapper">
+                  <input
+                    id="organizacaoEmailContato"
+                    type="email"
+                    formControlName="organizacaoEmailContato"
+                    placeholder="contato@mybuddy.com"
+                    required
+                  />
+                </div>
+                @if (registerForm.get('organizacaoEmailContato')?.invalid && registerForm.get('organizacaoEmailContato')?.touched) {
+                  <span class="validation-error">Insira um e-mail de contato válido</span>
+                }
+              </div>
+
+              <div class="input-group">
+                <label class="input-label" for="organizacaoTelefoneContato">Telefone de contato</label>
+                <div class="input-wrapper">
+                  <input
+                    id="organizacaoTelefoneContato"
+                    type="text"
+                    formControlName="organizacaoTelefoneContato"
+                    placeholder="(44) 99999-9999"
+                    (input)="onTelefoneInput($event, 'organizacaoTelefoneContato')"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="input-group"
+              [class.error]="registerForm.get('organizacaoEndereco')?.invalid && registerForm.get('organizacaoEndereco')?.touched"
+            >
+              <label class="input-label" for="organizacaoEndereco">{{ enderecoLabel() }}</label>
+              <div class="input-wrapper">
+                <input id="organizacaoEndereco" type="text" formControlName="organizacaoEndereco" placeholder="Rua, número, cidade/UF" required />
+              </div>
+              @if (registerForm.get('organizacaoEndereco')?.invalid && registerForm.get('organizacaoEndereco')?.touched) {
+                <span class="validation-error">Informe o endereço completo</span>
+              }
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="organizacaoDescricao">Descrição</label>
+              <div class="input-wrapper">
+                <textarea id="organizacaoDescricao" formControlName="organizacaoDescricao" [placeholder]="descricaoPlaceholder()"></textarea>
+              </div>
+            </div>
+          </div>
+        }
+
+        <label class="terms-label">
+          <input type="checkbox" formControlName="terms" />
+          <span>
+            Eu aceito os
+            <a href="#">Termos de Serviço</a>
+            e a
+            <a href="#">Política de Privacidade</a>
+            .
+          </span>
+        </label>
+
+        <button type="submit" class="btn btn-signup" [disabled]="registerForm.invalid || isLoading()">
+          @if (isLoading()) {
+            <span class="spinner"></span>
+            <span>Criando conta...</span>
+          } @else {
+            <span>Cadastrar</span>
+          }
+        </button>
+
+        <p class="login-prompt">
+          Já tem uma conta?
+          <a routerLink="/auth/login">Entrar</a>
+        </p>
+      </form>
+    </div>
+  </section>
+</div>
