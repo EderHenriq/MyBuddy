@@ -1,9 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, HostListener } from '@angular/core';
 import { RouterOutlet, RouterModule, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SessionService } from '../../services/session.service';
 import { AuthService } from '../../services/auth.service';
 import { Role } from '../../models/role.model';
+import { NotificationService } from '../../services/notification.service';
+import { AppNotification } from '../../models/notification.model';
 
 interface MenuItem {
   label: string;
@@ -22,6 +24,11 @@ export class DashboardLayout {
   portalName: string = 'Admin';
   roleName: string = 'Administrador';
   menuItems: MenuItem[] = [];
+
+  private notificationService = inject(NotificationService);
+  notifications: AppNotification[] = [];
+  unreadCount = 0;
+  isNotificationsOpen = false;
 
   constructor(private router: Router, private sessionService: SessionService) {
     this.router.events.subscribe((event) => {
@@ -43,6 +50,36 @@ export class DashboardLayout {
     
     // Config inicial
     this.updateMenuBasedOnRoute(this.router.url);
+
+    this.notificationService.notifications$.subscribe(notifs => {
+      this.notifications = notifs;
+    });
+
+    this.notificationService.getUnreadCount().subscribe(count => {
+      this.unreadCount = count;
+    });
+  }
+
+  toggleNotifications(): void {
+    this.isNotificationsOpen = !this.isNotificationsOpen;
+  }
+
+  markAsRead(id: string, event: Event): void {
+    event.stopPropagation();
+    this.notificationService.markAsRead(id);
+  }
+
+  markAllAsRead(event: Event): void {
+    event.stopPropagation();
+    this.notificationService.markAllAsRead();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event): void {
+    const targetElement = event.target as HTMLElement;
+    if (this.isNotificationsOpen && !targetElement.closest('.icon-btn')) {
+      this.isNotificationsOpen = false;
+    }
   }
 
   private updateMenuBasedOnRoute(url: string) {

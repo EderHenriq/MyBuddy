@@ -15,6 +15,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { filter, Subscription } from 'rxjs';
 import { SessionService } from '../../../core/services/session.service';
 import { Role } from '../../../core/models/role.model';
+import { NotificationService } from '../../../core/services/notification.service';
+import { AppNotification } from '../../../core/models/notification.model';
 
 @Component({
   selector: 'app-header-main',
@@ -28,6 +30,7 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   private platform = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
   private sessionService = inject(SessionService);
+  private notificationService = inject(NotificationService);
   @ViewChildren('navLink') navLinks!: QueryList<ElementRef>;
 
   pillStyle: { left: string; width: string } = { left: '0px', width: '0px' };
@@ -36,6 +39,10 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   hoveredIndex = -1;
   userRole: Role | null = null;
   panelRoute: string = '';
+
+  notifications: AppNotification[] = [];
+  unreadCount = 0;
+  isNotificationsOpen = false;
 
   readonly links = [
     { path: '/home', label: 'Home' },
@@ -62,6 +69,36 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
       else if (role === Role.ONG) this.panelRoute = '/ong-panel/dashboard';
       else if (role === Role.PETSHOP) this.panelRoute = '/petshop-panel/dashboard';
     });
+
+    this.notificationService.notifications$.subscribe(notifs => {
+      this.notifications = notifs;
+    });
+
+    this.notificationService.getUnreadCount().subscribe(count => {
+      this.unreadCount = count;
+    });
+  }
+
+  toggleNotifications(): void {
+    this.isNotificationsOpen = !this.isNotificationsOpen;
+  }
+
+  markAsRead(id: string, event: Event): void {
+    event.stopPropagation();
+    this.notificationService.markAsRead(id);
+  }
+
+  markAllAsRead(event: Event): void {
+    event.stopPropagation();
+    this.notificationService.markAllAsRead();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event): void {
+    const targetElement = event.target as HTMLElement;
+    if (this.isNotificationsOpen && !targetElement.closest('.notifications-btn')) {
+      this.isNotificationsOpen = false;
+    }
   }
 
   checkRoute(url: string): void {
