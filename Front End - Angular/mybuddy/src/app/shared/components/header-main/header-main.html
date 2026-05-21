@@ -31,6 +31,14 @@
       </nav>
 
       <div class="quick-btn">
+        @if (userRole === 'ROLE_ADMIN' || userRole === 'ROLE_ONG' || userRole === 'ROLE_PETSHOP') {
+          <div class="panel-btn" style="margin-right: 12px; display: flex; align-items: center;">
+            <button class="btn" [routerLink]="panelRoute" title="Acessar Meu Painel" style="background-color: var(--primary-color); color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s;">
+              <span class="material-icons">dashboard</span>
+            </button>
+          </div>
+        }
+
         <div class="notifications-btn">
           <button class="btn btn-notifications">
             <span class="material-icons">notifications</span>

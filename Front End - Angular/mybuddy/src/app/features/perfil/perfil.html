@@ -344,7 +344,12 @@
               <strong>{{ user().emailNotifications ? 'Recebe notificações' : 'Sem notificações' }}</strong>
             </div>
           </div>
-          <button type="button" class="primary-action compact" (click)="startEditing()">Editar preferências</button>
+          <div class="settings-actions" style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button type="button" class="primary-action compact" (click)="startEditing()">Editar preferências</button>
+            <button type="button" class="secondary-action compact" (click)="logout()" style="border-color: #dc3545; color: #dc3545;">
+              <i class="fas fa-sign-out-alt"></i> Sair do Sistema
+            </button>
+          </div>
         </section>
       }
     </main>
