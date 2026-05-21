@@ -37,7 +37,7 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
     { path: '/pets', label: 'Adotar' },
     { path: '/eventos', label: 'Eventos' },
     { path: '/produtos', label: 'Produtos' },
-    { path: '/comunidade', label: 'Comunidade' },
+    { path: '/servicos', label: 'Serviços' },
   ];
 
   private routerSubscription!: Subscription;
