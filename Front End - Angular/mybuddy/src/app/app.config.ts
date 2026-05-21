@@ -11,13 +11,14 @@ import { cacheInterceptor } from './core/interceptors/cache.interceptor';
 import { retryInterceptor } from './core/interceptors/retry.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([mockInterceptor, cacheInterceptor, retryInterceptor, errorInterceptor, loadingInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([mockInterceptor, cacheInterceptor, retryInterceptor, errorInterceptor, loadingInterceptor, authInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     providePrimeNG({
       theme: {
