@@ -30,6 +30,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/styleguide/styleguide').then(m => m.Styleguide),
   },
   {
+    // Rota para a página de eventos de adoção
+    path: 'eventos',
+    loadComponent: () => import('./features/eventos/eventos.component').then(m => m.EventosComponent),
+  },
+  {
     // Rota para a página de perfil do usuário
     path: 'perfil',
     canActivate: [authGuard],

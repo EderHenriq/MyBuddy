@@ -1,0 +1,129 @@
+<main class="eventos-page">
+  
+  <!-- Search and Filters Bar -->
+  <section class="filters-bar">
+    <div class="search-input">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Buscar eventos por nome ou local" />
+    </div>
+    
+    <div class="filter-dropdowns">
+      <div class="filter-item">
+        <label>Data</label>
+        <div class="select-wrapper">
+          <i class="far fa-calendar"></i>
+          <select>
+            <option>Selecione</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-item">
+        <label>Localização</label>
+        <div class="select-wrapper">
+          <span>City</span>
+          <select>
+            <option>Raio</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-item">
+        <label>Organizador</label>
+        <div class="select-wrapper">
+          <span>ONG/Protetor</span>
+          <i class="far fa-user"></i>
+        </div>
+      </div>
+      <div class="filter-item">
+        <label>Tipo de Evento</label>
+        <div class="select-wrapper">
+          <select>
+            <option>Feira de Adoção</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hero Banner -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h1>Conecte-se com seu novo melhor amigo em eventos de adoção</h1>
+      <p>Encontre feiras, workshops e encontros de pets perto de você</p>
+      <button class="btn-primary">Encontrar Eventos</button>
+    </div>
+    <div class="hero-image">
+      <!-- Placeholder image resembling the mockup illustration -->
+      <img src="https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?auto=format&fit=crop&q=80&w=800" alt="Feira de adoção" />
+    </div>
+  </section>
+
+  <!-- Event Cards Grid -->
+  <section class="eventos-grid">
+    @for (evento of eventos; track evento.id) {
+      <app-card-evento
+        [imageUrl]="evento.imageUrl"
+        [badgeText]="evento.badgeText"
+        [title]="evento.title"
+        [dateStr]="evento.dateStr"
+        [timeStr]="evento.timeStr"
+        [locationStr]="evento.locationStr"
+        [organizerStr]="evento.organizerStr"
+        [description]="evento.description"
+        [isFavorite]="evento.isFavorite"
+        (detailsClick)="verDetalhes(evento)"
+        (favoriteClick)="toggleFavorite(evento)"
+      ></app-card-evento>
+    }
+  </section>
+
+  <!-- Map Section -->
+  <section class="map-section">
+    <div class="map-container">
+      <div class="map-overlay">
+        <h2>Acompanhe os locais<br>dos eventos no mapa</h2>
+      </div>
+      <!-- Background map placeholder -->
+      <div class="map-background" style="background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1200');">
+        <!-- Mock Map Pins -->
+        <div class="map-pin" style="top: 30%; left: 40%;"></div>
+        <div class="map-pin" style="top: 50%; left: 55%;"></div>
+        <div class="map-pin" style="top: 70%; left: 45%;"></div>
+        <div class="map-pin" style="top: 40%; left: 60%;"></div>
+      </div>
+    </div>
+    <div class="map-events-list">
+      <ul>
+        @for (evento of eventos; track evento.id) {
+          <li>
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="list-event-info">
+              <span class="list-title">{{ evento.title }}</span>
+              <span class="list-date">{{ evento.dateStr }}, {{ evento.timeStr }}</span>
+              <span class="list-location">{{ evento.locationStr }}</span>
+            </div>
+          </li>
+        }
+      </ul>
+      <button class="btn-primary full-width">Ver no Mapa</button>
+    </div>
+  </section>
+
+  <!-- Success Stories Carousel -->
+  <section class="historias-section">
+    <h2>Histórias de Sucesso em Eventos</h2>
+    <div class="carousel-container">
+      <button class="nav-btn prev"><i class="fas fa-chevron-left"></i></button>
+      <div class="historias-track">
+        @for (historia of historias; track $index) {
+          <div class="historia-card">
+            <img [src]="historia.imagem" alt="História de sucesso" />
+            <p>{{ historia.texto }}</p>
+          </div>
+        }
+      </div>
+      <button class="nav-btn next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </section>
+
+</main>
+<app-footer></app-footer>
