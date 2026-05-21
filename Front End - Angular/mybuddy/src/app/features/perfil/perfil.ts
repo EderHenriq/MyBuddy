@@ -6,7 +6,7 @@ import { CardPetComponent } from '@shared/components/card-pet/card-pet.component
 import { Footer } from '@shared/components/footer/footer';
 import { AuthService } from '@core/services/auth.service';
 
-type ProfileTab = 'inicio' | 'dados' | 'pets' | 'favoritos' | 'mensagens' | 'configuracoes';
+type ProfileTab = 'inicio' | 'dados' | 'pets' | 'favoritos' | 'mensagens' | 'historico' | 'configuracoes';
 type RoleKey = 'ADOTANTE' | 'ONG' | 'PETSHOP' | 'ADMIN';
 
 interface BackendRole {
@@ -103,6 +103,9 @@ interface ProfileRoleConfig {
   businessDescriptionLabel: string;
 }
 
+import { NotificationService } from '@core/services/notification.service';
+import { ActivityHistory } from '@core/models/notification.model';
+
 @Component({
   selector: 'app-perfil',
   standalone: true,
@@ -113,6 +116,9 @@ interface ProfileRoleConfig {
 export class Perfil implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly fb = inject(FormBuilder);
+  private readonly notificationService = inject(NotificationService);
+
+  readonly history$ = this.notificationService.history$;
 
   readonly activeTab = signal<ProfileTab>('inicio');
   readonly isEditing = signal(false);
@@ -194,6 +200,7 @@ export class Perfil implements OnInit {
     { id: 'pets', label: 'Meus Pets', icon: 'fas fa-paw' },
     { id: 'favoritos', label: 'Meus Favoritos', icon: 'far fa-heart' },
     { id: 'mensagens', label: 'Minhas Mensagens', icon: 'far fa-comment-dots' },
+    { id: 'historico', label: 'Histórico', icon: 'fas fa-history' },
     { id: 'configuracoes', label: 'Configurações', icon: 'fas fa-cog' },
   ];
 

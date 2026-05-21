@@ -225,3 +225,176 @@
   overflow-y: auto;
   padding: 2rem;
 }
+
+// Estilos do Dropdown de Notificações
+.notifications-wrapper {
+  position: relative;
+}
+
+.notifications-dropdown {
+  position: absolute;
+  top: 60px;
+  right: -20px;
+  width: 350px;
+  background-color: var(--surface-card, #ffffff);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--shadow-lg, 0 10px 25px rgba(0,0,0,0.1));
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  z-index: 1001;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    background-color: #fcfcfc;
+
+    h4 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .mark-all-btn {
+      background: none;
+      border: none;
+      color: var(--primary-color, #ff7900);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 500;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .dropdown-body {
+    max-height: 400px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+
+    .empty-notifications {
+      padding: 30px;
+      text-align: center;
+      color: #999;
+      
+      .material-icons {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        opacity: 0.5;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.9rem;
+      }
+    }
+
+    .notification-item {
+      display: flex;
+      padding: 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+      transition: background-color 0.2s;
+      gap: 12px;
+      text-decoration: none;
+
+      &:hover {
+        background-color: #f9f9f9;
+      }
+
+      &.unread {
+        background-color: rgba(255, 121, 0, 0.03);
+      }
+
+      .notif-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        i {
+          font-size: 1.1rem;
+        }
+
+        &.info {
+          background-color: rgba(52, 152, 219, 0.1);
+          color: #3498db;
+        }
+        &.success {
+          background-color: rgba(46, 204, 113, 0.1);
+          color: #2ecc71;
+        }
+        &.warning {
+          background-color: rgba(243, 156, 18, 0.1);
+          color: #f39c12;
+        }
+        &.error {
+          background-color: rgba(231, 76, 60, 0.1);
+          color: #e74c3c;
+        }
+      }
+
+      .notif-content {
+        flex-grow: 1;
+
+        .notif-title {
+          margin: 0 0 4px 0;
+          font-weight: 600;
+          font-size: 0.9rem;
+          color: #333;
+        }
+
+        .notif-message {
+          margin: 0 0 6px 0;
+          font-size: 0.85rem;
+          color: #666;
+          line-height: 1.3;
+        }
+
+        .notif-date {
+          font-size: 0.75rem;
+          color: #aaa;
+        }
+      }
+
+      .mark-read-btn {
+        background: none;
+        border: none;
+        color: var(--primary-color, #ff7900);
+        cursor: pointer;
+        padding: 4px;
+        height: max-content;
+        opacity: 0;
+        transition: opacity 0.2s;
+
+        i {
+          font-size: 0.7rem;
+        }
+      }
+
+      &:hover .mark-read-btn {
+        opacity: 1;
+      }
+    }
+  }
+}

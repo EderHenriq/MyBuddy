@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { Role } from '../models/role.model';
 
@@ -6,23 +7,27 @@ import { Role } from '../models/role.model';
   providedIn: 'root'
 })
 export class SessionService {
-  // Inicializando como null
+  private platformId = inject(PLATFORM_ID);
+  
   private userRoleSubject = new BehaviorSubject<Role | null>(null);
   public userRole$ = this.userRoleSubject.asObservable();
 
   constructor() {
-    // Ao iniciar, podemos tentar recuperar do localStorage (mockado por enquanto)
-    const storedRole = localStorage.getItem('mockUserRole') as Role;
-    if (storedRole) {
-      this.userRoleSubject.next(storedRole);
+    if (isPlatformBrowser(this.platformId)) {
+      const storedRole = localStorage.getItem('mockUserRole') as Role;
+      if (storedRole) {
+        this.userRoleSubject.next(storedRole);
+      }
     }
   }
 
   setRole(role: Role | null) {
-    if (role) {
-      localStorage.setItem('mockUserRole', role);
-    } else {
-      localStorage.removeItem('mockUserRole');
+    if (isPlatformBrowser(this.platformId)) {
+      if (role) {
+        localStorage.setItem('mockUserRole', role);
+      } else {
+        localStorage.removeItem('mockUserRole');
+      }
     }
     this.userRoleSubject.next(role);
   }

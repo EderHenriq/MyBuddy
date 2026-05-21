@@ -324,6 +324,38 @@
         </section>
       }
 
+      @if (activeTab() === 'historico') {
+        <section class="history-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Atividades</p>
+            <h2>Seu Histórico Recente</h2>
+          </div>
+          
+          <div class="timeline-container">
+            @if ((history$ | async)?.length === 0) {
+              <div class="empty-state">
+                <i class="fas fa-history"></i>
+                <p>Nenhuma atividade registrada.</p>
+              </div>
+            }
+            @for (item of (history$ | async); track item.id) {
+              <div class="timeline-item">
+                <div class="timeline-icon" [ngClass]="item.type">
+                  <i [class]="item.icon"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-header">
+                    <h4>{{ item.action }}</h4>
+                    <span class="timeline-date">{{ item.date }}</span>
+                  </div>
+                  <p>{{ item.description }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
       @if (activeTab() === 'configuracoes') {
         <section class="settings-panel">
           <div class="section-heading">
