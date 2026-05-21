@@ -1,7 +1,7 @@
-<main class="adoption-page">
+<main class="adoption-page" appInfiniteScroll (scrolled)="onLoadMore()">
   <section class="search-panel" aria-label="Busca e filtros principais">
     <label class="search-field">
-      <input type="search" placeholder="Buscar pets" />
+      <input type="search" placeholder="Buscar pets" appDebounce (debounceOutput)="onSearch($event)" />
       <span class="material-icons">search</span>
     </label>
 
@@ -62,21 +62,11 @@
           ></app-card-pet>
         }
       </div>
-
-      <nav class="pagination" aria-label="Paginação de pets">
-        <button type="button" class="page-arrow disabled" aria-label="Página anterior">
-          <span class="material-icons">arrow_back</span>
-        </button>
-        <button type="button" class="page-number active">1</button>
-        <button type="button" class="page-number">2</button>
-        <button type="button" class="page-number">3</button>
-        <span>...</span>
-        <button type="button" class="page-number">12</button>
-        <button type="button" class="page-number">13</button>
-        <button type="button" class="page-arrow" aria-label="Próxima página">
-          <span class="material-icons">arrow_forward</span>
-        </button>
-      </nav>
+      
+      <!-- O carregamento contínuo acontece via Infinite Scroll -->
+      <div class="infinite-scroll-loader">
+        <p>Rode para baixo para carregar mais pets...</p>
+      </div>
     </div>
   </section>
 </main>

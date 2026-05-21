@@ -31,7 +31,7 @@
     <header class="admin-header">
       <div class="header-search">
         <span class="material-icons">search</span>
-        <input type="text" placeholder="Pesquisar..." />
+        <input type="text" placeholder="Pesquisar..." appDebounce (debounceOutput)="onSearch($event)" />
       </div>
       <div class="header-actions">
         <div class="notifications-wrapper" style="position: relative;">

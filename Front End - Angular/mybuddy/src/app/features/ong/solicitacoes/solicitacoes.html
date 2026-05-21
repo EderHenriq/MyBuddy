@@ -5,6 +5,16 @@
   </div>
 
   <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Lista de Solicitações</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar solicitação..." appDebounce (debounceOutput)="onSearch($event)">
+          <span class="material-icons">search</span>
+        </div>
+      </div>
+    </div>
+
     <div class="table-container">
       <table>
         <thead>
@@ -42,5 +52,13 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Paginação -->
+    <app-paginator 
+      [currentPage]="currentPage" 
+      [totalPages]="totalPages" 
+      (pageChange)="onPageChange($event)">
+    </app-paginator>
+
   </section>
 </div>

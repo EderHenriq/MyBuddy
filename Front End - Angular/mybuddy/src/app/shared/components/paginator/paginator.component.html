@@ -1,0 +1,24 @@
+<div class="paginator-container">
+  <button class="nav-btn" (click)="previous()" [disabled]="currentPage === 1" aria-label="Página anterior">
+    <span class="material-icons">chevron_left</span>
+  </button>
+
+  <div class="pages-list">
+    @for (page of pages; track $index) {
+      @if (page === '...') {
+        <span class="ellipsis">...</span>
+      } @else {
+        <button 
+          class="page-btn" 
+          [class.active]="page === currentPage" 
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      }
+    }
+  </div>
+
+  <button class="nav-btn" (click)="next()" [disabled]="currentPage === totalPages" aria-label="Próxima página">
+    <span class="material-icons">chevron_right</span>
+  </button>
+</div>

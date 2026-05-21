@@ -7,8 +7,12 @@
   <section class="dashboard-panel">
     <div class="panel-header">
       <h2>Próximos Eventos</h2>
-      <div class="actions">
-        <button class="view-all-btn" style="background-color: var(--primary-color); color: white; border: none;">+ Novo Evento</button>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar evento..." appDebounce (debounceOutput)="onSearch($event)">
+          <span class="material-icons">search</span>
+        </div>
+        <button class="view-all-btn" style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">+ Novo Evento</button>
       </div>
     </div>
     
@@ -46,5 +50,13 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Paginação -->
+    <app-paginator 
+      [currentPage]="currentPage" 
+      [totalPages]="totalPages" 
+      (pageChange)="onPageChange($event)">
+    </app-paginator>
+
   </section>
 </div>

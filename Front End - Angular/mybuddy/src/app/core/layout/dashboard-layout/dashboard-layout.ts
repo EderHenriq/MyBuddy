@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { Role } from '../../models/role.model';
 import { NotificationService } from '../../services/notification.service';
 import { AppNotification } from '../../models/notification.model';
+import { DebounceDirective } from '../../../shared/directives/debounce.directive';
 
 interface MenuItem {
   label: string;
@@ -16,7 +17,7 @@ interface MenuItem {
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterModule, CommonModule],
+  imports: [RouterOutlet, RouterModule, CommonModule, DebounceDirective],
   templateUrl: './dashboard-layout.html',
   styleUrl: './dashboard-layout.scss'
 })
@@ -62,6 +63,11 @@ export class DashboardLayout {
 
   toggleNotifications(): void {
     this.isNotificationsOpen = !this.isNotificationsOpen;
+  }
+
+  onSearch(term: string): void {
+    console.log(`[Dashboard Layout] Buscando globalmente por: ${term}`);
+    // Futuramente: Chamar API global ou repassar via service para a tela ativa
   }
 
   markAsRead(id: string, event: Event): void {

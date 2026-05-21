@@ -7,7 +7,11 @@
   <section class="dashboard-panel">
     <div class="panel-header">
       <h2>Lista de Adotantes</h2>
-      <div class="actions">
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar usuário..." appDebounce (debounceOutput)="onSearch($event)">
+          <span class="material-icons">search</span>
+        </div>
         <button class="view-all-btn"><span class="material-icons" style="font-size: 16px;">filter_list</span> Filtrar</button>
       </div>
     </div>
@@ -53,5 +57,13 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Paginação -->
+    <app-paginator 
+      [currentPage]="currentPage" 
+      [totalPages]="totalPages" 
+      (pageChange)="onPageChange($event)">
+    </app-paginator>
+
   </section>
 </div>

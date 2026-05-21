@@ -18,14 +18,20 @@ interface PendingApproval {
   status: 'Pendente';
 }
 
+import { DebounceDirective } from '../../../shared/directives/debounce.directive';
+import { PaginatorComponent } from '../../../shared/components/paginator/paginator.component';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DebounceDirective, PaginatorComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
 export class Dashboard {
+  currentPage = 1;
+  totalPages = 5;
+
   metrics: MetricCard[] = [
     { title: 'Adotantes Registrados', value: '1,245', icon: 'person', trend: 'up', trendValue: '+12%', color: '#3f51b5' },
     { title: 'ONGs Parceiras', value: '84', icon: 'volunteer_activism', trend: 'up', trendValue: '+3%', color: '#009688' },
@@ -48,5 +54,14 @@ export class Dashboard {
   reject(item: PendingApproval) {
     console.log(`Rejeitando ${item.name}`);
     this.pendingApprovals = this.pendingApprovals.filter(p => p.id !== item.id);
+  }
+
+  onSearch(term: string) {
+    console.log(`[Dashboard Admin] Pesquisando por: ${term}`);
+  }
+
+  onPageChange(page: number) {
+    console.log(`[Dashboard Admin] Mudando para página: ${page}`);
+    this.currentPage = page;
   }
 }

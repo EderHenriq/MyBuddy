@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
 import { Footer } from '@shared/components/footer/footer';
+import { InfiniteScrollDirective } from '@shared/directives/infinite-scroll.directive';
+import { DebounceDirective } from '@shared/directives/debounce.directive';
 
 interface PetListItem {
   name: string;
@@ -21,7 +23,7 @@ interface FilterGroup {
 @Component({
   selector: 'app-pets',
   standalone: true,
-  imports: [CommonModule, CardPetComponent, Footer],
+  imports: [CommonModule, CardPetComponent, Footer, InfiniteScrollDirective, DebounceDirective],
   templateUrl: './pets.html',
   styleUrl: './pets.scss',
 })
@@ -108,5 +110,15 @@ export class Pets {
 
   toggleFavorite(pet: PetListItem): void {
     pet.isFavorite = !pet.isFavorite;
+  }
+
+  onSearch(term: string): void {
+    console.log(`[Página de Pets] Buscando por: ${term}`);
+    // Futuro: Filtrar a lista pets baseada no termo de busca
+  }
+
+  onLoadMore(): void {
+    console.log(`[Página de Pets] Chegou ao fim da tela! Carregando mais pets...`);
+    // Futuro: Fazer request para carregar a próxima página e fazer append no array 'pets'
   }
 }
