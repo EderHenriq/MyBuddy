@@ -1,0 +1,271 @@
+:host {
+  display: block;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.page-header {
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1e1e2d;
+    margin: 0 0 0.25rem 0;
+  }
+  
+  p {
+    color: #6c757d;
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+/* --- Metrics Grid --- */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.metric-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  
+  .metric-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.25rem;
+    
+    .material-icons {
+      font-size: 28px;
+    }
+  }
+  
+  .metric-info {
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e1e2d;
+      margin: 0 0 0.25rem 0;
+    }
+    
+    p {
+      color: #6c757d;
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+  }
+
+  .metric-trend {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    .material-icons {
+      font-size: 16px;
+    }
+
+    &.up {
+      color: #00c853;
+    }
+    &.down {
+      color: #ff5252;
+    }
+  }
+}
+
+/* --- Dashboard Rows & Panels --- */
+.dashboard-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+.dashboard-panel {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #1e1e2d;
+      margin: 0;
+    }
+
+    .view-all-btn {
+      background: transparent;
+      border: none;
+      color: var(--primary-color, #ff7900);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* --- Tables --- */
+.table-container {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #f0f2f5;
+    }
+    
+    th {
+      font-weight: 700;
+      color: #a2a3b7;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      font-size: 0.9rem;
+      color: #3f4254;
+      vertical-align: middle;
+
+      &.bold-text {
+        font-weight: 700;
+        color: #1e1e2d;
+      }
+
+      &.empty-state {
+        text-align: center;
+        color: #a2a3b7;
+        padding: 2rem;
+      }
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+/* --- Badges --- */
+.type-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  
+  &.ong {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  &.petshop {
+    background-color: #e3f2fd;
+    color: #1565c0;
+  }
+}
+
+.status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  &.pending {
+    background-color: #fff3e0;
+    color: #ef6c00;
+  }
+}
+
+/* --- Action Buttons --- */
+.actions-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  .material-icons {
+    font-size: 18px;
+  }
+
+  &.approve {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    &:hover { background-color: #c8e6c9; }
+  }
+
+  &.reject {
+    background-color: #ffebee;
+    color: #c62828;
+    &:hover { background-color: #ffcdd2; }
+  }
+}
+
+/* --- Chart Placeholder --- */
+.chart-placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #e0e4e8;
+  color: #a2a3b7;
+  min-height: 300px;
+  
+  .material-icons {
+    font-size: 48px;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-row {
+    grid-template-columns: 1fr;
+  }
+}

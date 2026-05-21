@@ -1,42 +1,53 @@
-<main class="ong-pets-page">
+<div class="dashboard-container">
   <div class="page-header">
-    <div class="header-titles">
-      <h1>Meus Pets Cadastrados</h1>
-      <p>Gerencie os animais que sua ONG disponibiliza para adoção.</p>
-    </div>
-    <div class="header-actions">
-      <a routerLink="/ong/pets/novo" class="btn-primary">
-        <i class="fas fa-plus"></i> Cadastrar Novo Pet
-      </a>
-    </div>
+    <h1>Meus Animais</h1>
+    <p>Gerencie todos os pets cadastrados pela sua instituição.</p>
   </div>
 
-  <section class="pets-content">
-    @if (myPets.length > 0) {
-      <div class="pets-grid">
-        @for (pet of myPets; track pet.id) {
-          <app-card-pet
-            [imageUrl]="pet.imageUrl"
-            [name]="pet.name"
-            [age]="pet.age"
-            [breed]="pet.breed"
-            [sex]="pet.sex"
-            [vaccinated]="pet.vaccinated"
-            [ongMode]="true"
-            (editClick)="editPet(pet)"
-            (deleteClick)="deletePet(pet)"
-          ></app-card-pet>
-        }
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Lista de Animais</h2>
+      <div class="actions">
+        <button class="view-all-btn" style="background-color: var(--primary-color); color: white; border: none;">+ Adicionar Pet</button>
       </div>
-    } @else {
-      <div class="empty-state">
-        <i class="fas fa-paw"></i>
-        <h3>Nenhum pet cadastrado</h3>
-        <p>Você ainda não tem pets cadastrados para adoção. Comece agora!</p>
-        <a routerLink="/ong/pets/novo" class="btn-primary">Cadastrar Primeiro Pet</a>
-      </div>
-    }
+    </div>
+    
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Espécie</th>
+            <th>Raça</th>
+            <th>Idade</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of pets; track item.nome) {
+            <tr>
+              <td class="bold-text">{{ item.nome }}</td>
+              <td>{{ item.especie }}</td>
+              <td>{{ item.raca }}</td>
+              <td>{{ item.idade }}</td>
+              <td>
+                <span class="status-badge" 
+                      [class.pending]="item.status === 'Em Processo'"
+                      [class.active]="item.status === 'Disponível'"
+                      [class.blocked]="item.status === 'Adotado'">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn" title="Editar">
+                  <span class="material-icons">edit</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
-</main>
-
-<app-footer></app-footer>
+</div>

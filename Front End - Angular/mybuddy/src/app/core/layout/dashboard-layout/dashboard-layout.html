@@ -1,0 +1,55 @@
+<div class="admin-container">
+  <!-- Sidebar Navigation -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <h2>MyBuddy <span>{{ portalName }}</span></h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (item of menuItems; track item.route) {
+        <a [routerLink]="item.route" routerLinkActive="active" class="nav-item">
+          <span class="material-icons">{{ item.icon }}</span>
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <a routerLink="/perfil" class="nav-item">
+        <span class="material-icons">person</span>
+        Meu Perfil
+      </a>
+      <a routerLink="/home" class="nav-item logout">
+        <span class="material-icons">arrow_back</span>
+        Sair
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <div class="header-search">
+        <span class="material-icons">search</span>
+        <input type="text" placeholder="Pesquisar..." />
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn">
+          <span class="material-icons">notifications</span>
+          <span class="badge">3</span>
+        </button>
+        <div class="admin-profile">
+          <img src="https://ui-avatars.com/api/?name={{ portalName }}+MyBuddy&background=ff7900&color=fff" alt="Perfil" />
+          <div class="profile-info">
+            <span class="name">Usuário Logado</span>
+            <span class="role">{{ roleName }}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

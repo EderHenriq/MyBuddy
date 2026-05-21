@@ -42,18 +42,23 @@ export class Login {
     const { email, password } = this.loginForm.value;
 
     this.authService.loginWithCredentials(email, password).subscribe({
-      next: () => {
-        // Obter os detalhes do perfil
-        this.authService.getProfile().subscribe({
-          next: () => {
-            this.isLoading.set(false);
-            this.router.navigate(['/home']);
-          },
-          error: () => {
-            this.isLoading.set(false);
-            this.errorMessage.set('Erro ao carregar dados do perfil. Tente novamente.');
-          },
-        });
+      next: (res) => {
+        if (res.isMock) {
+          this.isLoading.set(false);
+          this.router.navigate(['/home']);
+        } else {
+          // Obter os detalhes do perfil real do backend
+          this.authService.getProfile().subscribe({
+            next: () => {
+              this.isLoading.set(false);
+              this.router.navigate(['/home']);
+            },
+            error: () => {
+              this.isLoading.set(false);
+              this.errorMessage.set('Erro ao carregar dados do perfil. Tente novamente.');
+            },
+          });
+        }
       },
       error: () => {
         this.isLoading.set(false);

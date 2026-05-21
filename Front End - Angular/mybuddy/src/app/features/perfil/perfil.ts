@@ -367,6 +367,10 @@ export class Perfil implements OnInit {
     this.patchForm(this.user());
   }
 
+  logout(): void {
+    this.authService.logout();
+  }
+
   saveProfile(): void {
     this.applyRoleValidators();
 

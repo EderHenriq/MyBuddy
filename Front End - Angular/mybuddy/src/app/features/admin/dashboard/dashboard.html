@@ -1,0 +1,91 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Visão Geral da Plataforma</h1>
+    <p>Bem-vindo ao painel de controle do MyBuddy.</p>
+  </div>
+
+  <!-- Métricas Rápidas -->
+  <section class="metrics-grid">
+    @for (metric of metrics; track metric.title) {
+      <div class="metric-card">
+        <div class="metric-icon" [style.backgroundColor]="metric.color + '20'" [style.color]="metric.color">
+          <span class="material-icons">{{ metric.icon }}</span>
+        </div>
+        <div class="metric-info">
+          <h3>{{ metric.value }}</h3>
+          <p>{{ metric.title }}</p>
+        </div>
+        <div class="metric-trend" [class.up]="metric.trend === 'up'" [class.down]="metric.trend === 'down'">
+          <span class="material-icons">
+            {{ metric.trend === 'up' ? 'trending_up' : 'trending_down' }}
+          </span>
+          <span>{{ metric.trendValue }}</span>
+        </div>
+      </div>
+    }
+  </section>
+
+  <div class="dashboard-row">
+    <!-- Tabelas de Aprovação -->
+    <section class="dashboard-panel approvals-panel">
+      <div class="panel-header">
+        <h2>Aprovações Pendentes</h2>
+        <button class="view-all-btn">Ver todas</button>
+      </div>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome / Razão Social</th>
+              <th>Tipo</th>
+              <th>Data de Cadastro</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (pendingApprovals.length === 0) {
+              <tr>
+                <td colspan="6" class="empty-state">Tudo em dia! Não há aprovações pendentes.</td>
+              </tr>
+            }
+            @for (item of pendingApprovals; track item.id) {
+              <tr>
+                <td>#{{ item.id }}</td>
+                <td class="bold-text">{{ item.name }}</td>
+                <td>
+                  <span class="type-badge" [class.ong]="item.type === 'ONG'" [class.petshop]="item.type === 'Petshop'">
+                    {{ item.type }}
+                  </span>
+                </td>
+                <td>{{ item.date }}</td>
+                <td><span class="status-badge pending">{{ item.status }}</span></td>
+                <td class="actions-cell">
+                  <button class="action-btn approve" (click)="approve(item)" title="Aprovar">
+                    <span class="material-icons">check</span>
+                  </button>
+                  <button class="action-btn reject" (click)="reject(item)" title="Rejeitar">
+                    <span class="material-icons">close</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Outro Painel Exemplo -->
+    <section class="dashboard-panel chart-panel">
+      <div class="panel-header">
+        <h2>Adoções Recentes</h2>
+      </div>
+      <div class="chart-placeholder">
+        <span class="material-icons">bar_chart</span>
+        <p>Gráfico de adoções entrará aqui</p>
+      </div>
+    </section>
+  </div>
+</div>

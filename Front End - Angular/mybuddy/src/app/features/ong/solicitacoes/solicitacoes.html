@@ -1,0 +1,46 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Solicitações de Adoção</h1>
+    <p>Aprove ou reprove os pedidos de adoção dos seus pets.</p>
+  </div>
+
+  <section class="dashboard-panel">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID Pedido</th>
+            <th>Pet</th>
+            <th>Adotante</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of pedidos; track item.id) {
+            <tr>
+              <td>{{ item.id }}</td>
+              <td class="bold-text">{{ item.pet }}</td>
+              <td>{{ item.adotante }}</td>
+              <td>{{ item.data }}</td>
+              <td>
+                <span class="status-badge" 
+                      [class.pending]="item.status === 'Em Análise'"
+                      [class.active]="item.status === 'Aprovado'"
+                      [class.blocked]="item.status === 'Reprovado'">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn" title="Analisar Ficha">
+                  <span class="material-icons">assignment</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
