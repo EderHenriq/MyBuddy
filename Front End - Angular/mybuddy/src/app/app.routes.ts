@@ -35,6 +35,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/eventos/eventos.component').then(m => m.EventosComponent),
   },
   {
+    // Rota para a página de serviços pet
+    path: 'servicos',
+    loadComponent: () => import('./features/servicos/servicos.component').then(m => m.ServicosComponent),
+  },
+  {
     // Rota para a página de perfil do usuário
     path: 'perfil',
     canActivate: [authGuard],

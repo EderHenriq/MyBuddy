@@ -1,0 +1,82 @@
+<main class="servicos-page">
+  
+  <!-- Search and Filters Bar -->
+  <section class="filters-bar">
+    <div class="search-input">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Buscar por nome do local ou profissional" />
+    </div>
+    
+    <div class="filter-dropdowns">
+      <div class="filter-item">
+        <label>Localização</label>
+        <div class="select-wrapper">
+          <span>Sua Cidade</span>
+          <select>
+            <option>Raio 10km</option>
+            <option>Raio 20km</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-item">
+        <label>Tipo de Serviço</label>
+        <div class="select-wrapper">
+          <select>
+            <option>Todos</option>
+            <option>Veterinário</option>
+            <option>Hospital Pet</option>
+            <option>Hotel Pet</option>
+            <option>Adestramento</option>
+            <option>Creche</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-item">
+        <label>Especialidade</label>
+        <div class="select-wrapper">
+          <select>
+            <option>Qualquer</option>
+            <option>Clínico Geral</option>
+            <option>Cirurgia</option>
+            <option>Odontologia</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hero Banner -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h1>Cuidado e bem-estar para o seu melhor amigo</h1>
+      <p>Encontre os melhores veterinários, hospitais e hotéis pet próximos a você com as melhores avaliações.</p>
+      <button class="btn-primary">Explorar Serviços</button>
+    </div>
+    <div class="hero-image">
+      <!-- Professional Unsplash mockup image for the banner -->
+      <img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=800" alt="Veterinário cuidando de pet" />
+    </div>
+  </section>
+
+  <!-- Services Cards Grid -->
+  <section class="servicos-grid">
+    @for (servico of servicos; track servico.id) {
+      <app-card-servico
+        [imageUrl]="servico.imageUrl"
+        [type]="servico.type"
+        [title]="servico.title"
+        [rating]="servico.rating"
+        [reviewsCount]="servico.reviewsCount"
+        [locationStr]="servico.locationStr"
+        [distanceStr]="servico.distanceStr"
+        [openHoursStr]="servico.openHoursStr"
+        [description]="servico.description"
+        [isFavorite]="servico.isFavorite"
+        (detailsClick)="verDetalhes(servico)"
+        (favoriteClick)="toggleFavorite(servico)"
+      ></app-card-servico>
+    }
+  </section>
+
+</main>
+<app-footer></app-footer>
