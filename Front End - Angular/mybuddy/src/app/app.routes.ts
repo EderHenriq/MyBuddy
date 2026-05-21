@@ -40,6 +40,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/servicos/servicos.component').then(m => m.ServicosComponent),
   },
   {
+    // Rota para o Marketplace (Produtos)
+    path: 'produtos',
+    loadComponent: () => import('./features/marketplace/marketplace').then(m => m.Marketplace),
+  },
+  {
     // Rota para a página de perfil do usuário
     path: 'perfil',
     canActivate: [authGuard],
