@@ -8,7 +8,6 @@ import { MyBuddyPreset } from '../styles/mypreset';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { mockInterceptor } from './core/interceptors/mock.interceptor';
 import { cacheInterceptor } from './core/interceptors/cache.interceptor';
-import { retryInterceptor } from './core/interceptors/retry.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
@@ -18,7 +17,13 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([mockInterceptor, cacheInterceptor, retryInterceptor, errorInterceptor, loadingInterceptor, authInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([
+      authInterceptor, 
+      mockInterceptor, 
+      cacheInterceptor, 
+      errorInterceptor, 
+      loadingInterceptor,
+    ])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     providePrimeNG({
       theme: {
