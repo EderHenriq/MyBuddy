@@ -1,0 +1,80 @@
+.loja-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 0.5rem;
+  min-width: 160px;
+  max-width: 190px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: scale(1.02);
+    background-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.loja-logo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid #ffffff;
+}
+
+.loja-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.loja-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1e1e1e;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.loja-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #777;
+  width: 100%;
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-weight: 600;
+    color: #333;
+    
+    i {
+      color: #ffc107;
+    }
+  }
+
+  .dot {
+    font-size: 0.5rem;
+    color: #ccc;
+  }
+
+  .delivery-time {
+    white-space: nowrap;
+  }
+}
+
+.delivery-fee { font-weight: 600; color: #555; }

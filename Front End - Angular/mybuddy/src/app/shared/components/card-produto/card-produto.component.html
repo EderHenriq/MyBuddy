@@ -1,0 +1,37 @@
+<div class="produto-card" (click)="cardClick.emit()">
+  <div class="produto-image-container">
+    <img [src]="imageUrl" [alt]="title" class="produto-image" />
+    @if (discountBadge) {
+      <span class="discount-badge">{{ discountBadge }}</span>
+    }
+    <button class="favorite-btn" [class.active]="isFavorite" (click)="onFavoriteClick($event)" aria-label="Favoritar produto">
+      <i class="fa-heart" [class.fa-solid]="isFavorite" [class.fa-regular]="!isFavorite"></i>
+    </button>
+  </div>
+  
+  <div class="produto-info">
+    <span class="store-name">{{ storeName }}</span>
+    <h3 class="produto-title">{{ title }}</h3>
+    
+    <div class="price-container">
+      @if (oldPrice) {
+        <span class="old-price">{{ oldPrice | currency:'BRL':'symbol':'1.2-2' }}</span>
+      }
+      <span class="current-price">{{ price | currency:'BRL':'symbol':'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <div class="card-actions">
+    @if (quantity === 0) {
+      <button class="add-btn" (click)="onAddClick($event)" aria-label="Adicionar ao carrinho">
+        <i class="fas fa-plus"></i>
+      </button>
+    } @else {
+      <div class="quantity-selector">
+        <button class="qty-btn" (click)="onDecrease($event)"><i class="fas fa-minus"></i></button>
+        <span class="qty-value">{{ quantity }}</span>
+        <button class="qty-btn" (click)="onAddClick($event)"><i class="fas fa-plus"></i></button>
+      </div>
+    }
+  </div>
+</div>
