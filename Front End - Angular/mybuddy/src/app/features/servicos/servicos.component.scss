@@ -1,0 +1,206 @@
+:host {
+  display: block;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.servicos-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* --- Filters Bar --- */
+.filters-bar {
+  display: flex;
+  background-color: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  align-items: center;
+  gap: 2rem;
+
+  .search-input {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-grow: 1;
+    background-color: #f5f5f5;
+    padding: 0.8rem 1.2rem;
+    border-radius: 999px;
+
+    i {
+      color: #777;
+    }
+
+    input {
+      border: none;
+      background: transparent;
+      width: 100%;
+      font-size: 0.95rem;
+      color: #333;
+      outline: none;
+
+      &::placeholder {
+        color: #999;
+      }
+    }
+  }
+
+  .filter-dropdowns {
+    display: flex;
+    gap: 1.5rem;
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+
+      label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .select-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: #f5f5f5;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        color: #555;
+        cursor: pointer;
+
+        i {
+          color: #777;
+        }
+
+        span {
+          color: #888;
+          font-weight: 500;
+        }
+
+        select {
+          border: none;
+          background: transparent;
+          outline: none;
+          color: #333;
+          font-weight: 600;
+          cursor: pointer;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          padding-right: 1rem;
+          background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+          background-repeat: no-repeat;
+          background-position: right center;
+          background-size: 8px auto;
+        }
+      }
+    }
+  }
+}
+
+/* --- Hero Banner --- */
+.hero-banner {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+
+  .hero-content {
+    flex: 1;
+    padding: 3rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #1e1e1e;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #555;
+      margin: 0;
+    }
+
+    .btn-primary {
+      align-self: flex-start;
+      background-color: var(--primary-color, #ff7900);
+      color: #fff;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.2s;
+
+      &:hover {
+        background-color: #e66d00;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  .hero-image {
+    flex: 1;
+    min-height: 350px;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center right;
+    }
+  }
+}
+
+/* --- Services Cards Grid --- */
+.servicos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1024px) {
+  .servicos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .filters-bar {
+    flex-wrap: wrap;
+    border-radius: 24px;
+  }
+  
+  .hero-banner {
+    flex-direction: column;
+    
+    .hero-image {
+      min-height: 250px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .servicos-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filters-bar .filter-dropdowns {
+    flex-wrap: wrap;
+  }
+}
