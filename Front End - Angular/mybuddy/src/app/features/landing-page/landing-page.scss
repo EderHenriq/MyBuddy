@@ -11,7 +11,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  min-height: clamp(640px, 67vh, 730px);
+  min-height: clamp(640px, 67vh, 800px);
   margin: 0 auto;
   box-sizing: border-box;
 
@@ -129,5 +129,78 @@
   .btn-cta {
     width: 100%;
     max-width: 280px;
+  }
+}
+
+//Estilização dos cards de Serviços
+.services-section {
+  @include flex-column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xxxl) var(--spacing-xxl);
+  gap: var(--spacing-lg);
+  isolation: isolate;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.section-header {
+  @include flex-column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  text-align: center;
+}
+
+.section-subtitle {
+  font-family: var(--font-family-secondary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xl);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--text-color-secondary);
+  text-shadow: 1px 1px 16px rgba(0,0,0,0.22);
+  margin: 0;
+}
+
+.section-title {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-xxxl);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--text-color-black);
+  text-shadow: 1px 1px 16px rgba(0,0,0,0.22);
+  margin: 0;
+
+  .highlight {
+    @include text-highlight;
+  }
+}
+
+//Estilização do grid de cards
+.services-grid-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.services-left-col {
+  @include flex-column;
+  gap: var(--spacing-lg);
+  flex: 1;
+
+  app-card-categoria {
+    height: 286px;
+  }
+}
+
+.services-right-col {
+  flex: 1;
+
+  app-card-categoria {
+    height: 650px;
   }
 }
