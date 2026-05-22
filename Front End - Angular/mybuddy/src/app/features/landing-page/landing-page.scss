@@ -1,7 +1,12 @@
 @use '../../../styles/mixins' as *;
 
 //Estilização do corpo do Hero
-.landing-page-content {
+.landing-page-content{
+  width: 100%;
+  margin: 0 auto;
+}
+
+.landing-hero-section-wrapper {
   isolation: isolate;
   position: relative;
   overflow: hidden;

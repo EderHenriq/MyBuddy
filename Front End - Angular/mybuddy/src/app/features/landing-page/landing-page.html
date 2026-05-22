@@ -1,24 +1,26 @@
 <app-header-landing-page></app-header-landing-page>
 
 <main class="landing-page-content">
-  <section class="landing-hero-section" aria-label="Apresentação Inicial do MyBuddy">
-    <div class="hero-text-col">
-      <h1 class="hero-title">
-        Adote aqui o seu
-        <br />
-        Buddy
-        <span class="highlight">perfeito.</span>
-      </h1>
+  <div class="landing-hero-section-wrapper">
+    <section class="landing-hero-section" aria-label="Apresentação Inicial do MyBuddy">
+      <div class="hero-text-col">
+        <h1 class="hero-title">
+          Adote aqui o seu
+          <br />
+          Buddy
+          <span class="highlight">perfeito.</span>
+        </h1>
 
-      <div class="hero-description">
-        <p>Conectamos você a pets que precisam de um lar, feiras de adoção, veterinários e tudo o que seu amigo precisa.</p>
-      </div>
+        <div class="hero-description">
+          <p>Conectamos você a pets que precisam de um lar, feiras de adoção, veterinários e tudo o que seu amigo precisa.</p>
+        </div>
 
-      <div class="hero-actions-btn">
-        <a routerLink="/src/app/features/auth/login" class="btn btn-cta">Encontrar meu Buddy</a>
+        <div class="hero-actions-btn">
+          <a routerLink="/auth/login" class="btn btn-cta">Encontrar meu Buddy</a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <section class="services-section" id="servicos" aria-labelledby="services-title">
     <header class="section-header">
@@ -36,14 +38,16 @@
           class="services-card-item card-veterinario"
           [title]="'Veterinários'"
           [subtitle]="'Encontre clínicas próximas a você.'"
-          imageUrl="services[0].imageUrl"
+          [imageUrl]="services[0].imageUrl"
+          variant="landing"
         ></app-card-categoria>
 
         <app-card-categoria
           class="services-card-item card-petshops"
           [title]="'Petshops'"
           [subtitle]="'Hotéis, escolas e muito mais.'"
-          imageUrl="services[1].imageUrl"
+          [imageUrl]="services[1].imageUrl"
+          variant="landing"
         ></app-card-categoria>
       </div>
 
@@ -52,7 +56,8 @@
           class="services-card-item card-eventos"
           [title]="'Eventos'"
           [subtitle]="'Feiras de adoção, campanhas de vacina, etc.'"
-          imageUrl="services[2].imageUrl"
+          [imageUrl]="services[2].imageUrl"
+          variant="landing"
         ></app-card-categoria>
       </div>
     </div>
