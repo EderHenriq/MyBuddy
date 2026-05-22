@@ -69,21 +69,14 @@
     </div>
 
     <div class="partners-logos marquee-wrapper">
-      <div class="marquee-track">
-        <img src="/assets/logo/logo-parceiros/logo1.svg" class="svg-partner" alt="Logo Parceiro 1" />
-        <img src="/assets/logo/logo-parceiros/logo2.svg" class="svg-partner" alt="Logo Parceiro 2" />
-        <img src="/assets/logo/logo-parceiros/logo3.svg" class="svg-partner" alt="Logo Parceiro 3" />
-        <img src="/assets/logo/logo-parceiros/logo4.svg" class="svg-partner" alt="Logo Parceiro 4" />
-        <img src="/assets/logo/logo-parceiros/logo5.svg" class="svg-partner" alt="Logo Parceiro 5" />
+      <div class="marquee-inner">
+        @for (logo of logos; track logo.alt) {
+          <img [src]="logo.src" [alt]="logo.alt" class="svg-partner" />
+        }
 
-        <!-- Cópia para o efeito de deslize-->
-        <div class="marquee-track" aria-hidden="true">
-          <img src="/assets/logo/logo-parceiros/logo1.svg" class="svg-partner" alt="" />
-          <img src="/assets/logo/logo-parceiros/logo2.svg" class="svg-partner" alt="" />
-          <img src="/assets/logo/logo-parceiros/logo3.svg" class="svg-partner" alt="" />
-          <img src="/assets/logo/logo-parceiros/logo4.svg" class="svg-partner" alt="" />
-          <img src="/assets/logo/logo-parceiros/logo5.svg" class="svg-partner" alt="" />
-        </div>
+        @for (logo of logos; track logo.alt) {
+          <img [src]="logo.src" [alt]="logo.alt" class="svg-partner" aria-hidden="true" />
+        }
       </div>
     </div>
   </section>

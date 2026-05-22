@@ -209,8 +209,8 @@
 .partners-sections {
   @include flex-column;
   align-items: center;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-xxl) 0;
+  gap: var(--spacing-xxl);
+  padding: var(--spacing-xxl);
   isolation: isolate;
   width: 100%;
   box-sizing: border-box;
@@ -229,7 +229,7 @@
   margin: 0;
   max-width: 1280px;
   width: 100%;
-  padding: 0 var(--spacing-xxl);
+  padding: var(--spacing-xxl);
   box-sizing: border-box;
 
   @include devices('tablet-sm'){
@@ -240,17 +240,20 @@
 .marquee-wrapper {
   overflow: hidden;
   width: 100%;
-  display: flex;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
 }
 
-.marquee-track {
+.marquee-inner {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xl);
-  flex-shrink: 0;
   width: max-content;
-
-  animation: marqueeLoop 18s linear infinite;
+  animation: marqueeScroll 15s linear infinite;
 
   &:hover {
     animation-play-state: paused;
@@ -262,13 +265,11 @@
   width: 180px;
   object-fit: contain;
   flex-shrink: 0;
+  margin: 0 var(--spacing-xl);
 }
 
-@keyframes marqueeLoop {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
+@keyframes marqueeScroll {
+  from { transform: translateX(0);}
+  to { transform: translateX(-50%); }
 }
+
