@@ -9,32 +9,17 @@
 
     <nav>
       <div class="quick-links">
-        <ul (mouseleave)="resetPill()">
-          <div class="sliding-pills" [class.visible]="pillVisible" [style.left]="pillStyle.left" [style.width]="pillStyle.width"></div>
-
-          @for (link of links; track link.label; let i = $index) {
-            <li>
-              <a
-                #navLink
-                [routerLink]="['/']"
-                [fragment]="link.fragment"
-                [class.active]="activeLinkIndex === i"
-                [class.active-hover]="hoveredIndex === i"
-                [class.hover-override]="hoveredIndex !== -1 && hoveredIndex !== i"
-                (mouseenter)="setHoverIndex(i, navLink)"
-                (click)="setActiveLink(i, navLink)"
-              >
-                {{ link.label }}
-              </a>
-            </li>
-          }
+        <ul>
+          <li><a href="/">Adote um Pet</a></li>
+          <li><a href="/">Parceiros</a></li>
+          <li><a href="/">Blog</a></li>
         </ul>
       </div>
     </nav>
 
     <div class="auth-btns">
-      <a routerLink="/auth/login" class="btn btn-primary">Login</a>
-      <a routerLink="/auth/cadastro" class="btn btn-secondary">Registre-se</a>
+      <a routerLink="/" class="btn btn-primary">Login</a>
+      <a routerLink="/" class="btn btn-secondary">Registre-se</a>
     </div>
   </header>
 </section>
