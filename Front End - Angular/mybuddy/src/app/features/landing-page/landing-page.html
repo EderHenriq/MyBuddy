@@ -19,4 +19,42 @@
       </div>
     </div>
   </section>
+
+  <section class="services-section" id="servicos" aria-labelledby="services-title">
+    <header class="section-header">
+      <p class="section-subtitle">Conheça nossos serviços</p>
+      <h2 id="services-title" class="section-title">
+        Tudo o que seu pet
+        <span class="highlight">precisa</span>
+        , em um só lugar.
+      </h2>
+    </header>
+
+    <div class="services-grid-cards">
+      <div class="services-left-col">
+        <app-card-categoria
+          class="services-card-item card-veterinario"
+          [title]="'Veterinários'"
+          [subtitle]="'Encontre clínicas próximas a você.'"
+          imageUrl="services[0].imageUrl"
+        ></app-card-categoria>
+
+        <app-card-categoria
+          class="services-card-item card-petshops"
+          [title]="'Petshops'"
+          [subtitle]="'Hotéis, escolas e muito mais.'"
+          imageUrl="services[1].imageUrl"
+        ></app-card-categoria>
+      </div>
+
+      <div class="services-right-col">
+        <app-card-categoria
+          class="services-card-item card-eventos"
+          [title]="'Eventos'"
+          [subtitle]="'Feiras de adoção, campanhas de vacina, etc.'"
+          imageUrl="services[2].imageUrl"
+        ></app-card-categoria>
+      </div>
+    </div>
+  </section>
 </main>
