@@ -1,1 +1,105 @@
 @use '../../../styles/mixins' as *;
+
+//Estilização do corpo do Hero
+.landing-page-content {
+  @include flex-start;
+  justify-content: flex-start;
+  padding: var(--spacing-xxxl) var(--spacing-xxl);
+  isolation: isolate;
+
+  max-width: 1280px;
+  height: 640px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @include overlay(0.55);
+
+  background-image: url('/public/assets/landing-page/hero-landing-page.jpg');
+  background-size: cover;
+  background-position: center right;
+
+  box-shadow: 0 11px 26.1px rgba(0,0,0,0.31);
+  border-radius: 0 0 var(--radius-xxl) var(--radius-xxl);
+
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+//Estilização do conteúdo do Hero
+.hero-title {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: 66px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-color-white);
+  text-shadow: 4px 5px 10.3px rgba(0,0,0,0.25);
+
+  .highlight {
+    @include text-highlight;
+  }
+}
+
+.hero-description p {
+  margin: 0;
+  max-width: 584px;
+  font-family: var(--font-family-secondary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--text-color-white);
+}
+
+.btn-cta {
+  @include flex-center;
+  padding: var(--spacing-xs) var(--spacing-md);
+  width: 217px;
+  height: 50px;
+  box-sizing: border-box;
+  text-decoration: none;
+  background-color: var(--primary-color);
+  color: var(--text-color-white) !important;
+  box-shadow: 0 4px 11px rgba(0,0,0,0.25);
+  border-radius: var(--radius-xl);
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: 18px;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+
+  transition: background-color 0.2 ease, transform 0.2 ease;
+
+  &:hover {
+    background-color: var(--hover-btn-primary);
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 1023px) {
+  .landing-page-content {
+    padding: var(--spacing-xl) var(--spacing-md);
+    height: auto;
+    min-height: 500px;
+    justify-content: center;
+    background-position: center;
+  }
+
+  .hero-text-col {
+    gap: var(--spacing-md);
+    text-align: center;
+    align-items: center;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .btn-cta {
+    width: 100%;
+    max-width: 280px;
+  }
+}
