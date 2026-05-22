@@ -4,25 +4,37 @@
       <span class="evento-badge">{{ badgeText }}</span>
     }
   </div>
-  
+
   <div class="evento-content">
     <h3 class="evento-title">{{ title }}</h3>
-    
+
     <div class="evento-details">
       <div class="detail-row">
-        <span class="detail-item"><i class="far fa-calendar"></i> {{ dateStr }}</span>
-        <span class="detail-item"><i class="far fa-clock"></i> {{ timeStr }}</span>
+        <span class="detail-item">
+          <i class="far fa-calendar"></i>
+          {{ dateStr }}
+        </span>
+        <span class="detail-item">
+          <i class="far fa-clock"></i>
+          {{ timeStr }}
+        </span>
       </div>
       <div class="detail-row">
-        <span class="detail-item"><i class="fas fa-map-marker-alt"></i> {{ locationStr }}</span>
+        <span class="detail-item">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ locationStr }}
+        </span>
       </div>
       <div class="detail-row">
-        <span class="detail-item"><i class="far fa-user"></i> Organizado por {{ organizerStr }}</span>
+        <span class="detail-item">
+          <i class="far fa-user"></i>
+          Organizado por {{ organizerStr }}
+        </span>
       </div>
     </div>
-    
+
     <p class="evento-description">{{ description }}</p>
-    
+
     <div class="evento-actions">
       <button class="btn-details" (click)="detailsClick.emit()">Ver Detalhes do Evento</button>
       <button class="btn-favorite" [class.active]="isFavorite" (click)="favoriteClick.emit()">
