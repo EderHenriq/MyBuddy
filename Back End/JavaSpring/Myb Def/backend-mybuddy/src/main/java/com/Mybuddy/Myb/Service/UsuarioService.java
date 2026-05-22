@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Service; // Declara o pacote onde esta classe de serviço está localizada.
 
 import com.Mybuddy.Myb.Model.Usuario; // Importa a entidade Usuario, que representa um usuário no sistema.
-import com.Mybuddy.Myb.Repository.UsuarioRepository; // Importa o repositório para a entidade Usuario.
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository; // Importa o repositório para a entidade Usuario.
 import org.springframework.stereotype.Service; // Importa a anotação @Service do Spring.
 
 import java.util.List; // Importa a interface List para lidar com coleções de objetos.

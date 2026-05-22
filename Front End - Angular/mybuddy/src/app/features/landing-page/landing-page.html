@@ -112,12 +112,12 @@
         @for (pet of pets; track pet.id; let idx = $index) {
           <div class="carousel-slide" [class.activeSlide]="activePetIndex === idx" (click)="setCarouselPet(idx)">
             <app-card-pet
-              [imageUrl]="pet.imageUrl"
-              [name]="pet.name"
-              [age]="pet.age"
-              [breed]="pet.breed"
-              [sex]="pet.sex"
-              [vaccinated]="pet.vaccinated"
+              [urlImagem]="pet.urlImagem"
+              [nome]="pet.nome"
+              [idade]="pet.idade"
+              [raca]="pet.raca"
+              [sexo]="pet.sexo"
+              [vacinado]="pet.vacinado"
             ></app-card-pet>
           </div>
         }

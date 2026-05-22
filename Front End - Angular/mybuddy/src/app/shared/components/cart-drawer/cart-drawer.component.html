@@ -1,42 +1,42 @@
-<div class="cart-overlay" [class.open]="isOpen" (click)="close()"></div>
+<div class="cart-overlay" [class.open]="aberto" (click)="fechar()"></div>
 
-<aside class="cart-drawer" [class.open]="isOpen">
+<aside class="cart-drawer" [class.open]="aberto">
   <div class="cart-header">
-    <h2>Seu Carrinho ({{ totalItems }})</h2>
-    <button class="close-btn" (click)="close()" aria-label="Fechar carrinho">
+    <h2>Seu Carrinho ({{ totalItens }})</h2>
+    <button class="close-btn" (click)="fechar()" aria-label="Fechar carrinho">
       <i class="fas fa-times"></i>
     </button>
   </div>
 
   <div class="cart-body">
-    @if (items.length === 0) {
+    @if (itens.length === 0) {
       <div class="empty-cart">
         <div class="icon-wrapper">
           <i class="fas fa-shopping-basket"></i>
         </div>
         <h3>Seu carrinho está vazio</h3>
         <p>Adicione produtos para continuar.</p>
-        <button class="continue-btn" (click)="close()">Continuar Comprando</button>
+        <button class="continue-btn" (click)="fechar()">Continuar Comprando</button>
       </div>
     } @else {
       <ul class="cart-items">
-        @for (item of items; track item.id) {
+        @for (item of itens; track item.id) {
           <li class="cart-item">
-            <img [src]="item.imageUrl" [alt]="item.name" class="item-img" />
+            <img [src]="item.urlImagem" [alt]="item.nome" class="item-img" />
             <div class="item-info">
-              <h4>{{ item.name }}</h4>
+              <h4>{{ item.nome }}</h4>
               @if (item.lojaNome) {
                 <span class="store-name">Vendido por: {{ item.lojaNome }}</span>
               }
-              <div class="item-price">{{ item.price | currency:'BRL' }}</div>
+              <div class="item-price">{{ item.preco | currency:'BRL' }}</div>
               
               <div class="quantity-controls">
-                <button (click)="updateQuantity(item.id, item.quantity - 1)" aria-label="Diminuir">-</button>
-                <span>{{ item.quantity }}</span>
-                <button (click)="updateQuantity(item.id, item.quantity + 1)" aria-label="Aumentar">+</button>
+                <button (click)="atualizarQuantidade(item.id, item.quantidade - 1)" aria-label="Diminuir">-</button>
+                <span>{{ item.quantidade }}</span>
+                <button (click)="atualizarQuantidade(item.id, item.quantidade + 1)" aria-label="Aumentar">+</button>
               </div>
             </div>
-            <button class="remove-btn" (click)="removeItem(item.id)" aria-label="Remover item">
+            <button class="remove-btn" (click)="removerItem(item.id)" aria-label="Remover item">
               <i class="fas fa-trash-alt"></i>
             </button>
           </li>
@@ -45,11 +45,11 @@
     }
   </div>
 
-  @if (items.length > 0) {
+  @if (itens.length > 0) {
     <div class="cart-footer">
       <div class="cart-total">
         <span>Total:</span>
-        <strong>{{ totalPrice | currency:'BRL' }}</strong>
+        <strong>{{ precoTotal | currency:'BRL' }}</strong>
       </div>
       <button class="checkout-btn">Finalizar Compra</button>
     </div>

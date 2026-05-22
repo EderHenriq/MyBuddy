@@ -61,24 +61,24 @@
                   </div>
                 }
                 @for (notif of notifications; track notif.id) {
-                  <div class="notification-item" [class.unread]="!notif.read">
-                    <div class="notif-icon" [ngClass]="notif.type">
-                      <i
-                        class="fas"
-                        [ngClass]="{
-                          'fa-info-circle': notif.type === 'info',
-                          'fa-check-circle': notif.type === 'success',
-                          'fa-exclamation-triangle': notif.type === 'warning',
-                          'fa-times-circle': notif.type === 'error',
+                  <div class="notification-item" [class.unread]="!notif.lida">
+                    <div class="notif-icon" [ngClass]="notif.tipo">
+                        <i
+                          class="fas"
+                          [ngClass]="{
+                          'fa-info-circle': notif.tipo === 'info',
+                          'fa-check-circle': notif.tipo === 'success',
+                          'fa-exclamation-triangle': notif.tipo === 'warning',
+                          'fa-times-circle': notif.tipo === 'error',
                         }"
                       ></i>
                     </div>
                     <div class="notif-content">
-                      <p class="notif-title">{{ notif.title }}</p>
-                      <p class="notif-message">{{ notif.message }}</p>
-                      <span class="notif-date">{{ notif.date }}</span>
+                      <p class="notif-title">{{ notif.titulo }}</p>
+                      <p class="notif-message">{{ notif.mensagem }}</p>
+                      <span class="notif-date">{{ notif.data }}</span>
                     </div>
-                    @if (!notif.read) {
+                    @if (!notif.lida) {
                       <button class="mark-read-btn" (click)="markAsRead(notif.id, $event)" title="Marcar como lida">
                         <i class="fas fa-circle"></i>
                       </button>

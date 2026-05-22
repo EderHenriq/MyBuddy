@@ -31,15 +31,15 @@
           @for (item of pedidos; track item.id) {
             <tr>
               <td>{{ item.id }}</td>
-              <td class="bold-text">{{ item.cliente }}</td>
-              <td>{{ item.valor }}</td>
-              <td>{{ item.data }}</td>
+              <td class="bold-text">{{ item.cliente?.nome || 'Cliente Padrão' }}</td>
+              <td>{{ item.valorTotal | currency:'BRL' }}</td>
+              <td>{{ item.dataCriacao || '21 Mai, 2026' }}</td>
               <td>
                 <span
                   class="status-badge"
-                  [class.pending]="item.status === 'Aprovado'"
-                  [class.active]="item.status === 'Entregue'"
-                  [class.blocked]="item.status === 'Enviado'"
+                  [class.pending]="item.status === 'APROVADO'"
+                  [class.active]="item.status === 'ENTREGUE'"
+                  [class.blocked]="item.status === 'ENVIADO'"
                 >
                   {{ item.status }}
                 </span>

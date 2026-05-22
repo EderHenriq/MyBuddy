@@ -36,7 +36,8 @@ public class MybApplication {
 								"null", // Permite chamadas vindas de arquivos locais (ex: file://)
 								"http://localhost:5500", // Origem comum usada pelo Live Server do VSCode
 								"http://127.0.0.1:5500", // Alternativa ao localhost
-								"http://localhost:8080" // Origem do próprio backend (boa prática incluir)
+								"http://localhost:8080", // Origem do próprio backend (boa prática incluir)
+								"http://localhost:4200"  // Origem do Angular
 						)
 						// Define os métodos HTTP permitidos
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
@@ -51,7 +52,8 @@ public class MybApplication {
 								"null", // Permite acesso local (file://)
 								"http://localhost:5500",
 								"http://127.0.0.1:5500",
-								"http://localhost:8080"
+								"http://localhost:8080",
+								"http://localhost:4200"
 						)
 						// Apenas leitura
 						.allowedMethods("GET", "HEAD")

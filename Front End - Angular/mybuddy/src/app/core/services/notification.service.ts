@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AppNotification, ActivityHistory } from '../models/notification.model';
+import { NotificacaoApp, HistoricoAtividade } from '../models/notification.model';
 import { SessionService } from './session.service';
 import { Role } from '../models/role.model';
 
@@ -10,228 +10,228 @@ import { Role } from '../models/role.model';
 export class NotificationService {
   private sessionService = inject(SessionService);
 
-  private notificationsSubject = new BehaviorSubject<AppNotification[]>([]);
-  public notifications$ = this.notificationsSubject.asObservable();
+  private notificacoesSubject = new BehaviorSubject<NotificacaoApp[]>([]);
+  public notificacoes$ = this.notificacoesSubject.asObservable();
 
-  private historySubject = new BehaviorSubject<ActivityHistory[]>([]);
-  public history$ = this.historySubject.asObservable();
+  private historicoSubject = new BehaviorSubject<HistoricoAtividade[]>([]);
+  public historico$ = this.historicoSubject.asObservable();
 
   constructor() {
     this.sessionService.userRole$.subscribe(role => {
-      this.loadMockDataForRole(role);
+      this.carregarMockParaPapel(role);
     });
   }
 
-  public markAsRead(id: string) {
-    const current = this.notificationsSubject.getValue();
-    const updated = current.map(n => (n.id === id ? { ...n, read: true } : n));
-    this.notificationsSubject.next(updated);
+  public marcarComoLida(id: string) {
+    const atual = this.notificacoesSubject.getValue();
+    const atualizado = atual.map(n => (n.id === id ? { ...n, lida: true } : n));
+    this.notificacoesSubject.next(atualizado);
   }
 
-  public markAllAsRead() {
-    const current = this.notificationsSubject.getValue();
-    const updated = current.map(n => ({ ...n, read: true }));
-    this.notificationsSubject.next(updated);
+  public marcarTodasComoLidas() {
+    const atual = this.notificacoesSubject.getValue();
+    const atualizado = atual.map(n => ({ ...n, lida: true }));
+    this.notificacoesSubject.next(atualizado);
   }
 
-  public getUnreadCount(): Observable<number> {
+  public buscarContagemNaoLidas(): Observable<number> {
     return new Observable<number>(observer => {
-      this.notifications$.subscribe(notifications => {
-        observer.next(notifications.filter(n => !n.read).length);
+      this.notificacoes$.subscribe(notificacoes => {
+        observer.next(notificacoes.filter(n => !n.lida).length);
       });
     });
   }
 
-  private loadMockDataForRole(role: Role | null) {
+  private carregarMockParaPapel(role: Role | null) {
     if (!role) {
-      this.notificationsSubject.next([]);
-      this.historySubject.next([]);
+      this.notificacoesSubject.next([]);
+      this.historicoSubject.next([]);
       return;
     }
 
     if (role === Role.ADMIN) {
-      this.notificationsSubject.next([
+      this.notificacoesSubject.next([
         {
           id: '1',
-          title: 'Nova ONG Cadastrada',
-          message: 'A ONG Anjos de Patas aguarda aprovação no sistema.',
-          date: 'Há 5 min',
-          read: false,
-          type: 'warning',
+          titulo: 'Nova ONG Cadastrada',
+          mensagem: 'A ONG Anjos de Patas aguarda aprovação no sistema.',
+          data: 'Há 5 min',
+          lida: false,
+          tipo: 'warning',
         },
         {
           id: '2',
-          title: 'Alerta de Sistema',
-          message: 'O servidor de imagens apresenta instabilidade temporária.',
-          date: 'Há 2 horas',
-          read: false,
-          type: 'error',
+          titulo: 'Alerta de Sistema',
+          mensagem: 'O servidor de imagens apresenta instabilidade temporária.',
+          data: 'Há 2 horas',
+          lida: false,
+          tipo: 'error',
         },
         {
           id: '3',
-          title: 'Relatório Mensal',
-          message: 'O relatório consolidado de adoções está pronto para download.',
-          date: 'Ontem',
-          read: true,
-          type: 'info',
+          titulo: 'Relatório Mensal',
+          mensagem: 'O relatório consolidado de adoções está pronto para download.',
+          data: 'Ontem',
+          lida: true,
+          tipo: 'info',
         },
       ]);
-      this.historySubject.next([
+      this.historicoSubject.next([
         {
           id: 'h1',
-          action: 'Aprovação de Petshop',
-          description: 'Você aprovou o cadastro do "Petshop Feliz".',
-          date: 'Hoje às 14:30',
-          icon: 'fas fa-check-circle',
-          type: 'system',
+          acao: 'Aprovação de Petshop',
+          descricao: 'Você aprovou o cadastro do "Petshop Feliz".',
+          data: 'Hoje às 14:30',
+          icone: 'fas fa-check-circle',
+          tipo: 'system',
         },
         {
           id: 'h2',
-          action: 'Acesso Administrativo',
-          description: 'Novo login detectado com suas credenciais.',
-          date: 'Hoje às 09:00',
-          icon: 'fas fa-sign-in-alt',
-          type: 'auth',
+          acao: 'Acesso Administrativo',
+          descricao: 'Novo login detectado com suas credenciais.',
+          data: 'Hoje às 09:00',
+          icone: 'fas fa-sign-in-alt',
+          tipo: 'auth',
         },
         {
           id: 'h3',
-          action: 'Atualização de Sistema',
-          description: 'Patch de segurança v1.2 aplicado com sucesso.',
-          date: 'Ontem',
-          icon: 'fas fa-wrench',
-          type: 'system',
+          acao: 'Atualização de Sistema',
+          descricao: 'Patch de segurança v1.2 aplicado com sucesso.',
+          data: 'Ontem',
+          icone: 'fas fa-wrench',
+          tipo: 'system',
         },
       ]);
     } else if (role === Role.ONG) {
-      this.notificationsSubject.next([
+      this.notificacoesSubject.next([
         {
           id: '1',
-          title: 'Nova Solicitação de Adoção',
-          message: 'Ana Silva solicitou a adoção da pet Jade.',
-          date: 'Há 10 min',
-          read: false,
-          type: 'success',
+          titulo: 'Nova Solicitação de Adoção',
+          mensagem: 'Ana Silva solicitou a adoção da pet Jade.',
+          data: 'Há 10 min',
+          lida: false,
+          tipo: 'success',
         },
-        { id: '2', title: 'Mensagem Recebida', message: 'Você tem uma nova mensagem de João.', date: 'Há 1 hora', read: false, type: 'info' },
+        { id: '2', titulo: 'Mensagem Recebida', mensagem: 'Você tem uma nova mensagem de João.', data: 'Há 1 hora', lida: false, tipo: 'info' },
         {
           id: '3',
-          title: 'Evento Aprovado',
-          message: 'Sua feira de adoção foi aprovada pela moderação.',
-          date: 'Ontem',
-          read: true,
-          type: 'success',
+          titulo: 'Evento Aprovado',
+          mensagem: 'Sua feira de adoção foi aprovada pela moderação.',
+          data: 'Ontem',
+          lida: true,
+          tipo: 'success',
         },
       ]);
-      this.historySubject.next([
+      this.historicoSubject.next([
         {
           id: 'h1',
-          action: 'Pet Cadastrado',
-          description: 'Você cadastrou o pet "Caramelo".',
-          date: 'Hoje às 10:15',
-          icon: 'fas fa-paw',
-          type: 'pet',
+          acao: 'Pet Cadastrado',
+          descricao: 'Você cadastrou o pet "Caramelo".',
+          data: 'Hoje às 10:15',
+          icone: 'fas fa-paw',
+          tipo: 'pet',
         },
         {
           id: 'h2',
-          action: 'Solicitação Respondida',
-          description: 'Você recusou a solicitação de Marcos.',
-          date: 'Ontem',
-          icon: 'fas fa-times-circle',
-          type: 'adoption',
+          acao: 'Solicitação Respondida',
+          descricao: 'Você recusou a solicitação de Marcos.',
+          data: 'Ontem',
+          icone: 'fas fa-times-circle',
+          tipo: 'adoption',
         },
         {
           id: 'h3',
-          action: 'Login Efetuado',
-          description: 'Acesso realizado pelo aplicativo MyBuddy.',
-          date: 'Ontem',
-          icon: 'fas fa-sign-in-alt',
-          type: 'auth',
+          acao: 'Login Efetuado',
+          descricao: 'Acesso realizado pelo aplicativo MyBuddy.',
+          data: 'Ontem',
+          icone: 'fas fa-sign-in-alt',
+          tipo: 'auth',
         },
       ]);
     } else if (role === Role.PETSHOP) {
-      this.notificationsSubject.next([
-        { id: '1', title: 'Novo Pedido', message: 'Pedido #4928 recebido no valor de R$ 145,00.', date: 'Há 2 min', read: false, type: 'success' },
+      this.notificacoesSubject.next([
+        { id: '1', titulo: 'Novo Pedido', mensagem: 'Pedido #4928 recebido no valor de R$ 145,00.', data: 'Há 2 min', lida: false, tipo: 'success' },
         {
           id: '2',
-          title: 'Estoque Baixo',
-          message: 'Ração Golden Adultos está com menos de 5 unidades.',
-          date: 'Há 3 horas',
-          read: false,
-          type: 'warning',
+          titulo: 'Estoque Baixo',
+          mensagem: 'Ração Golden Adultos está com menos de 5 unidades.',
+          data: 'Há 3 horas',
+          lida: false,
+          tipo: 'warning',
         },
-        { id: '3', title: 'Mensagem de Cliente', message: 'Carlos perguntou sobre a coleira refletiva.', date: 'Ontem', read: true, type: 'info' },
+        { id: '3', titulo: 'Mensagem de Cliente', mensagem: 'Carlos perguntou sobre a coleira refletiva.', data: 'Ontem', lida: true, tipo: 'info' },
       ]);
-      this.historySubject.next([
+      this.historicoSubject.next([
         {
           id: 'h1',
-          action: 'Produto Atualizado',
-          description: 'Preço atualizado para "Cama Pet G".',
-          date: 'Hoje às 11:20',
-          icon: 'fas fa-box',
-          type: 'system',
+          acao: 'Produto Atualizado',
+          descricao: 'Preço atualizado para "Cama Pet G".',
+          data: 'Hoje às 11:20',
+          icone: 'fas fa-box',
+          tipo: 'system',
         },
         {
           id: 'h2',
-          action: 'Pedido Enviado',
-          description: 'O pedido #4910 foi marcado como enviado.',
-          date: 'Ontem',
-          icon: 'fas fa-truck',
-          type: 'system',
+          acao: 'Pedido Enviado',
+          descricao: 'O pedido #4910 foi marcado como enviado.',
+          data: 'Ontem',
+          icone: 'fas fa-truck',
+          tipo: 'system',
         },
         {
           id: 'h3',
-          action: 'Login Efetuado',
-          description: 'Acesso realizado pelo painel do lojista.',
-          date: 'Ontem',
-          icon: 'fas fa-sign-in-alt',
-          type: 'auth',
+          acao: 'Login Efetuado',
+          descricao: 'Acesso realizado pelo painel do lojista.',
+          data: 'Ontem',
+          icone: 'fas fa-sign-in-alt',
+          tipo: 'auth',
         },
       ]);
     } else {
-      // Adotante
-      this.notificationsSubject.next([
+      
+      this.notificacoesSubject.next([
         {
           id: '1',
-          title: 'Adoção Aprovada!',
-          message: 'Parabéns, a ONG Cão Sem Dono aprovou sua solicitação para a Jade!',
-          date: 'Há 1 hora',
-          read: false,
-          type: 'success',
+          titulo: 'Adoção Aprovada!',
+          mensagem: 'Parabéns, a ONG Cão Sem Dono aprovou sua solicitação para a Jade!',
+          data: 'Há 1 hora',
+          lida: false,
+          tipo: 'success',
         },
-        { id: '2', title: 'Vacina Próxima', message: 'A vacina do Paçoca vence em 5 dias.', date: 'Há 4 horas', read: false, type: 'warning' },
+        { id: '2', titulo: 'Vacina Próxima', mensagem: 'A vacina do Paçoca vence em 5 dias.', data: 'Há 4 horas', lida: false, tipo: 'warning' },
         {
           id: '3',
-          title: 'Novo Pet Correspondente',
-          message: 'Um novo gatinho que combina com você está disponível.',
-          date: 'Ontem',
-          read: true,
-          type: 'info',
+          titulo: 'Novo Pet Correspondente',
+          mensagem: 'Um novo gatinho que combina com você está disponível.',
+          data: 'Ontem',
+          lida: true,
+          tipo: 'info',
         },
       ]);
-      this.historySubject.next([
+      this.historicoSubject.next([
         {
           id: 'h1',
-          action: 'Favorito Adicionado',
-          description: 'Você adicionou o pet "Thor" aos favoritos.',
-          date: 'Hoje às 15:40',
-          icon: 'fas fa-heart',
-          type: 'pet',
+          acao: 'Favorito Adicionado',
+          descricao: 'Você adicionou o pet "Thor" aos favoritos.',
+          data: 'Hoje às 15:40',
+          icone: 'fas fa-heart',
+          tipo: 'pet',
         },
         {
           id: 'h2',
-          action: 'Solicitação Enviada',
-          description: 'Você solicitou a adoção da "Jade".',
-          date: 'Ontem',
-          icon: 'fas fa-paper-plane',
-          type: 'adoption',
+          acao: 'Solicitação Enviada',
+          descricao: 'Você solicitou a adoção da "Jade".',
+          data: 'Ontem',
+          icone: 'fas fa-paper-plane',
+          tipo: 'adoption',
         },
         {
           id: 'h3',
-          action: 'Perfil Atualizado',
-          description: 'Você atualizou sua foto de perfil.',
-          date: 'Semana passada',
-          icon: 'fas fa-user-edit',
-          type: 'system',
+          acao: 'Perfil Atualizado',
+          descricao: 'Você atualizou sua foto de perfil.',
+          data: 'Semana passada',
+          icone: 'fas fa-user-edit',
+          tipo: 'system',
         },
       ]);
     }

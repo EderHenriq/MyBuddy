@@ -1,21 +1,21 @@
-<div class="loja-card" (click)="storeClick.emit()">
-  <img [src]="logoUrl" [alt]="storeName" class="loja-logo" />
+<div class="loja-card" (click)="cliqueLoja.emit()">
+  <img [src]="urlLogo" [alt]="nomeLoja" class="loja-logo" />
   <div class="loja-info">
-    <h4 class="loja-name" [title]="storeName">{{ storeName }}</h4>
+    <h4 class="loja-name" [title]="nomeLoja">{{ nomeLoja }}</h4>
     <div class="loja-stats">
       <span class="rating">
         <i class="fas fa-star"></i>
-        {{ rating | number: '1.1-1' }}
+        {{ avaliacao | number: '1.1-1' }}
       </span>
       <span class="dot">•</span>
-      <span class="delivery-time">{{ deliveryTime }}</span>
-      @if (deliveryFee !== undefined) {
+      <span class="delivery-time">{{ tempoEntrega }}</span>
+      @if (taxaEntrega !== undefined) {
         <span class="dot">•</span>
         <span class="delivery-fee">
-          @if (deliveryFee === 0) {
+          @if (taxaEntrega === 0) {
             Grátis
           } @else {
-            {{ deliveryFee | currency: 'BRL' : 'symbol' : '1.2-2' }}
+            {{ taxaEntrega | currency: 'BRL' : 'symbol' : '1.2-2' }}
           }
         </span>
       }

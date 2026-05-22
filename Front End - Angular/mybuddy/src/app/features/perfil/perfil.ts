@@ -62,16 +62,21 @@ interface ProfileUser {
 }
 
 interface ProfilePet {
-  name: string;
-  age: string;
-  breed: string;
-  sex: string;
-  vaccinated: string;
-  imageUrl: string;
-  badgeText: string;
-  badgeType: 'adoption' | 'adopted' | '';
-  isFavorite: boolean;
-  showTopHeart: boolean;
+  id: number;
+  nome: string;
+  idade: number;
+  raca: string;
+  sexo: string;
+  vacinado: boolean;
+  castrado: boolean;
+  porte: string;
+  cor: string;
+  pelagem: string;
+  urlImagem: string;
+  textoBadge: string;
+  tipoBadge: 'adoption' | 'adopted' | '';
+  favorito: boolean;
+  mostrarCoracaoTop: boolean;
 }
 
 interface ProfileMessage {
@@ -114,7 +119,7 @@ interface ProfileRoleConfig {
 }
 
 import { NotificationService } from '@core/services/notification.service';
-import { ActivityHistory } from '@core/models/notification.model';
+import { HistoricoAtividade } from '@core/models/notification.model';
 
 @Component({
   selector: 'app-perfil',
@@ -130,7 +135,7 @@ export class Perfil implements OnInit {
   private readonly uploadService = inject(UploadService);
   private readonly route = inject(ActivatedRoute);
 
-  readonly history$ = this.notificationService.history$;
+  readonly historico$ = this.notificationService.historico$;
 
   readonly activeTab = signal<ProfileTab>('inicio');
   readonly isEditing = signal(false);
@@ -219,57 +224,114 @@ export class Perfil implements OnInit {
     { id: 'configuracoes', label: 'Configurações', icon: 'fas fa-cog' },
   ];
 
-  readonly buddies = signal<ProfilePet[]>([
+  readonly pets = signal<ProfilePet[]>([
     {
-      name: 'Paçoca',
-      age: '5 anos',
-      breed: 'Vira-lata',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=500',
-      badgeText: 'Em processo de adoção',
-      badgeType: 'adoption',
-      isFavorite: true,
-      showTopHeart: false,
+      id: 1,
+      nome: 'Paçoca',
+      raca: 'SRD',
+      sexo: 'Macho',
+      idade: 2,
+      vacinado: true,
+      castrado: true,
+      porte: 'Médio',
+      cor: 'Caramelo',
+      pelagem: 'Curta',
+      urlImagem: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=500',
+      textoBadge: 'Adotado',
+      tipoBadge: 'adopted',
+      favorito: true,
+      mostrarCoracaoTop: false,
     },
     {
-      name: 'Jade',
-      age: '1 ano',
-      breed: 'Vira-lata',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=500',
-      badgeText: 'Adotado',
-      badgeType: 'adopted',
-      isFavorite: true,
-      showTopHeart: false,
+      id: 2,
+      nome: 'Luna',
+      raca: 'Siamês',
+      sexo: 'Fêmea',
+      idade: 1,
+      vacinado: true,
+      castrado: false,
+      porte: 'Pequeno',
+      cor: 'Cinza',
+      pelagem: 'Curta',
+      urlImagem: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=500',
+      textoBadge: 'Aguardando Aprovação',
+      tipoBadge: 'adoption',
+      favorito: true,
+      mostrarCoracaoTop: false,
     },
   ]);
 
-  readonly favorites = signal<ProfilePet[]>([
+  readonly favoritePets = signal<ProfilePet[]>([
     {
-      name: 'Nevasca',
-      age: '3 anos',
-      breed: 'Persa',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1618826411640-d6df44dd3f7a?auto=format&fit=crop&q=80&w=500',
-      badgeText: '',
-      badgeType: '',
-      isFavorite: true,
-      showTopHeart: true,
+      id: 3,
+      nome: 'Thor',
+      raca: 'Golden Retriever',
+      sexo: 'Macho',
+      idade: 0,
+      vacinado: false,
+      castrado: false,
+      porte: 'Grande',
+      cor: 'Dourado',
+      pelagem: 'Longa',
+      urlImagem: 'https://images.unsplash.com/photo-1618826411640-d6df44dd3f7a?auto=format&fit=crop&q=80&w=500',
+      textoBadge: 'Disponível',
+      tipoBadge: '',
+      favorito: true,
+      mostrarCoracaoTop: true,
     },
     {
-      name: 'Thor',
-      age: '4 anos',
-      breed: 'Border Collie',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=500',
-      badgeText: '',
-      badgeType: '',
-      isFavorite: true,
-      showTopHeart: true,
+      id: 4,
+      nome: 'Mia',
+      raca: 'Persa',
+      sexo: 'Fêmea',
+      idade: 2,
+      vacinado: true,
+      castrado: true,
+      porte: 'Pequeno',
+      cor: 'Branco',
+      pelagem: 'Longa',
+      urlImagem: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=500',
+      textoBadge: 'Disponível',
+      tipoBadge: '',
+      favorito: true,
+      mostrarCoracaoTop: true,
+    },
+  ]);
+
+  readonly businessPets = signal<ProfilePet[]>([
+    {
+      id: 1,
+      nome: 'Paçoca',
+      raca: 'SRD',
+      sexo: 'Macho',
+      idade: 2,
+      vacinado: true,
+      castrado: true,
+      porte: 'Médio',
+      cor: 'Caramelo',
+      pelagem: 'Curta',
+      urlImagem: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=500',
+      textoBadge: 'Disponível',
+      tipoBadge: '',
+      favorito: false,
+      mostrarCoracaoTop: false,
+    },
+    {
+      id: 4,
+      nome: 'Mia',
+      raca: 'Persa',
+      sexo: 'Fêmea',
+      idade: 2,
+      vacinado: true,
+      castrado: true,
+      porte: 'Pequeno',
+      cor: 'Branco',
+      pelagem: 'Longa',
+      urlImagem: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=500',
+      textoBadge: 'Disponível',
+      tipoBadge: '',
+      favorito: false,
+      mostrarCoracaoTop: false,
     },
   ]);
 
@@ -365,8 +427,8 @@ export class Perfil implements OnInit {
   });
 
   readonly stats = computed(() => [
-    { label: this.canManagePets() ? 'Pets gerenciados' : 'Buddies acompanhados', value: this.buddies().length },
-    { label: 'Favoritos', value: this.favorites().length },
+    { label: this.isBusinessProfile() ? 'Pets associados' : 'Buddies acompanhados', value: this.pets().length },
+    { label: 'Favoritos', value: this.favoritePets().length },
     { label: 'Mensagens não lidas', value: this.messages().filter(message => message.unread).length },
   ]);
 
@@ -383,13 +445,13 @@ export class Perfil implements OnInit {
       }
     });
 
-    const profile = this.authService.currentUser();
+    const profile = this.authService.usuarioAtual();
     if (profile) {
       this.setupProfile(profile);
       return;
     }
 
-    this.authService.getProfile().subscribe(data => {
+    this.authService.obterPerfil().subscribe((data: any) => {
       this.setupProfile(data);
     });
   }
@@ -429,7 +491,7 @@ export class Perfil implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout();
+    this.authService.sair();
   }
 
   saveProfile(): void {
@@ -493,10 +555,10 @@ export class Perfil implements OnInit {
     };
 
     this.authService
-      .updateProfile(payload)
+      .atualizarPerfil(payload)
       .pipe(finalize(() => this.isSaving.set(false)))
       .subscribe({
-        next: updatedProfile => {
+        next: (updatedProfile: any) => {
           this.setupProfile(updatedProfile);
           this.isEditing.set(false);
           this.saveMessage.set('Perfil atualizado com sucesso.');
@@ -508,7 +570,7 @@ export class Perfil implements OnInit {
   }
 
   removeFavorite(petName: string): void {
-    this.favorites.update(pets => pets.filter(pet => pet.name !== petName));
+    this.favoritePets.update(pets => pets.filter(pet => pet.nome !== petName));
   }
 
   markAllMessagesAsRead(): void {

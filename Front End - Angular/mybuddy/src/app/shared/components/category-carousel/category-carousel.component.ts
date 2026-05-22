@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 export interface CategoriaVisual {
   id: number;
-  name: string;
-  imageUrl: string;
+  nome: string;
+  urlImagem: string;
 }
 
 @Component({
@@ -15,6 +15,6 @@ export interface CategoriaVisual {
   styleUrl: './category-carousel.component.scss',
 })
 export class CategoryCarouselComponent {
-  @Input() categories: CategoriaVisual[] = [];
-  @Output() categoryClick = new EventEmitter<CategoriaVisual>();
+  @Input() categorias: CategoriaVisual[] = [];
+  @Output() cliqueCategoria = new EventEmitter<CategoriaVisual>();
 }

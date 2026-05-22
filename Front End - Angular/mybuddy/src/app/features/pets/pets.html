@@ -1,7 +1,7 @@
-<main class="adoption-page" appInfiniteScroll (scrolled)="onLoadMore()">
-  <section class="search-panel" aria-label="Busca e filtros principais" [formGroup]="filterForm">
+<main class="adoption-page" appInfiniteScroll (scrolled)="aoCarregarMais()">
+  <section class="search-panel" aria-label="Busca e filtros principais" [formGroup]="formularioFiltro">
     <label class="search-field">
-      <input type="search" placeholder="Buscar pets" formControlName="search" />
+      <input type="search" placeholder="Buscar pets" formControlName="pesquisa" />
       <span class="material-icons">search</span>
     </label>
 
@@ -29,14 +29,14 @@
 
   <section class="adoption-content">
     <aside class="filters-card" aria-label="Filtros de pets">
-      @for (group of filterGroups; track group.title; let last = $last) {
+      @for (grupo of gruposFiltro; track grupo.titulo; let last = $last) {
         <div class="filter-group">
-          <h2>{{ group.title }}</h2>
-          <div class="filter-options" [formGroup]="filterForm">
-            @for (option of group.options; track option) {
+          <h2>{{ grupo.titulo }}</h2>
+          <div class="filter-options" [formGroup]="formularioFiltro">
+            @for (opcao of grupo.opcoes; track opcao) {
               <label class="filter-option">
-                <input type="checkbox" [formControlName]="option" />
-                <span>{{ option }}</span>
+                <input type="checkbox" [formControlName]="opcao" />
+                <span>{{ opcao }}</span>
               </label>
             }
           </div>
@@ -48,7 +48,7 @@
     </aside>
 
     <div class="pets-area">
-      @if (isLoading()) {
+      @if (carregando()) {
         <div
           class="loading-state"
           style="
@@ -66,24 +66,26 @@
         </div>
       } @else {
         <div class="pets-grid">
-          @for (pet of pets(); track pet.name) {
+          @for (pet of animais(); track pet.nome) {
             <app-card-pet
-              [imageUrl]="pet.imageUrl"
-              [name]="pet.name"
-              [age]="pet.age"
-              [breed]="pet.breed"
-              [sex]="pet.sex"
-              [vaccinated]="pet.vaccinated"
-              [isFavorite]="pet.isFavorite"
-              (favoriteClick)="toggleFavorite(pet)"
+              [urlImagem]="pet.fotosUrls && pet.fotosUrls.length > 0 ? (pet.fotosUrls[0].startsWith('http') ? pet.fotosUrls[0] : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]) : '/assets/logo/logo-provisoria.png'"
+              [nome]="pet.nome || 'Sem Nome'"
+              [idade]="pet.idade || 0"
+              [raca]="pet.raca || 'Não informada'"
+              [sexo]="pet.sexo || 'Não informado'"
+              [vacinado]="pet.vacinado"
+              [castrado]="pet.castrado"
+              [porte]="pet.porte"
+              [cor]="pet.cor"
+              [pelagem]="pet.pelagem"
+              [favorito]="pet.favorito"
+              (cliqueFavorito)="alternarFavorito(pet)"
             ></app-card-pet>
           }
         </div>
       }
 
-      <!-- O carregamento contínuo acontece via Infinite Scroll -->
       <div class="infinite-scroll-loader">
-        <p>Rode para baixo para carregar mais pets...</p>
       </div>
     </div>
   </section>

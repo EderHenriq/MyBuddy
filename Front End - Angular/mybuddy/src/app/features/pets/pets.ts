@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
 import { Footer } from '@shared/components/footer/footer';
@@ -8,19 +8,23 @@ import { InfiniteScrollDirective } from '@shared/directives/infinite-scroll.dire
 import { DebounceDirective } from '@shared/directives/debounce.directive';
 import { PetService } from '@core/services/pet.service';
 
-interface PetListItem {
-  name: string;
-  age: string;
-  breed: string;
-  sex: string;
-  vaccinated: string;
-  imageUrl: string;
-  isFavorite: boolean;
+interface ItemListaPet {
+  nome: string;
+  idade: number;
+  raca: string;
+  sexo: string;
+  vacinado: boolean;
+  castrado: boolean;
+  porte: string;
+  cor: string;
+  pelagem: string;
+  fotosUrls?: string[];
+  favorito: boolean;
 }
 
-interface FilterGroup {
-  title: string;
-  options: string[];
+interface GrupoFiltro {
+  titulo: string;
+  opcoes: string[];
 }
 
 @Component({
@@ -34,83 +38,80 @@ export class Pets implements OnInit {
   private readonly petService = inject(PetService);
   private readonly fb = inject(FormBuilder);
 
-  readonly isLoading = signal<boolean>(true);
-  readonly pets = signal<PetListItem[]>([]);
+  readonly carregando = signal<boolean>(true);
+  readonly animais = signal<ItemListaPet[]>([]);
 
-  readonly filterGroups: FilterGroup[] = [
+  readonly gruposFiltro: GrupoFiltro[] = [
     {
-      title: 'Espécie',
-      options: ['Cachorro', 'Coelho', 'Gato', 'Pássaro'],
+      titulo: 'Espécie',
+      opcoes: ['Cachorro', 'Coelho', 'Gato', 'Pássaro'],
     },
     {
-      title: 'Sexo',
-      options: ['Fêmea', 'Macho'],
+      titulo: 'Sexo',
+      opcoes: ['Fêmea', 'Macho'],
     },
     {
-      title: 'Idade',
-      options: ['Filhote (0-1 ano)', 'Jovem (1-3 anos)', 'Adulto (3-7 anos)', 'Idoso (+8 anos)'],
+      titulo: 'Idade',
+      opcoes: ['Filhote (0-1 ano)', 'Jovem (1-3 anos)', 'Adulto (3-7 anos)', 'Idoso (+8 anos)'],
     },
     {
-      title: 'Porte',
-      options: ['Pequeno', 'Médio', 'Grande'],
+      titulo: 'Porte',
+      opcoes: ['Pequeno', 'Médio', 'Grande'],
     },
     {
-      title: 'Características',
-      options: ['Vacinado', 'Castrado', 'Vive com outros pets'],
+      titulo: 'Características',
+      opcoes: ['Vacinado', 'Castrado', 'Vive com outros pets'],
     },
   ];
 
-  filterForm = this.fb.group({
-    search: ['']
+  formularioFiltro: FormGroup = this.fb.group({
+    pesquisa: ['']
   });
 
   constructor() {
-    this.filterGroups.forEach(group => {
-      group.options.forEach(option => {
-        this.filterForm.addControl(option, this.fb.control(false));
+    this.gruposFiltro.forEach(grupo => {
+      grupo.opcoes.forEach(opcao => {
+        this.formularioFiltro.addControl(opcao, this.fb.control(false));
       });
     });
   }
 
   ngOnInit(): void {
-    this.loadPets();
+    this.carregarAnimais();
 
-    this.filterForm.valueChanges
+    this.formularioFiltro.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe(values => {
-        console.log('[Página de Pets] Filtros alterados. Refazendo busca...', values);
-        this.isLoading.set(true);
+      .subscribe(valores => {
+        console.log('[Página de Pets] Filtros alterados. Refazendo busca...', valores);
+        this.carregando.set(true);
         setTimeout(() => {
-          // Apenas simula o recarregamento na interface por enquanto
-          this.isLoading.set(false);
+          this.carregando.set(false);
         }, 800);
       });
   }
 
-  private loadPets(): void {
-    this.isLoading.set(true);
-    this.petService.getAll().subscribe({
-      next: data => {
-        this.pets.set(data);
-        this.isLoading.set(false);
+  private carregarAnimais(): void {
+    this.carregando.set(true);
+    this.petService.buscarTodos().subscribe({
+      next: (dados: any) => {
+        this.animais.set(dados.content || []);
+        this.carregando.set(false);
       },
-      error: err => {
-        console.error('Erro ao buscar pets:', err);
-        this.isLoading.set(false);
+      error: erro => {
+        console.error('Erro ao buscar pets:', erro);
+        this.carregando.set(false);
       },
     });
   }
 
-  toggleFavorite(pet: PetListItem): void {
-    pet.isFavorite = !pet.isFavorite;
+  alternarFavorito(pet: ItemListaPet): void {
+    pet.favorito = !pet.favorito;
   }
 
-  onSearch(term: string): void {
-    // Agora é controlado pelo filterForm.valueChanges
+  aoPesquisar(termo: string): void {
   }
 
-  onLoadMore(): void {
+  aoCarregarMais(): void {
     console.log(`[Página de Pets] Chegou ao fim da tela! Carregando mais pets...`);
-    // Futuro: Fazer request para carregar a próxima página e fazer append no array 'pets'
   }
 }

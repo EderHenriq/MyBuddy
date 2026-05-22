@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { InteresseAdocao } from '../../../core/models/interesse-adocao.model';
 import { OngService } from '../../../core/services/ong.service';
-import { SolicitacaoAdocao } from '../../../core/models/ong.model';
 import { DebounceDirective } from '../../../shared/directives/debounce.directive';
 import { PaginatorComponent } from '../../../shared/components/paginator/paginator.component';
 
@@ -13,14 +13,14 @@ import { PaginatorComponent } from '../../../shared/components/paginator/paginat
   styleUrl: './solicitacoes.scss',
 })
 export class Solicitacoes implements OnInit {
-  pedidos: SolicitacaoAdocao[] = [];
+  pedidos: InteresseAdocao[] = [];
   private ongService = inject(OngService);
 
   currentPage = 1;
   totalPages = 5;
 
   ngOnInit() {
-    this.ongService.getSolicitacoes().subscribe(data => {
+    this.ongService.buscarSolicitacoes().subscribe(data => {
       this.pedidos = data;
     });
   }

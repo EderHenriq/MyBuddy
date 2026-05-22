@@ -3,9 +3,9 @@ package com.Mybuddy.Myb.Service; // Declara o pacote onde esta classe de serviç
 import com.Mybuddy.Myb.DTO.InteresseAdocaoMapper; // Importa o mapper para converter entidades em DTOs de resposta.
 import com.Mybuddy.Myb.DTO.InteresseResponse; // Importa o DTO de resposta para interesses de adoção.
 import com.Mybuddy.Myb.Model.*; // Importa todas as classes de modelo (entidades), incluindo InteresseAdocao, Usuario, Pet, StatusInteresse, StatusAdocao.
-import com.Mybuddy.Myb.Repository.InteresseAdocaoRepository; // Importa o repositório para a entidade InteresseAdocao.
-import com.Mybuddy.Myb.Repository.PetRepository; // Importa o repositório para a entidade Pet.
-import com.Mybuddy.Myb.Repository.UsuarioRepository; // Importa o repositório para a entidade Usuario.
+import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository; // Importa o repositório para a entidade InteresseAdocao.
+import com.Mybuddy.Myb.Repository.mongo.PetRepository; // Importa o repositório para a entidade Pet.
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository; // Importa o repositório para a entidade Usuario.
 import org.springframework.stereotype.Service; // Importa a anotação @Service do Spring.
 import org.springframework.transaction.annotation.Transactional; // Importa a anotação @Transactional do Spring.
 

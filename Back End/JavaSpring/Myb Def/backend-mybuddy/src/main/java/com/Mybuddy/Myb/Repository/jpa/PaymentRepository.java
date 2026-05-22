@@ -1,14 +1,16 @@
-package com.Mybuddy.Myb.Repository;
+package com.Mybuddy.Myb.Repository.jpa;
+
+import com.Mybuddy.Myb.Model.Payment;
+import com.Mybuddy.Myb.Model.PaymentStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import com.Mybuddy.Myb.Model.Payment;
-import com.Mybuddy.Myb.Model.PaymentStatus;
-
+/**
+ * Repositório JPA para a entidade Payment (PostgreSQL).
+ */
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     

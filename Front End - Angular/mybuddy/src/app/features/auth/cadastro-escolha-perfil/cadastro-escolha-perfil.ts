@@ -168,7 +168,7 @@ export class CadastroEscolhaPerfil {
       payload.organizacaoDescricao = values.organizacaoDescricao;
     }
 
-    this.authService.register(payload).subscribe({
+    this.authService.registrar(payload).subscribe({
       next: () => {
         this.isLoading.set(false);
         this.successMessage.set('Cadastro realizado com sucesso! Redirecionando para o login...');
@@ -176,7 +176,7 @@ export class CadastroEscolhaPerfil {
           this.router.navigate(['/auth/login']);
         }, 2000);
       },
-      error: err => {
+      error: (err: any) => {
         this.isLoading.set(false);
         this.errorMessage.set(err.error?.message || 'Erro ao realizar cadastro. Verifique os dados e tente novamente.');
       },

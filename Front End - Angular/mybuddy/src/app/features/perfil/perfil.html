@@ -276,18 +276,18 @@
             }
           </div>
           <div class="pets-grid">
-            @for (pet of buddies(); track pet.name) {
+            @for (pet of (isBusinessProfile() ? businessPets() : pets()); track pet.nome) {
               <app-card-pet
-                [imageUrl]="pet.imageUrl"
-                [name]="pet.name"
-                [age]="pet.age"
-                [breed]="pet.breed"
-                [sex]="pet.sex"
-                [vaccinated]="pet.vaccinated"
-                [badgeText]="pet.badgeText"
-                [badgeType]="pet.badgeType"
-                [isFavorite]="pet.isFavorite"
-                [showTopHeart]="pet.showTopHeart"
+                [urlImagem]="pet.urlImagem"
+                [nome]="pet.nome"
+                [idade]="pet.idade"
+                [raca]="pet.raca"
+                [sexo]="pet.sexo"
+                [vacinado]="pet.vacinado"
+                [textoBadge]="pet.textoBadge"
+                [tipoBadge]="pet.tipoBadge"
+                [favorito]="pet.favorito"
+                [mostrarCoracaoTop]="pet.mostrarCoracaoTop"
               ></app-card-pet>
             }
           </div>
@@ -301,19 +301,19 @@
             <h2>Pets Favoritados</h2>
           </div>
           <div class="pets-grid">
-            @for (pet of favorites(); track pet.name) {
+            @for (pet of favoritePets(); track pet.nome) {
               <app-card-pet
-                [imageUrl]="pet.imageUrl"
-                [name]="pet.name"
-                [age]="pet.age"
-                [breed]="pet.breed"
-                [sex]="pet.sex"
-                [vaccinated]="pet.vaccinated"
-                [badgeText]="pet.badgeText"
-                [badgeType]="pet.badgeType"
-                [isFavorite]="pet.isFavorite"
-                [showTopHeart]="pet.showTopHeart"
-                (favoriteClick)="removeFavorite(pet.name)"
+                [urlImagem]="pet.urlImagem"
+                [nome]="pet.nome"
+                [idade]="pet.idade"
+                [raca]="pet.raca"
+                [sexo]="pet.sexo"
+                [vacinado]="pet.vacinado"
+                [textoBadge]="pet.textoBadge"
+                [tipoBadge]="pet.tipoBadge"
+                [favorito]="pet.favorito"
+                [mostrarCoracaoTop]="pet.mostrarCoracaoTop"
+                (cliqueFavorito)="removeFavorite(pet.nome)"
               ></app-card-pet>
             }
           </div>
@@ -420,23 +420,23 @@
           </div>
 
           <div class="timeline-container">
-            @if ((history$ | async)?.length === 0) {
+            @if ((historico$ | async)?.length === 0) {
               <div class="empty-state">
                 <i class="fas fa-history"></i>
                 <p>Nenhuma atividade registrada.</p>
               </div>
             }
-            @for (item of history$ | async; track item.id) {
+            @for (item of historico$ | async; track item.id) {
               <div class="timeline-item">
-                <div class="timeline-icon" [ngClass]="item.type">
-                  <i [class]="item.icon"></i>
+                <div class="timeline-icon" [ngClass]="item.tipo">
+                  <i [class]="item.icone"></i>
                 </div>
                 <div class="timeline-content">
                   <div class="timeline-header">
-                    <h4>{{ item.action }}</h4>
-                    <span class="timeline-date">{{ item.date }}</span>
+                    <h4>{{ item.acao }}</h4>
+                    <span class="timeline-date">{{ item.data }}</span>
                   </div>
-                  <p>{{ item.description }}</p>
+                  <p>{{ item.descricao }}</p>
                 </div>
               </div>
             }

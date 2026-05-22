@@ -29,7 +29,7 @@ export class PaymentService {
   private api = inject(ApiService);
 
   createPayment(request: PaymentRequest): Observable<PaymentResponse> {
-    return this.api.post<PaymentResponse>('/payments', request);
+    return this.api.post<PaymentResponse>('payments/create', request);
   }
 
   getPayment(id: number): Observable<PaymentResponse> {

@@ -17,10 +17,10 @@ export class EventosOng implements OnInit {
   private ongService = inject(OngService);
 
   currentPage = 1;
-  totalPages = 13; // Simulado como no print da tarefa
+  totalPages = 13;
 
   ngOnInit() {
-    this.ongService.getEventos().subscribe(data => {
+    this.ongService.buscarEventos().subscribe(data => {
       this.eventos = data;
     });
   }

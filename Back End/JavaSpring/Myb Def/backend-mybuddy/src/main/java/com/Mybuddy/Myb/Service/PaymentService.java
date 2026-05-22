@@ -10,8 +10,8 @@ import com.Mybuddy.Myb.DTO.PaymentRequestDTO;
 import com.Mybuddy.Myb.Model.Payment;
 import com.Mybuddy.Myb.Model.PaymentStatus;
 import com.Mybuddy.Myb.Model.Usuario;
-import com.Mybuddy.Myb.Repository.PaymentRepository;
-import com.Mybuddy.Myb.Repository.PetRepository;
+import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
+import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
@@ -56,8 +56,8 @@ public class PaymentService {
         Preference preference = client.create(preferenceRequest);
 
         Payment payment = new Payment();
-        payment.setUsuario(usuario);
-        payment.setPet(pet);
+        payment.setUsuarioId(usuario.getId());
+        payment.setPetId(pet != null ? pet.getId() : null);
         payment.setAmount(request.amount());
         payment.setMpPreferenceId(preference.getId());
 

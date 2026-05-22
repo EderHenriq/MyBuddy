@@ -1,52 +1,56 @@
 <div class="pet-card">
-  <div class="pet-image" [style.backgroundImage]="'url(' + imageUrl + ')'">
-    @if (badgeText) {
-      <span class="pet-badge" [ngClass]="badgeType">{{ badgeText }}</span>
+  <div class="pet-image" [style.backgroundImage]="'url(' + urlImagem + ')'">
+    @if (textoBadge) {
+      <span class="pet-badge" [ngClass]="tipoBadge">{{ textoBadge }}</span>
     }
-    @if (showTopHeart) {
+    @if (mostrarCoracaoTop) {
       <span class="top-heart">
         <i class="fas fa-heart"></i>
       </span>
     }
   </div>
   <div class="pet-content">
-    <h3 class="pet-name">{{ name }}</h3>
+    <h3 class="pet-name">{{ nome }}</h3>
     <div class="pet-details">
       <span class="detail-item">
         <strong>Idade:</strong>
-        {{ age }}
+        {{ idade }} anos
       </span>
       <span class="detail-item">
         <strong>Raça:</strong>
-        {{ breed }}
+        {{ raca }}
       </span>
       <span class="detail-item">
         <strong>Sexo:</strong>
-        {{ sex }}
+        {{ sexo }}
       </span>
       <span class="detail-item">
         <strong>Vacinado:</strong>
-        {{ vaccinated }}
+        {{ vacinado ? 'Sim' : 'Não' }}
+      </span>
+      <span class="detail-item">
+        <strong>Castrado:</strong>
+        {{ castrado ? 'Sim' : 'Não' }}
       </span>
     </div>
     <div class="pet-actions">
-      @if (ongMode) {
-        <button class="action-btn edit-btn" (click)="editClick.emit()">
+      @if (modoOng) {
+        <button class="action-btn edit-btn" (click)="cliqueEditar.emit()">
           <i class="fas fa-edit"></i>
           Editar
         </button>
-        <button class="action-btn delete-btn" (click)="deleteClick.emit()">
+        <button class="action-btn delete-btn" (click)="cliqueDeletar.emit()">
           <i class="fas fa-trash-alt"></i>
           Remover
         </button>
       } @else {
-        <a class="info-link" (click)="openModal()">Mais Informações &rarr;</a>
+        <a class="info-link" (click)="abrirModal()">Mais Informações &rarr;</a>
         <div style="display: flex; gap: 0.5rem">
-          <button class="favorite-btn" (click)="sharePet()" aria-label="Compartilhar">
+          <button class="favorite-btn" (click)="compartilharPet()" aria-label="Compartilhar">
             <i class="fas fa-share-nodes"></i>
           </button>
-          <button class="favorite-btn" [class.active]="isFavorite" (click)="favoriteClick.emit()">
-            <i class="fa-heart" [ngClass]="isFavorite ? 'fas' : 'far'"></i>
+          <button class="favorite-btn" [class.active]="favorito" (click)="cliqueFavorito.emit()">
+            <i class="fa-heart" [ngClass]="favorito ? 'fas' : 'far'"></i>
           </button>
         </div>
       }
@@ -55,45 +59,57 @@
 </div>
 
 <app-modal
-  [(visible)]="isModalVisible"
-  [title]="'Sobre o ' + name"
+  [(visible)]="modalVisivel"
+  [title]="'Sobre o ' + nome"
   [width]="'550px'"
   [showFooter]="true"
   [confirmLabel]="'Quero Adotar'"
   [cancelLabel]="'Fechar'"
   [backdropBlur]="true"
-  (confirm)="handleAdopt()"
+  (confirm)="processarAdocao()"
 >
   <div class="pet-modal-content">
     <div class="modal-image-wrapper">
-      <img [src]="imageUrl" [alt]="name" class="modal-image" />
+      <img [src]="urlImagem" [alt]="nome" class="modal-image" />
     </div>
 
     <div class="modal-info">
-      <h3>{{ name }}</h3>
+      <h3>{{ nome }}</h3>
 
       <div class="modal-tags">
         <span class="tag">
           <strong>Idade:</strong>
-          {{ age }}
+          {{ idade }} anos
         </span>
         <span class="tag">
           <strong>Raça:</strong>
-          {{ breed }}
+          {{ raca }}
         </span>
         <span class="tag">
           <strong>Sexo:</strong>
-          {{ sex }}
+          {{ sexo }}
+        </span>
+        <span class="tag">
+          <strong>Porte:</strong>
+          {{ porte }}
+        </span>
+        <span class="tag">
+          <strong>Cor:</strong>
+          {{ cor }}
         </span>
         <span class="tag">
           <strong>Vacinado:</strong>
-          {{ vaccinated }}
+          {{ vacinado ? 'Sim' : 'Não' }}
+        </span>
+        <span class="tag">
+          <strong>Castrado:</strong>
+          {{ castrado ? 'Sim' : 'Não' }}
         </span>
       </div>
 
       <div class="modal-description">
         <h4>Apresentação</h4>
-        <p>{{ description }}</p>
+        <p>{{ descricao }}</p>
       </div>
     </div>
   </div>

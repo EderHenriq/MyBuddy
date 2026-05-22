@@ -13,7 +13,7 @@
   font-weight: 800;
 }
 
-// Global button styles
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -43,9 +43,9 @@
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// SECTION 1: HERO (Mobile-First)
-// ═══════════════════════════════════════════════════════════════
+
+
+
 .hero-section {
   position: relative;
   background-color: #3d3142;
@@ -167,10 +167,10 @@
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// SECTION 2: SERVICES
-// ═══════════════════════════════════════════════════════════════
-// Shared Section Header Style
+
+
+
+
 .section-header {
   text-align: center;
   margin-bottom: 40px;
@@ -211,7 +211,7 @@
   }
 
   .services-grid {
-    // Force recompilation with the fixed mixin
+    
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -269,9 +269,9 @@
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// SECTION 3: PARTNERS
-// ═══════════════════════════════════════════════════════════════
+
+
+
 .partners-section {
   background-color: #f1f3f5;
   padding: 40px 20px;
@@ -314,9 +314,9 @@
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// SECTION 4: PETS CAROUSEL
-// ═══════════════════════════════════════════════════════════════
+
+
+
 .pets-section {
   padding: 60px 20px;
   background-color: #fafafa;
@@ -439,9 +439,9 @@
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// SECTION 5: ADOPTION FAIRS & MAP
-// ═══════════════════════════════════════════════════════════════
+
+
+
 .map-section {
   padding: 60px 20px;
   background-color: #ffffff;
@@ -533,9 +533,9 @@
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// SECTION 6: FAQ ACCORDION
-// ═══════════════════════════════════════════════════════════════
+
+
+
 .faq-section {
   padding: 60px 20px 80px 20px;
   background-color: #fafafa;
@@ -656,7 +656,7 @@
   }
 }
 
-// Bounce animation for map pin
+
 @keyframes bounce {
   0%, 100% {
     transform: translateY(0);

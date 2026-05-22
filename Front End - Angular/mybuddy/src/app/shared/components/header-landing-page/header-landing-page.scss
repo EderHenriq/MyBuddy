@@ -2,7 +2,7 @@
 
 
 
-//Estilização do corpo do header
+
 .header-landing-page {
   @include flex-between;
   padding: 0 50px;
@@ -39,7 +39,7 @@
   }
 }
 
-//Estilização dos links rapidos
+
 .quick-links {
   @include flex-center;
   background-color: var(--surface-card);
@@ -93,7 +93,7 @@
   }
 }
 
-//Pilula de destaque para o link ativo
+
 .sliding-pills {
   position: absolute;
   top: 50%;
@@ -116,7 +116,7 @@
   }
 }
 
-//Estilização dos botões de logins
+
 .auth-btns {
   @include flex-center;
   gap: var(--spacing-sm);

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, no-useless-escape */
 import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import Keycloak from 'keycloak-js';
@@ -8,6 +7,7 @@ import { Observable, tap, catchError, throwError, of, delay } from 'rxjs';
 import { Router } from '@angular/router';
 import { SessionService } from './session.service';
 import { Role } from '../models/role.model';
+import { Usuario } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,99 +19,65 @@ export class AuthService {
   private router = inject(Router);
   private sessionService = inject(SessionService);
 
-  private inMemoryToken: string | null = null;
+  private tokenEmMemoria: string | null = null;
 
-  // Sinal reativo contendo as informações do usuário atual
-  currentUser = signal<any | null>(null);
+  usuarioAtual = signal<Usuario | any | null>(null);
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      this.restoreSession();
+      this.restaurarSessao();
     }
   }
 
-  private restoreSession() {
-    const token = this.getCookie('mybuddy_session');
+  private restaurarSessao() {
+    const token = this.obterCookie('mybuddy_session');
     if (token) {
-      this.inMemoryToken = token;
+      this.tokenEmMemoria = token;
 
-      // Checa se é o token de mock para evitar requisição real
       if (token.startsWith('mock-jwt-token-')) {
-        const storedRole = this.sessionService.getCurrentRole();
-        if (storedRole) {
-          const mockProfile = { id: 99, nome: 'Usuário Teste (' + storedRole + ')', email: 'teste@mybuddy.com', roles: [storedRole] };
-          this.currentUser.set(mockProfile);
+        const papelArmazenado = this.sessionService.getCurrentRole();
+        if (papelArmazenado) {
+          const perfilFalso = { id: '99', nome: 'Usuário Teste (' + papelArmazenado + ')', email: 'teste@mybuddy.com', roles: [papelArmazenado] };
+          this.usuarioAtual.set(perfilFalso);
           return;
         }
       }
 
-      this.getProfile().subscribe({
-        next: profile => {
-          this.currentUser.set(profile);
+      this.obterPerfil().subscribe({
+        next: perfil => {
+          this.usuarioAtual.set(perfil);
         },
         error: () => {
-          this.logout();
+          this.sair();
         },
       });
     }
   }
 
-  isLoggedIn(): boolean {
-    return !!this.inMemoryToken || !!this.keycloak?.authenticated;
+  estaLogado(): boolean {
+    return !!this.tokenEmMemoria || !!this.keycloak?.authenticated;
   }
 
-  getUserRoles(): string[] {
-    if (this.currentUser()) {
-      const roles = this.currentUser().roles ?? [];
-      return roles.map((r: any) => (typeof r === 'string' ? r : r.name));
+  obterPapeisUsuario(): string[] {
+    if (this.usuarioAtual()) {
+      const papeis = this.usuarioAtual().roles ?? [];
+      return papeis.map((r: any) => (typeof r === 'string' ? r : r.name));
     }
     return this.keycloak?.realmAccess?.roles ?? [];
   }
 
-  getToken(): string | undefined {
-    return this.inMemoryToken || this.keycloak?.token;
+  obterToken(): string | undefined {
+    return this.tokenEmMemoria || this.keycloak?.token;
   }
 
-  loginWithCredentials(email: string, password: string): Observable<any> {
-    // --- LÓGICA DE MOCK PARA TESTES SEM BACKEND ---
-    if (password === 'senha123') {
-      let mockRole: Role | null = null;
-      let mockProfile: any = null;
-
-      if (email === 'admin@mybuddy.com') {
-        mockRole = Role.ADMIN;
-        mockProfile = { id: 1, nome: 'Admin Master', email, roles: [Role.ADMIN] };
-      } else if (email === 'ong@mybuddy.com') {
-        mockRole = Role.ONG;
-        mockProfile = { id: 2, nome: 'ONG Anjos', email, roles: [Role.ONG] };
-      } else if (email === 'petshop@mybuddy.com') {
-        mockRole = Role.PETSHOP;
-        mockProfile = { id: 3, nome: 'Petshop Feliz', email, roles: [Role.PETSHOP] };
-      } else if (email === 'user@mybuddy.com') {
-        mockRole = Role.USER;
-        mockProfile = { id: 4, nome: 'Adotante João', email, roles: [Role.USER] };
-      }
-
-      if (mockRole) {
-        const mockToken = 'mock-jwt-token-for-' + mockRole;
-        this.inMemoryToken = mockToken;
-        this.setCookie('mybuddy_session', mockToken, 3600);
-
-        this.sessionService.setRole(mockRole);
-        this.currentUser.set(mockProfile);
-
-        return of({ access_token: mockToken, profile: mockProfile, isMock: true }).pipe(delay(800));
-      }
-    }
-    // --- FIM DA LÓGICA DE MOCK ---
-
+  loginComCredenciais(email: string, senha: string): Observable<any> {
     const tokenUrl = `${environment.keycloak.url}/realms/${environment.keycloak.realm}/protocol/openid-connect/token`;
 
     const payload = new HttpParams()
       .set('client_id', environment.keycloak.clientId)
       .set('grant_type', 'password')
       .set('username', email)
-      .set('password', password)
+      .set('password', senha)
       .set('scope', 'openid');
 
     const headers = new HttpHeaders({
@@ -119,47 +85,51 @@ export class AuthService {
     });
 
     return this.http.post<any>(tokenUrl, payload.toString(), { headers }).pipe(
-      tap(response => {
-        const token = response.access_token;
-        this.inMemoryToken = token;
-
-        // Salva em um cookie seguro (SameSite=Strict; max-age = 1 hora)
-        this.setCookie('mybuddy_session', token, 3600);
+      tap(resposta => {
+        const token = resposta.access_token;
+        this.tokenEmMemoria = token;
+        this.definirCookie('mybuddy_session', token, 3600);
       }),
-      catchError(err => {
-        console.error('Erro na autenticação:', err);
-        return throwError(() => err);
+      catchError(erro => {
+        console.error('Erro na autenticação:', erro);
+        return throwError(() => erro);
       }),
     );
   }
 
-  register(payload: any): Observable<any> {
+  registrar(payload: any): Observable<any> {
     const cadastroUrl = `${environment.apiUrl}auth/cadastro`;
     return this.http.post<any>(cadastroUrl, payload);
   }
 
-  getProfile(): Observable<any> {
+  obterPerfil(): Observable<Usuario> {
     const profileUrl = `${environment.apiUrl}usuarios/meu-perfil`;
-    return this.http.get<any>(profileUrl).pipe(
-      tap(profile => {
-        this.currentUser.set(profile);
+    return this.http.get<Usuario>(profileUrl).pipe(
+      tap(perfil => {
+        this.usuarioAtual.set(perfil);
+        const roles = this.getUserRoles();
+        const role = roles.length > 0 ? (roles[0] as Role) : null;
+        this.sessionService.setRole(role);
       }),
     );
   }
 
-  updateProfile(payload: any): Observable<any> {
+  atualizarPerfil(payload: any): Observable<any> {
     const profileUrl = `${environment.apiUrl}usuarios/meu-perfil`;
     return this.http.put<any>(profileUrl, payload).pipe(
-      tap(profile => {
-        this.currentUser.set(profile);
+      tap(perfil => {
+        this.usuarioAtual.set(perfil);
+        const roles = this.getUserRoles();
+        const role = roles.length > 0 ? (roles[0] as Role) : null;
+        this.sessionService.setRole(role);
       }),
     );
   }
 
-  logout() {
-    this.inMemoryToken = null;
-    this.deleteCookie('mybuddy_session');
-    this.currentUser.set(null);
+  sair() {
+    this.tokenEmMemoria = null;
+    this.removerCookie('mybuddy_session');
+    this.usuarioAtual.set(null);
     this.sessionService.setRole(null);
 
     if (this.keycloak?.authenticated) {
@@ -173,21 +143,25 @@ export class AuthService {
     }
   }
 
-  // --- Helpers de Cookies Seguros (Proteção XSS e CSRF) ---
-  private setCookie(name: string, value: string, maxAgeSeconds: number) {
+  getUserRoles(): string[] {
+    const roles = this.usuarioAtual()?.roles || [];
+    return roles.map((r: any) => typeof r === 'string' ? r : (r.name || ''));
+  }
+
+  private definirCookie(nome: string, valor: string, maxAgeSeconds: number) {
     if (!isPlatformBrowser(this.platformId)) return;
     const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
-    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; SameSite=Strict${secureFlag}`;
+    document.cookie = `${nome}=${encodeURIComponent(valor)}; path=/; max-age=${maxAgeSeconds}; SameSite=Strict${secureFlag}`;
   }
 
-  private getCookie(name: string): string | null {
+  private obterCookie(nome: string): string | null {
     if (!isPlatformBrowser(this.platformId)) return null;
-    const matches = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
-    return matches ? decodeURIComponent(matches[1]) : null;
+    const regexMatch = document.cookie.match(new RegExp('(?:^|; )' + nome.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
+    return regexMatch ? decodeURIComponent(regexMatch[1]) : null;
   }
 
-  private deleteCookie(name: string) {
+  private removerCookie(nome: string) {
     if (!isPlatformBrowser(this.platformId)) return;
-    document.cookie = `${name}=; path=/; max-age=0; SameSite=Strict`;
+    document.cookie = `${nome}=; path=/; max-age=0; SameSite=Strict`;
   }
 }

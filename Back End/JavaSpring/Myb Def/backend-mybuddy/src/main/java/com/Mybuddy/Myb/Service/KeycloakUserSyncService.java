@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Model.Usuario;
-import com.Mybuddy.Myb.Repository.UsuarioRepository;
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

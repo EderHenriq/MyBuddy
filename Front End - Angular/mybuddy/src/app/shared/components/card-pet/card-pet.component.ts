@@ -10,48 +10,52 @@ import { ModalComponent } from '../modal/modal.component';
   styleUrl: './card-pet.component.scss',
 })
 export class CardPetComponent {
-  @Input() imageUrl = '';
-  @Input() name = '';
-  @Input() age = '';
-  @Input() breed = '';
-  @Input() sex = '';
-  @Input() vaccinated = 'Sim';
-  @Input() description =
+  @Input() urlImagem = '';
+  @Input() nome = '';
+  @Input() idade = 0;
+  @Input() raca = '';
+  @Input() sexo = '';
+  @Input() vacinado = false;
+  @Input() castrado = false;
+  @Input() porte = '';
+  @Input() cor = '';
+  @Input() pelagem = '';
+  @Input() descricao =
     'Olá! Eu sou muito dócil, brincalhão e estou ansioso para encontrar uma família que me dê muito amor e carinho. Já estou pronto para ser seu novo melhor amigo!';
-  @Input() badgeText = '';
-  @Input() badgeType: 'adoption' | 'adopted' | '' = '';
-  @Input() isFavorite = false;
-  @Input() showTopHeart = false;
-  @Input() ongMode = false;
+  @Input() textoBadge = '';
+  @Input() tipoBadge: 'adoption' | 'adopted' | '' = '';
+  @Input() favorito = false;
+  @Input() mostrarCoracaoTop = false;
+  @Input() modoOng = false;
 
-  @Output() infoClick = new EventEmitter<void>();
-  @Output() favoriteClick = new EventEmitter<void>();
-  @Output() adoptClick = new EventEmitter<void>();
-  @Output() editClick = new EventEmitter<void>();
-  @Output() deleteClick = new EventEmitter<void>();
+  @Output() cliqueInfo = new EventEmitter<void>();
+  @Output() cliqueFavorito = new EventEmitter<void>();
+  @Output() cliqueAdotar = new EventEmitter<void>();
+  @Output() cliqueEditar = new EventEmitter<void>();
+  @Output() cliqueDeletar = new EventEmitter<void>();
 
-  isModalVisible = false;
+  modalVisivel = false;
 
-  openModal(): void {
-    this.isModalVisible = true;
-    this.infoClick.emit();
+  abrirModal(): void {
+    this.modalVisivel = true;
+    this.cliqueInfo.emit();
   }
 
-  handleAdopt(): void {
-    this.isModalVisible = false;
-    this.adoptClick.emit();
+  processarAdocao(): void {
+    this.modalVisivel = false;
+    this.cliqueAdotar.emit();
   }
 
-  async sharePet() {
-    const shareData = {
-      title: `Adote o ${this.name} - MyBuddy`,
-      text: `Conheça o ${this.name}! Ele tem ${this.age} e é da raça ${this.breed}.`,
+  async compartilharPet() {
+    const dadosCompartilhamento = {
+      title: `Adote o ${this.nome} - MyBuddy`,
+      text: `Conheça o ${this.nome}! Tem ${this.idade} anos e é da raça ${this.raca}.`,
       url: window.location.href,
     };
 
     if (navigator.share) {
       try {
-        await navigator.share(shareData);
+        await navigator.share(dadosCompartilhamento);
       } catch (err) {
         console.error('Erro ao compartilhar:', err);
       }

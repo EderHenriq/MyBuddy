@@ -2,7 +2,7 @@
   <section class="home-hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <p class="hero-kicker">Seja bem vindo, {{ authService.currentUser()?.nome || 'Usuário' }}</p>
+      <p class="hero-kicker">Seja bem vindo, {{ authService.usuarioAtual()?.nome || 'Usuário' }}</p>
       <h1>
         Conectar, cuidar e
         <span>comemorar.</span>
@@ -43,21 +43,21 @@
     <section class="section-block">
       <h2 class="section-title">Encontre tudo para o seu melhor amigo</h2>
       <div class="category-grid">
-        @for (category of categories; track category.label) {
-          <a class="category-card" [routerLink]="category.route" [style.background-image]="'url(' + category.imageUrl + ')'">
-            <span>{{ category.label }}</span>
+        @for (categoria of categorias; track categoria.rotulo) {
+          <a class="category-card" [routerLink]="categoria.rota" [style.background-image]="'url(' + categoria.urlImagem + ')'">
+            <span>{{ categoria.rotulo }}</span>
           </a>
         }
       </div>
     </section>
 
     <section class="reminders-grid" aria-label="Lembretes">
-      @for (reminder of reminders; track reminder.title) {
+      @for (lembrete of lembretes; track lembrete.titulo) {
         <article class="reminder-card">
-          <img [src]="reminder.iconUrl" [alt]="reminder.title" />
+          <img [src]="lembrete.urlIcone" [alt]="lembrete.titulo" />
           <div>
-            <h3>{{ reminder.title }}</h3>
-            <p>{{ reminder.text }}</p>
+            <h3>{{ lembrete.titulo }}</h3>
+            <p>{{ lembrete.texto }}</p>
           </div>
           <button type="button">Agendar</button>
         </article>
@@ -73,46 +73,26 @@
         </a>
       </div>
 
-      @if (isLoadingPets()) {
-        <div
-          class="loading-state"
-          style="
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem;
-            color: var(--text-secondary, #666);
-            width: 100%;
-          "
-        >
+      @if (carregandoPets()) {
+        <div class="loading-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; color: var(--text-secondary, #666); width: 100%;">
           <i class="fas fa-circle-notch fa-spin fa-2x" style="margin-bottom: 1rem; color: var(--primary-color, #ff6b6b)"></i>
           <p>Carregando novos buddies...</p>
         </div>
       } @else {
         <div class="pets-grid">
-          @for (pet of pets(); track pet.name) {
-            <article class="pet-card">
-              <img [src]="pet.imageUrl" [alt]="pet.name" />
-              <div class="pet-card-body">
-                <h3>{{ pet.name }}</h3>
-                <ul>
-                  <li>Idade: {{ pet.age }}</li>
-                  <li>Raça: {{ pet.breed }}</li>
-                  <li>Sexo: {{ pet.sex }}</li>
-                  <li>Vacinado: {{ pet.vaccinated }}</li>
-                </ul>
-                <div class="pet-card-footer">
-                  <a routerLink="/pets" class="pet-info-link">
-                    Mais Informações
-                    <span class="material-icons">arrow_forward</span>
-                  </a>
-                  <button type="button" [attr.aria-label]="'Favoritar ' + pet.name">
-                    <span class="material-icons">favorite_border</span>
-                  </button>
-                </div>
-              </div>
-            </article>
+          @for (pet of pets(); track pet.nome) {
+            <app-card-pet
+              [urlImagem]="pet.fotosUrls && pet.fotosUrls.length > 0 ? (pet.fotosUrls[0].startsWith('http') ? pet.fotosUrls[0] : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]) : '/assets/logo/logo-provisoria.png'"
+              [nome]="pet.nome || 'Sem Nome'"
+              [idade]="pet.idade || 0"
+              [raca]="pet.raca || 'Não informada'"
+              [sexo]="pet.sexo || 'Não informado'"
+              [vacinado]="pet.vacinado"
+              [castrado]="pet.castrado"
+              [porte]="pet.porte"
+              [cor]="pet.cor"
+              [pelagem]="pet.pelagem"
+            ></app-card-pet>
           }
         </div>
       }
@@ -139,15 +119,15 @@
       </div>
 
       <div class="events-grid">
-        @for (event of events; track event.title) {
+        @for (evento of eventos; track evento.titulo) {
           <article class="event-card">
             <time>
-              <strong>{{ event.day }}</strong>
-              <span>{{ event.month }}</span>
+              <strong>{{ evento.dia }}</strong>
+              <span>{{ evento.mes }}</span>
             </time>
             <div>
-              <h3>{{ event.title }}</h3>
-              <p>{{ event.location }}</p>
+              <h3>{{ evento.titulo }}</h3>
+              <p>{{ evento.local }}</p>
             </div>
           </article>
         }
@@ -159,16 +139,16 @@
         <h2>Veterinários próximos</h2>
         <div class="title-line"></div>
         <div class="vet-list">
-          @for (vet of vets; track vet.name) {
+          @for (vet of veterinarios; track vet.nome) {
             <div class="vet-item">
-              <img [src]="vet.avatarUrl" [alt]="vet.name" />
+              <img [src]="vet.urlAvatar" [alt]="vet.nome" />
               <div class="vet-info">
-                <h3>{{ vet.name }}</h3>
-                <p>{{ vet.distance }} - {{ vet.status }}</p>
+                <h3>{{ vet.nome }}</h3>
+                <p>{{ vet.distancia }} - {{ vet.status }}</p>
               </div>
               <span class="vet-rating">
                 <span class="material-icons">star_outline</span>
-                {{ vet.rating }}
+                {{ vet.avaliacao }}
               </span>
             </div>
           }
@@ -179,7 +159,7 @@
         <div class="map-frame">
           <iframe
             title="Mapa de feiras de adoção"
-            [src]="mapUrl"
+            [src]="urlMapa"
             width="100%"
             height="100%"
             style="border: 0"
@@ -201,14 +181,14 @@
     <section class="products-section">
       <div class="products-heading">
         <h2>Conheça nossos produtos</h2>
-        <p>There are many variations of passages of Lorem Ipsum available but the majority have suffered alteration in some form.</p>
+        <p>Tudo o que seu pet precisa para uma vida cheia de alegria, saúde e muito amor.</p>
       </div>
 
       <div class="products-grid">
-        @for (product of products; track product.label) {
+        @for (produto of produtos; track produto.rotulo) {
           <a routerLink="/marketplace" class="product-card">
-            <img [src]="product.imageUrl" [alt]="product.label" />
-            <span>{{ product.label }}</span>
+            <img [src]="produto.urlImagem" [alt]="produto.rotulo" />
+            <span>{{ produto.rotulo }}</span>
           </a>
         }
       </div>

@@ -8,12 +8,16 @@ import { Footer } from '@shared/components/footer/footer';
 
 interface Pet {
   id: number;
-  name: string;
-  age: string;
-  breed: string;
-  sex: string;
-  vaccinated: string;
-  imageUrl: string;
+  nome: string;
+  idade: number;
+  raca: string;
+  sexo: string;
+  vacinado: boolean;
+  castrado: boolean;
+  porte: string;
+  cor: string;
+  pelagem: string;
+  urlImagem: string;
 }
 
 interface Service {
@@ -35,7 +39,7 @@ interface FaqItem {
   styleUrl: './landing-page.scss',
 })
 export class LandingPage {
-  activePetIndex = 1; // Paçoca starts centered and highlighted
+  activePetIndex = 1; 
 
   services: Service[] = [
     {
@@ -55,30 +59,42 @@ export class LandingPage {
   pets: Pet[] = [
     {
       id: 1,
-      name: 'Nevasca',
-      age: '3 anos',
-      breed: 'Persa',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1618826411640-d6df44dd3f7a?auto=format&fit=crop&q=80&w=500',
+      nome: 'Nevasca',
+      idade: 3,
+      raca: 'Persa',
+      sexo: 'Fêmea',
+      vacinado: true,
+      castrado: true,
+      porte: 'Pequeno',
+      cor: 'Branco',
+      pelagem: 'Longa',
+      urlImagem: 'https://images.unsplash.com/photo-1618826411640-d6df44dd3f7a?auto=format&fit=crop&q=80&w=600',
     },
     {
       id: 2,
-      name: 'Paçoca',
-      age: '5 anos',
-      breed: 'Vira-lata',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=500',
+      nome: 'Paçoca',
+      idade: 5,
+      raca: 'Vira-lata',
+      sexo: 'Macho',
+      vacinado: true,
+      castrado: true,
+      porte: 'Médio',
+      cor: 'Caramelo',
+      pelagem: 'Curta',
+      urlImagem: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600',
     },
     {
       id: 3,
-      name: 'Hermindo',
-      age: '1 ano',
-      breed: 'Rex',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=500',
+      nome: 'Thor',
+      idade: 4,
+      raca: 'Border Collie',
+      sexo: 'Macho',
+      vacinado: true,
+      castrado: false,
+      porte: 'Médio',
+      cor: 'Preto e Branco',
+      pelagem: 'Longa',
+      urlImagem: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=600',
     },
   ];
 
@@ -90,7 +106,7 @@ export class LandingPage {
 2. Preencha o formulário de adoção com seus dados e informações sobre seu ambiente.
 3. Aguarde o contato das nossas ONGs parceiras para uma entrevista rápida e a confirmação da adoção.
 Todo o processo é gratuito e feito para garantir que você e o pet tenham o melhor match possível.`,
-      expanded: true, // First FAQ is open by default as shown in the mockup
+      expanded: true, 
     },
     {
       question: 'O MyBuddy é pago?',

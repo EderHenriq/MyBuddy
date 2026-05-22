@@ -1,5 +1,4 @@
 <main class="marketplace-page">
-  <!-- Hero Banner no topo, igual na Home -->
   <section class="marketplace-hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
@@ -9,7 +8,6 @@
   </section>
 
   <div class="marketplace-content">
-    <!-- Barra de Busca Baseada no layout de Pets -->
     <section class="search-panel" aria-label="Busca e endereço">
       <label class="search-field">
         <input type="search" placeholder="Busque por item ou loja" />
@@ -35,15 +33,12 @@
       </div>
     </section>
 
-    <!-- Categorias (Carousel Visual) -->
-    <app-category-carousel [categories]="categorias" (categoryClick)="abrirCategoria($event)"></app-category-carousel>
+    <app-category-carousel [categorias]="categorias" (cliqueCategoria)="abrirCategoria($event)"></app-category-carousel>
 
-    <!-- Hero Banners Promoções -->
     <section class="banners-promocionais">
       <div class="carousel-wrapper">
-        <button class="scroll-arrow left" (click)="scrollTrack(bannerTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+        <button class="scroll-arrow left" (click)="rolarCarrossel(bannerTrack, 'left')"><span class="material-icons">chevron_left</span></button>
         <div class="banner-track" #bannerTrack>
-          <!-- Mocks de Banners -->
           <div class="banner-item" style="background-color: #ffecd6">
             <div class="banner-text">
               <h3>Frete Grátis</h3>
@@ -59,7 +54,7 @@
             <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=400" alt="Cachorro" />
           </div>
         </div>
-        <button class="scroll-arrow right" (click)="scrollTrack(bannerTrack, 'right')"><span class="material-icons">chevron_right</span></button>
+        <button class="scroll-arrow right" (click)="rolarCarrossel(bannerTrack, 'right')"><span class="material-icons">chevron_right</span></button>
       </div>
       <div class="banner-pagination">
         <span class="dot active"></span>
@@ -67,7 +62,6 @@
       </div>
     </section>
 
-    <!-- Lojas Próximas -->
     <section class="lojas-section">
       <div class="section-header">
         <h2>Lojas Próximas</h2>
@@ -75,152 +69,122 @@
       </div>
 
       <div class="carousel-wrapper">
-        <button class="scroll-arrow left" (click)="scrollTrack(lojasTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+        <button class="scroll-arrow left" (click)="rolarCarrossel(lojasTrack, 'left')"><span class="material-icons">chevron_left</span></button>
         <div class="lojas-track" #lojasTrack>
           @for (loja of lojas; track loja.id) {
             <app-card-loja
-              [logoUrl]="loja.logoUrl"
-              [storeName]="loja.name"
-              [rating]="loja.rating"
-              [deliveryTime]="loja.deliveryTime"
-              [deliveryFee]="loja.deliveryFee"
-              (storeClick)="abrirLoja(loja)"
+              [urlLogo]="loja.urlLogo"
+              [nomeLoja]="loja.nome"
+              [avaliacao]="loja.avaliacao"
+              [tempoEntrega]="loja.tempoEntrega"
+              [taxaEntrega]="loja.taxaEntrega"
+              (cliqueLoja)="abrirLoja(loja)"
             ></app-card-loja>
           }
         </div>
-        <button class="scroll-arrow right" (click)="scrollTrack(lojasTrack, 'right')"><span class="material-icons">chevron_right</span></button>
+        <button class="scroll-arrow right" (click)="rolarCarrossel(lojasTrack, 'right')"><span class="material-icons">chevron_right</span></button>
       </div>
     </section>
 
-    <!-- Ofertas do Dia -->
+    <section class="marcas-section">
+      <div class="section-header">
+        <h2>Marcas em Destaque</h2>
+      </div>
+      <div class="marcas-grid">
+        @for (marca of marcasDestaque; track marca.id) {
+          <div class="marca-item">
+            <img [src]="marca.urlLogo" [alt]="marca.nome" />
+          </div>
+        }
+      </div>
+    </section>
+
     <section class="produtos-section">
       <div class="section-header">
-        <h2>Ofertas do Dia</h2>
-        <a routerLink="/produtos" class="see-all">Ver todas</a>
+        <h2>Ofertas Especiais</h2>
+        <a routerLink="/produtos" class="see-all">Ver mais</a>
       </div>
-      <div class="carousel-wrapper">
-        <button class="scroll-arrow left" (click)="scrollTrack(ofertasTrack, 'left')"><span class="material-icons">chevron_left</span></button>
-        <div class="produtos-track" #ofertasTrack>
-          @for (produto of produtosOferta; track produto.id) {
-            <app-card-produto
-              [imageUrl]="produto.imageUrl"
-              [title]="produto.title"
-              [price]="produto.price"
-              [oldPrice]="produto.oldPrice"
-              [storeName]="produto.storeName"
-              [discountBadge]="produto.discountBadge"
-              [isFavorite]="produto.isFavorite || false"
-              (cardClick)="verProduto(produto)"
-              (addToCart)="adicionarAoCarrinho(produto, $event)"
-              (favoriteClick)="toggleFavorite(produto)"
-            ></app-card-produto>
-          }
-        </div>
-        <button class="scroll-arrow right" (click)="scrollTrack(ofertasTrack, 'right')"><span class="material-icons">chevron_right</span></button>
+      <div class="produtos-grid">
+        @for (produto of produtosOferta; track produto.id) {
+          <app-card-produto
+            [urlImagem]="produto.urlImagem"
+            [titulo]="produto.titulo"
+            [preco]="produto.preco"
+            [precoAntigo]="produto.precoAntigo"
+            [nomeLoja]="produto.nomeLoja"
+            [badgeDesconto]="produto.badgeDesconto"
+            [favorito]="produto.favorito || false"
+            (cliqueCard)="verProduto(produto)"
+            (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+            (cliqueFavorito)="alternarFavorito(produto)"
+          ></app-card-produto>
+        }
       </div>
     </section>
 
-    <!-- Mais Vendidos -->
+    <section class="produtos-section banner-intersticial">
+      <div class="intersticial-content" style="background-image: url('https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?auto=format&fit=crop&q=80&w=1200')">
+        <div class="overlay">
+          <h2>Tudo para o seu Gato</h2>
+          <p>As melhores marcas com até 40% de desconto</p>
+          <button class="btn-primary">Aproveitar</button>
+        </div>
+      </div>
+    </section>
+
     <section class="produtos-section">
       <div class="section-header">
         <h2>Mais Vendidos</h2>
-        <a routerLink="/produtos" class="see-all">Ver todos</a>
+        <a routerLink="/produtos" class="see-all">Ver mais</a>
       </div>
-      <div class="carousel-wrapper">
-        <button class="scroll-arrow left" (click)="scrollTrack(maisVendidosTrack, 'left')"><span class="material-icons">chevron_left</span></button>
-        <div class="produtos-track" #maisVendidosTrack>
-          @for (produto of maisVendidos; track produto.id) {
-            <app-card-produto
-              [imageUrl]="produto.imageUrl"
-              [title]="produto.title"
-              [price]="produto.price"
-              [oldPrice]="produto.oldPrice"
-              [storeName]="produto.storeName"
-              [discountBadge]="produto.discountBadge"
-              [isFavorite]="produto.isFavorite || false"
-              (cardClick)="verProduto(produto)"
-              (addToCart)="adicionarAoCarrinho(produto, $event)"
-              (favoriteClick)="toggleFavorite(produto)"
-            ></app-card-produto>
-          }
-        </div>
-        <button class="scroll-arrow right" (click)="scrollTrack(maisVendidosTrack, 'right')">
-          <span class="material-icons">chevron_right</span>
-        </button>
+      <div class="produtos-grid">
+        @for (produto of maisVendidos; track produto.id) {
+          <app-card-produto
+            [urlImagem]="produto.urlImagem"
+            [titulo]="produto.titulo"
+            [preco]="produto.preco"
+            [precoAntigo]="produto.precoAntigo"
+            [nomeLoja]="produto.nomeLoja"
+            [badgeDesconto]="produto.badgeDesconto"
+            [favorito]="produto.favorito || false"
+            (cliqueCard)="verProduto(produto)"
+            (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+            (cliqueFavorito)="alternarFavorito(produto)"
+          ></app-card-produto>
+        }
       </div>
     </section>
 
-    <!-- Todos os Produtos -->
-    <section class="produtos-section todos-produtos">
+    <section class="produtos-section">
       <div class="section-header">
-        <h2>Todos os Produtos</h2>
+        <h2>Para Você</h2>
       </div>
       <div class="produtos-grid">
         @for (produto of todosProdutos; track produto.id) {
           <app-card-produto
-            [imageUrl]="produto.imageUrl"
-            [title]="produto.title"
-            [price]="produto.price"
-            [oldPrice]="produto.oldPrice"
-            [storeName]="produto.storeName"
-            [discountBadge]="produto.discountBadge"
-            [isFavorite]="produto.isFavorite || false"
-            (cardClick)="verProduto(produto)"
-            (addToCart)="adicionarAoCarrinho(produto, $event)"
-            (favoriteClick)="toggleFavorite(produto)"
+            [urlImagem]="produto.urlImagem"
+            [titulo]="produto.titulo"
+            [preco]="produto.preco"
+            [precoAntigo]="produto.precoAntigo"
+            [nomeLoja]="produto.nomeLoja"
+            [badgeDesconto]="produto.badgeDesconto"
+            [favorito]="produto.favorito || false"
+            (cliqueCard)="verProduto(produto)"
+            (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+            (cliqueFavorito)="alternarFavorito(produto)"
           ></app-card-produto>
         }
       </div>
-
-      <!-- Paginação -->
-      <nav class="pagination" aria-label="Navegação de páginas">
-        <button class="page-btn prev" disabled>
-          <i class="fas fa-chevron-left"></i>
-          Anterior
-        </button>
-        <div class="page-numbers">
-          <button class="page-num active">1</button>
-          <button class="page-num">2</button>
-          <button class="page-num">3</button>
-          <span class="ellipsis">...</span>
-          <button class="page-num">12</button>
-        </div>
-        <button class="page-btn next">
-          Próxima
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </nav>
-    </section>
-
-    <!-- Seção de Marcas Famosas -->
-    <section class="marcas-destaque">
-      <div class="section-header">
-        <h2>Marcas em destaque</h2>
-      </div>
-      <div class="carousel-wrapper">
-        <button class="scroll-arrow left" (click)="scrollTrack(marcasTrack, 'left')"><span class="material-icons">chevron_left</span></button>
-        <div class="marcas-track" #marcasTrack>
-          @for (marca of marcasDestaque; track marca.id) {
-            <div class="marca-item">
-              <img [src]="marca.logoUrl" [alt]="marca.name" />
-            </div>
-          }
-        </div>
-        <button class="scroll-arrow right" (click)="scrollTrack(marcasTrack, 'right')"><span class="material-icons">chevron_right</span></button>
-      </div>
     </section>
   </div>
-  <!-- End marketplace-content -->
-
-  <!-- Floating Cart Button -->
-  <button class="floating-cart-btn" aria-label="Abrir carrinho" (click)="cartService.toggleDrawer()">
-    <span class="material-icons">shopping_cart</span>
-    @if (cartService.totalItems() > 0) {
-      <span class="cart-badge">{{ cartService.totalItems() }}</span>
-    }
-  </button>
-
-  <app-cart-drawer></app-cart-drawer>
 </main>
 
+<button class="floating-cart-btn" aria-label="Abrir carrinho" (click)="carrinhoService.alternarGaveta()">
+  <span class="material-icons">shopping_cart</span>
+  @if (carrinhoService.totalItens() > 0) {
+    <span class="cart-badge">{{ carrinhoService.totalItens() }}</span>
+  }
+</button>
+
+<app-cart-drawer></app-cart-drawer>
 <app-footer></app-footer>

@@ -1,39 +1,36 @@
 package com.Mybuddy.Myb.Service;
 
+import com.Mybuddy.Myb.Model.Arquivo;
+import com.Mybuddy.Myb.Repository.mongo.ArquivoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Serviço responsável pelo gerenciamento de imagens e arquivos enviado pelos usuários.
+ * Persiste os bytes dos arquivos diretamente no MongoDB para garantir resiliência e alta disponibilidade.
+ */
 @Service
 public class FotoPetService {
 
     private static final Logger log = LoggerFactory.getLogger(FotoPetService.class);
 
-    private final Path fileStorageLocation;
+    private final ArquivoRepository arquivoRepository;
 
-    public FotoPetService(@Value("${file.upload-dir}") String uploadDir) {
-        this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
-        try {
-            Files.createDirectories(this.fileStorageLocation);
-            log.info("Diretório de upload de arquivos criado em: {}", this.fileStorageLocation);
-        } catch (Exception ex) {
-            log.error("Não foi possível criar o diretório de upload: {}", this.fileStorageLocation, ex);
-            throw new RuntimeException("Não foi possível criar o diretório de upload.", ex);
-        }
+    public FotoPetService(ArquivoRepository arquivoRepository) {
+        this.arquivoRepository = arquivoRepository;
     }
 
+    /**
+     * Salva um arquivo/foto no MongoDB.
+     */
     public String storeFile(MultipartFile file) throws IOException {
         String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
         String fileExtension = "";
@@ -41,22 +38,33 @@ public class FotoPetService {
         if (dotIndex > 0) {
             fileExtension = originalFileName.substring(dotIndex);
         }
+        // Gera um nome único para o arquivo
         String fileName = UUID.randomUUID().toString() + fileExtension;
 
         try {
             if (fileName.contains("..")) {
-                throw new IOException("Nome do arquivo inválido: " + fileName);
+                throw new IOException("Nome de arquivo inválido: " + fileName);
             }
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-            log.info("Arquivo salvo com sucesso: {}", targetLocation.toString());
+
+            Arquivo arquivo = Arquivo.builder()
+                    .id(fileName)
+                    .nomeOriginal(originalFileName)
+                    .tipoConteudo(file.getContentType())
+                    .dados(file.getBytes())
+                    .build();
+
+            arquivoRepository.save(arquivo);
+            log.info("Arquivo salvo com sucesso no MongoDB com o nome: {}", fileName);
             return fileName;
         } catch (IOException ex) {
-            log.error("Erro ao salvar o arquivo '{}': {}", originalFileName, ex.getMessage(), ex);
+            log.error("Erro ao salvar o arquivo '{}' no MongoDB: {}", originalFileName, ex.getMessage(), ex);
             throw new IOException("Não foi possível armazenar o arquivo " + originalFileName + ". Por favor, tente novamente!", ex);
         }
     }
 
+    /**
+     * Salva múltiplos arquivos no MongoDB.
+     */
     public List<String> storeFiles(List<MultipartFile> files) throws IOException {
         List<String> fileNames = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -65,11 +73,7 @@ public class FotoPetService {
                 fileNames.add(fileName);
             }
         }
-        log.info("Upload múltiplo concluído. {} arquivos salvos.", fileNames.size());
+        log.info("Upload múltiplo concluído no MongoDB. {} arquivos persistidos.", fileNames.size());
         return fileNames;
-    }
-
-    public Path loadFileAsResource(String fileName) {
-        return this.fileStorageLocation.resolve(fileName).normalize();
     }
 }
