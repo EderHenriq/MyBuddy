@@ -4,11 +4,6 @@ import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
-    //Rota testes
-    path: 'cards-categoria',
-    loadComponent: () => import('./shared/components/card-categoria/card-categoria.component').then(m => m.CardCategoriaComponent),
-  },
-  {
     // Redirecionamento inicial para a rota 'home'
     path: '',
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),
