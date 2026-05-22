@@ -10,7 +10,7 @@ import { PaginatorComponent } from '../../../shared/components/paginator/paginat
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
   templateUrl: './eventos-ong.html',
-  styleUrl: './eventos-ong.scss'
+  styleUrl: './eventos-ong.scss',
 })
 export class EventosOng implements OnInit {
   eventos: EventoOng[] = [];

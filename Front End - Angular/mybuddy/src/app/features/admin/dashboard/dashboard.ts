@@ -26,7 +26,7 @@ import { PaginatorComponent } from '../../../shared/components/paginator/paginat
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss'
+  styleUrl: './dashboard.scss',
 })
 export class Dashboard {
   currentPage = 1;
@@ -36,7 +36,7 @@ export class Dashboard {
     { title: 'Adotantes Registrados', value: '1,245', icon: 'person', trend: 'up', trendValue: '+12%', color: '#3f51b5' },
     { title: 'ONGs Parceiras', value: '84', icon: 'volunteer_activism', trend: 'up', trendValue: '+3%', color: '#009688' },
     { title: 'Pets Adotados', value: '342', icon: 'pets', trend: 'up', trendValue: '+18%', color: '#ff7900' },
-    { title: 'Vendas no Marketplace', value: 'R$ 15.4K', icon: 'storefront', trend: 'down', trendValue: '-2%', color: '#e91e63' }
+    { title: 'Vendas no Marketplace', value: 'R$ 15.4K', icon: 'storefront', trend: 'down', trendValue: '-2%', color: '#e91e63' },
   ];
 
   pendingApprovals: PendingApproval[] = [

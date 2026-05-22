@@ -35,7 +35,7 @@ export class EventosComponent {
       locationStr: 'Parque do Ibirapuera, SP',
       organizerStr: 'ONG Patas Unidas',
       description: 'Vários cachorros e gatos prontos para um novo lar. Vacinação no local.',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 2,
@@ -47,7 +47,7 @@ export class EventosComponent {
       locationStr: 'Centro de Eventos, Curitiba',
       organizerStr: 'ONG Felinos Felizes',
       description: 'Venha conhecer felinos especiais procurando um lar amoroso.',
-      isFavorite: true
+      isFavorite: true,
     },
     {
       id: 3,
@@ -59,27 +59,27 @@ export class EventosComponent {
       locationStr: 'Lagoa do Taquaral, Campinas',
       organizerStr: 'Coletivo Animal',
       description: 'Caminhe com seu buddy e adote um novo amigo na nossa feira.',
-      isFavorite: false
-    }
+      isFavorite: false,
+    },
   ];
 
   historias = [
     {
       imagem: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=150',
-      texto: '"Venha e veja a doçura familiar de uma zona onde somos acolhidos"'
+      texto: '"Venha e veja a doçura familiar de uma zona onde somos acolhidos"',
     },
     {
       imagem: 'https://images.unsplash.com/photo-1516366478644-84566f1e149f?auto=format&fit=crop&q=80&w=150',
-      texto: '"Venha ver a conversa em família que a união com um buddy traz"'
+      texto: '"Venha ver a conversa em família que a união com um buddy traz"',
     },
     {
       imagem: 'https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&q=80&w=150',
-      texto: '"Venha ser adotado e sinta como se fossem seus problemas resolvidos"'
+      texto: '"Venha ser adotado e sinta como se fossem seus problemas resolvidos"',
     },
     {
       imagem: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=150',
-      texto: '"Um pet devoto na família ajuda a viver sem encorajar medos"'
-    }
+      texto: '"Um pet devoto na família ajuda a viver sem encorajar medos"',
+    },
   ];
 
   verDetalhes(evento: Evento) {

@@ -1,11 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { Footer } from '@shared/components/footer/footer';
+import { PetService } from '@core/services/pet.service';
 
 interface CategoryCard {
   label: string;
   imageUrl: string;
+  route: string;
 }
 
 interface Reminder {
@@ -45,13 +48,17 @@ interface ProductCategory {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [RouterLink, Footer],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home {
+export class Home implements OnInit {
   public authService = inject(AuthService);
   private sanitizer = inject(DomSanitizer);
+  private petService = inject(PetService);
+
+  readonly isLoadingPets = signal<boolean>(true);
+  readonly pets = signal<PetCard[]>([]);
 
   readonly mapUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
     'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14629.742352528775!2d-46.666666!3d-23.555555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDMzJzIwLjAiUyA0NsKwMzknNTkuOSJX!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr',
@@ -61,18 +68,22 @@ export class Home {
     {
       label: 'Pets',
       imageUrl: 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&q=80&w=600',
+      route: '/pets',
     },
     {
       label: 'Veterinários',
       imageUrl: 'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&q=80&w=600',
+      route: '/servicos',
     },
     {
       label: 'Eventos',
       imageUrl: 'https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?auto=format&fit=crop&q=80&w=600',
+      route: '/eventos',
     },
     {
       label: 'Produtos',
       imageUrl: 'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?auto=format&fit=crop&q=80&w=600',
+      route: '/produtos',
     },
   ];
 
@@ -89,32 +100,18 @@ export class Home {
     },
   ];
 
-  readonly pets: PetCard[] = [
-    {
-      name: 'Kira',
-      age: '5 anos',
-      breed: 'Vira Lata',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=600',
-    },
-    {
-      name: 'Pêssego',
-      age: '2 anos',
-      breed: 'Vira Lata',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&q=80&w=600',
-    },
-    {
-      name: 'Jade',
-      age: '1 ano',
-      breed: 'Mini Lop',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=600',
-    },
-  ];
+  ngOnInit(): void {
+    this.petService.getRecentPets().subscribe({
+      next: data => {
+        this.pets.set(data);
+        this.isLoadingPets.set(false);
+      },
+      error: err => {
+        console.error('Erro ao buscar pets recentes', err);
+        this.isLoadingPets.set(false);
+      },
+    });
+  }
 
   readonly events: EventCard[] = [
     { day: '26', month: 'ABR', title: 'Feira de Adoção - Parque do Ingá', location: 'Maringá, Pr - 9h às 16h' },

@@ -9,13 +9,18 @@
       <h2>Lista de Animais</h2>
       <div class="panel-actions">
         <div class="panel-search-box">
-          <input type="text" placeholder="Buscar pet..." appDebounce (debounceOutput)="onSearch($event)">
+          <input type="text" placeholder="Buscar pet..." appDebounce (debounceOutput)="onSearch($event)" />
           <span class="material-icons">search</span>
         </div>
-        <button class="view-all-btn" style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">+ Adicionar Pet</button>
+        <button
+          class="view-all-btn"
+          style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer"
+        >
+          + Adicionar Pet
+        </button>
       </div>
     </div>
-    
+
     <div class="table-container">
       <table>
         <thead>
@@ -36,10 +41,12 @@
               <td>{{ item.raca }}</td>
               <td>{{ item.idade }}</td>
               <td>
-                <span class="status-badge" 
-                      [class.pending]="item.status === 'Em Processo'"
-                      [class.active]="item.status === 'Disponível'"
-                      [class.blocked]="item.status === 'Adotado'">
+                <span
+                  class="status-badge"
+                  [class.pending]="item.status === 'Em Processo'"
+                  [class.active]="item.status === 'Disponível'"
+                  [class.blocked]="item.status === 'Adotado'"
+                >
                   {{ item.status }}
                 </span>
               </td>
@@ -55,11 +62,6 @@
     </div>
 
     <!-- Paginação -->
-    <app-paginator 
-      [currentPage]="currentPage" 
-      [totalPages]="totalPages" 
-      (pageChange)="onPageChange($event)">
-    </app-paginator>
-
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
   </section>
 </div>

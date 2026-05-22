@@ -1,12 +1,14 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
 import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
 import { Footer } from '@shared/components/footer/footer';
 import { AuthService } from '@core/services/auth.service';
+import { UploadService } from '@core/services/upload.service';
 
-type ProfileTab = 'inicio' | 'dados' | 'pets' | 'favoritos' | 'mensagens' | 'historico' | 'configuracoes';
+type ProfileTab = 'inicio' | 'dados' | 'pets' | 'favoritos' | 'mensagens' | 'solicitacoes' | 'historico' | 'configuracoes';
 type RoleKey = 'ADOTANTE' | 'ONG' | 'PETSHOP' | 'ADMIN';
 
 interface BackendRole {
@@ -39,7 +41,7 @@ interface BackendUserProfile {
   aceitaMensagens?: boolean;
   perfilPublico?: boolean;
   notificacoesEmail?: boolean;
-  roles?: Array<string | BackendRole>;
+  roles?: (string | BackendRole)[];
   organizacao?: BackendOrganization | null;
   petshop?: BackendOrganization | null;
 }
@@ -77,6 +79,14 @@ interface ProfileMessage {
   preview: string;
   date: string;
   unread: boolean;
+}
+
+interface ProfileSolicitacao {
+  petName: string;
+  ongName: string;
+  status: 'Pendente' | 'Aprovada' | 'Em Análise' | 'Recusada';
+  date: string;
+  imageUrl: string;
 }
 
 interface ProfilePermission {
@@ -117,6 +127,8 @@ export class Perfil implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
+  private readonly uploadService = inject(UploadService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly history$ = this.notificationService.history$;
 
@@ -125,6 +137,8 @@ export class Perfil implements OnInit {
   readonly isSaving = signal(false);
   readonly saveMessage = signal('');
   readonly user = signal<ProfileUser>(this.emptyUser());
+  readonly profilePicPreview = signal<string | null>(null);
+  selectedProfilePicFile: File | null = null;
 
   readonly roleConfigs: Record<RoleKey, ProfileRoleConfig> = {
     ADOTANTE: {
@@ -200,6 +214,7 @@ export class Perfil implements OnInit {
     { id: 'pets', label: 'Meus Pets', icon: 'fas fa-paw' },
     { id: 'favoritos', label: 'Meus Favoritos', icon: 'far fa-heart' },
     { id: 'mensagens', label: 'Minhas Mensagens', icon: 'far fa-comment-dots' },
+    { id: 'solicitacoes', label: 'Minhas Solicitações', icon: 'fas fa-clipboard-list' },
     { id: 'historico', label: 'Histórico', icon: 'fas fa-history' },
     { id: 'configuracoes', label: 'Configurações', icon: 'fas fa-cog' },
   ];
@@ -270,6 +285,23 @@ export class Perfil implements OnInit {
       preview: 'Recebemos sua solicitação de contato sobre a Jade.',
       date: 'Ontem',
       unread: false,
+    },
+  ]);
+
+  readonly solicitacoes = signal<ProfileSolicitacao[]>([
+    {
+      petName: 'Paçoca',
+      ongName: 'Abrigo Animal',
+      status: 'Em Análise',
+      date: '10/05/2026',
+      imageUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=500',
+    },
+    {
+      petName: 'Rex',
+      ongName: 'Cão Sem Dono',
+      status: 'Pendente',
+      date: '18/05/2026',
+      imageUrl: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=500',
     },
   ]);
 
@@ -345,6 +377,12 @@ export class Perfil implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['tab']) {
+        this.selectTab(params['tab'] as ProfileTab);
+      }
+    });
+
     const profile = this.authService.currentUser();
     if (profile) {
       this.setupProfile(profile);
@@ -366,12 +404,28 @@ export class Perfil implements OnInit {
     this.selectTab('dados');
     this.applyRoleValidators();
     this.patchForm(this.user());
+    this.profilePicPreview.set(null);
+    this.selectedProfilePicFile = null;
   }
 
   cancelEditing(): void {
     this.isEditing.set(false);
     this.saveMessage.set('');
+    this.profilePicPreview.set(null);
+    this.selectedProfilePicFile = null;
     this.patchForm(this.user());
+  }
+
+  onProfilePicChange(event: any): void {
+    if (event.target.files && event.target.files[0]) {
+      this.selectedProfilePicFile = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = e => {
+        this.profilePicPreview.set(reader.result as string);
+        this.profileForm.controls.profilePic.setValue('pending-upload');
+      };
+      reader.readAsDataURL(this.selectedProfilePicFile!);
+    }
   }
 
   logout(): void {
@@ -400,6 +454,25 @@ export class Perfil implements OnInit {
         }
       : null;
 
+    this.isSaving.set(true);
+    if (this.selectedProfilePicFile) {
+      this.uploadService.uploadImage(this.selectedProfilePicFile).subscribe({
+        next: url => {
+          this.selectedProfilePicFile = null;
+          formValue.profilePic = url;
+          this.executeProfileUpdate(formValue, organizationPayload);
+        },
+        error: () => {
+          this.isSaving.set(false);
+          this.saveMessage.set('Erro ao fazer upload da foto de perfil.');
+        },
+      });
+    } else {
+      this.executeProfileUpdate(formValue, organizationPayload);
+    }
+  }
+
+  private executeProfileUpdate(formValue: any, organizationPayload: any): void {
     const payload = {
       id: this.user().id,
       nome: formValue.name,
@@ -410,7 +483,6 @@ export class Perfil implements OnInit {
       perfilPublico: formValue.publicProfile,
       notificacoesEmail: formValue.emailNotifications,
       organizacao: organizationPayload,
-      // Campos espelhados para facilitar a transição enquanto o endpoint de update não existe no back.
       nomeFantasia: organizationPayload?.nomeFantasia,
       emailContato: organizationPayload?.emailContato,
       telefoneContato: organizationPayload?.telefoneContato,
@@ -420,7 +492,6 @@ export class Perfil implements OnInit {
       website: organizationPayload?.website,
     };
 
-    this.isSaving.set(true);
     this.authService
       .updateProfile(payload)
       .pipe(finalize(() => this.isSaving.set(false)))

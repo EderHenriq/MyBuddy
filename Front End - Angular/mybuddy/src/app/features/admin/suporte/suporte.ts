@@ -10,7 +10,7 @@ import { PaginatorComponent } from '../../../shared/components/paginator/paginat
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
   templateUrl: './suporte.html',
-  styleUrl: './suporte.scss'
+  styleUrl: './suporte.scss',
 })
 export class Suporte implements OnInit {
   tickets: Ticket[] = [];

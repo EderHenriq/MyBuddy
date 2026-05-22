@@ -10,7 +10,7 @@ import { PaginatorComponent } from '../../../shared/components/paginator/paginat
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
   templateUrl: './ongs.html',
-  styleUrl: './ongs.scss'
+  styleUrl: './ongs.scss',
 })
 export class Ongs implements OnInit {
   parcerias: Parceria[] = [];

@@ -140,11 +140,33 @@
                   }
                 </label>
 
-                <label class="form-field">
+                <label class="form-field photo-upload-field">
                   <span>Foto de perfil</span>
-                  <input type="url" formControlName="profilePic" />
+                  <div
+                    class="upload-area"
+                    onclick="document.getElementById('profilePicUpload').click()"
+                    style="
+                      cursor: pointer;
+                      border: 1px dashed var(--border-color, #ccc);
+                      padding: 10px;
+                      border-radius: var(--radius-sm, 6px);
+                      display: flex;
+                      align-items: center;
+                      gap: 10px;
+                    "
+                  >
+                    @if (profilePicPreview()) {
+                      <img [src]="profilePicPreview()" alt="Preview" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover" />
+                    } @else if (user().profilePic) {
+                      <img [src]="user().profilePic" alt="Atual" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover" />
+                    } @else {
+                      <i class="fas fa-camera"></i>
+                    }
+                    <span style="color: var(--text-secondary, #666); font-size: 0.9rem">Clique para alterar a foto</span>
+                  </div>
+                  <input type="file" id="profilePicUpload" hidden accept="image/*" (change)="onProfilePicChange($event)" />
                   @if (isFieldInvalid('profilePic')) {
-                    <small>Informe a URL da foto.</small>
+                    <small>É necessário selecionar uma foto de perfil.</small>
                   }
                 </label>
               </div>
@@ -324,13 +346,79 @@
         </section>
       }
 
+      @if (activeTab() === 'solicitacoes') {
+        <section class="requests-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Acompanhamento</p>
+            <h2>Minhas Solicitações de Adoção</h2>
+          </div>
+          <div class="requests-list" style="display: flex; flex-direction: column; gap: 1rem">
+            @if (solicitacoes().length === 0) {
+              <div class="empty-state" style="text-align: center; padding: 3rem; color: #666">
+                <i class="fas fa-clipboard-list fa-2x" style="margin-bottom: 1rem; color: #ccc"></i>
+                <p>Nenhuma solicitação de adoção no momento.</p>
+              </div>
+            }
+            @for (req of solicitacoes(); track req.petName) {
+              <article
+                class="request-item"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 1rem;
+                  padding: 1.5rem;
+                  background: var(--surface-color, #fff);
+                  border-radius: 12px;
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                  border: 1px solid var(--border-color, #eaeaea);
+                "
+              >
+                <img [src]="req.imageUrl" [alt]="req.petName" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover" />
+                <div style="flex: 1">
+                  <h3 style="margin: 0; font-size: 1.25rem; color: var(--text-primary, #333)">{{ req.petName }}</h3>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary, #666); font-size: 0.9rem">ONG: {{ req.ongName }}</p>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary, #666); font-size: 0.85rem">Feita em: {{ req.date }}</p>
+                </div>
+                <div
+                  class="status-badge"
+                  [ngStyle]="{
+                    background:
+                      req.status === 'Em Análise'
+                        ? '#fff3cd'
+                        : req.status === 'Aprovada'
+                          ? '#d4edda'
+                          : req.status === 'Recusada'
+                            ? '#f8d7da'
+                            : '#e2e3e5',
+                    color:
+                      req.status === 'Em Análise'
+                        ? '#856404'
+                        : req.status === 'Aprovada'
+                          ? '#155724'
+                          : req.status === 'Recusada'
+                            ? '#721c24'
+                            : '#383d41',
+                    padding: '0.5rem 1rem',
+                    'border-radius': '20px',
+                    'font-size': '0.85rem',
+                    'font-weight': '600',
+                  }"
+                >
+                  {{ req.status }}
+                </div>
+              </article>
+            }
+          </div>
+        </section>
+      }
+
       @if (activeTab() === 'historico') {
         <section class="history-panel">
           <div class="section-heading">
             <p class="eyebrow">Atividades</p>
             <h2>Seu Histórico Recente</h2>
           </div>
-          
+
           <div class="timeline-container">
             @if ((history$ | async)?.length === 0) {
               <div class="empty-state">
@@ -338,7 +426,7 @@
                 <p>Nenhuma atividade registrada.</p>
               </div>
             }
-            @for (item of (history$ | async); track item.id) {
+            @for (item of history$ | async; track item.id) {
               <div class="timeline-item">
                 <div class="timeline-icon" [ngClass]="item.type">
                   <i [class]="item.icon"></i>
@@ -376,10 +464,11 @@
               <strong>{{ user().emailNotifications ? 'Recebe notificações' : 'Sem notificações' }}</strong>
             </div>
           </div>
-          <div class="settings-actions" style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <div class="settings-actions" style="display: flex; gap: 1rem; margin-top: 1.5rem">
             <button type="button" class="primary-action compact" (click)="startEditing()">Editar preferências</button>
-            <button type="button" class="secondary-action compact" (click)="logout()" style="border-color: #dc3545; color: #dc3545;">
-              <i class="fas fa-sign-out-alt"></i> Sair do Sistema
+            <button type="button" class="secondary-action compact" (click)="logout()" style="border-color: #dc3545; color: #dc3545">
+              <i class="fas fa-sign-out-alt"></i>
+              Sair do Sistema
             </button>
           </div>
         </section>

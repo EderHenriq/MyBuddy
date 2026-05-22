@@ -6,11 +6,11 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './paginator.component.html',
-  styleUrl: './paginator.component.scss'
+  styleUrl: './paginator.component.scss',
 })
 export class PaginatorComponent {
-  @Input() currentPage: number = 1;
-  @Input() totalPages: number = 1;
+  @Input() currentPage = 1;
+  @Input() totalPages = 1;
   @Output() pageChange = new EventEmitter<number>();
 
   get pages(): (number | string)[] {

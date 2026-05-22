@@ -38,7 +38,7 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   showHeader = true;
   hoveredIndex = -1;
   userRole: Role | null = null;
-  panelRoute: string = '';
+  panelRoute = '';
 
   notifications: AppNotification[] = [];
   unreadCount = 0;

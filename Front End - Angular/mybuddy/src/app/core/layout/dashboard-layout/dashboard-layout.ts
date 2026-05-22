@@ -19,11 +19,11 @@ interface MenuItem {
   standalone: true,
   imports: [RouterOutlet, RouterModule, CommonModule, DebounceDirective],
   templateUrl: './dashboard-layout.html',
-  styleUrl: './dashboard-layout.scss'
+  styleUrl: './dashboard-layout.scss',
 })
 export class DashboardLayout {
-  portalName: string = 'Admin';
-  roleName: string = 'Administrador';
+  portalName = 'Admin';
+  roleName = 'Administrador';
   menuItems: MenuItem[] = [];
 
   private notificationService = inject(NotificationService);
@@ -31,16 +31,19 @@ export class DashboardLayout {
   unreadCount = 0;
   isNotificationsOpen = false;
 
-  constructor(private router: Router, private sessionService: SessionService) {
-    this.router.events.subscribe((event) => {
+  constructor(
+    private router: Router,
+    private sessionService: SessionService,
+  ) {
+    this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updateMenuBasedOnRoute(this.router.url);
       }
     });
 
     this.sessionService.userRole$.subscribe(role => {
-      // Aqui poderíamos forçar o menu baseado apenas na role, 
-      // mas mantemos baseado na URL para permitir que o ADMIN consiga visualizar e testar 
+      // Aqui poderíamos forçar o menu baseado apenas na role,
+      // mas mantemos baseado na URL para permitir que o ADMIN consiga visualizar e testar
       // os outros painéis (como ong-panel e petshop-panel) tranquilamente.
       // O roleName do header agora reflete a role real:
       if (role === Role.ADMIN) this.roleName = 'Administrador Geral';
@@ -48,7 +51,7 @@ export class DashboardLayout {
       if (role === Role.PETSHOP) this.roleName = 'Lojista';
       if (role === Role.USER) this.roleName = 'Adotante';
     });
-    
+
     // Config inicial
     this.updateMenuBasedOnRoute(this.router.url);
 
@@ -96,7 +99,7 @@ export class DashboardLayout {
         { label: 'Visão Geral', icon: 'dashboard', route: '/ong-panel/dashboard' },
         { label: 'Meus Animais', icon: 'pets', route: '/ong-panel/pets' },
         { label: 'Solicitações de Adoção', icon: 'assignment_ind', route: '/ong-panel/solicitacoes' },
-        { label: 'Eventos de Adoção', icon: 'event', route: '/ong-panel/eventos' }
+        { label: 'Eventos de Adoção', icon: 'event', route: '/ong-panel/eventos' },
       ];
     } else if (url.startsWith('/petshop-panel')) {
       this.portalName = 'Petshop';
@@ -105,7 +108,7 @@ export class DashboardLayout {
         { label: 'Painel de Vendas', icon: 'storefront', route: '/petshop-panel/dashboard' },
         { label: 'Meus Produtos', icon: 'inventory_2', route: '/petshop-panel/produtos' },
         { label: 'Pedidos', icon: 'shopping_bag', route: '/petshop-panel/pedidos' },
-        { label: 'Chat de Clientes', icon: 'chat', route: '/petshop-panel/chat' }
+        { label: 'Chat de Clientes', icon: 'chat', route: '/petshop-panel/chat' },
       ];
     } else {
       // Default to Admin
@@ -117,7 +120,7 @@ export class DashboardLayout {
         { label: 'Usuários', icon: 'people', route: '/admin/usuarios' },
         { label: 'Moderação de Pets', icon: 'pets', route: '/admin/pets' },
         { label: 'Suporte', icon: 'support_agent', route: '/admin/suporte' },
-        { label: 'Configurações', icon: 'settings', route: '/admin/configuracoes' }
+        { label: 'Configurações', icon: 'settings', route: '/admin/configuracoes' },
       ];
     }
   }

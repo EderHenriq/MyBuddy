@@ -4,7 +4,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Directive({
   selector: '[appDebounce]',
-  standalone: true
+  standalone: true,
 })
 export class DebounceDirective implements OnInit, OnDestroy {
   @Input() debounceTime = 300;
@@ -14,10 +14,7 @@ export class DebounceDirective implements OnInit, OnDestroy {
   private subscription!: Subscription;
 
   ngOnInit() {
-    this.subscription = this.subject.pipe(
-      debounceTime(this.debounceTime),
-      distinctUntilChanged()
-    ).subscribe(value => {
+    this.subscription = this.subject.pipe(debounceTime(this.debounceTime), distinctUntilChanged()).subscribe(value => {
       this.debounceOutput.emit(value);
     });
   }

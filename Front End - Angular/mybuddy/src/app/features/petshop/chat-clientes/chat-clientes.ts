@@ -10,7 +10,7 @@ import { PaginatorComponent } from '../../../shared/components/paginator/paginat
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
   templateUrl: './chat-clientes.html',
-  styleUrl: './chat-clientes.scss'
+  styleUrl: './chat-clientes.scss',
 })
 export class ChatClientes implements OnInit {
   chats: ChatPetshop[] = [];

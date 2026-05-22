@@ -42,7 +42,7 @@ export class Login {
     const { email, password } = this.loginForm.value;
 
     this.authService.loginWithCredentials(email, password).subscribe({
-      next: (res) => {
+      next: res => {
         if (res.isMock) {
           this.isLoading.set(false);
           this.router.navigate(['/home']);

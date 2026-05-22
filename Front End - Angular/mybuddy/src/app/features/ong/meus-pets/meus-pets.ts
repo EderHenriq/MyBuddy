@@ -10,7 +10,7 @@ import { PaginatorComponent } from '../../../shared/components/paginator/paginat
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
   templateUrl: './meus-pets.html',
-  styleUrl: './meus-pets.scss'
+  styleUrl: './meus-pets.scss',
 })
 export class MeusPets implements OnInit {
   pets: MeuPetOng[] = [];

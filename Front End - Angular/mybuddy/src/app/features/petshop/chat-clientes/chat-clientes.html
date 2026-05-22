@@ -9,7 +9,7 @@
       <h2>Conversas Recentes</h2>
       <div class="panel-actions">
         <div class="panel-search-box">
-          <input type="text" placeholder="Buscar chat..." appDebounce (debounceOutput)="onSearch($event)">
+          <input type="text" placeholder="Buscar chat..." appDebounce (debounceOutput)="onSearch($event)" />
           <span class="material-icons">search</span>
         </div>
       </div>
@@ -33,9 +33,7 @@
               <td>{{ item.ultimaMensagem }}</td>
               <td>{{ item.horario }}</td>
               <td>
-                <span class="status-badge" 
-                      [class.pending]="item.status === 'Não Lido'"
-                      [class.active]="item.status === 'Lido'">
+                <span class="status-badge" [class.pending]="item.status === 'Não Lido'" [class.active]="item.status === 'Lido'">
                   {{ item.status }}
                 </span>
               </td>
@@ -51,11 +49,6 @@
     </div>
 
     <!-- Paginação -->
-    <app-paginator 
-      [currentPage]="currentPage" 
-      [totalPages]="totalPages" 
-      (pageChange)="onPageChange($event)">
-    </app-paginator>
-
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
   </section>
 </div>

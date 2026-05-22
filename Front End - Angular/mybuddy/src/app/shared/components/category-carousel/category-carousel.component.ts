@@ -12,7 +12,7 @@ export interface CategoriaVisual {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './category-carousel.component.html',
-  styleUrl: './category-carousel.component.scss'
+  styleUrl: './category-carousel.component.scss',
 })
 export class CategoryCarouselComponent {
   @Input() categories: CategoriaVisual[] = [];

@@ -8,10 +8,7 @@
       @if (page === '...') {
         <span class="ellipsis">...</span>
       } @else {
-        <button 
-          class="page-btn" 
-          [class.active]="page === currentPage" 
-          (click)="goToPage(page)">
+        <button class="page-btn" [class.active]="page === currentPage" (click)="goToPage(page)">
           {{ page }}
         </button>
       }

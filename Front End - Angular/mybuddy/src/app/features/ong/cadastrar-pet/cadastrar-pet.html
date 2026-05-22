@@ -1,7 +1,10 @@
 <main class="cadastrar-pet-page">
   <div class="page-header">
     <div class="header-titles">
-      <a routerLink="/ong/pets" class="back-link"><i class="fas fa-arrow-left"></i> Voltar</a>
+      <a routerLink="/ong/pets" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        Voltar
+      </a>
       <h1>Cadastrar Novo Pet</h1>
       <p>Preencha as informações do animal para disponibilizá-mo para adoção.</p>
     </div>
@@ -9,7 +12,6 @@
 
   <section class="form-section">
     <form [formGroup]="petForm" (ngSubmit)="onSubmit()" class="pet-form">
-      
       <div class="form-row">
         <div class="form-group">
           <label for="nome">Nome do Pet *</label>
@@ -33,7 +35,14 @@
         </div>
         <div class="form-group">
           <label for="idade">Idade (anos) *</label>
-          <input type="number" id="idade" formControlName="idade" min="0" placeholder="Ex: 2" [class.is-invalid]="f['idade'].invalid && f['idade'].touched" />
+          <input
+            type="number"
+            id="idade"
+            formControlName="idade"
+            min="0"
+            placeholder="Ex: 2"
+            [class.is-invalid]="f['idade'].invalid && f['idade'].touched"
+          />
         </div>
       </div>
 
@@ -71,11 +80,23 @@
       <div class="form-row">
         <div class="form-group">
           <label for="cidade">Cidade *</label>
-          <input type="text" id="cidade" formControlName="cidade" placeholder="Ex: São Paulo" [class.is-invalid]="f['cidade'].invalid && f['cidade'].touched" />
+          <input
+            type="text"
+            id="cidade"
+            formControlName="cidade"
+            placeholder="Ex: São Paulo"
+            [class.is-invalid]="f['cidade'].invalid && f['cidade'].touched"
+          />
         </div>
         <div class="form-group">
           <label for="estado">Estado *</label>
-          <input type="text" id="estado" formControlName="estado" placeholder="Ex: SP" [class.is-invalid]="f['estado'].invalid && f['estado'].touched" />
+          <input
+            type="text"
+            id="estado"
+            formControlName="estado"
+            placeholder="Ex: SP"
+            [class.is-invalid]="f['estado'].invalid && f['estado'].touched"
+          />
         </div>
       </div>
 
@@ -98,13 +119,26 @@
       </div>
 
       <div class="form-group photo-upload-group">
-        <label>Fotos do Pet (Adicione uma foto chamativa!)</label>
-        <div class="upload-area" onclick="document.getElementById('fileUpload').click()">
+        <label>Fotos do Pet (Adicione uma foto chamativa!) *</label>
+        <div
+          class="upload-area"
+          [class.dragging]="isDragging"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+          onclick="document.getElementById('fileUpload').click()"
+        >
           <i class="fas fa-cloud-upload-alt"></i>
           <p>Clique ou arraste fotos aqui</p>
-          <input type="file" id="fileUpload" hidden accept="image/*" (change)="onFileChange($event)" />
+          <input type="file" id="fileUpload" hidden accept="image/*" multiple (change)="onFileChange($event)" />
         </div>
-        
+
+        @if (uploadError) {
+          <div class="error-message" style="color: #dc3545; font-size: 0.875rem; margin-top: 0.5rem">
+            {{ uploadError }}
+          </div>
+        }
+
         @if (uploadedImages.length > 0) {
           <div class="image-preview-container">
             @for (img of uploadedImages; track img; let i = $index) {
@@ -118,8 +152,10 @@
       </div>
 
       <div class="form-actions">
-        <a routerLink="/ong/pets" class="btn-secondary">Cancelar</a>
-        <button type="submit" class="btn-primary">Salvar Pet</button>
+        <a routerLink="/ong/pets" class="btn-secondary" [class.disabled]="isSaving">Cancelar</a>
+        <button type="submit" class="btn-primary" [disabled]="isSaving">
+          {{ isSaving ? 'Salvando...' : 'Salvar Pet' }}
+        </button>
       </div>
     </form>
   </section>

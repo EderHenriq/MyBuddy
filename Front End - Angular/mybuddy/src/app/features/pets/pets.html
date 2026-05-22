@@ -1,7 +1,7 @@
 <main class="adoption-page" appInfiniteScroll (scrolled)="onLoadMore()">
-  <section class="search-panel" aria-label="Busca e filtros principais">
+  <section class="search-panel" aria-label="Busca e filtros principais" [formGroup]="filterForm">
     <label class="search-field">
-      <input type="search" placeholder="Buscar pets" appDebounce (debounceOutput)="onSearch($event)" />
+      <input type="search" placeholder="Buscar pets" formControlName="search" />
       <span class="material-icons">search</span>
     </label>
 
@@ -32,10 +32,10 @@
       @for (group of filterGroups; track group.title; let last = $last) {
         <div class="filter-group">
           <h2>{{ group.title }}</h2>
-          <div class="filter-options">
+          <div class="filter-options" [formGroup]="filterForm">
             @for (option of group.options; track option) {
               <label class="filter-option">
-                <input type="checkbox" />
+                <input type="checkbox" [formControlName]="option" />
                 <span>{{ option }}</span>
               </label>
             }
@@ -48,21 +48,39 @@
     </aside>
 
     <div class="pets-area">
-      <div class="pets-grid">
-        @for (pet of pets; track pet.name) {
-          <app-card-pet
-            [imageUrl]="pet.imageUrl"
-            [name]="pet.name"
-            [age]="pet.age"
-            [breed]="pet.breed"
-            [sex]="pet.sex"
-            [vaccinated]="pet.vaccinated"
-            [isFavorite]="pet.isFavorite"
-            (favoriteClick)="toggleFavorite(pet)"
-          ></app-card-pet>
-        }
-      </div>
-      
+      @if (isLoading()) {
+        <div
+          class="loading-state"
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+            color: var(--text-secondary, #666);
+            width: 100%;
+          "
+        >
+          <i class="fas fa-circle-notch fa-spin fa-2x" style="margin-bottom: 1rem; color: var(--primary-color, #ff6b6b)"></i>
+          <p>Buscando os melhores buddies para você...</p>
+        </div>
+      } @else {
+        <div class="pets-grid">
+          @for (pet of pets(); track pet.name) {
+            <app-card-pet
+              [imageUrl]="pet.imageUrl"
+              [name]="pet.name"
+              [age]="pet.age"
+              [breed]="pet.breed"
+              [sex]="pet.sex"
+              [vaccinated]="pet.vaccinated"
+              [isFavorite]="pet.isFavorite"
+              (favoriteClick)="toggleFavorite(pet)"
+            ></app-card-pet>
+          }
+        </div>
+      }
+
       <!-- O carregamento contínuo acontece via Infinite Scroll -->
       <div class="infinite-scroll-loader">
         <p>Rode para baixo para carregar mais pets...</p>

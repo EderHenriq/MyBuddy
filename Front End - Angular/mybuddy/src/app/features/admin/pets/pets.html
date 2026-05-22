@@ -9,12 +9,12 @@
       <h2>Denúncias Recentes</h2>
       <div class="panel-actions">
         <div class="panel-search-box">
-          <input type="text" placeholder="Buscar pet..." appDebounce (debounceOutput)="onSearch($event)">
+          <input type="text" placeholder="Buscar pet..." appDebounce (debounceOutput)="onSearch($event)" />
           <span class="material-icons">search</span>
         </div>
       </div>
     </div>
-    
+
     <div class="table-container">
       <table>
         <thead>
@@ -37,9 +37,7 @@
               <td>{{ item.motivo }}</td>
               <td>{{ item.dataDenuncia }}</td>
               <td>
-                <span class="status-badge" 
-                      [class.pending]="item.status === 'Pendente'"
-                      [class.active]="item.status === 'Analisado'">
+                <span class="status-badge" [class.pending]="item.status === 'Pendente'" [class.active]="item.status === 'Analisado'">
                   {{ item.status }}
                 </span>
               </td>
@@ -48,7 +46,7 @@
                   <span class="material-icons">visibility</span>
                 </button>
                 <button class="action-btn" title="Remover Pet" *ngIf="item.status === 'Pendente'">
-                  <span class="material-icons" style="color: #c62828;">delete</span>
+                  <span class="material-icons" style="color: #c62828">delete</span>
                 </button>
               </td>
             </tr>
@@ -58,11 +56,6 @@
     </div>
 
     <!-- Paginação -->
-    <app-paginator 
-      [currentPage]="currentPage" 
-      [totalPages]="totalPages" 
-      (pageChange)="onPageChange($event)">
-    </app-paginator>
-
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
   </section>
 </div>

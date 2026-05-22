@@ -10,7 +10,7 @@ import { PaginatorComponent } from '../../../shared/components/paginator/paginat
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
   templateUrl: './pets.html',
-  styleUrl: './pets.scss'
+  styleUrl: './pets.scss',
 })
 export class Pets implements OnInit {
   denuncias: PetDenuncia[] = [];

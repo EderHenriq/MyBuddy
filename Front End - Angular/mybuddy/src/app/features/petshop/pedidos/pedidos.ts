@@ -10,7 +10,7 @@ import { PaginatorComponent } from '../../../shared/components/paginator/paginat
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
   templateUrl: './pedidos.html',
-  styleUrl: './pedidos.scss'
+  styleUrl: './pedidos.scss',
 })
 export class Pedidos implements OnInit {
   pedidos: PedidoPetshop[] = [];
