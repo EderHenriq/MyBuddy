@@ -7,8 +7,14 @@
   <section class="dashboard-panel">
     <div class="panel-header">
       <h2>Tickets Recentes</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar ticket..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+      </div>
     </div>
-    
+
     <div class="table-container">
       <table>
         <thead>
@@ -29,19 +35,23 @@
               <td>{{ item.assunto }}</td>
               <td>{{ item.usuario }}</td>
               <td>
-                <span class="type-badge" 
-                      [class.high]="item.prioridade === 'Alta'"
-                      [class.medium]="item.prioridade === 'Média'"
-                      [class.low]="item.prioridade === 'Baixa'">
+                <span
+                  class="type-badge"
+                  [class.high]="item.prioridade === 'Alta'"
+                  [class.medium]="item.prioridade === 'Média'"
+                  [class.low]="item.prioridade === 'Baixa'"
+                >
                   {{ item.prioridade }}
                 </span>
               </td>
               <td>{{ item.data }}</td>
               <td>
-                <span class="status-badge" 
-                      [class.open]="item.status === 'Aberto'"
-                      [class.progress]="item.status === 'Em Andamento'"
-                      [class.resolved]="item.status === 'Resolvido'">
+                <span
+                  class="status-badge"
+                  [class.open]="item.status === 'Aberto'"
+                  [class.progress]="item.status === 'Em Andamento'"
+                  [class.resolved]="item.status === 'Resolvido'"
+                >
                   {{ item.status }}
                 </span>
               </td>
@@ -55,5 +65,8 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
   </section>
 </div>

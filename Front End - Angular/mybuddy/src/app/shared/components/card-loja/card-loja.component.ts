@@ -6,14 +6,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './card-loja.component.html',
-  styleUrl: './card-loja.component.scss'
+  styleUrl: './card-loja.component.scss',
 })
 export class CardLojaComponent {
-  @Input() logoUrl: string = '';
-  @Input() storeName: string = '';
-  @Input() rating: number = 0;
-  @Input() deliveryTime: string = '';
+  @Input() logoUrl = '';
+  @Input() storeName = '';
+  @Input() rating = 0;
+  @Input() deliveryTime = '';
   @Input() deliveryFee?: number;
-  
+
   @Output() storeClick = new EventEmitter<void>();
 }

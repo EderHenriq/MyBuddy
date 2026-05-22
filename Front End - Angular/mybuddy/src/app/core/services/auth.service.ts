@@ -34,7 +34,7 @@ export class AuthService {
     const token = this.getCookie('mybuddy_session');
     if (token) {
       this.inMemoryToken = token;
-      
+
       // Checa se é o token de mock para evitar requisição real
       if (token.startsWith('mock-jwt-token-')) {
         const storedRole = this.sessionService.getCurrentRole();
@@ -96,10 +96,10 @@ export class AuthService {
         const mockToken = 'mock-jwt-token-for-' + mockRole;
         this.inMemoryToken = mockToken;
         this.setCookie('mybuddy_session', mockToken, 3600);
-        
+
         this.sessionService.setRole(mockRole);
         this.currentUser.set(mockProfile);
-        
+
         return of({ access_token: mockToken, profile: mockProfile, isMock: true }).pipe(delay(800));
       }
     }

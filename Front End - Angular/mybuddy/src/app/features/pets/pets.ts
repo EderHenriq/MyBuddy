@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
 import { Footer } from '@shared/components/footer/footer';
+import { InfiniteScrollDirective } from '@shared/directives/infinite-scroll.directive';
+import { DebounceDirective } from '@shared/directives/debounce.directive';
+import { PetService } from '@core/services/pet.service';
 
 interface PetListItem {
   name: string;
@@ -21,11 +26,17 @@ interface FilterGroup {
 @Component({
   selector: 'app-pets',
   standalone: true,
-  imports: [CommonModule, CardPetComponent, Footer],
+  imports: [CommonModule, ReactiveFormsModule, CardPetComponent, Footer, InfiniteScrollDirective, DebounceDirective],
   templateUrl: './pets.html',
   styleUrl: './pets.scss',
 })
-export class Pets {
+export class Pets implements OnInit {
+  private readonly petService = inject(PetService);
+  private readonly fb = inject(FormBuilder);
+
+  readonly isLoading = signal<boolean>(true);
+  readonly pets = signal<PetListItem[]>([]);
+
   readonly filterGroups: FilterGroup[] = [
     {
       title: 'Espécie',
@@ -49,64 +60,57 @@ export class Pets {
     },
   ];
 
-  readonly pets: PetListItem[] = [
-    {
-      name: 'Thor',
-      age: '3 anos',
-      breed: 'Border Collie',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Pêssego',
-      age: '5 anos',
-      breed: 'SRD',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Amora',
-      age: '3 anos',
-      breed: 'Yorkshire',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1588392382834-a891154bca4d?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Francesca',
-      age: '4 anos',
-      breed: 'SRD',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Jade',
-      age: '1 ano',
-      breed: 'Mini Lop',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Armindo',
-      age: '2 anos',
-      breed: 'Rex',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1609151354448-c4a53450c6e9?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-  ];
+  filterForm = this.fb.group({
+    search: ['']
+  });
+
+  constructor() {
+    this.filterGroups.forEach(group => {
+      group.options.forEach(option => {
+        this.filterForm.addControl(option, this.fb.control(false));
+      });
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadPets();
+
+    this.filterForm.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe(values => {
+        console.log('[Página de Pets] Filtros alterados. Refazendo busca...', values);
+        this.isLoading.set(true);
+        setTimeout(() => {
+          // Apenas simula o recarregamento na interface por enquanto
+          this.isLoading.set(false);
+        }, 800);
+      });
+  }
+
+  private loadPets(): void {
+    this.isLoading.set(true);
+    this.petService.getAll().subscribe({
+      next: data => {
+        this.pets.set(data);
+        this.isLoading.set(false);
+      },
+      error: err => {
+        console.error('Erro ao buscar pets:', err);
+        this.isLoading.set(false);
+      },
+    });
+  }
 
   toggleFavorite(pet: PetListItem): void {
     pet.isFavorite = !pet.isFavorite;
+  }
+
+  onSearch(term: string): void {
+    // Agora é controlado pelo filterForm.valueChanges
+  }
+
+  onLoadMore(): void {
+    console.log(`[Página de Pets] Chegou ao fim da tela! Carregando mais pets...`);
+    // Futuro: Fazer request para carregar a próxima página e fazer append no array 'pets'
   }
 }

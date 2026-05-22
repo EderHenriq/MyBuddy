@@ -153,6 +153,41 @@
   }
 }
 
+/* --- Panel Search Box (Reutilizável em Tabelas) --- */
+.panel-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.panel-search-box {
+  position: relative;
+  
+  input {
+    padding: 8px 12px 8px 32px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    outline: none;
+    width: 250px;
+    transition: border-color 0.2s;
+    font-family: inherit;
+
+    &:focus {
+      border-color: var(--primary-color, #ff7900);
+    }
+  }
+
+  .material-icons {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 18px;
+  }
+}
+
 .header-actions {
   display: flex;
   align-items: center;

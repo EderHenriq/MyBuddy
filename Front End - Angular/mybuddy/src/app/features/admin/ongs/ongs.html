@@ -7,11 +7,18 @@
   <section class="dashboard-panel">
     <div class="panel-header">
       <h2>Lista de Parceiros</h2>
-      <div class="actions">
-        <button class="view-all-btn"><span class="material-icons" style="font-size: 16px;">filter_list</span> Filtrar</button>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar parceiro..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+        <button class="view-all-btn">
+          <span class="material-icons" style="font-size: 16px">filter_list</span>
+          Filtrar
+        </button>
       </div>
     </div>
-    
+
     <div class="table-container">
       <table>
         <thead>
@@ -38,10 +45,12 @@
               <td>{{ item.cidade }}</td>
               <td>{{ item.dataCadastro }}</td>
               <td>
-                <span class="status-badge" 
-                      [class.active]="item.status === 'Ativo'" 
-                      [class.pending]="item.status === 'Pendente'"
-                      [class.blocked]="item.status === 'Bloqueado'">
+                <span
+                  class="status-badge"
+                  [class.active]="item.status === 'Ativo'"
+                  [class.pending]="item.status === 'Pendente'"
+                  [class.blocked]="item.status === 'Bloqueado'"
+                >
                   {{ item.status }}
                 </span>
               </td>
@@ -58,5 +67,8 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
   </section>
 </div>

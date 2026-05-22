@@ -8,16 +8,16 @@
       <i class="fa-heart" [class.fa-solid]="isFavorite" [class.fa-regular]="!isFavorite"></i>
     </button>
   </div>
-  
+
   <div class="produto-info">
     <span class="store-name">{{ storeName }}</span>
     <h3 class="produto-title">{{ title }}</h3>
-    
+
     <div class="price-container">
       @if (oldPrice) {
-        <span class="old-price">{{ oldPrice | currency:'BRL':'symbol':'1.2-2' }}</span>
+        <span class="old-price">{{ oldPrice | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
       }
-      <span class="current-price">{{ price | currency:'BRL':'symbol':'1.2-2' }}</span>
+      <span class="current-price">{{ price | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
     </div>
   </div>
 

@@ -1,14 +1,14 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
-import { Role } from '../models/role.model';
+import { Role } from '@core/models/role.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SessionService {
   private platformId = inject(PLATFORM_ID);
-  
+
   private userRoleSubject = new BehaviorSubject<Role | null>(null);
   public userRole$ = this.userRoleSubject.asObservable();
 

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { Footer } from '@shared/components/footer/footer';
+import { UploadService } from '@core/services/upload.service';
 
 @Component({
   selector: 'app-cadastrar-pet',
@@ -13,9 +14,17 @@ import { Footer } from '@shared/components/footer/footer';
 })
 export class CadastrarPet {
   petForm: FormGroup;
-  uploadedImages: string[] = [];
+  uploadedImages: string[] = []; // Para preview
+  selectedFiles: File[] = []; // Para upload real
+  isSaving = false;
+  uploadError: string | null = null;
+  isDragging = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private uploadService: UploadService,
+  ) {
     this.petForm = this.fb.group({
       nome: ['', Validators.required],
       especie: ['', Validators.required],
@@ -29,14 +38,60 @@ export class CadastrarPet {
       estado: ['', Validators.required],
       vacinado: [false],
       castrado: [false],
-      microchipado: [false]
+      microchipado: [false],
     });
   }
 
-  // Simulação de upload
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+    this.processFiles(event.dataTransfer?.files);
+  }
+
   onFileChange(event: any): void {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
+    this.processFiles(event.target.files);
+    // Limpa o input para poder selecionar o mesmo arquivo novamente se for apagado
+    event.target.value = '';
+  }
+
+  private processFiles(files: FileList | null | undefined): void {
+    if (!files || files.length === 0) return;
+    this.uploadError = null;
+
+    const maxFileSize = 5 * 1024 * 1024; // 5MB
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      if (!file.type.startsWith('image/')) {
+        this.uploadError = 'Apenas arquivos de imagem são permitidos.';
+        return;
+      }
+
+      if (file.size > maxFileSize) {
+        this.uploadError = `A imagem ${file.name} excede o limite de 5MB.`;
+        return;
+      }
+
+      if (this.selectedFiles.length >= 3) {
+        this.uploadError = 'Você só pode adicionar até 3 imagens.';
+        return;
+      }
+
+      this.selectedFiles.push(file);
       const reader = new FileReader();
       reader.onload = e => this.uploadedImages.push(reader.result as string);
       reader.readAsDataURL(file);
@@ -45,14 +100,38 @@ export class CadastrarPet {
 
   removeImage(index: number): void {
     this.uploadedImages.splice(index, 1);
+    this.selectedFiles.splice(index, 1);
+    this.uploadError = null; // limpa possível erro ao remover
   }
 
   onSubmit(): void {
     if (this.petForm.valid) {
-      console.log('Dados do Pet:', this.petForm.value);
-      console.log('Imagens:', this.uploadedImages);
-      // Aqui faria o post para o back-end e depois redirecionaria
-      this.router.navigate(['/ong/pets']);
+      if (this.selectedFiles.length === 0) {
+        this.uploadError = 'Adicione ao menos uma foto do pet.';
+        return;
+      }
+
+      console.log('Dados do Pet (Formulário):', this.petForm.value);
+      this.isSaving = true;
+      this.uploadError = null;
+
+      // Envia as imagens primeiro usando o UploadService
+      this.uploadService.uploadImages(this.selectedFiles).subscribe({
+        next: urls => {
+          console.log('Imagens mockadas salvas com sucesso! URLs:', urls);
+          // Aqui você montaria o DTO final e chamaria o backend:
+          // const petData = { ...this.petForm.value, fotosUrls: urls };
+          // this.petService.criarPet(petData).subscribe(...)
+
+          this.isSaving = false;
+          this.router.navigate(['/ong/pets']);
+        },
+        error: err => {
+          console.error('Erro no upload das imagens', err);
+          this.uploadError = 'Erro ao processar imagens. Tente novamente.';
+          this.isSaving = false;
+        },
+      });
     } else {
       Object.keys(this.petForm.controls).forEach(key => {
         const control = this.petForm.get(key);

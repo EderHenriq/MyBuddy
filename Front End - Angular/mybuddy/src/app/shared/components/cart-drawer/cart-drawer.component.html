@@ -1,0 +1,57 @@
+<div class="cart-overlay" [class.open]="isOpen" (click)="close()"></div>
+
+<aside class="cart-drawer" [class.open]="isOpen">
+  <div class="cart-header">
+    <h2>Seu Carrinho ({{ totalItems }})</h2>
+    <button class="close-btn" (click)="close()" aria-label="Fechar carrinho">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="cart-body">
+    @if (items.length === 0) {
+      <div class="empty-cart">
+        <div class="icon-wrapper">
+          <i class="fas fa-shopping-basket"></i>
+        </div>
+        <h3>Seu carrinho está vazio</h3>
+        <p>Adicione produtos para continuar.</p>
+        <button class="continue-btn" (click)="close()">Continuar Comprando</button>
+      </div>
+    } @else {
+      <ul class="cart-items">
+        @for (item of items; track item.id) {
+          <li class="cart-item">
+            <img [src]="item.imageUrl" [alt]="item.name" class="item-img" />
+            <div class="item-info">
+              <h4>{{ item.name }}</h4>
+              @if (item.lojaNome) {
+                <span class="store-name">Vendido por: {{ item.lojaNome }}</span>
+              }
+              <div class="item-price">{{ item.price | currency:'BRL' }}</div>
+              
+              <div class="quantity-controls">
+                <button (click)="updateQuantity(item.id, item.quantity - 1)" aria-label="Diminuir">-</button>
+                <span>{{ item.quantity }}</span>
+                <button (click)="updateQuantity(item.id, item.quantity + 1)" aria-label="Aumentar">+</button>
+              </div>
+            </div>
+            <button class="remove-btn" (click)="removeItem(item.id)" aria-label="Remover item">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  @if (items.length > 0) {
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <strong>{{ totalPrice | currency:'BRL' }}</strong>
+      </div>
+      <button class="checkout-btn">Finalizar Compra</button>
+    </div>
+  }
+</aside>
