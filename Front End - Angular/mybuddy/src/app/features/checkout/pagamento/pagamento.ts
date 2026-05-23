@@ -44,7 +44,7 @@ export class Pagamento implements OnInit {
 
     this.paymentService.createPayment(request).subscribe({
       next: (response) => {
-        window.location.href = response.InitPoint;
+        window.location.href = response.initPoint;
       },
       error: (err) => {
         this.error.set('Ocorreu um erro ao processar o pagamento.');
