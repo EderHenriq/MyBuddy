@@ -12,6 +12,7 @@ import com.Mybuddy.Myb.Model.PaymentStatus;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Repository.PaymentRepository;
 import com.Mybuddy.Myb.Repository.PetRepository;
+import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
@@ -48,11 +49,20 @@ public class PaymentService {
                 .unitPrice(request.amount())
                 .build();
 
-        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
-                .items(List.of(item))
+        PreferenceClient client = new PreferenceClient();
+
+        PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
+                .success("http://localhost/checkout/confirmacao")
+                .failure("http://localhost/checkout/confirmacao")
+                .pending("http://localhost/checkout/confirmacao")
                 .build();
 
-        PreferenceClient client = new PreferenceClient();
+        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+                .items(List.of(item))
+                .backUrls(backUrls)
+                .autoReturn("approved")
+                .build();
+            
         Preference preference = client.create(preferenceRequest);
 
         Payment payment = new Payment();

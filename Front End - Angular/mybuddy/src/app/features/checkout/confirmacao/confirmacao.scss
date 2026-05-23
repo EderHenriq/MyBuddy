@@ -1,0 +1,103 @@
+.confirmacao-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--spacing-md);
+  background-color: var(--surface-ground);
+}
+
+.confirmacao-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-xl);
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+
+.status-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-max);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-md);
+
+  .material-icons {
+    font-size: 48px;
+    color: white;
+  }
+
+  &.approved { background: #22c55e; }
+  &.pending { background: #f59e0b; }
+  &.rejected { background: #ef4444; }
+  &.loading { background: var(--primary-color); }
+}
+
+h2 {
+  margin: 0 0 var(--spacing-sm);
+}
+
+.subtitle {
+  color: var(--text-color-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.payment-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--surface-ground);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-lg);
+
+  .label { color: var(--text-color-secondary); font-size: var(--font-size-sm); }
+  .value { font-weight: var(--font-weight-semibold); }
+}
+
+.confirmacao-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  transition: opacity 0.2s;
+
+  &:hover { opacity: 0.9; }
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  transition: background 0.2s;
+
+  &:hover { background: var(--surface-ground); }
+}
