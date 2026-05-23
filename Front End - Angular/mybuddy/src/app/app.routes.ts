@@ -13,6 +13,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/checkout/pagamento/pagamento').then(m => m.Pagamento),
   },
   {
+    path: 'checkout/confirmacao',
+    loadComponent: () => import('./features/checkout/confirmacao/confirmacao').then(m => m.Confirmacao),
+  },
+  {
     // Redirecionamento inicial para a rota 'home'
     path: '',
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),
