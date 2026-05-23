@@ -60,7 +60,7 @@ export class Pets implements OnInit {
     },
   ];
 
-  filterForm = this.fb.group({
+  filterForm = this.fb.group<Record<string, any>>({
     search: ['']
   });
 
