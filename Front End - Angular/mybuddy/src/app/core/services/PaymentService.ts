@@ -22,7 +22,7 @@ export interface PaymentResponse {
 }
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaymentService {
     private api = inject(ApiService);

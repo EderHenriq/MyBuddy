@@ -6,17 +6,17 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './card-produto.component.html',
-  styleUrl: './card-produto.component.scss'
+  styleUrl: './card-produto.component.scss',
 })
 export class CardProdutoComponent {
-  @Input() imageUrl: string = '';
-  @Input() title: string = '';
+  @Input() imageUrl = '';
+  @Input() title = '';
   @Input() price!: number;
   @Input() oldPrice?: number;
   @Input() storeName!: string;
   @Input() discountBadge?: string;
-  @Input() quantity: number = 0;
-  @Input() isFavorite: boolean = false;
+  @Input() quantity = 0;
+  @Input() isFavorite = false;
 
   @Output() cardClick = new EventEmitter<void>();
   @Output() addToCart = new EventEmitter<number>();

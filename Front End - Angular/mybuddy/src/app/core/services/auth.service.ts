@@ -4,8 +4,10 @@ import { isPlatformBrowser } from '@angular/common';
 import Keycloak from 'keycloak-js';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, tap, catchError, throwError, of, delay } from 'rxjs';
 import { Router } from '@angular/router';
+import { SessionService } from './session.service';
+import { Role } from '../models/role.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +17,7 @@ export class AuthService {
   private keycloak = inject(Keycloak, { optional: true });
   private http = inject(HttpClient);
   private router = inject(Router);
+  private sessionService = inject(SessionService);
 
   private inMemoryToken: string | null = null;
 
@@ -31,6 +34,17 @@ export class AuthService {
     const token = this.getCookie('mybuddy_session');
     if (token) {
       this.inMemoryToken = token;
+
+      // Checa se é o token de mock para evitar requisição real
+      if (token.startsWith('mock-jwt-token-')) {
+        const storedRole = this.sessionService.getCurrentRole();
+        if (storedRole) {
+          const mockProfile = { id: 99, nome: 'Usuário Teste (' + storedRole + ')', email: 'teste@mybuddy.com', roles: [storedRole] };
+          this.currentUser.set(mockProfile);
+          return;
+        }
+      }
+
       this.getProfile().subscribe({
         next: profile => {
           this.currentUser.set(profile);
@@ -59,6 +73,38 @@ export class AuthService {
   }
 
   loginWithCredentials(email: string, password: string): Observable<any> {
+    // --- LÓGICA DE MOCK PARA TESTES SEM BACKEND ---
+    if (password === 'senha123') {
+      let mockRole: Role | null = null;
+      let mockProfile: any = null;
+
+      if (email === 'admin@mybuddy.com') {
+        mockRole = Role.ADMIN;
+        mockProfile = { id: 1, nome: 'Admin Master', email, roles: [Role.ADMIN] };
+      } else if (email === 'ong@mybuddy.com') {
+        mockRole = Role.ONG;
+        mockProfile = { id: 2, nome: 'ONG Anjos', email, roles: [Role.ONG] };
+      } else if (email === 'petshop@mybuddy.com') {
+        mockRole = Role.PETSHOP;
+        mockProfile = { id: 3, nome: 'Petshop Feliz', email, roles: [Role.PETSHOP] };
+      } else if (email === 'user@mybuddy.com') {
+        mockRole = Role.USER;
+        mockProfile = { id: 4, nome: 'Adotante João', email, roles: [Role.USER] };
+      }
+
+      if (mockRole) {
+        const mockToken = 'mock-jwt-token-for-' + mockRole;
+        this.inMemoryToken = mockToken;
+        this.setCookie('mybuddy_session', mockToken, 3600);
+
+        this.sessionService.setRole(mockRole);
+        this.currentUser.set(mockProfile);
+
+        return of({ access_token: mockToken, profile: mockProfile, isMock: true }).pipe(delay(800));
+      }
+    }
+    // --- FIM DA LÓGICA DE MOCK ---
+
     const tokenUrl = `${environment.keycloak.url}/realms/${environment.keycloak.realm}/protocol/openid-connect/token`;
 
     const payload = new HttpParams()
@@ -114,6 +160,7 @@ export class AuthService {
     this.inMemoryToken = null;
     this.deleteCookie('mybuddy_session');
     this.currentUser.set(null);
+    this.sessionService.setRole(null);
 
     if (this.keycloak?.authenticated) {
       if (isPlatformBrowser(this.platformId)) {
@@ -122,7 +169,7 @@ export class AuthService {
         });
       }
     } else {
-      this.router.navigate(['/']);
+      this.router.navigate(['/home']);
     }
   }
 

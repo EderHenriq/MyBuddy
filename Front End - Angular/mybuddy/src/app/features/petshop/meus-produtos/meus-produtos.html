@@ -1,1 +1,71 @@
-<p>meus-produtos works!</p>
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Meus Produtos</h1>
+    <p>Gerencie o catálogo de produtos da sua loja.</p>
+  </div>
+
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Estoque Atual</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar produto..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+        <button
+          class="view-all-btn"
+          style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer"
+        >
+          + Novo Produto
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Categoria</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of produtos; track item.nome) {
+            <tr>
+              <td class="bold-text">{{ item.nome }}</td>
+              <td>{{ item.categoria }}</td>
+              <td>{{ item.preco }}</td>
+              <td>
+                <span [style.color]="item.estoque === 0 ? '#c62828' : 'inherit'" [style.fontWeight]="item.estoque === 0 ? '700' : 'normal'">
+                  {{ item.estoque }} un
+                </span>
+              </td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.active]="item.status === 'Ativo'"
+                  [class.pending]="item.status === 'Pausado'"
+                  [class.blocked]="item.status === 'Esgotado'"
+                >
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn" title="Editar Produto">
+                  <span class="material-icons">edit</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
+  </section>
+</div>

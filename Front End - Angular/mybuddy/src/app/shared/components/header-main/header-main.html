@@ -31,10 +31,82 @@
       </nav>
 
       <div class="quick-btn">
-        <div class="notifications-btn">
-          <button class="btn btn-notifications">
+        @if (userRole === 'ROLE_ADMIN' || userRole === 'ROLE_ONG' || userRole === 'ROLE_PETSHOP') {
+          <div class="panel-btn" style="margin-right: 12px; display: flex; align-items: center">
+            <button
+              class="btn"
+              [routerLink]="panelRoute"
+              title="Acessar Meu Painel"
+              style="
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 45px;
+                height: 45px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background-color 0.2s;
+              "
+            >
+              <span class="material-icons">dashboard</span>
+            </button>
+          </div>
+        }
+
+        <div class="notifications-btn" style="position: relative">
+          <button class="btn btn-notifications" (click)="toggleNotifications()">
             <span class="material-icons">notifications</span>
+            @if (unreadCount > 0) {
+              <span class="notification-badge">{{ unreadCount }}</span>
+            }
           </button>
+
+          @if (isNotificationsOpen) {
+            <div class="notifications-dropdown">
+              <div class="dropdown-header">
+                <h4>Notificações</h4>
+                @if (unreadCount > 0) {
+                  <button class="mark-all-btn" (click)="markAllAsRead($event)">Marcar todas como lidas</button>
+                }
+              </div>
+              <div class="dropdown-body">
+                @if (notifications.length === 0) {
+                  <div class="empty-notifications">
+                    <span class="material-icons">notifications_none</span>
+                    <p>Nenhuma notificação por enquanto</p>
+                  </div>
+                }
+                @for (notif of notifications; track notif.id) {
+                  <div class="notification-item" [class.unread]="!notif.read">
+                    <div class="notif-icon" [ngClass]="notif.type">
+                      <i
+                        class="fas"
+                        [ngClass]="{
+                          'fa-info-circle': notif.type === 'info',
+                          'fa-check-circle': notif.type === 'success',
+                          'fa-exclamation-triangle': notif.type === 'warning',
+                          'fa-times-circle': notif.type === 'error',
+                        }"
+                      ></i>
+                    </div>
+                    <div class="notif-content">
+                      <p class="notif-title">{{ notif.title }}</p>
+                      <p class="notif-message">{{ notif.message }}</p>
+                      <span class="notif-date">{{ notif.date }}</span>
+                    </div>
+                    @if (!notif.read) {
+                      <button class="mark-read-btn" (click)="markAsRead(notif.id, $event)" title="Marcar como lida">
+                        <i class="fas fa-circle"></i>
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
         </div>
 
         <div class="profile-btn">

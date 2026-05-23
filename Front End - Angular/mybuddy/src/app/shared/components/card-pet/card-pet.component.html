@@ -32,16 +32,23 @@
     <div class="pet-actions">
       @if (ongMode) {
         <button class="action-btn edit-btn" (click)="editClick.emit()">
-          <i class="fas fa-edit"></i> Editar
+          <i class="fas fa-edit"></i>
+          Editar
         </button>
         <button class="action-btn delete-btn" (click)="deleteClick.emit()">
-          <i class="fas fa-trash-alt"></i> Remover
+          <i class="fas fa-trash-alt"></i>
+          Remover
         </button>
       } @else {
         <a class="info-link" (click)="openModal()">Mais Informações &rarr;</a>
-        <button class="favorite-btn" [class.active]="isFavorite" (click)="favoriteClick.emit()">
-          <i class="fa-heart" [ngClass]="isFavorite ? 'fas' : 'far'"></i>
-        </button>
+        <div style="display: flex; gap: 0.5rem">
+          <button class="favorite-btn" (click)="sharePet()" aria-label="Compartilhar">
+            <i class="fas fa-share-nodes"></i>
+          </button>
+          <button class="favorite-btn" [class.active]="isFavorite" (click)="favoriteClick.emit()">
+            <i class="fa-heart" [ngClass]="isFavorite ? 'fas' : 'far'"></i>
+          </button>
+        </div>
       }
     </div>
   </div>
@@ -61,15 +68,27 @@
     <div class="modal-image-wrapper">
       <img [src]="imageUrl" [alt]="name" class="modal-image" />
     </div>
-    
+
     <div class="modal-info">
       <h3>{{ name }}</h3>
-      
+
       <div class="modal-tags">
-        <span class="tag"><strong>Idade:</strong> {{ age }}</span>
-        <span class="tag"><strong>Raça:</strong> {{ breed }}</span>
-        <span class="tag"><strong>Sexo:</strong> {{ sex }}</span>
-        <span class="tag"><strong>Vacinado:</strong> {{ vaccinated }}</span>
+        <span class="tag">
+          <strong>Idade:</strong>
+          {{ age }}
+        </span>
+        <span class="tag">
+          <strong>Raça:</strong>
+          {{ breed }}
+        </span>
+        <span class="tag">
+          <strong>Sexo:</strong>
+          {{ sex }}
+        </span>
+        <span class="tag">
+          <strong>Vacinado:</strong>
+          {{ vaccinated }}
+        </span>
       </div>
 
       <div class="modal-description">

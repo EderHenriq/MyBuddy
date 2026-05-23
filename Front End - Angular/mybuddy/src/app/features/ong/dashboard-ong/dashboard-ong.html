@@ -1,1 +1,32 @@
-<p>dashboard-ong works!</p>
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Visão Geral da ONG</h1>
+    <p>Acompanhe o impacto da sua instituição.</p>
+  </div>
+
+  <section class="metrics-grid">
+    @for (metric of metrics; track metric.title) {
+      <div class="metric-card">
+        <div class="metric-icon" [style.backgroundColor]="metric.color + '20'" [style.color]="metric.color">
+          <span class="material-icons">{{ metric.icon }}</span>
+        </div>
+        <div class="metric-info">
+          <h3>{{ metric.value }}</h3>
+          <p>{{ metric.title }}</p>
+        </div>
+      </div>
+    }
+  </section>
+
+  <div class="dashboard-row">
+    <section class="dashboard-panel chart-panel">
+      <div class="panel-header">
+        <h2>Adoções no Semestre</h2>
+      </div>
+      <div class="chart-placeholder">
+        <span class="material-icons">show_chart</span>
+        <p>Gráfico de adoções entrará aqui</p>
+      </div>
+    </section>
+  </div>
+</div>

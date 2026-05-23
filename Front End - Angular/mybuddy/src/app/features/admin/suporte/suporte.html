@@ -1,0 +1,72 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Central de Suporte</h1>
+    <p>Gerencie os chamados e dúvidas dos usuários da plataforma.</p>
+  </div>
+
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Tickets Recentes</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar ticket..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Assunto</th>
+            <th>Usuário</th>
+            <th>Prioridade</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of tickets; track item.id) {
+            <tr>
+              <td class="bold-text">{{ item.id }}</td>
+              <td>{{ item.assunto }}</td>
+              <td>{{ item.usuario }}</td>
+              <td>
+                <span
+                  class="type-badge"
+                  [class.high]="item.prioridade === 'Alta'"
+                  [class.medium]="item.prioridade === 'Média'"
+                  [class.low]="item.prioridade === 'Baixa'"
+                >
+                  {{ item.prioridade }}
+                </span>
+              </td>
+              <td>{{ item.data }}</td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.open]="item.status === 'Aberto'"
+                  [class.progress]="item.status === 'Em Andamento'"
+                  [class.resolved]="item.status === 'Resolvido'"
+                >
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn" title="Responder">
+                  <span class="material-icons">reply</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
+  </section>
+</div>

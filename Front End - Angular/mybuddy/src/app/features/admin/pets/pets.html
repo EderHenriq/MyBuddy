@@ -1,0 +1,61 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Moderação de Pets</h1>
+    <p>Acompanhe denúncias e pets reportados na plataforma.</p>
+  </div>
+
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Denúncias Recentes</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar pet..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome do Pet</th>
+            <th>ONG Responsável</th>
+            <th>Motivo da Denúncia</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of denuncias; track item.id) {
+            <tr>
+              <td>#{{ item.id }}</td>
+              <td class="bold-text">{{ item.nomePet }}</td>
+              <td>{{ item.ong }}</td>
+              <td>{{ item.motivo }}</td>
+              <td>{{ item.dataDenuncia }}</td>
+              <td>
+                <span class="status-badge" [class.pending]="item.status === 'Pendente'" [class.active]="item.status === 'Analisado'">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn" title="Ver Detalhes">
+                  <span class="material-icons">visibility</span>
+                </button>
+                <button class="action-btn" title="Remover Pet" *ngIf="item.status === 'Pendente'">
+                  <span class="material-icons" style="color: #c62828">delete</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
+  </section>
+</div>

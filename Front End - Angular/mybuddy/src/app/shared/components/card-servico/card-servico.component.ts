@@ -6,19 +6,19 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './card-servico.component.html',
-  styleUrl: './card-servico.component.scss'
+  styleUrl: './card-servico.component.scss',
 })
 export class CardServicoComponent {
-  @Input() imageUrl: string = '';
-  @Input() title: string = '';
-  @Input() type: string = '';
-  @Input() rating: number = 0;
-  @Input() reviewsCount: number = 0;
-  @Input() locationStr: string = '';
-  @Input() distanceStr: string = '';
-  @Input() openHoursStr: string = '';
-  @Input() description: string = '';
-  @Input() isFavorite: boolean = false;
+  @Input() imageUrl = '';
+  @Input() title = '';
+  @Input() type = '';
+  @Input() rating = 0;
+  @Input() reviewsCount = 0;
+  @Input() locationStr = '';
+  @Input() distanceStr = '';
+  @Input() openHoursStr = '';
+  @Input() description = '';
+  @Input() isFavorite = false;
 
   @Output() detailsClick = new EventEmitter<void>();
   @Output() favoriteClick = new EventEmitter<void>();

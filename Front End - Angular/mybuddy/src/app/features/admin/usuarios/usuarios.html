@@ -1,0 +1,65 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Usuários (Adotantes)</h1>
+    <p>Lista de todas as pessoas que se cadastraram para adotar na plataforma.</p>
+  </div>
+
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Lista de Adotantes</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar usuário..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+        <button class="view-all-btn">
+          <span class="material-icons" style="font-size: 16px">filter_list</span>
+          Filtrar
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Cidade</th>
+            <th>Data de Cadastro</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of usuarios; track item.id) {
+            <tr>
+              <td>#{{ item.id }}</td>
+              <td class="bold-text">{{ item.nome }}</td>
+              <td>{{ item.email }}</td>
+              <td>{{ item.cidade }}</td>
+              <td>{{ item.dataCadastro }}</td>
+              <td>
+                <span class="status-badge" [class.active]="item.status === 'Ativo'" [class.inactive]="item.status === 'Inativo'">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn" title="Ver Detalhes">
+                  <span class="material-icons">visibility</span>
+                </button>
+                <button class="action-btn" title="Suspender">
+                  <span class="material-icons">block</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
+  </section>
+</div>

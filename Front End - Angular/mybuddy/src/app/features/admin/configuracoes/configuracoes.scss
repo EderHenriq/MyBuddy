@@ -1,0 +1,64 @@
+@import '../dashboard/dashboard.scss';
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 600px;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      font-weight: 700;
+      color: #1e1e2d;
+      font-size: 0.9rem;
+    }
+
+    input, select {
+      padding: 0.75rem 1rem;
+      border: 1px solid #d9d9d9;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+
+      &:focus {
+        border-color: var(--primary-color, #ff7900);
+      }
+
+      &:disabled {
+        background-color: #f4f6f8;
+        color: #6c757d;
+        cursor: not-allowed;
+      }
+    }
+
+    small {
+      color: #a2a3b7;
+      font-size: 0.8rem;
+    }
+  }
+
+  .form-actions {
+    margin-top: 1rem;
+    
+    .save-btn {
+      background-color: var(--primary-color, #ff7900);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #e66a00;
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Chat de Clientes</h1>
+    <p>Responda dúvidas e negocie diretamente com os compradores.</p>
+  </div>
+
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Conversas Recentes</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar chat..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Última Mensagem</th>
+            <th>Horário</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of chats; track item.cliente) {
+            <tr>
+              <td class="bold-text">{{ item.cliente }}</td>
+              <td>{{ item.ultimaMensagem }}</td>
+              <td>{{ item.horario }}</td>
+              <td>
+                <span class="status-badge" [class.pending]="item.status === 'Não Lido'" [class.active]="item.status === 'Lido'">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn" title="Abrir Chat">
+                  <span class="material-icons">chat</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
+  </section>
+</div>

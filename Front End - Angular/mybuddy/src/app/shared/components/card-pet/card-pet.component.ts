@@ -16,13 +16,14 @@ export class CardPetComponent {
   @Input() breed = '';
   @Input() sex = '';
   @Input() vaccinated = 'Sim';
-  @Input() description = 'Olá! Eu sou muito dócil, brincalhão e estou ansioso para encontrar uma família que me dê muito amor e carinho. Já estou pronto para ser seu novo melhor amigo!';
+  @Input() description =
+    'Olá! Eu sou muito dócil, brincalhão e estou ansioso para encontrar uma família que me dê muito amor e carinho. Já estou pronto para ser seu novo melhor amigo!';
   @Input() badgeText = '';
   @Input() badgeType: 'adoption' | 'adopted' | '' = '';
   @Input() isFavorite = false;
   @Input() showTopHeart = false;
   @Input() ongMode = false;
-  
+
   @Output() infoClick = new EventEmitter<void>();
   @Output() favoriteClick = new EventEmitter<void>();
   @Output() adoptClick = new EventEmitter<void>();
@@ -39,5 +40,24 @@ export class CardPetComponent {
   handleAdopt(): void {
     this.isModalVisible = false;
     this.adoptClick.emit();
+  }
+
+  async sharePet() {
+    const shareData = {
+      title: `Adote o ${this.name} - MyBuddy`,
+      text: `Conheça o ${this.name}! Ele tem ${this.age} e é da raça ${this.breed}.`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error('Erro ao compartilhar:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copiado para a área de transferência!');
+    }
   }
 }

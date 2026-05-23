@@ -1,0 +1,60 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Meus Eventos de Adoção</h1>
+    <p>Organize eventos presenciais para ajudar seus pets a encontrarem lares.</p>
+  </div>
+
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Próximos Eventos</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar evento..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+        <button
+          class="view-all-btn"
+          style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer"
+        >
+          + Novo Evento
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome do Evento</th>
+            <th>Local</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of eventos; track item.nome) {
+            <tr>
+              <td class="bold-text">{{ item.nome }}</td>
+              <td>{{ item.local }}</td>
+              <td>{{ item.data }}</td>
+              <td>
+                <span class="status-badge" [class.pending]="item.status === 'Agendado'" [class.active]="item.status === 'Concluído'">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="action-btn" title="Editar Evento">
+                  <span class="material-icons">edit</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
+  </section>
+</div>

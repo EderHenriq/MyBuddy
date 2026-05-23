@@ -564,8 +564,139 @@
   .my-data-card,
   .permissions-panel,
   .messages-panel,
-  .settings-panel {
+  .settings-panel,
+  .history-panel {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+}
+
+// Estilos da aba de Histórico
+.history-panel {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+
+  .timeline-container {
+    position: relative;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: #f1f3f5;
+      border-radius: 2px;
+    }
+
+    .empty-state {
+      padding: 2rem;
+      text-align: center;
+      color: #98a2b3;
+
+      i {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.5;
+      }
+
+      p {
+        margin: 0;
+        font-weight: 600;
+      }
+    }
+
+    .timeline-item {
+      position: relative;
+      display: flex;
+      gap: 1.25rem;
+
+      .timeline-icon {
+        position: absolute;
+        left: -32px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid #ffffff;
+        box-shadow: 0 0 0 1px #e4e7ec;
+
+        i {
+          font-size: 0.75rem;
+        }
+
+        &.auth {
+          background-color: #e0e7ff;
+          color: #4f46e5;
+        }
+
+        &.pet {
+          background-color: #fce7f3;
+          color: #db2777;
+        }
+
+        &.system {
+          background-color: #f3f4f6;
+          color: #4b5563;
+        }
+
+        &.adoption {
+          background-color: #dcfce7;
+          color: #16a34a;
+        }
+      }
+
+      .timeline-content {
+        flex: 1;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-sm, 0 4px 6px rgba(0, 0, 0, 0.05));
+        }
+
+        .timeline-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.5rem;
+          gap: 1rem;
+
+          h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #1e293b;
+          }
+
+          .timeline-date {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #64748b;
+            white-space: nowrap;
+          }
+        }
+
+        p {
+          margin: 0;
+          font-size: 0.85rem;
+          color: #475569;
+          line-height: 1.4;
+        }
+      }
+    }
   }
 }
