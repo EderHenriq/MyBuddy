@@ -9,6 +9,10 @@ export const routes: Routes = [
     loadComponent: () => import('./shared/components/empty-state/empty-state').then(m => m.EmptyState),
   },
   {
+    path: 'checkout/pagamento',
+    loadComponent: () => import('./features/checkout/pagamento/pagamento').then(m => m.Pagamento),
+  },
+  {
     // Redirecionamento inicial para a rota 'home'
     path: '',
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),
