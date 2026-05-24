@@ -1,6 +1,16 @@
 <div class="card">
   <div class="card-img">
     <img [src]="pet?.imageUrl" [alt]="pet?.name" />
+
+    @if (badgeText) {
+      <span class="pet-badge" [ngClass]="badgeType">{{ badgeText }}</span>
+    }
+
+    @if (showTopHeart && !ongMode) {
+      <button class="top-heart-btn" (click)="favoriteClick.emit($event)">
+        <span class="material-icons">{{ isFavorite ? 'favorite' : 'favorite_border' }}</span>
+      </button>
+    }
   </div>
 
   <div class="card-header">
@@ -17,13 +27,74 @@
   </div>
 
   <footer class="card-actions">
-    <button class="infos">
-      Mais informações
-      <span class="material-icons">arrow_forward</span>
-    </button>
+    @if (ongMode) {
+      <button class="btn-admin edit" (click)="editClick.emit($event)">
+        <span class="material-icons">edit</span>
+        Editar
+      </button>
 
-    <button class="favorite">
-      <span class="material-icons">favorite</span>
-    </button>
+      <button class="btn-admin delete" (click)="deleteClick.emit($event)">
+        <span class="material-icons">delete</span>
+        Excluir
+      </button>
+    } @else {
+      <button class="infos" (click)="openModal()">
+        Mais informações
+        <span class="material-icons">arrow-forward</span>
+      </button>
+
+      @if (showFavoriteButtoon) {
+        <button class="favorite" [class.active]="isFavorite" (click)="favoriteClick.emit($event)">
+          <span class="material-icons">{{ isFavorite ? 'favorite' : 'favorite_border' }}</span>
+        </button>
+      }
+    }
   </footer>
 </div>
+
+@if (isModalVisible) {
+  <app-modal
+    [(visible)]="isModalVisible"
+    [title]="'Sobre o ' + pet?.name"
+    width="550px"
+    [showFooter]="true"
+    confirmLabel="Quero Adotar"
+    cancelLabel="Fechar"
+    [backgroundBlur]="true"
+    (confirm)="handleAdopt()"
+  >
+    <div class="pet-modal-content">
+      <div class="modal-image-wrapper">
+        <img [src]="pet?.imageUrl" [alt]="pet?.name" class="modal-image" />
+      </div>
+
+      <div class="modal-info">
+        <h3>{{ pet?.name }}</h3>
+
+        <div class="modal-tags">
+          <span class="tag">
+            <strong>Idade:</strong>
+            {{ pet?.age }}
+          </span>
+          <span class="tag">
+            <strong>Raça:</strong>
+            {{ pet?.breed }}
+          </span>
+          <span class="tag">
+            <strong>Sexo:</strong>
+            {{ pet?.gender }}
+          </span>
+          <span class="tag">
+            <strong>Vacinado:</strong>
+            {{ pet?.isVaccinated ? 'Sim' : 'Não' }}
+          </span>
+        </div>
+
+        <div class="modal-description">
+          <h4>Apresentação</h4>
+          <p>{{ pet?.description || 'Nenhuma descrição informada.' }}</p>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+}

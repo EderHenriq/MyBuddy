@@ -10,11 +10,44 @@
   gap: var(--spacing-xxs);
 
   .card-img {
+    position: relative;
+    width: 100%;
+
     img {
       aspect-ratio: 3/2;
       width: 100%;
       border-radius: var(--radius-lg);
       object-fit: cover;
+    }
+
+    .pet-badge {
+      position: absolute;
+      top: var(--spacing-xs);
+      left: var(--spacing-xs);
+      padding: var(--spacing-xxs) var(--spacing-xs);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      border-radius: var(--radius-sm);
+      color: var(--text-color-white);
+      background-color: var(--primary-color);
+
+      //Lembrete: Alterar isso depois
+      &.urgent { background-color: #d32f2f;}
+      &.adopted { background-color: #2e7d32;}
+    }
+
+    .top-heart-btn {
+      position: absolute;
+      top: var(--spacing-xs);
+      right: var(--spacing-xs);
+      border: none;
+      background: rgba(255,255,255,0.8);
+      border-radius: var(--radius-max);
+      width: 32px;
+      height: 32px;
+      @include flex-center;
+      color: #d32f2f; //Isso daqui também
+      cursor: pointer;
     }
   }
 
@@ -71,10 +104,45 @@
       border-radius: var(--radius-max);
       background-color: var(--primary-color);
       color: var(--text-color-white);
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &.active {
+        background-color: #d32f2f; //E isso também
+      }
+    }
+
+    .btn-admin {
+      @include flex-center;
+      gap: var(--spacing-xs);
+      flex: 1;
+      padding: var(--spacing-xxs) var(--spacing-xs);
+      border-radius: var(--radius-md);
+      font-family: var(--font-family-primary);
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-sm);
+      border: none;
+      cursor: pointer;
+
+      //Lembrete: essas funções aqui tbm
+      &.edit {
+        background-color: #f5f5f5;
+        color: var(--primary-color);
+      }
+
+      &.delete {
+        background-color: #ffebee;
+        color: #d32f2f;
+      }
     }
 
     .footer {
       padding: 0 var(--spacing-xs);
     }
   }
+}
+
+.pet-modal-content {
+  @include flex-column;
+  gap: var(--spacing-md);
 }
