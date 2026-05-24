@@ -43,7 +43,7 @@
         <span class="material-icons">arrow-forward</span>
       </button>
 
-      @if (showFavoriteButtoon) {
+      @if (showFavoriteButton) {
         <button class="favorite" [class.active]="isFavorite" (click)="favoriteClick.emit($event)">
           <span class="material-icons">{{ isFavorite ? 'favorite' : 'favorite_border' }}</span>
         </button>
@@ -60,7 +60,7 @@
     [showFooter]="true"
     confirmLabel="Quero Adotar"
     cancelLabel="Fechar"
-    [backgroundBlur]="true"
+    [backdropBlur]="true"
     (confirm)="handleAdopt()"
   >
     <div class="pet-modal-content">
