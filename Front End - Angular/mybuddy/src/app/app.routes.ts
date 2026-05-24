@@ -6,7 +6,7 @@ export const routes: Routes = [
   {
     //Rota de testes de componentes
     path: 'cards',
-    loadComponent: () => import('./shared/components/cards/cards').then(m => m.Cards),
+    loadComponent: () => import('./shared/components/cards/cards-test.component').then(m => m.CardsTestComponent),
   },
 
   {

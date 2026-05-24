@@ -48,27 +48,6 @@
         color: #1e8e3e;
       }
     }
-
-    .top-heart-btn {
-      position: absolute;
-      top: var(--spacing-xs);
-      right: var(--spacing-xs);
-      border: none;
-      background: rgba(255,255,255,0.8);
-      border-radius: var(--radius-max);
-      width: 32px;
-      height: 32px;
-      @include flex-center;
-      color: var(--primary-color);
-      cursor: pointer;
-      z-index: 2;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-
-      &:hover {
-        transform: scale(1.1);
-      }
-    }
   }
 
   .card-header {
@@ -115,7 +94,7 @@
       font-size: var(--font-size-md);
       font-weight: var(--font-weight-semibold);
       padding: 0;
-
+      
       &:hover {
         color: var(--primary-color);
       }

@@ -5,12 +5,6 @@
     @if (badgeText) {
       <span class="pet-badge" [ngClass]="badgeType">{{ badgeText }}</span>
     }
-
-    @if (showTopHeart && !ongMode) {
-      <button class="top-heart-btn" (click)="favoriteClick.emit($event)">
-        <span class="material-icons">{{ isFavorite ? 'favorite' : 'favorite_border' }}</span>
-      </button>
-    }
   </div>
 
   <div class="card-header">
