@@ -27,6 +27,8 @@ export class Cards {
 
   isModalVisible = false;
 
+  defaultDescription = 'Olá! Eu sou pet?.name e estou ansioso para encontrar um novo lar.';
+
   openModal() {
     this.isModalVisible = true;
   }
