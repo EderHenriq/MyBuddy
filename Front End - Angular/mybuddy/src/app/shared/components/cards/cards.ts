@@ -27,7 +27,10 @@ export class Cards {
 
   isModalVisible = false;
 
-  defaultDescription = 'Olá! Eu sou pet?.name e estou ansioso para encontrar um novo lar.';
+  get defaultDescription(): string {
+    const nomePet = this.pet?.name ? `o ${this.pet.name}` : 'um pet';
+    return `Olá! Eu sou ${nomePet} e estou ansioso para encontrar um novo lar.`;
+  }
 
   openModal() {
     this.isModalVisible = true;
