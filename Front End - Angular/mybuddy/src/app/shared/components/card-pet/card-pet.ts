@@ -7,8 +7,8 @@ import { ModalComponent } from '../modal/modal.component';
   selector: 'app-cards',
   standalone: true,
   imports: [NgClass, ModalComponent],
-  templateUrl: './cards.html',
-  styleUrl: './cards.scss',
+  templateUrl: './card-pet.html',
+  styleUrl: './card-pet.scss',
 })
 export class Cards {
   @Input() pet?: Pet;
