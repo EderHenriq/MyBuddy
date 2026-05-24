@@ -53,7 +53,6 @@
     width="550px"
     [showFooter]="true"
     confirmLabel="Quero Adotar"
-    cancelLabel="Fechar"
     [backdropBlur]="true"
     (confirm)="handleAdopt()"
   >
@@ -63,7 +62,12 @@
       </div>
 
       <div class="modal-info">
-        <h3>{{ pet?.name }}</h3>
+        <div class="modal-description">
+          <h4>Apresentação</h4>
+          <p>{{ pet?.description || defaultDescription }}</p>
+        </div>
+
+        <h3 class="info-title">Informações</h3>
 
         <div class="modal-tags">
           <span class="tag">
@@ -82,11 +86,6 @@
             <strong>Vacinado:</strong>
             {{ pet?.isVaccinated ? 'Sim' : 'Não' }}
           </span>
-        </div>
-
-        <div class="modal-description">
-          <h4>Apresentação</h4>
-          <p>{{ pet?.description || defaultDescription }}</p>
         </div>
       </div>
     </div>

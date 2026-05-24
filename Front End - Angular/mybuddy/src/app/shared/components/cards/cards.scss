@@ -169,15 +169,19 @@
 //Estilização do Modal do Card
 .pet-modal-content {
   @include flex-column;
-  gap: var(--spacing-md);
-  padding: var(--spacing-xs) 0;
+  gap: var(--spacing-sm);
 
   .modal-image-wrapper {
     width: 100%;
+    background-color: #f8fafc;
+    border-radius: var(--radius-md);
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
 
     img {
       width: 100%;
-      max-height: 260px;
+      height: 300px;
       object-fit: cover;
       border-radius: var(--radius-md);
     }
@@ -186,13 +190,16 @@
   .modal-info {
     @include flex-column;
     gap: var(--spacing-md);
+    padding: 0 var(--spacing-xxs);
 
-    h2 {
+    .info-title {
       font-family: var(--font-family-secondary);
-      font-size: var(--font-size-xxl);
+      font-size: var(--font-size-lg);
       font-weight: var(--font-weight-bold);
       color: var(--text-color);
       margin: 0;
+      border-bottom: 2px solid var(--surface-ground);
+      padding-bottom: var(--spacing-xxs);
     }
 
     .modal-tags {
@@ -202,10 +209,9 @@
 
       .tag {
         background-color: var(--surface-ground);
-        padding: var(--spacing-xs) var(--spacing-sm);
+        padding: var(--spacing-xs);
         border-radius: var(--radius-sm);
         font-size: var(--font-size-sm);
-        font-family: var(--font-family-secondary);
         @include flex-start;
         gap: var(--spacing-xxs);
 
