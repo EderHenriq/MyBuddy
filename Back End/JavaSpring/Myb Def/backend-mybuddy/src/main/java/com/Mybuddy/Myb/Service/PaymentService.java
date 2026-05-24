@@ -54,7 +54,7 @@ public class PaymentService {
         PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
                 .success("http://localhost/checkout/confirmacao")
                 .failure("http://localhost/checkout/confirmacao")
-                .pending("http://localhost/checkout/confirmacao")
+                .pending("http://localhost/checkout/pendente")
                 .build();
 
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
