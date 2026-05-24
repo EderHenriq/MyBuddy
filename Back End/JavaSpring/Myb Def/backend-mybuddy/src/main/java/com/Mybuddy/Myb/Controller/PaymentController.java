@@ -114,4 +114,23 @@ public class PaymentController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/preference/{mpPreferenceId}")
+    public ResponseEntity<PaymentResponseDTO> getPaymentByPreferenceId(
+            @PathVariable String mpPreferenceId) {
+        Payment payment = paymentService.findByMpPreferenceId(mpPreferenceId)
+                .orElseThrow(() -> new RuntimeException("Payment não encontrado: " + mpPreferenceId));
+
+        return ResponseEntity.ok(new PaymentResponseDTO(
+                payment.getId(),
+                payment.getMpPreferenceId(),
+                payment.getMpPaymentId(),
+                payment.getUsuario().getId(),
+                payment.getPet() != null ? payment.getPet().getId() : null,
+                payment.getAmount(),
+                payment.getStatus(),
+                null,
+                payment.getCreatedAt(),
+                payment.getUpdatedAt()));
+    }
 }

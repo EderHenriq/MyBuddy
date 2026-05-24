@@ -45,6 +45,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**",
                                                                 "/swagger-ui.html")
                                                 .permitAll()
+                                                .requestMatchers("/api/payments/preference/**").permitAll()
                                                 .requestMatchers("/api/payments/webhook").permitAll()
                                                 .anyRequest().authenticated())
                                 .headers(headers -> headers
