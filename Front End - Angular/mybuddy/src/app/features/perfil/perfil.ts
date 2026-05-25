@@ -2,7 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
+import { CardPetComponent } from '@shared/components/card-pet/card-pet';
 import { Footer } from '@shared/components/footer/footer';
 import { AuthService } from '@core/services/auth.service';
 

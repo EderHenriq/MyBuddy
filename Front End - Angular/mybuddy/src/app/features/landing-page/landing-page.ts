@@ -8,6 +8,7 @@ import { Pet } from '@core/models/pet.model';
 //Imports de Componentes
 import { HeaderLandingPage } from '@shared/components/header-landing-page/header-landing-page';
 import { CardCategoriaComponent } from '@shared/components/card-categoria/card-categoria.component';
+import { CardPetComponent } from '@shared/components/card-pet/card-pet';
 
 interface Services {
   title: string;
@@ -17,11 +18,13 @@ interface Services {
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderLandingPage, CardCategoriaComponent],
+  imports: [CommonModule, RouterModule, HeaderLandingPage, CardCategoriaComponent, CardPetComponent],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.scss',
 })
 export class LandingPage {
+  activePetIndex = 0;
+
   services: Services[] = [
     {
       title: 'Veterinários',
@@ -44,4 +47,44 @@ export class LandingPage {
     { src: '/assets/logo/logo-parceiros/logo4.svg', alt: 'Logo Parceiro 4' },
     { src: '/assets/logo/logo-parceiros/logo5.svg', alt: 'Logo Parceiro 5' },
   ];
+
+  pets: Pet[] = [
+    {
+      id: '1',
+      ownerId: '1',
+      name: 'Nevasca',
+      age: 3,
+      species: 'Gato',
+      breed: 'Vira-lata',
+      gender: 'Fêmea',
+      isVaccinated: true,
+      imageUrl: '../../../../public/assets/placeholders/pets/Nevasca.jpg',
+    },
+    {
+      id: '2',
+      ownerId: '2',
+      name: 'Paçoca',
+      age: 5,
+      species: 'Cachorro',
+      breed: 'Vira-lata',
+      gender: 'Macho',
+      isVaccinated: true,
+      imageUrl: '../../../../public/assets/placeholders/pets/Paçoca.jpg',
+    },
+    {
+      id: '3',
+      ownerId: '3',
+      name: 'Armindo',
+      age: 1,
+      species: 'Coelho',
+      breed: 'Rex',
+      gender: 'Macho',
+      isVaccinated: true,
+      imageUrl: '../../../../public/assets/placeholders/pets/Armindo.png',
+    },
+  ];
+
+  setCarouselPet(index: number): void {
+    this.activePetIndex = index;
+  }
 }

@@ -90,5 +90,37 @@
         está esperando por um lar.
       </h2>
     </header>
+
+    <div class="carousel-container">
+      <div class="carousel-track" role="region" aria-live="polite">
+        @for (pet of pets; track pet.id; let idx = $index) {
+          <div
+            class="carousel-slide"
+            [class.activeSlide]="activePetIndex === idx"
+            (click)="setCarouselPet(idx)"
+            (keydown.enter)="setCarouselPet(idx)"
+            role="button"
+            tabindex="0"
+          >
+            <app-card-pet [pet]="pet"></app-card-pet>
+          </div>
+        }
+      </div>
+
+      <nav class="carousel-dots" aria-label="Controle de carrossel">
+        @for (pet of pets; track pet.id; let idx = $index) {
+          <button
+            class="dot"
+            [class.active]="activePetIndex === idx"
+            (click)="setCarouselPet(idx)"
+            aria-label="'Ir para o slide ' + (idx + 1)"
+          ></button>
+        }
+      </nav>
+
+      <div class="view-all-container">
+        <a routerLink="/auth/login" class="view-all-link">Ver todos os pets disponíveis &rarr</a>
+      </div>
+    </div>
   </section>
 </main>

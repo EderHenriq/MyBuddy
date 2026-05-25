@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
+import { CardPetComponent } from '@shared/components/card-pet/card-pet';
 import { Footer } from '@shared/components/footer/footer';
 
 interface PetListItem {

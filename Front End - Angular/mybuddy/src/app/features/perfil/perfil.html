@@ -256,12 +256,7 @@
           <div class="pets-grid">
             @for (pet of buddies(); track pet.name) {
               <app-card-pet
-                [imageUrl]="pet.imageUrl"
-                [name]="pet.name"
-                [age]="pet.age"
-                [breed]="pet.breed"
-                [sex]="pet.sex"
-                [vaccinated]="pet.vaccinated"
+                [pet]="pet"
                 [badgeText]="pet.badgeText"
                 [badgeType]="pet.badgeType"
                 [isFavorite]="pet.isFavorite"
@@ -330,7 +325,7 @@
             <p class="eyebrow">Atividades</p>
             <h2>Seu Histórico Recente</h2>
           </div>
-          
+
           <div class="timeline-container">
             @if ((history$ | async)?.length === 0) {
               <div class="empty-state">

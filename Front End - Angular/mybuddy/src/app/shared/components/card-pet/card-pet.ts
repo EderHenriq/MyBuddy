@@ -1,16 +1,16 @@
-import { Pet } from '../../../core/models/pet.model';
+import { Pet } from '@core/models/pet.model';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { ModalComponent } from '../modal/modal.component';
 
 @Component({
-  selector: 'app-cards',
+  selector: 'app-card-pet',
   standalone: true,
   imports: [NgClass, ModalComponent],
   templateUrl: './card-pet.html',
   styleUrl: './card-pet.scss',
 })
-export class Cards {
+export class CardPetComponent {
   @Input() pet?: Pet;
 
   @Input() ongMode = false;
