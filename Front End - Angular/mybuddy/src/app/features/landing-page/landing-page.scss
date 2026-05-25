@@ -538,7 +538,8 @@
   overflow: hidden;
   box-shadow: var(--shadow-lg);
 
-  iframe {
+  #leaflet-map {
+    position: absolute;
     position: absolute;
     top: 0;
     left: 0;
@@ -547,5 +548,8 @@
     border: 0;
     border-radius: var(--radius-lg);
     display: block;
+    filter: saturate(0.5) hue-rotate(195deg) brightness(1.02) contrast(0.98);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-xxl);
   }
 }

@@ -145,18 +145,35 @@
 
       <div class="map-visual-col">
         <div class="map-container-mock">
-          <iframe
-            [src]="mapUrl"
-            width="100%"
-            height="100%"
-            style="border: 0; border-radius: var(--radius-lg)"
-            allowfullscreen=""
-            loading="lazy"
-            title="Mapa indicando locais de feiras de adoção próximas"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
+          <div id="leaflet-map"></div>
         </div>
       </div>
     </div>
   </section>
+
+  <section class="faq-section" aria-labelledby="faq-title">
+    <header class="section-header">
+      <h2 id="faq-title" class="faq-headline">
+        <span class="highlight">Antes</span>
+        de você adotar...
+      </h2>
+    </header>
+
+    <div class="faq-container">
+      @for (faq of faqs; track faq.question; let idx = $index) {
+        <div class="faq-item" [class.expanded]="faq.expanded">
+          <button class="faq-trigger" (click)="toggleFaq(idx)" [aria-expanded]="faq.expanded">
+            <span class="faq-question">{{ faq.question }}</span>
+            <span class="material-icons faq-arrow" aria-hidden="true">{{ faq.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_right' }}</span>
+          </button>
+
+          <div class="faq-content" [hidden]="!faq.expanded">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
 </main>
+
+<app-footer></app-footer>
