@@ -437,3 +437,127 @@
     }
   }
 }
+
+//Estilização da sessão de Mapa
+.map-section {
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  @include devices('tablet-sm'){
+    padding: 100px var(--spacing-xxl);
+  };
+
+  .map-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+    max-width: 1280px;
+    margin: 0 auto;
+    text-align: center;
+
+    @include devices("tablet-sm"){
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xxl);
+      text-align: left;
+    }
+  }
+
+  .map-text-col {
+    @include flex-column;
+
+    .map-title {
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-xxl);
+      font-weight: var(--font-weight-bold);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--text-color);
+      margin-bottom: 0;
+
+      @include devices('tablet-sm'){
+        font-size: var(--font-size-xxxl);
+      }
+    }
+
+    .map-description {
+      font-family: var(--font-family-secondary);
+      font-size: var(--font-size-md);
+      line-height: 1.45;
+      letter-spacing: -0.005em;
+      color: var(--text-color);
+      margin: 0 auto;
+      max-width: 480px;
+
+      @include devices('tablet-sm'){
+        font-size: var(--font-size-lg);
+        margin: 0;
+        max-width: 544px;
+      }
+    }
+
+    .map-actions {
+      display: flex;
+      justify-content: center;
+
+      @include devices('tablet-sm'){
+        justify-content: flex-start;
+      }
+
+      button, .btn {
+        @include flex-center;
+        flex-direction: row;
+        padding: var(--spacing-sm) var(--spacing-sm);
+        gap: var(--spacing-xs);
+        width: 228px;
+        height: 50px;
+        background: var(--primary-color);
+        border-radius: var(--radius-xl);
+        color: var(--text-color-white);
+        font-family: var(--font-family-primary);
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-lg);
+        line-height: 1.45;
+        border: none;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .map-visual-col {
+    .map-container-mock {
+      position: relative;
+      height: 320px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      border: 1px solid #e9ecef;
+
+      @include devices('tablet-sm'){
+        height: 493px;
+      }
+    }
+
+    .map-overlay-pin {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+
+      .pin-icons {
+        font-size: var(--font-size-xxxl);
+        color: var(--primary-color);
+        text-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        animation: bounce 2s infinite;
+      }
+    }
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
