@@ -62,7 +62,7 @@ class InteresseAdocaoServiceTest {
     // ===================== MANIFESTAR INTERESSE =====================
 
     @Test
-    void deveManifestарInteresseComSucesso() {
+    void deveManifestrarInteresseComSucesso() {
         when(usuarioRepo.findById(1L)).thenReturn(Optional.of(usuario));
         when(petRepo.findById(1L)).thenReturn(Optional.of(pet));
         when(interesseRepo.existsByUsuarioAndPet(usuario, pet)).thenReturn(false);
