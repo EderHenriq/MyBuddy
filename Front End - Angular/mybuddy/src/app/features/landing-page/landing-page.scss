@@ -618,7 +618,7 @@
     @include flex-between;
     align-items: center;
     width: 100%;
-    padding: 26px var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
     background: none;
     border: none;
     cursor: pointer;
@@ -650,12 +650,12 @@
   }
 
   .faq-content {
-    padding: 0 var(--spacing-lg) var(--spacing-xxxl);
+    padding: 0 var(--spacing-lg);
 
     p {
       font-family: var(--font-family-secondary);
       font-weight: var(--font-weight-regular);
-      font-size: var(--font-size-md);
+      font-size: var(--font-size-lg);
       line-height: 166%;
       color: #6f6c8f;
       max-width: 721px;

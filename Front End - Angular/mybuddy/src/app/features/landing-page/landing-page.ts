@@ -200,33 +200,51 @@ export class LandingPage implements OnInit, OnDestroy, AfterViewInit {
 
   faqs: FaqItem[] = [
     {
-      question: 'Quais são os requisitos para adotar um pet?',
+      question: 'Como funciona o processo de adoção pelo MyBuddy?',
       answer:
-        'É necessário ser maior de 18 anos, apresentar documento de identidade e comprovante de residência. Alguns animais podem ter requisitos específicos definidos pela ONG responsável.',
+        'Você escolhe o pet na plataforma, preenche um pequeno cadastro e a ONG responsável entra em contato para entender melhor o seu perfil. Depois disso, vocês combinam uma visita ou vídeo-chamada e, estando tudo certo, a adoção é formalizada com um termo de responsabilidade.',
       expanded: false,
     },
     {
-      question: 'O processo de adoção tem algum custo?',
+      question: 'Em quanto tempo a adoção é concluída?',
       answer:
-        'A adoção em si é gratuita. Em alguns casos, a ONG pode solicitar uma contribuição simbólica para cobrir custos de vacinação, castração ou microchipagem do animal.',
+        'O prazo pode variar conforme a ONG e o perfil do pet, mas, em geral, o processo leva de alguns dias a poucas semanas. Esse tempo é importante para a análise do perfil, entrevistas e alinhamento de expectativas entre tutor e instituição.',
       expanded: false,
     },
     {
-      question: 'Posso adotar mesmo morando em apartamento?',
+      question: 'Já tenho outros animais em casa. Posso adotar?',
       answer:
-        'Sim! Muitos pets se adaptam muito bem a apartamentos. O mais importante é garantir espaço adequado, enriquecimento ambiental e tempo de qualidade com o animal.',
+        'Sim, muitos adotantes têm outros pets. Nesse caso, a ONG pode orientar sobre a apresentação gradual entre os animais e avaliar se o novo pet tem um perfil compatível com os que já vivem no lar.',
       expanded: false,
     },
     {
-      question: 'Como funciona o período de adaptação?',
+      question: 'E se a adoção não der certo?',
       answer:
-        'Recomendamos um período de adaptação de 7 a 30 dias. Durante esse tempo, o animal conhece o novo lar e a família. É normal que ele fique tímido ou agitado no início.',
+        'Algumas ONGs trabalham com um período de experiência e podem solicitar a devolução do animal caso a adaptação realmente não funcione, sempre priorizando o bem-estar do pet. Em qualquer situação, o ideal é manter contato com a instituição para buscar orientação antes de tomar decisões.',
       expanded: false,
     },
     {
-      question: 'Existe acompanhamento após a adoção?',
+      question: 'Quais cuidados preciso ter antes da chegada do pet?',
       answer:
-        'Sim. As ONGs parceiras do MyBuddy realizam acompanhamento pós-adoção por meio de contato periódico para garantir o bem-estar do animal e apoiar o novo tutor.',
+        'É importante preparar o ambiente com itens básicos, como pote de água, pote de ração, caminha e, se possível, brinquedos. Também vale retirar objetos perigosos, proteger janelas e organizar um cantinho tranquilo para o novo membro da família.',
+      expanded: false,
+    },
+    {
+      question: 'O pet já é vacinado e castrado?',
+      answer:
+        'Depende da ONG e do histórico do animal. Muitas instituições entregam o pet já vacinado e castrado ou com a castração agendada, e essa informação é indicada durante o processo de adoção.',
+      expanded: false,
+    },
+    {
+      question: 'Quais custos terei depois da adoção?',
+      answer:
+        'Além de alimentação e itens básicos, é importante considerar consultas veterinárias, vacinas anuais, antiparasitários e eventuais emergências. A adoção é um compromisso de longo prazo, que envolve tanto tempo quanto recursos financeiros.',
+      expanded: false,
+    },
+    {
+      question: 'O MyBuddy é responsável pelos animais?',
+      answer:
+        'O MyBuddy conecta tutores a ONGs e protetores parceiros. Cada pet continua sob responsabilidade da ONG até a formalização da adoção, e as regras específicas de cada instituição são apresentadas durante o processo.',
       expanded: false,
     },
   ];
