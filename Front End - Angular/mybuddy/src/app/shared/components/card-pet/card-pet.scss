@@ -185,7 +185,7 @@
 //Estilização do Modal do Card
 .pet-modal-content {
   @include flex-column;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
 
   .modal-image-wrapper {
     width: 100%;
@@ -194,6 +194,7 @@
     display: flex;
     justify-content: center;
     overflow: hidden;
+    margin-bottom: var(--spacing-xs);
 
     img {
       width: 100%;
@@ -205,7 +206,7 @@
 
   .modal-info {
     @include flex-column;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
     padding: 0 var(--spacing-xxs);
 
     .info-title {

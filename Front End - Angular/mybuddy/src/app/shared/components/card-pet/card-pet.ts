@@ -24,6 +24,7 @@ export class CardPetComponent {
   @Output() editClick = new EventEmitter<Event>();
   @Output() deleteClick = new EventEmitter<Event>();
   @Output() favoriteClick = new EventEmitter<Event>();
+  @Output() openModalRequest = new EventEmitter<void>();
 
   isModalVisible = false;
 
@@ -33,6 +34,7 @@ export class CardPetComponent {
   }
 
   openModal() {
+    this.openModalRequest.emit();
     this.isModalVisible = true;
   }
 

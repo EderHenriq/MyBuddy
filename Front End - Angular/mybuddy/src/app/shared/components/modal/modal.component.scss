@@ -9,12 +9,12 @@
     font-family: var(--font-family-secondary);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
-    padding-bottom: var(--spacing-xs);
+    padding-bottom: 0;
+    padding-top: 16px;
   }
 
-  .p-dialog-content {
-    padding-top: 2px !important;
-    padding-bottom: var(--spacing-md);
+  .p-dialog .p-dialog-content {
+    padding: 0 24px 24px 24px !important;
   }
 
   .dialog-footer {

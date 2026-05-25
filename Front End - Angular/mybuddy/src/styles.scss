@@ -163,6 +163,11 @@ html, body {
   font-family: var(--font-family);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
+  padding-bottom: 10px !important;
+}
+
+.p-dialog-content {
+  padding-top: 10px !important;
 }
 
 .myb-dialog-blur {
