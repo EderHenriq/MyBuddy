@@ -92,11 +92,11 @@
     </header>
 
     <div class="carousel-container">
-      <div class="carousel-track" role="region" aria-live="polite" [style.transform]="carouselTransform">
+      <div class="carousel-track" role="region" aria-live="polite" (mouseenter)="stopAutoplay()" (mouseleave)="startAutoplay()">
         @for (pet of pets; track pet.id; let idx = $index) {
           <div
             class="carousel-slide"
-            [class.activeSlide]="activePetIndex === idx"
+            [ngClass]="getSlideClass(idx)"
             (click)="setCarouselPet(idx)"
             (keydown.enter)="setCarouselPet(idx)"
             role="button"
@@ -113,7 +113,7 @@
             class="dot"
             [class.active]="activePetIndex === idx"
             (click)="setCarouselPet(idx)"
-            aria-label="'Ir para o slide ' + (idx + 1)"
+            [attr.aria-label]="'Ir para o slide ' + (idx + 1)"
           ></button>
         }
       </nav>

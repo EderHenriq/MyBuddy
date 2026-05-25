@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 //Imports de Interface
@@ -22,8 +22,59 @@ interface Services {
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.scss',
 })
-export class LandingPage {
+export class LandingPage implements OnInit, OnDestroy {
   activePetIndex = 0;
+  private autoplayInterval: ReturnType<typeof setInterval> | null = null;
+  private readonly AUTOPLAY_DELAY = 3000;
+  private platformId = inject(PLATFORM_ID);
+
+  ngOnInit(): void {
+    this.startAutoplay();
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoplay();
+  }
+
+  getSlidePosition(idx: number): number {
+    const total = this.pets.length;
+    let diff = idx - this.activePetIndex;
+
+    if (diff > Math.floor(total / 2)) diff -= total;
+    if (diff < -Math.floor(total / 2)) diff += total;
+
+    return diff;
+  }
+
+  getSlideClass(idx: number): Record<string, boolean> {
+    const pos = this.getSlidePosition(idx);
+    return {
+      activeSlide: pos === 0,
+      leftSlide: pos === -1,
+      rightSlide: pos === 1,
+    };
+  }
+
+  startAutoplay(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    this.stopAutoplay();
+    this.autoplayInterval = setInterval(() => {
+      this.activePetIndex = (this.activePetIndex + 1) % this.pets.length;
+    }, this.AUTOPLAY_DELAY);
+  }
+
+  stopAutoplay(): void {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
+    }
+  }
+
+  setCarouselPet(index: number): void {
+    this.activePetIndex = index;
+    this.startAutoplay();
+  }
 
   services: Services[] = [
     {
@@ -83,23 +134,4 @@ export class LandingPage {
       imageUrl: '/assets/placeholders/pets/Armindo.png',
     },
   ];
-
-  setCarouselPet(index: number): void {
-    this.activePetIndex = index;
-  }
-
-  get carouselTransform(): string {
-    const activeWidth = 345;
-    const inactiveWidth = 307;
-    const gap = -20;
-
-    let offset = 0;
-
-    for (let i = 0; i < this.activePetIndex; i++) {
-      offset += (i === this.activePetIndex ? activeWidth : inactiveWidth) + gap * 2;
-    }
-
-    const centerOffset = 'calc(50% - ${activeWidth / 2}px - ${offset}px';
-    return 'translateX(${centerOffset})';
-  }
 }

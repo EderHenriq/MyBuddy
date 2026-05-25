@@ -1,7 +1,7 @@
 @use '../../../styles/mixins' as *;
 
 //Estilização do corpo do Hero
-.landing-page-content{
+.landing-page-content {
   width: 100%;
   margin: 0 auto;
 }
@@ -39,7 +39,7 @@
   gap: var(--spacing-md);
 }
 
-.hero-text-col{
+.hero-text-col {
   position: relative;
   @include flex-column;
   gap: var(--spacing-md);
@@ -72,7 +72,6 @@
   line-height: 1.45;
   letter-spacing: -0.005em;
   color: var(--text-color-white);
-
 }
 
 .btn-cta {
@@ -103,8 +102,8 @@
   }
 
   &:active {
-      transform: translateY(0);
-    }
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 1023px) {
@@ -160,7 +159,7 @@
   line-height: 1.45;
   letter-spacing: -0.005em;
   color: var(--text-color-secondary);
-  text-shadow: 1px 1px 16px rgba(0,0,0,0.22);
+  text-shadow: 1px 1px 16px rgba(0, 0, 0, 0.22);
   margin: 0;
 }
 
@@ -171,7 +170,7 @@
   line-height: 1.45;
   letter-spacing: -0.005em;
   color: var(--text-color-black);
-  text-shadow: 1px 1px 16px rgba(0,0,0,0.22);
+  text-shadow: 1px 1px 16px rgba(0, 0, 0, 0.22);
   margin: 0;
 
   .highlight {
@@ -215,7 +214,7 @@
   width: 100%;
   box-sizing: border-box;
 
-  @include devices('tablet-sm'){
+  @include devices('tablet-sm') {
     padding: var(--spacing-xl) var(--spacing-md);
   }
 }
@@ -225,14 +224,14 @@
   line-height: 1.45;
   text-align: center;
   letter-spacing: -0.005em;
-  color: rgba(0,0,0,0.55);
+  color: rgba(0, 0, 0, 0.55);
   margin: 0;
   max-width: 1280px;
   width: 100%;
   padding: var(--spacing-xxl);
   box-sizing: border-box;
 
-  @include devices('tablet-sm'){
+  @include devices('tablet-sm') {
     padding: 0 var(--spacing-md);
   }
 }
@@ -240,13 +239,7 @@
 .marquee-wrapper {
   overflow: hidden;
   width: 100%;
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 10%,
-    black 90%,
-    transparent 100%
-  );
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 
 .marquee-inner {
@@ -269,8 +262,12 @@
 }
 
 @keyframes marqueeScroll {
-  from { transform: translateX(0);}
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 //Estilização dos Cards em Carrossel
@@ -280,12 +277,13 @@
   align-items: center;
   justify-content: center;
   padding: 80px var(--spacing-xxl);
-  gap: var(--spacing-xl);
+  gap: var(--spacing-md);
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   box-sizing: border-box;
   position: relative;
+  overflow: visible;
 }
 
 .pet-section .section-header {
@@ -323,7 +321,6 @@
 //Container do Carrossel
 .carousel-container {
   width: 100%;
-  overflow: hidden;
   @include flex-column;
   align-items: center;
   gap: var(--spacing-md);
@@ -332,34 +329,60 @@
 .carousel-track {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   align-items: center;
   width: 100%;
+  height: 620px;
+  position: relative;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .carousel-slide {
+  position: absolute;
   cursor: pointer;
   outline: none;
-  flex-shrink: 0;
-  transition: transform 0.5s cubic-bezier(0.4,0,0.2,1), filter 0.4s ease, opacity 0.4s ease;
-  position: relative;
-  margin: 0 -35px;
+  transition:
+    left 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.4s ease,
+    opacity 0.4s ease,
+    width 0.4s ease
+    height 0.4s ease;
+  opacity: 0;
+  pointer-events: none;
 
-  //Cards em estado inativo
-  width: 307px;
-  filter: blur(2px);
-  opacity: 0.6;
-  z-index: 1;
-  transform: scale(0.92);
-  margin: 0 -20px;
+  //Cards na posição esquerda
+  &.leftSlide {
+    left: calc(50% - 172.5px - 200px);
+    width: 307px;
+    filter: blur(2px);
+    opacity: 0.6;
+    z-index: 1;
+    transform: scale(0.92);
+    pointer-events: auto;
+  }
 
-  //Card em estado ativo
+  //Card na posição central (Ativo)
   &.activeSlide {
+    left: calc(50% - 172.5px);
     width: 345px;
+    height: 596px;
     filter: blur(0);
     opacity: 1;
     z-index: 3;
     transform: scale(1);
+    pointer-events: auto;
+  }
+
+  //Card na posição direita
+  &.rightSlide {
+    left: calc(50% + 172.5px - 107px);
+    width: 307px;
+    filter: blur(2px);
+    opacity: 0.6;
+    z-index: 1;
+    transform: scale(0.92);
+    pointer-events: auto;
   }
 }
 
