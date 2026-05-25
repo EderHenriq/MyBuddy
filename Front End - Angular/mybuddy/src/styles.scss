@@ -3,6 +3,7 @@
 @use 'styles/forms' as *;
 @import "material-icons/iconfont/material-icons.css";
 @import '@fortawesome/fontawesome-free/css/all.min.css';
+@import "leaflet/dist/leaflet.css";
 
 html, body {
   margin: 0;

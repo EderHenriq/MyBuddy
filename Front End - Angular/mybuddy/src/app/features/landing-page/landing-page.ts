@@ -1,6 +1,7 @@
 import { Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import * as L from 'leaflet';
 
 //Imports de Interface
 import { Pet } from '@core/models/pet.model';
@@ -9,11 +10,15 @@ import { Pet } from '@core/models/pet.model';
 import { HeaderLandingPage } from '@shared/components/header-landing-page/header-landing-page';
 import { CardCategoriaComponent } from '@shared/components/card-categoria/card-categoria.component';
 import { CardPetComponent } from '@shared/components/card-pet/card-pet';
+import { error } from 'console';
 
 interface Services {
   title: string;
   imageUrl: string;
 }
+
+const DEFAULT_LAT = -23.4273;
+const DEFAULT_LNG = -51.9375;
 
 @Component({
   selector: 'app-landing-page',
@@ -27,15 +32,54 @@ export class LandingPage implements OnInit, OnDestroy {
   private autoplayInterval: ReturnType<typeof setInterval> | null = null;
   private readonly AUTOPLAY_DELAY = 3000;
   private platformId = inject(PLATFORM_ID);
+  private map!: L.Map;
 
   ngOnInit(): void {
     this.startAutoplay();
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.initMap();
+    }
   }
 
   ngOnDestroy(): void {
     this.stopAutoplay();
   }
 
+  // Sessão de Mapa
+  private initMap(lat: number = DEFAULT_LAT, lng: number = DEFAULT_LNG): void {
+    this.map = L.map('leaflet-map', {
+      center: [lat, lng],
+      zoom: 14,
+      zoomControl: false,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap',
+    }).addTo(this.map);
+
+    this.loadMapByUserLocation();
+  }
+
+  private loadMapByUserLocation(): void {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        if (this.map) {
+          this.map.setView([coords.latitude, coords.longitude], 14);
+        }
+      },
+      error => {
+        console.warn('Geolocalização indisponível, mantendo padrão:', error.message);
+      },
+    );
+  }
+
+  //Animação do Carroussel
   getSlidePosition(idx: number): number {
     const total = this.pets.length;
     let diff = idx - this.activePetIndex;
@@ -76,6 +120,7 @@ export class LandingPage implements OnInit, OnDestroy {
     this.startAutoplay();
   }
 
+  //Dados Estáticos
   services: Services[] = [
     {
       title: 'Veterinários',
