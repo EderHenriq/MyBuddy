@@ -87,4 +87,19 @@ export class LandingPage {
   setCarouselPet(index: number): void {
     this.activePetIndex = index;
   }
+
+  get carouselTransform(): string {
+    const activeWidth = 345;
+    const inactiveWidth = 307;
+    const gap = -20;
+
+    let offset = 0;
+
+    for (let i = 0; i < this.activePetIndex; i++) {
+      offset += (i === this.activePetIndex ? activeWidth : inactiveWidth) + gap * 2;
+    }
+
+    const centerOffset = 'calc(50% - ${activeWidth / 2}px - ${offset}px';
+    return 'translateX(${centerOffset})';
+  }
 }

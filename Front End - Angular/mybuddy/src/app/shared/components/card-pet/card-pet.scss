@@ -1,5 +1,11 @@
 @use '../../../../styles/mixins' as *;
 
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 //Estilização do Card
 .card {
   @include flex-column;

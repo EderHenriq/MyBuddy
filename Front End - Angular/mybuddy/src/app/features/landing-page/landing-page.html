@@ -92,7 +92,7 @@
     </header>
 
     <div class="carousel-container">
-      <div class="carousel-track" role="region" aria-live="polite">
+      <div class="carousel-track" role="region" aria-live="polite" [style.transform]="carouselTransform">
         @for (pet of pets; track pet.id; let idx = $index) {
           <div
             class="carousel-slide"
