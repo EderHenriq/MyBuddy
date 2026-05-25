@@ -256,7 +256,7 @@
           <div class="pets-grid">
             @for (pet of buddies(); track pet.name) {
               <app-card-pet
-                [pet]="pet"
+                [pet]="$any(pet)"
                 [badgeText]="pet.badgeText"
                 [badgeType]="pet.badgeType"
                 [isFavorite]="pet.isFavorite"
@@ -276,12 +276,7 @@
           <div class="pets-grid">
             @for (pet of favorites(); track pet.name) {
               <app-card-pet
-                [imageUrl]="pet.imageUrl"
-                [name]="pet.name"
-                [age]="pet.age"
-                [breed]="pet.breed"
-                [sex]="pet.sex"
-                [vaccinated]="pet.vaccinated"
+                [pet]="$any(pet)"
                 [badgeText]="pet.badgeText"
                 [badgeType]="pet.badgeType"
                 [isFavorite]="pet.isFavorite"
@@ -333,7 +328,7 @@
                 <p>Nenhuma atividade registrada.</p>
               </div>
             }
-            @for (item of (history$ | async); track item.id) {
+            @for (item of history$ | async; track item.id) {
               <div class="timeline-item">
                 <div class="timeline-icon" [ngClass]="item.type">
                   <i [class]="item.icon"></i>
@@ -371,10 +366,11 @@
               <strong>{{ user().emailNotifications ? 'Recebe notificações' : 'Sem notificações' }}</strong>
             </div>
           </div>
-          <div class="settings-actions" style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <div class="settings-actions" style="display: flex; gap: 1rem; margin-top: 1.5rem">
             <button type="button" class="primary-action compact" (click)="startEditing()">Editar preferências</button>
-            <button type="button" class="secondary-action compact" (click)="logout()" style="border-color: #dc3545; color: #dc3545;">
-              <i class="fas fa-sign-out-alt"></i> Sair do Sistema
+            <button type="button" class="secondary-action compact" (click)="logout()" style="border-color: #dc3545; color: #dc3545">
+              <i class="fas fa-sign-out-alt"></i>
+              Sair do Sistema
             </button>
           </div>
         </section>

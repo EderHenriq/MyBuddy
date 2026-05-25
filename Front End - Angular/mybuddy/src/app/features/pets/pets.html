@@ -50,16 +50,7 @@
     <div class="pets-area">
       <div class="pets-grid">
         @for (pet of pets; track pet.name) {
-          <app-card-pet
-            [imageUrl]="pet.imageUrl"
-            [name]="pet.name"
-            [age]="pet.age"
-            [breed]="pet.breed"
-            [sex]="pet.sex"
-            [vaccinated]="pet.vaccinated"
-            [isFavorite]="pet.isFavorite"
-            (favoriteClick)="toggleFavorite(pet)"
-          ></app-card-pet>
+          <app-card-pet [pet]="$any(pet)" [isFavorite]="pet.isFavorite" (favoriteClick)="toggleFavorite(pet)"></app-card-pet>
         }
       </div>
 

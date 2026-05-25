@@ -58,7 +58,7 @@ export class LandingPage {
       breed: 'Vira-lata',
       gender: 'Fêmea',
       isVaccinated: true,
-      imageUrl: '../../../../public/assets/placeholders/pets/Nevasca.jpg',
+      imageUrl: '/assets/placeholders/pets/Nevasca.jpg',
     },
     {
       id: '2',
@@ -69,7 +69,7 @@ export class LandingPage {
       breed: 'Vira-lata',
       gender: 'Macho',
       isVaccinated: true,
-      imageUrl: '../../../../public/assets/placeholders/pets/Paçoca.jpg',
+      imageUrl: '/assets/placeholders/pets/Paçoca.jpg',
     },
     {
       id: '3',
@@ -80,7 +80,7 @@ export class LandingPage {
       breed: 'Rex',
       gender: 'Macho',
       isVaccinated: true,
-      imageUrl: '../../../../public/assets/placeholders/pets/Armindo.png',
+      imageUrl: '/assets/placeholders/pets/Armindo.png',
     },
   ];
 
