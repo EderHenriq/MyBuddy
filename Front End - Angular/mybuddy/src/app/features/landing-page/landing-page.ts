@@ -57,7 +57,7 @@ export class LandingPage implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  // Sessão de Mapa
+  // Seção de Mapa
   private async initMap(lat = DEFAULT_LAT, lng = DEFAULT_LNG): Promise<void> {
     const L = await import('leaflet');
 
@@ -131,7 +131,7 @@ export class LandingPage implements OnInit, OnDestroy, AfterViewInit {
     this.startAutoplay();
   }
 
-  //Sessão de FAQ
+  //Seção de FAQ
   toggleFaq(index: number): void {
     if (index >= 0 && index < this.faqs.length) {
       this.faqs[index].expanded = !this.faqs[index].expanded;

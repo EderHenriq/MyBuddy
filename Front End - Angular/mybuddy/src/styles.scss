@@ -11,11 +11,17 @@ html, body {
   font-family: var(--font-family-primary);
   background-color: var(--surface-ground);
   width: 100%;
+
+  scrollbar-width: none; //Oculta o scrollbar em navegadores Firefox
+  &::-webkit-scrollbar {
+    display: none; //Oculta o scrollbar no Safari e navegadores baseados em chromium
+  }
 }
+
 
 :root {
   //Tokens das paletas de cores definidas no escopo do projeto.
-  --primary-color: #ff7900;
+  --primary-color: #ff7b00;
   --secondary-color: #5d831c;
   --accent-color: #2C3E50;
 
