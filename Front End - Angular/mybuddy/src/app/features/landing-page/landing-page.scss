@@ -275,11 +275,12 @@
 
 //Estilização dos Cards em Carrossel
 .pet-section {
-  @include flex-center;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xxxl) var(--spacing-xxl);
-  gap: var(--spacing-lg);
+  padding: 80px var(--spacing-xxl);
+  gap: var(--spacing-xl);
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -287,18 +288,53 @@
   position: relative;
 }
 
-.carousel-container {
-  width: 100%;
+.pet-section .section-header {
   @include flex-column;
   align-items: center;
-  gap: var(--spacing-lg);
+  text-align: center;
+  max-width: 872px;
+  width: 100%;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.pet-section .section-title {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-bold);
+  font-size: 40px;
+  line-height: 145%;
+  color: var(--text-color);
+  margin: 0;
+
+  .highlight {
+    color: var(--primary-color);
+    font-weight: var(--font-weight-bold);
+  }
+}
+
+.pet-section .section-subtitle {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xl);
+  color: var(--text-color-secondary);
+  margin: 0;
+}
+
+//Container do Carrossel
+.carousel-container {
+  width: 100%;
+  max-width: 1280px;
+  @include flex-column;
+  align-items: center;
+  gap: 0;
 }
 
 .carousel-track {
   @include flex-center;
-  gap: var(--spacing-md);
+  flex-direction: row;
+  gap: -40px;
   width: 100%;
-  min-height: 610px;
+  min-height: 620px;
   position: relative;
 }
 
@@ -306,12 +342,15 @@
   cursor: pointer;
   outline: none;
   transition: transform 0.3s ease, filter 0.3s ease;
+  position: relative;
+  margin: 0 -35px;
 
   //Cards em estados inativos
   width: 307px;
   height: 496px;
   filter: blur(2px);
-  opacity: 0.8;
+  opacity: 0.6;
+  z-index: 1;
 
   //Card em estado activo
   &.activeSlide {
@@ -319,7 +358,7 @@
     height: 596px;
     filter: blur(0);
     opacity: 1;
-    z-index: 2;
+    z-index: 3;
 
 
     app-card-pet {
@@ -334,5 +373,57 @@
       }
     }
   }
+}
 
+.carousel-dots {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  gap: var(--spacing-xs);
+  background: #e4e3e3;
+  border-radius: 50px;
+  width: max-content;
+  margin: var(--spacing-sm) auto 0 auto;
+
+  .dot {
+    width: var(--spacing-xs);
+    height: var(--spacing-xs);
+    background: #000000;
+    opacity: 0.3;
+    border: none;
+    border-radius: 50px;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &.active {
+      background: var(--primary-color);
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.view-all-container {
+  margin-top: var(--spacing-xxs);
+
+  .view-all-link {
+    font-family: var(--font-family-secondary);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-md);
+    line-height: var(--font-size-xl);
+    letter-spacing: 0.15px;
+    color: var(--text-color-secondary);
+    text-decoration: none;
+    @include flex-center;
+    gap: var(--spacing-xs);
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--primary-color);
+      text-decoration: underline;
+    }
+  }
 }
