@@ -102,7 +102,7 @@
             role="button"
             tabindex="0"
           >
-            <app-card-pet [pet]="pet"></app-card-pet>
+            <app-card-pet [pet]="pet" [class.card--large]="activePetIndex === idx"></app-card-pet>
           </div>
         }
       </div>
