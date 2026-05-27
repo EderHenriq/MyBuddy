@@ -1,100 +1,93 @@
-<div class="pet-card">
-  <div class="pet-image" [style.backgroundImage]="'url(' + imageUrl + ')'">
-    @if (badgeText) {
-      <span class="pet-badge" [ngClass]="badgeType">{{ badgeText }}</span>
-    }
-    @if (showTopHeart) {
-      <span class="top-heart">
-        <i class="fas fa-heart"></i>
-      </span>
+<div class="card">
+  <div class="card-img">
+    <img [src]="cardImageUrl" [alt]="cardName" />
+
+    @if (cardBadgeText) {
+      <span class="pet-badge" [ngClass]="cardBadgeType">{{ cardBadgeText }}</span>
     }
   </div>
-  <div class="pet-content">
-    <h3 class="pet-name">{{ name }}</h3>
-    <div class="pet-details">
-      <span class="detail-item">
-        <strong>Idade:</strong>
-        {{ age }}
-      </span>
-      <span class="detail-item">
-        <strong>Raça:</strong>
-        {{ breed }}
-      </span>
-      <span class="detail-item">
-        <strong>Sexo:</strong>
-        {{ sex }}
-      </span>
-      <span class="detail-item">
-        <strong>Vacinado:</strong>
-        {{ vaccinated }}
-      </span>
-    </div>
-    <div class="pet-actions">
-      @if (ongMode) {
-        <button class="action-btn edit-btn" (click)="editClick.emit()">
-          <i class="fas fa-edit"></i>
-          Editar
+
+  <div class="card-header">
+    <h2>{{ cardName }}</h2>
+  </div>
+
+  <div class="card-informations">
+    <ul>
+      <li>Idade: {{ cardAge }}</li>
+      <li>Raça: {{ cardBreed }}</li>
+      <li>Sexo: {{ cardSex }}</li>
+      <li>Vacinado: {{ cardVaccinated }}</li>
+    </ul>
+  </div>
+
+  <footer class="card-actions">
+    @if (ongMode) {
+      <button class="btn-admin edit" (click)="editClick.emit($event)">
+        <span class="material-icons">edit</span>
+        Editar
+      </button>
+
+      <button class="btn-admin delete" (click)="deleteClick.emit($event)">
+        <span class="material-icons">delete</span>
+        Excluir
+      </button>
+    } @else {
+      <button class="infos" (click)="openModal()">
+        Mais informações
+        <span class="material-icons">keyboard_arrow_right</span>
+      </button>
+
+      @if (showFavoriteButton || cardIsFavorite) {
+        <button class="favorite" [class.active]="cardIsFavorite" (click)="favoriteClick.emit($event)">
+          <span class="material-icons">{{ cardIsFavorite ? 'favorite' : 'favorite_border' }}</span>
         </button>
-        <button class="action-btn delete-btn" (click)="deleteClick.emit()">
-          <i class="fas fa-trash-alt"></i>
-          Remover
-        </button>
-      } @else {
-        <a class="info-link" (click)="openModal()">Mais Informações &rarr;</a>
-        <div style="display: flex; gap: 0.5rem">
-          <button class="favorite-btn" (click)="sharePet()" aria-label="Compartilhar">
-            <i class="fas fa-share-nodes"></i>
-          </button>
-          <button class="favorite-btn" [class.active]="isFavorite" (click)="favoriteClick.emit()">
-            <i class="fa-heart" [ngClass]="isFavorite ? 'fas' : 'far'"></i>
-          </button>
-        </div>
       }
-    </div>
-  </div>
+    }
+  </footer>
 </div>
 
-<app-modal
-  [(visible)]="isModalVisible"
-  [title]="'Sobre o ' + name"
-  [width]="'550px'"
-  [showFooter]="true"
-  [confirmLabel]="'Quero Adotar'"
-  [cancelLabel]="'Fechar'"
-  [backdropBlur]="true"
-  (confirm)="handleAdopt()"
->
-  <div class="pet-modal-content">
-    <div class="modal-image-wrapper">
-      <img [src]="imageUrl" [alt]="name" class="modal-image" />
-    </div>
-
-    <div class="modal-info">
-      <h3>{{ name }}</h3>
-
-      <div class="modal-tags">
-        <span class="tag">
-          <strong>Idade:</strong>
-          {{ age }}
-        </span>
-        <span class="tag">
-          <strong>Raça:</strong>
-          {{ breed }}
-        </span>
-        <span class="tag">
-          <strong>Sexo:</strong>
-          {{ sex }}
-        </span>
-        <span class="tag">
-          <strong>Vacinado:</strong>
-          {{ vaccinated }}
-        </span>
+@if (isModalVisible) {
+  <app-modal
+    [(visible)]="isModalVisible"
+    [title]="'Sobre o ' + cardName"
+    width="550px"
+    [showFooter]="true"
+    confirmLabel="Quero Adotar"
+    [backdropBlur]="true"
+    (confirm)="handleAdopt()"
+  >
+    <div class="pet-modal-content">
+      <div class="modal-image-wrapper">
+        <img [src]="cardImageUrl" [alt]="cardName" class="modal-image" />
       </div>
 
-      <div class="modal-description">
-        <h4>Apresentação</h4>
-        <p>{{ description }}</p>
+      <div class="modal-info">
+        <div class="modal-description">
+          <h4>Apresentação</h4>
+          <p>{{ cardDescription }}</p>
+        </div>
+
+        <h3 class="info-title">Informações</h3>
+
+        <div class="modal-tags">
+          <span class="tag">
+            <strong>Idade:</strong>
+            {{ cardAge }}
+          </span>
+          <span class="tag">
+            <strong>Raça:</strong>
+            {{ cardBreed }}
+          </span>
+          <span class="tag">
+            <strong>Sexo:</strong>
+            {{ cardSex }}
+          </span>
+          <span class="tag">
+            <strong>Vacinado:</strong>
+            {{ cardVaccinated }}
+          </span>
+        </div>
       </div>
     </div>
-  </div>
-</app-modal>
+  </app-modal>
+}

@@ -278,12 +278,7 @@
           <div class="pets-grid">
             @for (pet of buddies(); track pet.name) {
               <app-card-pet
-                [imageUrl]="pet.imageUrl"
-                [name]="pet.name"
-                [age]="pet.age"
-                [breed]="pet.breed"
-                [sex]="pet.sex"
-                [vaccinated]="pet.vaccinated"
+                [pet]="$any(pet)"
                 [badgeText]="pet.badgeText"
                 [badgeType]="pet.badgeType"
                 [isFavorite]="pet.isFavorite"
@@ -303,12 +298,7 @@
           <div class="pets-grid">
             @for (pet of favorites(); track pet.name) {
               <app-card-pet
-                [imageUrl]="pet.imageUrl"
-                [name]="pet.name"
-                [age]="pet.age"
-                [breed]="pet.breed"
-                [sex]="pet.sex"
-                [vaccinated]="pet.vaccinated"
+                [pet]="$any(pet)"
                 [badgeText]="pet.badgeText"
                 [badgeType]="pet.badgeType"
                 [isFavorite]="pet.isFavorite"

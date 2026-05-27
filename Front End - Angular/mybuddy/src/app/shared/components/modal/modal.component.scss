@@ -4,13 +4,26 @@
   display: contents;
 }
 
-:host ::ng-deep .p-dialog-header {
-  font-family: var(--font-family);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+:host ::ng-deep {
+  .p-dialog-header {
+    font-family: var(--font-family-secondary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    padding-bottom: 0;
+    padding-top: 16px;
+  }
+
+  .p-dialog .p-dialog-content {
+    padding: 0 24px 24px 24px !important;
+  }
+
+  .dialog-footer {
+    @include flex-center;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-xs);
+  }
 }
 
-.myb-footer-actions {
-  @include flex-center;
-  gap: var(--spacing-sm);
+.myb-dialog {
+  width: 100%;
 }

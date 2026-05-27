@@ -11,4 +11,5 @@ export interface Pet {
   updatedAt?: string;
   imageUrl?: string;
   isVaccinated?: boolean;
+  description?: string;
 }

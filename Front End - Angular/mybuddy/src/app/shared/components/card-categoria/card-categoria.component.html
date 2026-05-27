@@ -1,9 +1,21 @@
-<div class="category-card" [style.backgroundImage]="'url(' + imageUrl + ')'">
-  <div class="category-overlay"></div>
-  <div class="category-info">
-    <h3 class="category-title">{{ title }}</h3>
-    @if (subtitle) {
-      <p class="category-subtitle">{{ subtitle }}</p>
-    }
+<div [class]="'category-container variant-' + variant()">
+  <div class="category-card" [style.--card-bg]="'url(' + imageUrl() + ')'">
+    <div class="category-overlay"></div>
+
+    <div class="category-info">
+      <h3 class="category-title">{{ title() }}</h3>
+      @if (subtitle()) {
+        <p class="category-subtitle">{{ subtitle() }}</p>
+      }
+    </div>
   </div>
+
+  @if (variant() === 'product') {
+    <div class="category-info">
+      <h3 class="category-title">{{ title() }}</h3>
+      @if (subtitle()) {
+        <p class="category-subtitle">{{ subtitle() }}</p>
+      }
+    </div>
+  }
 </div>

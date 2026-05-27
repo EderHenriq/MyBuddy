@@ -3,6 +3,7 @@
 @use 'styles/forms' as *;
 @import "material-icons/iconfont/material-icons.css";
 @import '@fortawesome/fontawesome-free/css/all.min.css';
+@import "leaflet/dist/leaflet.css";
 
 html, body {
   margin: 0;
@@ -10,11 +11,17 @@ html, body {
   font-family: var(--font-family-primary);
   background-color: var(--surface-ground);
   width: 100%;
+
+  scrollbar-width: none; //Oculta o scrollbar em navegadores Firefox
+  &::-webkit-scrollbar {
+    display: none; //Oculta o scrollbar no Safari e navegadores baseados em chromium
+  }
 }
+
 
 :root {
   //Tokens das paletas de cores definidas no escopo do projeto.
-  --primary-color: #ff7900;
+  --primary-color: #ff7b00;
   --secondary-color: #5d831c;
   --accent-color: #2C3E50;
 
@@ -45,6 +52,7 @@ html, body {
   --font-size-lg: 1.25rem; //Equivalente a 20px
   --font-size-xl: 1.5rem; //Equivalente a 24px
   --font-size-xxl: 2rem;  //Equivalente a 32px
+  --font-size-xxxl: 3rem; //Equivale a 48px
 
   --font-weight-thin: 100;
   --font-weight-extralight: 200;
@@ -81,6 +89,9 @@ html, body {
   //Tokens de definição das cores das bordas
   --border-color: #d9d9d9;
   --border-color-focus: var(--primary-color);
+
+  //Tokens de hovers
+  --hover-btn-primary: #e66f00;
 }
 
 //Tokens de definição de escala tipográfica (h1-h6 e body caption).
@@ -159,6 +170,11 @@ html, body {
   font-family: var(--font-family);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
+  padding-bottom: 10px !important;
+}
+
+.p-dialog-content {
+  padding-top: 10px !important;
 }
 
 .myb-dialog-blur {
