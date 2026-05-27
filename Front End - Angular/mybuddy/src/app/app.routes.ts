@@ -9,7 +9,19 @@ export const routes: Routes = [
     loadComponent: () => import('./shared/components/empty-state/empty-state').then(m => m.EmptyState),
   },
   {
-    
+    path: 'checkout/pagamento',
+    loadComponent: () => import('./features/checkout/pagamento/pagamento').then(m => m.Pagamento),
+  },
+  {
+    path: 'checkout/confirmacao',
+    loadComponent: () => import('./features/checkout/confirmacao/confirmacao').then(m => m.Confirmacao),
+  },
+  {
+    path: 'checkout/pendente',
+    loadComponent: () => import('./features/checkout/pendente/pendente').then(m => m.Pendente),
+  },
+  {
+    // Redirecionamento inicial para a rota 'home'
     path: '',
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),
   },

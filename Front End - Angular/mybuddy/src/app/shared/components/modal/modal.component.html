@@ -6,6 +6,7 @@
   [resizable]="false"
   [style]="{ width: width }"
   [maskStyleClass]="backdropBlur ? 'myb-dialog-blur' : ''"
+  appendTo="body"
   (onHide)="onHide()"
 >
   <div class="myb-dialog">
@@ -14,7 +15,9 @@
 
   <ng-template pTemplate="footer">
     @if (showFooter) {
-      <p-button [label]="cancelLabel" severity="secondary" [outlined]="true" (onClick)="onCancel()"></p-button>
+      @if (cancelLabel) {
+        <p-button [label]="cancelLabel" severity="secondary" [outlined]="true" (onClick)="onCancel()"></p-button>
+      }
       <p-button [label]="confirmLabel" [severity]="confirmSeverity" [loading]="loading" (onClick)="onConfirm()"></p-button>
     }
   </ng-template>

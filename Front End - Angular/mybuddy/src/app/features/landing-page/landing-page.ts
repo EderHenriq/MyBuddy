@@ -1,26 +1,17 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
+
+//Imports de Interface
+import { Pet } from '@core/models/pet.model';
+
+//Imports de Componentes
 import { HeaderLandingPage } from '@shared/components/header-landing-page/header-landing-page';
 import { CardCategoriaComponent } from '@shared/components/card-categoria/card-categoria.component';
-import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
+import { CardPetComponent } from '@shared/components/card-pet/card-pet';
 import { Footer } from '@shared/components/footer/footer';
 
-interface Pet {
-  id: number;
-  nome: string;
-  idade: number;
-  raca: string;
-  sexo: string;
-  vacinado: boolean;
-  castrado: boolean;
-  porte: string;
-  cor: string;
-  pelagem: string;
-  urlImagem: string;
-}
-
-interface Service {
+interface Services {
   title: string;
   imageUrl: string;
 }
@@ -31,6 +22,9 @@ interface FaqItem {
   expanded: boolean;
 }
 
+const DEFAULT_LAT = -23.4273;
+const DEFAULT_LNG = -51.9375;
+
 @Component({
   selector: 'app-landing-page',
   standalone: true,
@@ -38,108 +32,220 @@ interface FaqItem {
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.scss',
 })
-export class LandingPage {
-  activePetIndex = 1; 
+export class LandingPage implements OnInit, OnDestroy, AfterViewInit {
+  activePetIndex = 0;
+  private autoplayInterval: ReturnType<typeof setInterval> | null = null;
+  private readonly AUTOPLAY_DELAY = 3000;
+  private platformId = inject(PLATFORM_ID);
+  private map: unknown;
 
-  services: Service[] = [
+  ngOnInit(): void {
+    this.startAutoplay();
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.initMap();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoplay();
+
+    if (this.map && typeof (this.map as { remove: () => void }).remove === 'function') {
+      (this.map as { remove: () => void }).remove();
+    }
+  }
+
+  // Seção de Mapa
+  private async initMap(lat = DEFAULT_LAT, lng = DEFAULT_LNG): Promise<void> {
+    const L = await import('leaflet');
+
+    this.map = L.map('leaflet-map', {
+      center: [lat, lng],
+      zoom: 14,
+      zoomControl: false,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap',
+    }).addTo(this.map as L.Map);
+
+    this.loadMapByUserLocation();
+  }
+
+  private loadMapByUserLocation(): void {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        if (this.map && typeof (this.map as { setView: (center: [number, number], zoom: number) => void }).setView === 'function') {
+          (this.map as { setView: (center: [number, number], zoom: number) => void }).setView([coords.latitude, coords.longitude], 14);
+        }
+      },
+      error => {
+        console.warn('Geolocalização indisponível, mantendo padrão:', error.message);
+      },
+    );
+  }
+
+  //Animação do Carroussel
+  getSlidePosition(idx: number): number {
+    const total = this.pets.length;
+    let diff = idx - this.activePetIndex;
+
+    if (diff > Math.floor(total / 2)) diff -= total;
+    if (diff < -Math.floor(total / 2)) diff += total;
+
+    return diff;
+  }
+
+  getSlideClass(idx: number): Record<string, boolean> {
+    const pos = this.getSlidePosition(idx);
+    return {
+      activeSlide: pos === 0,
+      leftSlide: pos === -1,
+      rightSlide: pos === 1,
+    };
+  }
+
+  startAutoplay(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    this.stopAutoplay();
+    this.autoplayInterval = setInterval(() => {
+      this.activePetIndex = (this.activePetIndex + 1) % this.pets.length;
+    }, this.AUTOPLAY_DELAY);
+  }
+
+  stopAutoplay(): void {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
+    }
+  }
+
+  setCarouselPet(index: number): void {
+    this.activePetIndex = index;
+    this.startAutoplay();
+  }
+
+  //Seção de FAQ
+  toggleFaq(index: number): void {
+    if (index >= 0 && index < this.faqs.length) {
+      this.faqs[index].expanded = !this.faqs[index].expanded;
+    }
+  }
+
+  //Dados Estáticos
+  services: Services[] = [
     {
       title: 'Veterinários',
-      imageUrl: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=600',
+      imageUrl: '/assets/landing-page/gato-veterinario.jpg',
+    },
+    {
+      title: 'PetShops',
+      imageUrl: '/assets/landing-page/pet-shop.jpg',
     },
     {
       title: 'Eventos',
-      imageUrl: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=600',
+      imageUrl: '/assets/landing-page/eventos.jpg',
     },
-    {
-      title: 'Petshops',
-      imageUrl: 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&q=80&w=600',
-    },
+  ];
+
+  logos = [
+    { src: '/assets/logo/logo-parceiros/logo1.svg', alt: 'Logo Parceiro 1' },
+    { src: '/assets/logo/logo-parceiros/logo2.svg', alt: 'Logo Parceiro 2' },
+    { src: '/assets/logo/logo-parceiros/logo3.svg', alt: 'Logo Parceiro 3' },
+    { src: '/assets/logo/logo-parceiros/logo4.svg', alt: 'Logo Parceiro 4' },
+    { src: '/assets/logo/logo-parceiros/logo5.svg', alt: 'Logo Parceiro 5' },
   ];
 
   pets: Pet[] = [
     {
-      id: 1,
-      nome: 'Nevasca',
-      idade: 3,
-      raca: 'Persa',
-      sexo: 'Fêmea',
-      vacinado: true,
-      castrado: true,
-      porte: 'Pequeno',
-      cor: 'Branco',
-      pelagem: 'Longa',
-      urlImagem: 'https://images.unsplash.com/photo-1618826411640-d6df44dd3f7a?auto=format&fit=crop&q=80&w=600',
+      id: '1',
+      ownerId: '1',
+      name: 'Nevasca',
+      age: 3,
+      species: 'Gato',
+      breed: 'Vira-lata',
+      gender: 'Fêmea',
+      isVaccinated: true,
+      imageUrl: '/assets/placeholders/pets/Nevasca.jpg',
     },
     {
-      id: 2,
-      nome: 'Paçoca',
-      idade: 5,
-      raca: 'Vira-lata',
-      sexo: 'Macho',
-      vacinado: true,
-      castrado: true,
-      porte: 'Médio',
-      cor: 'Caramelo',
-      pelagem: 'Curta',
-      urlImagem: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600',
+      id: '2',
+      ownerId: '2',
+      name: 'Paçoca',
+      age: 5,
+      species: 'Cachorro',
+      breed: 'Vira-lata',
+      gender: 'Macho',
+      isVaccinated: true,
+      imageUrl: '/assets/placeholders/pets/Paçoca.jpg',
     },
     {
-      id: 3,
-      nome: 'Thor',
-      idade: 4,
-      raca: 'Border Collie',
-      sexo: 'Macho',
-      vacinado: true,
-      castrado: false,
-      porte: 'Médio',
-      cor: 'Preto e Branco',
-      pelagem: 'Longa',
-      urlImagem: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=600',
+      id: '3',
+      ownerId: '3',
+      name: 'Armindo',
+      age: 1,
+      species: 'Coelho',
+      breed: 'Rex',
+      gender: 'Macho',
+      isVaccinated: true,
+      imageUrl: '/assets/placeholders/pets/Armindo.png',
     },
   ];
 
   faqs: FaqItem[] = [
     {
-      question: 'Como funciona o processo de adoção?',
-      answer: `Para adotar seu Buddy, basta seguir três passos simples:
-1. Escolha o pet que mais combina com você em nossa lista.
-2. Preencha o formulário de adoção com seus dados e informações sobre seu ambiente.
-3. Aguarde o contato das nossas ONGs parceiras para uma entrevista rápida e a confirmação da adoção.
-Todo o processo é gratuito e feito para garantir que você e o pet tenham o melhor match possível.`,
-      expanded: true, 
-    },
-    {
-      question: 'O MyBuddy é pago?',
+      question: 'Como funciona o processo de adoção pelo MyBuddy?',
       answer:
-        'Não! O MyBuddy é uma plataforma 100% gratuita para adotantes e ONGs parceiras. Nosso objetivo é facilitar a adoção e o cuidado animal.',
+        'Você escolhe o pet na plataforma, preenche um pequeno cadastro e a ONG responsável entra em contato para entender melhor o seu perfil. Depois disso, vocês combinam uma visita ou vídeo-chamada e, estando tudo certo, a adoção é formalizada com um termo de responsabilidade.',
       expanded: false,
     },
     {
-      question: 'O pet vem com vacinas atualizadas?',
+      question: 'Em quanto tempo a adoção é concluída?',
       answer:
-        'Sim, a maioria das ONGs parceiras entrega o pet com a vacinação básica em dia e castrado. Essa informação é sempre detalhada no perfil de cada pet.',
+        'O prazo pode variar conforme a ONG e o perfil do pet, mas, em geral, o processo leva de alguns dias a poucas semanas. Esse tempo é importante para a análise do perfil, entrevistas e alinhamento de expectativas entre tutor e instituição.',
       expanded: false,
     },
     {
-      question: 'Posso devolver o pet se não me adaptar?',
+      question: 'Já tenho outros animais em casa. Posso adotar?',
       answer:
-        'Caso haja problemas de adaptação, a ONG parceira prestará todo o suporte necessário. A devolução responsável pode ser alinhada diretamente com a instituição.',
+        'Sim, muitos adotantes têm outros pets. Nesse caso, a ONG pode orientar sobre a apresentação gradual entre os animais e avaliar se o novo pet tem um perfil compatível com os que já vivem no lar.',
       expanded: false,
     },
     {
-      question: 'Vocês fazem visitas ao meu endereço?',
-      answer: 'Algumas ONGs solicitam uma visita prévia ou envio de fotos/vídeos do ambiente para garantir a segurança e o bem-estar do pet adotado.',
+      question: 'E se a adoção não der certo?',
+      answer:
+        'Algumas ONGs trabalham com um período de experiência e podem solicitar a devolução do animal caso a adaptação realmente não funcione, sempre priorizando o bem-estar do pet. Em qualquer situação, o ideal é manter contato com a instituição para buscar orientação antes de tomar decisões.',
+      expanded: false,
+    },
+    {
+      question: 'Quais cuidados preciso ter antes da chegada do pet?',
+      answer:
+        'É importante preparar o ambiente com itens básicos, como pote de água, pote de ração, caminha e, se possível, brinquedos. Também vale retirar objetos perigosos, proteger janelas e organizar um cantinho tranquilo para o novo membro da família.',
+      expanded: false,
+    },
+    {
+      question: 'O pet já é vacinado e castrado?',
+      answer:
+        'Depende da ONG e do histórico do animal. Muitas instituições entregam o pet já vacinado e castrado ou com a castração agendada, e essa informação é indicada durante o processo de adoção.',
+      expanded: false,
+    },
+    {
+      question: 'Quais custos terei depois da adoção?',
+      answer:
+        'Além de alimentação e itens básicos, é importante considerar consultas veterinárias, vacinas anuais, antiparasitários e eventuais emergências. A adoção é um compromisso de longo prazo, que envolve tanto tempo quanto recursos financeiros.',
+      expanded: false,
+    },
+    {
+      question: 'O MyBuddy é responsável pelos animais?',
+      answer:
+        'O MyBuddy conecta tutores a ONGs e protetores parceiros. Cada pet continua sob responsabilidade da ONG até a formalização da adoção, e as regras específicas de cada instituição são apresentadas durante o processo.',
       expanded: false,
     },
   ];
-
-  setCarouselPet(index: number): void {
-    if (index >= 0 && index < this.pets.length) {
-      this.activePetIndex = index;
-    }
-  }
-
-  toggleFaq(index: number): void {
-    this.faqs[index].expanded = !this.faqs[index].expanded;
-  }
 }

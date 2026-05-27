@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
-import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
+import { CardPetComponent } from '@shared/components/card-pet/card-pet';
 import { Footer } from '@shared/components/footer/footer';
 import { AuthService } from '@core/services/auth.service';
 import { UploadService } from '@core/services/upload.service';

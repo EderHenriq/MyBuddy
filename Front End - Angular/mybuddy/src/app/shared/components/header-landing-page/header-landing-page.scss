@@ -1,12 +1,12 @@
 @use '../../../../styles/mixins' as *;
 
-
-
-
+//Estilização do corpo do header
 .header-landing-page {
   @include flex-between;
   padding: 0 50px;
-  background-color: #ffffff;
+  background-color:  rgba(244, 244, 244, 0.65);
+  backdrop-filter: blur(8.75px);
+  -webkit-backdrop-filter: blur(8.75px); //Adicionado para navegadores como o Safari
   position: absolute;
   top: 0;
   z-index: 1000;
@@ -39,105 +39,55 @@
   }
 }
 
+//Estilização dos links rapidos
 
 .quick-links {
-  @include flex-center;
-  background-color: var(--surface-card);
-  height: 56px;
-  padding: var(--spacing-xs) var(--spacing-lg);
-  border-radius: var(--radius-max);
-  box-shadow: var(--shadow-navbar);
-  overflow: hidden;
-
   ul {
     @include flex-center;
     list-style: none;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-xl);
     padding: 0;
     margin: 0;
+  }
+
+  li a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-md);
+    white-space: nowrap;
     position: relative;
+    transition: color 0.2s ease;
 
-    li {
-      position: relative;
-      z-index: 1;
-
-      a {
-        @include flex-center;
-        text-decoration: none;
-        color: var(--text-color-black);
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-medium);
-        line-height: var(--line-height-md);
-        padding: var(--spacing-xs) var(--spacing-sm);
-        white-space: nowrap;
-        cursor: pointer;
-        border-radius: var(--radius-max);
-        position: relative;
-        z-index: 1;
-        background-color: transparent;
-        transition: color 0.25s ease;
-
-        &.active {
-          color: var(--text-color-white);
-        }
-
-        &.active-hover {
-          color: var(--text-color-white) !important;
-        }
-
-        &.hover-override {
-          color: var(--text-color-black) !important;
-        }
-      }
+    &:hover {
+      color: #9f520a;
     }
   }
 }
 
-
-.sliding-pills {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 40px;
-  background-color: var(--primary-color);
-  border-radius: var(--radius-max);
-  box-shadow: var(--shadow-nav-active);
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-
-  transition:
-    left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s ease;
-
-  &.visible {
-    opacity: 1;
-  }
-}
-
-
+//Estilização dos botões de logins
 .auth-btns {
   @include flex-center;
   gap: var(--spacing-sm);
 
+
   .btn-primary {
-    background-color: #f1f5f9;
-    color: #334155;
-    border: 1px solid #cbd5e1;
+    background: linear-gradient(180deg, rgba(96,88,96,0.14) 4.55%, rgba(198, 182, 198, 0.196) 100%);
     text-decoration: none;
+    color: var(--text-color);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-medium);
     padding: var(--spacing-xs) var(--spacing-sm);
     gap: var(--spacing-xs);
     border-radius: var(--radius-max);
     box-shadow: var(--shadow-sm);
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
     &:hover {
-      background-color: #e2e8f0;
-      color: #0f172a;
-      border-color: #94a3b8;
+      color: #9f520a;
+      box-shadow: var(--shadow-sm);
       transform: translateY(-2px);
     }
 
@@ -156,7 +106,7 @@
     gap: var(--spacing-xs);
     border-radius: var(--radius-max);
     box-shadow: var(--shadow-sm);
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    transition: color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
     &:hover {
       background-color: #e06e00;
@@ -164,7 +114,7 @@
       transform: translateY(-2px);
     }
 
-    &:active {
+     &:active {
       transform: translateY(0);
     }
   }
