@@ -38,7 +38,7 @@
       </button>
 
       @if (showFavoriteButton || cardIsFavorite) {
-        <button class="favorite" [class.active]="cardIsFavorite" (click)="favoriteClick.emit($event)">
+        <button class="favorite" [class.active]="cardIsFavorite" (click)="favoriteClick.emit($event); cliqueFavorito.emit($event)">
           <span class="material-icons">{{ cardIsFavorite ? 'favorite' : 'favorite_border' }}</span>
         </button>
       }

@@ -41,19 +41,21 @@ export class Confirmacao implements OnInit, OnDestroy {
   }
 
   private startPolling(PreferenceId: string) {
-    this.pollingSub = interval(5000).pipe(
-      switchMap(() => this.http.get<any>(`/api/payments/preference/${PreferenceId}`)),
-      takeWhile(response => response.status === 'PENDING', true)
-    ).subscribe({
-      next: (response) => {
-        if (response.status === 'APPROVED') {
-          this.status.set('APPROVED');
-        } else if (response.status === 'REJECTED' || response.status === 'CANCELLED') {
-          this.status.set('REJECTED');
-        }
-      },
-      error: () => {}
-    });
+    this.pollingSub = interval(5000)
+      .pipe(
+        switchMap(() => this.http.get<any>(`/api/payments/preference/${PreferenceId}`)),
+        takeWhile(response => response.status === 'PENDING', true),
+      )
+      .subscribe({
+        next: response => {
+          if (response.status === 'APPROVED') {
+            this.status.set('APPROVED');
+          } else if (response.status === 'REJECTED' || response.status === 'CANCELLED') {
+            this.status.set('REJECTED');
+          }
+        },
+        error: () => {},
+      });
   }
 
   ngOnDestroy() {

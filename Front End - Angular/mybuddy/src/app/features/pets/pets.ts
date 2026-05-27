@@ -1,112 +1,112 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { CardPetComponent } from '@shared/components/card-pet/card-pet';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
 import { Footer } from '@shared/components/footer/footer';
+import { InfiniteScrollDirective } from '@shared/directives/infinite-scroll.directive';
+import { DebounceDirective } from '@shared/directives/debounce.directive';
+import { PetService } from '@core/services/pet.service';
 
-interface PetListItem {
-  name: string;
-  age: string;
-  breed: string;
-  sex: string;
-  vaccinated: string;
-  imageUrl: string;
-  isFavorite: boolean;
+interface ItemListaPet {
+  nome: string;
+  idade: number;
+  raca: string;
+  sexo: string;
+  vacinado: boolean;
+  castrado: boolean;
+  porte: string;
+  cor: string;
+  pelagem: string;
+  fotosUrls?: string[];
+  favorito: boolean;
 }
 
-interface FilterGroup {
-  title: string;
-  options: string[];
+interface GrupoFiltro {
+  titulo: string;
+  opcoes: string[];
 }
 
 @Component({
   selector: 'app-pets',
   standalone: true,
-  imports: [CommonModule, CardPetComponent, Footer],
+  imports: [CommonModule, ReactiveFormsModule, CardPetComponent, Footer, InfiniteScrollDirective, DebounceDirective],
   templateUrl: './pets.html',
   styleUrl: './pets.scss',
 })
-export class Pets {
-  readonly filterGroups: FilterGroup[] = [
+export class Pets implements OnInit {
+  private readonly petService = inject(PetService);
+  private readonly fb = inject(FormBuilder);
+
+  readonly carregando = signal<boolean>(true);
+  readonly animais = signal<ItemListaPet[]>([]);
+
+  readonly gruposFiltro: GrupoFiltro[] = [
     {
-      title: 'Espécie',
-      options: ['Cachorro', 'Coelho', 'Gato', 'Pássaro'],
+      titulo: 'Espécie',
+      opcoes: ['Cachorro', 'Coelho', 'Gato', 'Pássaro'],
     },
     {
-      title: 'Sexo',
-      options: ['Fêmea', 'Macho'],
+      titulo: 'Sexo',
+      opcoes: ['Fêmea', 'Macho'],
     },
     {
-      title: 'Idade',
-      options: ['Filhote (0-1 ano)', 'Jovem (1-3 anos)', 'Adulto (3-7 anos)', 'Idoso (+8 anos)'],
+      titulo: 'Idade',
+      opcoes: ['Filhote (0-1 ano)', 'Jovem (1-3 anos)', 'Adulto (3-7 anos)', 'Idoso (+8 anos)'],
     },
     {
-      title: 'Porte',
-      options: ['Pequeno', 'Médio', 'Grande'],
+      titulo: 'Porte',
+      opcoes: ['Pequeno', 'Médio', 'Grande'],
     },
     {
-      title: 'Características',
-      options: ['Vacinado', 'Castrado', 'Vive com outros pets'],
+      titulo: 'Características',
+      opcoes: ['Vacinado', 'Castrado', 'Vive com outros pets'],
     },
   ];
 
-  readonly pets: PetListItem[] = [
-    {
-      name: 'Thor',
-      age: '3 anos',
-      breed: 'Border Collie',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Pêssego',
-      age: '5 anos',
-      breed: 'SRD',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Amora',
-      age: '3 anos',
-      breed: 'Yorkshire',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1588392382834-a891154bca4d?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Francesca',
-      age: '4 anos',
-      breed: 'SRD',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Jade',
-      age: '1 ano',
-      breed: 'Mini Lop',
-      sex: 'Fêmea',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-    {
-      name: 'Armindo',
-      age: '2 anos',
-      breed: 'Rex',
-      sex: 'Macho',
-      vaccinated: 'Sim',
-      imageUrl: 'https://images.unsplash.com/photo-1609151354448-c4a53450c6e9?auto=format&fit=crop&q=80&w=800',
-      isFavorite: false,
-    },
-  ];
+  formularioFiltro: FormGroup = this.fb.group({
+    pesquisa: [''],
+  });
 
-  toggleFavorite(pet: PetListItem): void {
-    pet.isFavorite = !pet.isFavorite;
+  constructor() {
+    this.gruposFiltro.forEach(grupo => {
+      grupo.opcoes.forEach(opcao => {
+        this.formularioFiltro.addControl(opcao, this.fb.control(false));
+      });
+    });
+  }
+
+  ngOnInit(): void {
+    this.carregarAnimais();
+
+    this.formularioFiltro.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe(valores => {
+      console.log('[Página de Pets] Filtros alterados. Refazendo busca...', valores);
+      this.carregando.set(true);
+      setTimeout(() => {
+        this.carregando.set(false);
+      }, 800);
+    });
+  }
+
+  private carregarAnimais(): void {
+    this.carregando.set(true);
+    this.petService.buscarTodos().subscribe({
+      next: (dados: any) => {
+        this.animais.set(dados.content || []);
+        this.carregando.set(false);
+      },
+      error: erro => {
+        console.error('Erro ao buscar pets:', erro);
+        this.carregando.set(false);
+      },
+    });
+  }
+
+  alternarFavorito(pet: ItemListaPet): void {
+    pet.favorito = !pet.favorito;
+  }
+
+  aoCarregarMais(): void {
+    console.log(`[Página de Pets] Chegou ao fim da tela! Carregando mais pets...`);
   }
 }

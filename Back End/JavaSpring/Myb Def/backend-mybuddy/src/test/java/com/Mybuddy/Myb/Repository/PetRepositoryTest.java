@@ -1,22 +1,23 @@
 package com.Mybuddy.Myb.Repository;
 
 import com.Mybuddy.Myb.Model.*;
+import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@DataMongoTest
 class PetRepositoryTest {
 
     @Autowired
-    private TestEntityManager entityManager;
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private PetRepository petRepository;
@@ -29,7 +30,12 @@ class PetRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        // Limpar coleções para garantir isolamento nos testes
+        mongoTemplate.dropCollection(Pet.class);
+        mongoTemplate.dropCollection(Organizacao.class);
+
         organizacao1 = Organizacao.builder()
+                .id(1L)
                 .nomeFantasia("ONG Patinhas")
                 .emailContato("patinhas@email.com")
                 .cnpj("11.111.111/0001-11")
@@ -38,6 +44,7 @@ class PetRepositoryTest {
                 .build();
 
         organizacao2 = Organizacao.builder()
+                .id(2L)
                 .nomeFantasia("ONG Amigos dos Bichos")
                 .emailContato("amigos@email.com")
                 .cnpj("22.222.222/0002-22")
@@ -45,25 +52,27 @@ class PetRepositoryTest {
                 .telefoneContato("11999990002")
                 .build();
 
-        entityManager.persist(organizacao1);
-        entityManager.persist(organizacao2);
+        mongoTemplate.save(organizacao1);
+        mongoTemplate.save(organizacao2);
 
         pet1 = new Pet("Rex", "Labrador", 2, Especie.CAO, Porte.GRANDE,
                 "Amarelo", null, "M", organizacao1,
                 false, true, true, "São Paulo", "SP");
+        pet1.setId(1L);
 
         pet2 = new Pet("Mia", "Siamês", 3, Especie.GATO, Porte.PEQUENO,
                 "Branco", null, "F", organizacao1,
                 false, true, false, "Campinas", "SP");
+        pet2.setId(2L);
 
         pet3 = new Pet("Bob", "Poodle", 1, Especie.CAO, Porte.PEQUENO,
                 "Preto", null, "M", organizacao2,
                 true, true, true, "Rio de Janeiro", "RJ");
+        pet3.setId(3L);
 
-        entityManager.persist(pet1);
-        entityManager.persist(pet2);
-        entityManager.persist(pet3);
-        entityManager.flush();
+        mongoTemplate.save(pet1);
+        mongoTemplate.save(pet2);
+        mongoTemplate.save(pet3);
     }
 
     // ===================== FIND BY ID =====================
@@ -114,13 +123,13 @@ class PetRepositoryTest {
     @Test
     void deveRetornarListaVaziaParaOrganizacaoSemPets() {
         Organizacao organizacaoVazia = Organizacao.builder()
+                .id(3L)
                 .nomeFantasia("ONG Vazia")
                 .emailContato("vazia@email.com")
                 .cnpj("33.333.333/0003-33")
                 .endereco("Rua C, 789")
                 .build();
-        entityManager.persist(organizacaoVazia);
-        entityManager.flush();
+        mongoTemplate.save(organizacaoVazia);
 
         List<Pet> pets = petRepository.findByOrganizacaoId(organizacaoVazia.getId());
 
@@ -141,6 +150,7 @@ class PetRepositoryTest {
         Pet novoPet = new Pet("Luna", "Vira-lata", 4, Especie.CAO, Porte.MEDIO,
                 "Caramelo", null, "F", organizacao1,
                 false, false, false, "Curitiba", "PR");
+        novoPet.setId(4L);
 
         Pet salvo = petRepository.save(novoPet);
 
@@ -154,6 +164,7 @@ class PetRepositoryTest {
         Pet novoPet = new Pet("Toby", "Beagle", 2, Especie.CAO, Porte.MEDIO,
                 "Tricolor", null, "M", organizacao1,
                 false, true, true, "Belo Horizonte", "MG");
+        novoPet.setId(5L);
 
         Pet salvo = petRepository.save(novoPet);
 
@@ -167,8 +178,6 @@ class PetRepositoryTest {
         pet1.setNome("Rex Atualizado");
         pet1.setStatusAdocao(StatusAdocao.ADOTADO);
         petRepository.save(pet1);
-        entityManager.flush();
-        entityManager.clear();
 
         Optional<Pet> atualizado = petRepository.findById(pet1.getId());
 
@@ -182,7 +191,6 @@ class PetRepositoryTest {
     @Test
     void deveDeletarPet() {
         petRepository.deleteById(pet1.getId());
-        entityManager.flush();
 
         Optional<Pet> deletado = petRepository.findById(pet1.getId());
 
@@ -192,7 +200,6 @@ class PetRepositoryTest {
     @Test
     void deveManterOutrosPetsAoDeletarUm() {
         petRepository.deleteById(pet1.getId());
-        entityManager.flush();
 
         List<Pet> pets = petRepository.findAll();
 
@@ -204,7 +211,6 @@ class PetRepositoryTest {
     @Test
     void deveDeletarApenasPetsDaOrganizacaoCorreta() {
         petRepository.deleteById(pet3.getId());
-        entityManager.flush();
 
         List<Pet> petsOrg1 = petRepository.findByOrganizacaoId(organizacao1.getId());
         List<Pet> petsOrg2 = petRepository.findByOrganizacaoId(organizacao2.getId());

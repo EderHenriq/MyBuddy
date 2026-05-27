@@ -20,7 +20,7 @@ export class ChatClientes implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.petshopService.getChats().subscribe(data => {
+    this.petshopService.buscarChats().subscribe(data => {
       this.chats = data;
     });
   }

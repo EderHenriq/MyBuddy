@@ -20,7 +20,7 @@ export class MeusPets implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.ongService.getMeusPets().subscribe(data => {
+    this.ongService.buscarMeusPets().subscribe(data => {
       this.pets = data;
     });
   }

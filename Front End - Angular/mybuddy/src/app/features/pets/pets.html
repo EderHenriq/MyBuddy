@@ -1,7 +1,7 @@
-<main class="adoption-page">
-  <section class="search-panel" aria-label="Busca e filtros principais">
+<main class="adoption-page" appInfiniteScroll (scrolled)="aoCarregarMais()">
+  <section class="search-panel" aria-label="Busca e filtros principais" [formGroup]="formularioFiltro">
     <label class="search-field">
-      <input type="search" placeholder="Buscar pets" />
+      <input type="search" placeholder="Buscar pets" formControlName="pesquisa" />
       <span class="material-icons">search</span>
     </label>
 
@@ -29,14 +29,14 @@
 
   <section class="adoption-content">
     <aside class="filters-card" aria-label="Filtros de pets">
-      @for (group of filterGroups; track group.title; let last = $last) {
+      @for (grupo of gruposFiltro; track grupo.titulo; let last = $last) {
         <div class="filter-group">
-          <h2>{{ group.title }}</h2>
-          <div class="filter-options">
-            @for (option of group.options; track option) {
+          <h2>{{ grupo.titulo }}</h2>
+          <div class="filter-options" [formGroup]="formularioFiltro">
+            @for (opcao of grupo.opcoes; track opcao) {
               <label class="filter-option">
-                <input type="checkbox" />
-                <span>{{ option }}</span>
+                <input type="checkbox" [formControlName]="opcao" />
+                <span>{{ opcao }}</span>
               </label>
             }
           </div>
@@ -48,26 +48,52 @@
     </aside>
 
     <div class="pets-area">
-      <div class="pets-grid">
-        @for (pet of pets; track pet.name) {
-          <app-card-pet [pet]="$any(pet)" [isFavorite]="pet.isFavorite" (favoriteClick)="toggleFavorite(pet)"></app-card-pet>
-        }
-      </div>
+      @if (carregando()) {
+        <div
+          class="loading-state"
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+            color: var(--text-secondary, #666);
+            width: 100%;
+          "
+        >
+          <i class="fas fa-circle-notch fa-spin fa-2x" style="margin-bottom: 1rem; color: var(--primary-color, #ff6b6b)"></i>
+          <p>Buscando os melhores buddies para você...</p>
+        </div>
+      } @else {
+        <div class="pets-grid">
+          @for (pet of animais(); track pet.nome) {
+            <app-card-pet
+              [urlImagem]="
+                pet.fotosUrls && pet.fotosUrls.length > 0
+                  ? pet.fotosUrls[0].startsWith('http')
+                    ? pet.fotosUrls[0]
+                    : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]
+                  : '/assets/logo/logo-provisoria.png'
+              "
+              [nome]="pet.nome || 'Sem Nome'"
+              [idade]="pet.idade || 0"
+              [raca]="pet.raca || 'Não informada'"
+              [sexo]="pet.sexo || 'Não informado'"
+              [vacinado]="pet.vacinado"
+              [castrado]="pet.castrado"
+              [porte]="pet.porte"
+              [cor]="pet.cor"
+              [pelagem]="pet.pelagem"
+              [favorito]="pet.favorito"
+              (cliqueFavorito)="alternarFavorito(pet)"
+            ></app-card-pet>
+          }
+        </div>
+      }
 
-      <nav class="pagination" aria-label="Paginação de pets">
-        <button type="button" class="page-arrow disabled" aria-label="Página anterior">
-          <span class="material-icons">arrow_back</span>
-        </button>
-        <button type="button" class="page-number active">1</button>
-        <button type="button" class="page-number">2</button>
-        <button type="button" class="page-number">3</button>
-        <span>...</span>
-        <button type="button" class="page-number">12</button>
-        <button type="button" class="page-number">13</button>
-        <button type="button" class="page-arrow" aria-label="Próxima página">
-          <span class="material-icons">arrow_forward</span>
-        </button>
-      </nav>
+      <div class="infinite-scroll-loader">
+        <p>Rode para baixo para carregar mais pets...</p>
+      </div>
     </div>
   </section>
 </main>

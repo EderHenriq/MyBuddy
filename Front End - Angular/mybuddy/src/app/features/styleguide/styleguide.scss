@@ -4,7 +4,7 @@
   padding: var(--spacing-xl) var(--spacing-md);
 }
 
-//Estilização dos cards do styleguide
+
 .card {
   display: flex;
   flex-direction: column;
@@ -16,7 +16,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-//Estilização dos títulos do styleguide
+
 .titles {
   width: 100%;
   text-align: left;
@@ -36,7 +36,7 @@
   }
 }
 
-//Estilização da seção de cores do styleguide
+
 .color-pallete {
   display: flex;
   flex-direction: column;
@@ -86,7 +86,7 @@
   margin: 0;
 }
 
-//Estilização da seção de tipografia e icones do styleguide
+
 
 .testH1-H6 {
   display: flex;
@@ -108,7 +108,7 @@
   border-radius: var(--radius-xl);
 }
 
-//Estilização da seção de espaçamentos
+
 .spacing-scale {
   @include flex-wrap;
   align-items: flex-end;

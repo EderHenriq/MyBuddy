@@ -1,8 +1,39 @@
+import { Organizacao } from './organizacao.model';
+
+export interface FotoPet {
+  id?: number;
+  url: string;
+}
+
 export interface Pet {
-  id: string;
-  ownerId: string;
-  name: string;
-  species: string;
+  // Identificador unificado
+  id: any;
+
+  // Campos em Português (HEAD / Integração Backend)
+  nome?: string;
+  raca?: string;
+  idade?: number;
+  especie?: string;
+  porte?: string;
+  cor?: string;
+  pelagem?: string;
+  sexo?: string;
+  fotos?: FotoPet[];
+  statusAdocao?: string;
+  organizacao?: Organizacao;
+  microchipado?: boolean;
+  vacinado?: boolean;
+  castrado?: boolean;
+  cidade?: string;
+  estado?: string;
+  peso?: number;
+  dataCriacao?: string;
+  dataAtualizacao?: string;
+
+  // Campos em Inglês (origin/Developer / Mock Landing Page)
+  ownerId?: string;
+  name?: string;
+  species?: string;
   gender?: string;
   breed?: string;
   age?: number;

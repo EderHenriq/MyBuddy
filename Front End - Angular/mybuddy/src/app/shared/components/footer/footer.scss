@@ -1,6 +1,6 @@
 @use '../../../../styles/mixins' as *;
 
-//Estilização do corpo do footer
+
 .footer {
   @include flex-between;
   align-items: flex-start;
@@ -11,7 +11,7 @@
   border-radius: 36px 36px 0 0;
 }
 
-//Estilização do conteúdo do footer
+
 .footer-container {
   @include flex-between;
   align-items: flex-start;
@@ -54,7 +54,7 @@
   }
 }
 
-//Estilização dos ícones
+
 i {
   color: var(--primary-color);
   font-size: var(--font-size-lg);
@@ -73,7 +73,7 @@ i {
   }
 }
 
-//Estilização das colunas do footer
+
 .footer-column {
   @include flex-start;
   gap: 40px;

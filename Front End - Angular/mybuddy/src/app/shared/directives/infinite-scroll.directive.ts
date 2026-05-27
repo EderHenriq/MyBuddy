@@ -5,7 +5,7 @@ import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/c
   standalone: true,
 })
 export class InfiniteScrollDirective {
-  @Input() scrollThreshold = 150; // Pixels from bottom to trigger
+  @Input() scrollThreshold = 150;
   @Output() scrolled = new EventEmitter<void>();
 
   @HostListener('window:scroll')

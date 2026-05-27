@@ -38,7 +38,7 @@
             <tr>
               <td class="bold-text">{{ item.nome }}</td>
               <td>{{ item.categoria }}</td>
-              <td>{{ item.preco }}</td>
+              <td>{{ item.preco | currency: 'BRL' }}</td>
               <td>
                 <span [style.color]="item.estoque === 0 ? '#c62828' : 'inherit'" [style.fontWeight]="item.estoque === 0 ? '700' : 'normal'">
                   {{ item.estoque }} un
@@ -47,9 +47,9 @@
               <td>
                 <span
                   class="status-badge"
-                  [class.active]="item.status === 'Ativo'"
-                  [class.pending]="item.status === 'Pausado'"
-                  [class.blocked]="item.status === 'Esgotado'"
+                  [class.active]="item.status === 'ATIVO'"
+                  [class.pending]="item.status === 'INATIVO'"
+                  [class.blocked]="item.status === 'ESGOTADO'"
                 >
                   {{ item.status }}
                 </span>

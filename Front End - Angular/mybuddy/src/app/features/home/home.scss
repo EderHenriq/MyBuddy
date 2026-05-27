@@ -120,7 +120,7 @@
   background: #d6d6d6;
 }
 
-.quick-actions {
+.quick-actions-bar {
   display: grid;
   grid-template-columns: repeat(4, minmax(120px, 1fr));
   gap: 18px;
@@ -718,7 +718,7 @@
     display: none;
   }
 
-  .quick-actions,
+  .quick-actions-bar,
   .category-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -756,7 +756,7 @@
     }
   }
 
-  .quick-actions,
+  .quick-actions-bar,
   .category-grid {
     grid-template-columns: 1fr;
   }

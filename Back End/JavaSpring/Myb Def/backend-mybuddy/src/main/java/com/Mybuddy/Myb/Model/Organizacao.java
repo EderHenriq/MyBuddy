@@ -1,14 +1,19 @@
 package com.Mybuddy.Myb.Model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "organizacoes")
+/**
+ * Entidade Organizacao (ONG) adaptada para o MongoDB.
+ * Representa as ONGs de resgate e adoção de animais.
+ */
+@Document(collection = "organizacoes")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,59 +24,61 @@ import java.util.Set;
 public class Organizacao {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false)
     private String nomeFantasia;
 
-    @Column(nullable = false, unique = true)
     private String emailContato;
 
-    @Column(nullable = false, unique = true)
     private String cnpj;
 
     private String telefoneContato;
 
-    @Column(nullable = false)
     private String endereco;
 
-    @Column(columnDefinition = "TEXT")
     private String descricao;
 
     private String website;
 
-    @OneToMany(mappedBy = "organizacao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @DocumentReference(lazy = true)
     @JsonManagedReference
     @ToString.Exclude
     @Builder.Default
     private Set<Pet> pets = new HashSet<>();
 
-    @OneToMany(mappedBy = "organizacao", cascade = CascadeType.MERGE, orphanRemoval = false, fetch = FetchType.LAZY)
+    @DocumentReference(lazy = true)
     @JsonManagedReference
     @ToString.Exclude
     @Builder.Default
     private Set<Usuario> usuarios = new HashSet<>();
 
-    // Métodos de negócio — mantidos pois gerenciam relacionamentos bidirecionais
+    // Métodos de negócio para gerenciar os relacionamentos bidirecionais
     public void addPet(Pet pet) {
         this.pets.add(pet);
-        pet.setOrganizacao(this);
+        if (pet != null) {
+            pet.setOrganizacao(this);
+        }
     }
 
     public void removePet(Pet pet) {
         this.pets.remove(pet);
-        pet.setOrganizacao(null);
+        if (pet != null) {
+            pet.setOrganizacao(null);
+        }
     }
 
     public void addUsuario(Usuario usuario) {
         this.usuarios.add(usuario);
-        usuario.setOrganizacao(this);
+        if (usuario != null) {
+            usuario.setOrganizacao(this);
+        }
     }
 
     public void removeUsuario(Usuario usuario) {
         this.usuarios.remove(usuario);
-        usuario.setOrganizacao(null);
+        if (usuario != null) {
+            usuario.setOrganizacao(null);
+        }
     }
 }

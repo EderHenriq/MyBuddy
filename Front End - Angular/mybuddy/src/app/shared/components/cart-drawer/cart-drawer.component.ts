@@ -7,36 +7,36 @@ import { CartService } from '@core/services/cart.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './cart-drawer.component.html',
-  styleUrl: './cart-drawer.component.scss'
+  styleUrl: './cart-drawer.component.scss',
 })
 export class CartDrawerComponent {
-  cartService = inject(CartService);
+  carrinhoService = inject(CartService);
 
-  get isOpen() {
-    return this.cartService.isDrawerOpen();
+  get aberto() {
+    return this.carrinhoService.gavetaAberta();
   }
 
-  get items() {
-    return this.cartService.cartItems();
+  get itens() {
+    return this.carrinhoService.itensCarrinho();
   }
 
-  get totalItems() {
-    return this.cartService.totalItems();
+  get totalItens() {
+    return this.carrinhoService.totalItens();
   }
 
-  get totalPrice() {
-    return this.cartService.totalPrice();
+  get precoTotal() {
+    return this.carrinhoService.precoTotal();
   }
 
-  close() {
-    this.cartService.closeDrawer();
+  fechar() {
+    this.carrinhoService.fecharGaveta();
   }
 
-  removeItem(id: number) {
-    this.cartService.removeFromCart(id);
+  removerItem(id: number) {
+    this.carrinhoService.removerDoCarrinho(id);
   }
 
-  updateQuantity(id: number, qty: number) {
-    this.cartService.updateQuantity(id, qty);
+  atualizarQuantidade(id: number, quantidade: number) {
+    this.carrinhoService.atualizarQuantidade(id, quantidade);
   }
 }

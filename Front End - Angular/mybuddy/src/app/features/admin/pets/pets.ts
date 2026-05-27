@@ -20,7 +20,7 @@ export class Pets implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.adminService.getPetsDenuncias().subscribe(data => {
+    this.adminService.buscarPetsDenunciados().subscribe(data => {
       this.denuncias = data;
     });
   }

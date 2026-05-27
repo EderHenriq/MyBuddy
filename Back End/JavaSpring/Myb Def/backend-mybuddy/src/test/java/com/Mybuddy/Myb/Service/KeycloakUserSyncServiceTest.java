@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Model.Usuario;
-import com.Mybuddy.Myb.Repository.UsuarioRepository;
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

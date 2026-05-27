@@ -14,8 +14,8 @@ import { UploadService } from '@core/services/upload.service';
 })
 export class CadastrarPet {
   petForm: FormGroup;
-  uploadedImages: string[] = []; // Para preview
-  selectedFiles: File[] = []; // Para upload real
+  uploadedImages: string[] = [];
+  selectedFiles: File[] = [];
   isSaving = false;
   uploadError: string | null = null;
   isDragging = false;
@@ -63,7 +63,7 @@ export class CadastrarPet {
 
   onFileChange(event: any): void {
     this.processFiles(event.target.files);
-    // Limpa o input para poder selecionar o mesmo arquivo novamente se for apagado
+
     event.target.value = '';
   }
 
@@ -71,7 +71,7 @@ export class CadastrarPet {
     if (!files || files.length === 0) return;
     this.uploadError = null;
 
-    const maxFileSize = 5 * 1024 * 1024; // 5MB
+    const maxFileSize = 5 * 1024 * 1024;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -101,7 +101,7 @@ export class CadastrarPet {
   removeImage(index: number): void {
     this.uploadedImages.splice(index, 1);
     this.selectedFiles.splice(index, 1);
-    this.uploadError = null; // limpa possível erro ao remover
+    this.uploadError = null;
   }
 
   onSubmit(): void {
@@ -115,13 +115,9 @@ export class CadastrarPet {
       this.isSaving = true;
       this.uploadError = null;
 
-      // Envia as imagens primeiro usando o UploadService
       this.uploadService.uploadImages(this.selectedFiles).subscribe({
         next: urls => {
           console.log('Imagens mockadas salvas com sucesso! URLs:', urls);
-          // Aqui você montaria o DTO final e chamaria o backend:
-          // const petData = { ...this.petForm.value, fotosUrls: urls };
-          // this.petService.criarPet(petData).subscribe(...)
 
           this.isSaving = false;
           this.router.navigate(['/ong/pets']);

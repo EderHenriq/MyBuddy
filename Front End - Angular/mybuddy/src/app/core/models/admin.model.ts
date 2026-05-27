@@ -26,7 +26,7 @@ export interface PetDenuncia {
 }
 
 export interface Ticket {
-  id: string;
+  id: number;
   assunto: string;
   usuario: string;
   prioridade: 'Alta' | 'Média' | 'Baixa';

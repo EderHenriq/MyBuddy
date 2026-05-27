@@ -4,13 +4,13 @@
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   min-height: 100vh;
-  background-color: #382e2c; // Figma warm dark brown/grey base
+  background-color: #382e2c; 
   color: #ffffff;
   font-family: 'Outfit', 'Inter', sans-serif;
   overflow: hidden;
 }
 
-// ================= Coluna Esquerda - Hero/Marca =================
+
 .login-hero {
   position: relative;
   display: flex;
@@ -114,7 +114,7 @@
   align-items: flex-end;
   z-index: 2;
   pointer-events: none;
-  opacity: 0.4; // Subtle integrated background element as per Figma
+  opacity: 0.4; 
 
   .hero-bg-img {
     width: 100%;
@@ -125,7 +125,7 @@
   }
 }
 
-// ================= Coluna Direita - Formulário em Card Branco Premium =================
+
 .login-form-side {
   display: flex;
   align-items: center;
@@ -139,7 +139,7 @@
   width: 100%;
   max-width: 460px;
   background-color: #ffffff;
-  border-radius: 48px; // Extremely rounded corners exactly like Figma
+  border-radius: 48px; 
   padding: 3.5rem 3rem;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
   color: #1a1a1a;
@@ -204,7 +204,7 @@
   gap: 1.25rem;
 }
 
-// Figma inputs with labels above them
+
 .input-group {
   display: flex;
   flex-direction: column;
@@ -301,7 +301,7 @@
   }
 }
 
-// Botões Solid Orange Figma
+
 .btn-login {
   display: flex;
   align-items: center;
@@ -358,7 +358,7 @@
   }
 }
 
-// Botões de login social empilhados (Figma style)
+
 .social-login {
   display: flex;
   flex-direction: column;
@@ -410,7 +410,7 @@
   }
 }
 
-// Spinner de Loading
+
 .spinner {
   width: 1.25rem;
   height: 1.25rem;
@@ -420,7 +420,7 @@
   animation: spin 0.8s linear infinite;
 }
 
-// ================= Animações e Responsividade =================
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -449,7 +449,7 @@
   }
 }
 
-// Media Queries
+
 @media (max-width: 992px) {
   .login-container {
     grid-template-columns: 1fr;
@@ -457,7 +457,7 @@
   }
 
   .login-hero {
-    display: none; // Hide left side on smaller devices
+    display: none; 
   }
 
   .login-form-side {

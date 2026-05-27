@@ -46,10 +46,10 @@ export class Pagamento implements OnInit {
     };
 
     this.paymentService.createPayment(request).subscribe({
-      next: (response) => {
+      next: response => {
         window.location.href = response.initPoint;
       },
-      error: (err) => {
+      error: err => {
         this.error.set('Ocorreu um erro ao processar o pagamento.');
         this.loading.set(false);
         console.error('Payment error:', err);
@@ -74,13 +74,13 @@ export class Pagamento implements OnInit {
     };
 
     this.paymentService.createPayment(request).subscribe({
-      next: async (response) => {
+      next: async response => {
         this.preferenceId.set(response.mpPreferenceId);
         this.showBrick.set(true);
         await this.renderBrick(response.mpPreferenceId);
         this.brickLoading.set(false);
       },
-      error: (err) => {
+      error: err => {
         this.error.set('Erro ao inicializar o formulário de pagamento.');
         this.brickLoading.set(false);
         console.error(err);

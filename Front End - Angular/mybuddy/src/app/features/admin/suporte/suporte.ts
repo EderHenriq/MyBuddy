@@ -20,7 +20,7 @@ export class Suporte implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.adminService.getTicketsSuporte().subscribe(data => {
+    this.adminService.buscarTicketsSuporte().subscribe(data => {
       this.tickets = data;
     });
   }

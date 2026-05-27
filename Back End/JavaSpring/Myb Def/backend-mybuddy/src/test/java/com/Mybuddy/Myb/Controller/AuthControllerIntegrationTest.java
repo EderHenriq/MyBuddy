@@ -2,10 +2,12 @@ package com.Mybuddy.Myb.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +28,14 @@ class AuthControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @BeforeEach
+    void setUp() {
+        mongoTemplate.dropCollection(com.Mybuddy.Myb.Model.Usuario.class);
+    }
 
     // ===================== /api/auth/cadastro =====================
 

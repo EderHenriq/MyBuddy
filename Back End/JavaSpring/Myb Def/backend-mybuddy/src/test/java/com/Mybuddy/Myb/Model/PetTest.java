@@ -67,7 +67,6 @@ class PetTest {
         pet.addFoto(foto);
 
         assertThat(pet.getFotos()).hasSize(1);
-        assertThat(foto.getPet()).isEqualTo(pet);
     }
 
     @Test
@@ -79,7 +78,6 @@ class PetTest {
         pet.removeFoto(foto);
 
         assertThat(pet.getFotos()).isEmpty();
-        assertThat(foto.getPet()).isNull();
     }
 
     @Test

@@ -6,11 +6,16 @@ import com.Mybuddy.Myb.Model.FotoPet;
 import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Model.Pet;
 import com.Mybuddy.Myb.Model.StatusAdocao;
-import com.Mybuddy.Myb.Repository.InteresseAdocaoRepository;
-import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
-import com.Mybuddy.Myb.Repository.PetRepository;
+import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
+import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
+import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.support.PageableExecutionUtils;
+import java.util.regex.Pattern;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -32,13 +37,16 @@ public class PetService {
     private final PetRepository petRepository;
     private final InteresseAdocaoRepository interesseRepo;
     private final OrganizacaoRepository organizacaoRepository;
+    private final MongoTemplate mongoTemplate;
 
     public PetService(PetRepository petRepository,
                       InteresseAdocaoRepository interesseRepo,
-                      OrganizacaoRepository organizacaoRepository) {
+                      OrganizacaoRepository organizacaoRepository,
+                      MongoTemplate mongoTemplate) {
         this.petRepository = petRepository;
         this.interesseRepo = interesseRepo;
         this.organizacaoRepository = organizacaoRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Transactional
@@ -224,7 +232,42 @@ public class PetService {
     }
 
     public Page<PetResponse> buscarComFiltrosDTO(PetFiltro filtro, Pageable pageable) {
-        return petRepository.findAll(PetSpecification.comFiltros(filtro), pageable)
+        log.debug("Buscando pets com filtros no MongoDB: {}", filtro);
+        Query query = new Query();
+
+        if (filtro.nome() != null && !filtro.nome().isBlank()) {
+            query.addCriteria(Criteria.where("nome").regex(filtro.nome(), "i"));
+        }
+
+        if (filtro.especie() != null) {
+            query.addCriteria(Criteria.where("especie").is(filtro.especie()));
+        }
+
+        if (filtro.porte() != null) {
+            query.addCriteria(Criteria.where("porte").is(filtro.porte()));
+        }
+
+        if (filtro.sexo() != null && !filtro.sexo().isBlank()) {
+            query.addCriteria(Criteria.where("sexo").regex("^" + Pattern.quote(filtro.sexo()) + "$", "i"));
+        }
+
+        if (filtro.idadeMin() != null) {
+            query.addCriteria(Criteria.where("idade").gte(filtro.idadeMin()));
+        }
+
+        if (filtro.idadeMax() != null) {
+            query.addCriteria(Criteria.where("idade").lte(filtro.idadeMax()));
+        }
+
+        if (filtro.statusAdocao() != null) {
+            query.addCriteria(Criteria.where("statusAdocao").is(filtro.statusAdocao()));
+        }
+
+        long total = mongoTemplate.count(query, Pet.class);
+        query.with(pageable);
+        List<Pet> pets = mongoTemplate.find(query, Pet.class);
+
+        return PageableExecutionUtils.getPage(pets, pageable, () -> total)
                 .map(this::toPetResponse);
     }
 

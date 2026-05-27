@@ -2,8 +2,8 @@ package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
-import com.Mybuddy.Myb.Repository.RoleRepository;
-import com.Mybuddy.Myb.Repository.UsuarioRepository;
+import com.Mybuddy.Myb.Repository.mongo.RoleRepository;
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
 import org.junit.jupiter.api.BeforeEach;

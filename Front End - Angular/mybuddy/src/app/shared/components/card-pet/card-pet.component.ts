@@ -16,10 +16,10 @@ export class CardPetComponent {
   // Inputs individuais em Inglês (Developer)
   @Input() imageUrl = '';
   @Input() name = '';
-  @Input() age = '';
+  @Input() age: string | number = '';
   @Input() breed = '';
   @Input() sex = '';
-  @Input() vaccinated = 'Sim';
+  @Input() vaccinated: string | boolean = 'Sim';
   @Input() description = '';
   @Input() badgeText = '';
   @Input() badgeType = 'default';
@@ -31,18 +31,25 @@ export class CardPetComponent {
   // Inputs individuais em Português (para Perfil/outras páginas antigas)
   @Input() urlImagem = '';
   @Input() nome = '';
-  @Input() idade = '';
+  @Input() idade: string | number = '';
   @Input() raca = '';
   @Input() sexo = '';
-  @Input() vacinado = 'Sim';
+  @Input() vacinado: string | boolean = 'Sim';
   @Input() textoBadge = '';
   @Input() tipoBadge = 'default';
   @Input() favorito = false;
   @Input() mostrarCoracaoTop = false;
 
+  // Novos inputs do backend para listagens dinâmicas
+  @Input() castrado: boolean | string = false;
+  @Input() porte = '';
+  @Input() cor = '';
+  @Input() pelagem = '';
+
   // Outputs (compatibilidade completa de eventos)
   @Output() infoClick = new EventEmitter<void>();
   @Output() favoriteClick = new EventEmitter<any>();
+  @Output() cliqueFavorito = new EventEmitter<any>();
   @Output() adoptClick = new EventEmitter<void>();
   @Output() editClick = new EventEmitter<any>();
   @Output() deleteClick = new EventEmitter<any>();
@@ -78,7 +85,8 @@ export class CardPetComponent {
     if (this.pet?.vacinado !== undefined) {
       return this.pet.vacinado === 'Sim' || this.pet.vacinado === true ? 'Sim' : 'Não';
     }
-    return this.vaccinated || this.vacinado || 'Sim';
+    const val = this.vaccinated || this.vacinado || 'Sim';
+    return val === 'Sim' || val === true ? 'Sim' : 'Não';
   }
 
   get cardBadgeText(): string {

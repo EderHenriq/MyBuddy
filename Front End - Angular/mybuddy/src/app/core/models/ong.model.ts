@@ -1,10 +1,5 @@
-export interface SolicitacaoAdocao {
-  id: string;
-  pet: string;
-  adotante: string;
-  data: string;
-  status: 'Em Análise' | 'Aprovado' | 'Reprovado';
-}
+import { Usuario } from './user.model';
+import { Pet } from './pet.model';
 
 export interface EventoOng {
   nome: string;

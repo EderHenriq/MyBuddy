@@ -26,6 +26,7 @@ const browserConfig: ApplicationConfig = {
       initOptions: {
         onLoad: 'check-sso',
         silentCheckSsoRedirectUri: environment.keycloak.silentCheckSsoRedirectUri,
+        checkLoginIframe: false,
       },
     }),
   ],
