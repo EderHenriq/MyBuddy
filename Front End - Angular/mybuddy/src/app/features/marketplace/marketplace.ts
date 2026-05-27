@@ -4,6 +4,9 @@ import { Footer } from '@shared/components/footer/footer';
 import { CardProdutoComponent } from '@shared/components/card-produto/card-produto.component';
 import { CardLojaComponent } from '@shared/components/card-loja/card-loja.component';
 import { CategoryCarouselComponent, CategoriaVisual } from '@shared/components/category-carousel/category-carousel.component';
+import { CartDrawerComponent } from '@shared/components/cart-drawer/cart-drawer.component';
+import { CartService } from '@core/services/cart.service';
+import { inject } from '@angular/core';
 
 interface Loja {
   id: number;
@@ -28,11 +31,12 @@ interface Produto {
 @Component({
   selector: 'app-marketplace',
   standalone: true,
-  imports: [CommonModule, Footer, CardProdutoComponent, CardLojaComponent, CategoryCarouselComponent],
+  imports: [CommonModule, Footer, CardProdutoComponent, CardLojaComponent, CategoryCarouselComponent, CartDrawerComponent],
   templateUrl: './marketplace.html',
   styleUrl: './marketplace.scss',
 })
 export class Marketplace {
+  cartService = inject(CartService);
   enderecoAtual = 'Rua das Flores, 123 - Centro';
 
   categorias: CategoriaVisual[] = [
@@ -45,11 +49,46 @@ export class Marketplace {
   ];
 
   lojas: Loja[] = [
-    { id: 1, logoUrl: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?auto=format&fit=crop&q=80&w=150', name: 'Petz', rating: 4.8, deliveryTime: '30-45 min', deliveryFee: 5.90 },
-    { id: 2, logoUrl: 'https://images.unsplash.com/photo-1560707854-fb9a10efa532?auto=format&fit=crop&q=80&w=150', name: 'Cobasi', rating: 4.9, deliveryTime: '20-30 min', deliveryFee: 0 },
-    { id: 3, logoUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=150', name: 'Petlove', rating: 4.7, deliveryTime: '15-25 min', deliveryFee: 7.50 },
-    { id: 4, logoUrl: 'https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?auto=format&fit=crop&q=80&w=150', name: 'Bicho Chic', rating: 4.6, deliveryTime: '40-55 min', deliveryFee: 4.00 },
-    { id: 5, logoUrl: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=150', name: 'Casa do Criador', rating: 4.5, deliveryTime: '25-40 min', deliveryFee: 6.90 },
+    {
+      id: 1,
+      logoUrl: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?auto=format&fit=crop&q=80&w=150',
+      name: 'Petz',
+      rating: 4.8,
+      deliveryTime: '30-45 min',
+      deliveryFee: 5.9,
+    },
+    {
+      id: 2,
+      logoUrl: 'https://images.unsplash.com/photo-1560707854-fb9a10efa532?auto=format&fit=crop&q=80&w=150',
+      name: 'Cobasi',
+      rating: 4.9,
+      deliveryTime: '20-30 min',
+      deliveryFee: 0,
+    },
+    {
+      id: 3,
+      logoUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=150',
+      name: 'Petlove',
+      rating: 4.7,
+      deliveryTime: '15-25 min',
+      deliveryFee: 7.5,
+    },
+    {
+      id: 4,
+      logoUrl: 'https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?auto=format&fit=crop&q=80&w=150',
+      name: 'Bicho Chic',
+      rating: 4.6,
+      deliveryTime: '40-55 min',
+      deliveryFee: 4.0,
+    },
+    {
+      id: 5,
+      logoUrl: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=150',
+      name: 'Casa do Criador',
+      rating: 4.5,
+      deliveryTime: '25-40 min',
+      deliveryFee: 6.9,
+    },
   ];
 
   marcasDestaque = [
@@ -66,38 +105,38 @@ export class Marketplace {
       id: 1,
       imageUrl: 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=300',
       title: 'Ração Premier Formula Cães Adultos Frango',
-      price: 189.90,
-      oldPrice: 229.90,
+      price: 189.9,
+      oldPrice: 229.9,
       storeName: 'Petlove',
       discountBadge: '17% OFF',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 2,
       imageUrl: 'https://images.unsplash.com/photo-1581888227599-779811939961?auto=format&fit=crop&q=80&w=300',
       title: 'Antipulgas Bravecto para Cães 10 a 20kg',
-      price: 215.50,
+      price: 215.5,
       storeName: 'Cobasi',
       discountBadge: 'Frete Grátis',
-      isFavorite: true
+      isFavorite: true,
     },
     {
       id: 3,
       imageUrl: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=300',
       title: 'Tapete Higiênico Super Seco 30 unidades',
-      price: 49.90,
-      oldPrice: 65.90,
+      price: 49.9,
+      oldPrice: 65.9,
       storeName: 'Petz',
       discountBadge: '24% OFF',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 4,
       imageUrl: 'https://images.unsplash.com/photo-1537151608804-ea6f23b7b6c5?auto=format&fit=crop&q=80&w=300',
       title: 'Bolinha de Tênis Chalesco para Cães',
-      price: 15.90,
+      price: 15.9,
       storeName: 'Bicho Chic',
-      isFavorite: false
+      isFavorite: false,
     },
   ];
 
@@ -106,51 +145,117 @@ export class Marketplace {
       id: 5,
       imageUrl: 'https://images.unsplash.com/photo-1623387641177-3141525a4d95?auto=format&fit=crop&q=80&w=300',
       title: 'Areia Higiênica Pipicat Floral 4kg',
-      price: 22.90,
+      price: 22.9,
       storeName: 'Cobasi',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 6,
       imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=300',
       title: 'Ração Golden Gatos Adultos Frango 10kg',
-      price: 139.90,
+      price: 139.9,
       storeName: 'Petlove',
-      isFavorite: true
+      isFavorite: true,
     },
     {
       id: 7,
       imageUrl: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=300',
       title: 'Coleira Antipulgas Seresto Cães Até 8kg',
-      price: 249.90,
+      price: 249.9,
       storeName: 'Petz',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 8,
       imageUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=300',
       title: 'Arranhador de Papelão Rampa Gatos',
-      price: 35.00,
-      oldPrice: 45.00,
+      price: 35.0,
+      oldPrice: 45.0,
       storeName: 'Casa do Criador',
       discountBadge: '22% OFF',
-      isFavorite: false
+      isFavorite: false,
     },
   ];
 
   todosProdutos: Produto[] = [
-    { id: 9, title: 'Ração Golden Special Cães Adultos', price: 139.9, oldPrice: 159.9, storeName: 'Cobasi', imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400', discountBadge: '12% OFF', isFavorite: false },
-    { id: 10, title: 'Tapete Higiênico Super Premium', price: 45.9, storeName: 'Petz', imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400', isFavorite: true },
-    { id: 11, title: 'Brinquedo Mordedor Osso Borracha', price: 22.9, storeName: 'Cobasi', imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400', isFavorite: false },
-    { id: 12, title: 'Ração Royal Canin Gatos Castrados', price: 219.9, oldPrice: 249.9, storeName: 'Petz', imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400', discountBadge: 'Frete Grátis', isFavorite: true },
-    { id: 13, title: 'Areia Higiênica Viva Verde!', price: 49.9, storeName: 'Pet Love', imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400', isFavorite: false },
-    { id: 14, title: 'Cama Pet Conforto Redonda G', price: 110.0, storeName: 'Cobasi', imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400', isFavorite: false },
-    { id: 15, title: 'Petisco Dreamies Sabor Salmão', price: 6.5, storeName: 'Petz', imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400', isFavorite: false },
-    { id: 16, title: 'Shampoo Neutro Pelos Claros', price: 34.9, storeName: 'Boutique Animal', imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400', isFavorite: false },
+    {
+      id: 9,
+      title: 'Ração Golden Special Cães Adultos',
+      price: 139.9,
+      oldPrice: 159.9,
+      storeName: 'Cobasi',
+      imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400',
+      discountBadge: '12% OFF',
+      isFavorite: false,
+    },
+    {
+      id: 10,
+      title: 'Tapete Higiênico Super Premium',
+      price: 45.9,
+      storeName: 'Petz',
+      imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400',
+      isFavorite: true,
+    },
+    {
+      id: 11,
+      title: 'Brinquedo Mordedor Osso Borracha',
+      price: 22.9,
+      storeName: 'Cobasi',
+      imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400',
+      isFavorite: false,
+    },
+    {
+      id: 12,
+      title: 'Ração Royal Canin Gatos Castrados',
+      price: 219.9,
+      oldPrice: 249.9,
+      storeName: 'Petz',
+      imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400',
+      discountBadge: 'Frete Grátis',
+      isFavorite: true,
+    },
+    {
+      id: 13,
+      title: 'Areia Higiênica Viva Verde!',
+      price: 49.9,
+      storeName: 'Pet Love',
+      imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400',
+      isFavorite: false,
+    },
+    {
+      id: 14,
+      title: 'Cama Pet Conforto Redonda G',
+      price: 110.0,
+      storeName: 'Cobasi',
+      imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400',
+      isFavorite: false,
+    },
+    {
+      id: 15,
+      title: 'Petisco Dreamies Sabor Salmão',
+      price: 6.5,
+      storeName: 'Petz',
+      imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400',
+      isFavorite: false,
+    },
+    {
+      id: 16,
+      title: 'Shampoo Neutro Pelos Claros',
+      price: 34.9,
+      storeName: 'Boutique Animal',
+      imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400',
+      isFavorite: false,
+    },
   ];
 
-  adicionarAoCarrinho(produto: Produto, quantidade: number = 1) {
-    console.log(`Adicionou ${quantidade} do produto ${produto.title}`);
+  adicionarAoCarrinho(produto: Produto, quantidade = 1) {
+    this.cartService.addToCart({
+      id: produto.id,
+      name: produto.title,
+      price: produto.price,
+      imageUrl: produto.imageUrl,
+      lojaNome: produto.storeName
+    });
   }
 
   verProduto(produto: Produto) {

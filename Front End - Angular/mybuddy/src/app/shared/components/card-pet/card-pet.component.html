@@ -1,22 +1,22 @@
 <div class="card">
   <div class="card-img">
-    <img [src]="pet?.imageUrl" [alt]="pet?.name" />
+    <img [src]="cardImageUrl" [alt]="cardName" />
 
-    @if (badgeText) {
-      <span class="pet-badge" [ngClass]="badgeType">{{ badgeText }}</span>
+    @if (cardBadgeText) {
+      <span class="pet-badge" [ngClass]="cardBadgeType">{{ cardBadgeText }}</span>
     }
   </div>
 
   <div class="card-header">
-    <h2>{{ pet?.name }}</h2>
+    <h2>{{ cardName }}</h2>
   </div>
 
   <div class="card-informations">
     <ul>
-      <li>Idade: {{ pet?.age }}</li>
-      <li>Raça: {{ pet?.breed }}</li>
-      <li>Sexo: {{ pet?.gender }}</li>
-      <li>Vacinado: {{ pet?.isVaccinated ? 'Sim' : 'Não' }}</li>
+      <li>Idade: {{ cardAge }}</li>
+      <li>Raça: {{ cardBreed }}</li>
+      <li>Sexo: {{ cardSex }}</li>
+      <li>Vacinado: {{ cardVaccinated }}</li>
     </ul>
   </div>
 
@@ -37,9 +37,9 @@
         <span class="material-icons">keyboard_arrow_right</span>
       </button>
 
-      @if (showFavoriteButton) {
-        <button class="favorite" [class.active]="isFavorite" (click)="favoriteClick.emit($event)">
-          <span class="material-icons">{{ isFavorite ? 'favorite' : 'favorite_border' }}</span>
+      @if (showFavoriteButton || cardIsFavorite) {
+        <button class="favorite" [class.active]="cardIsFavorite" (click)="favoriteClick.emit($event)">
+          <span class="material-icons">{{ cardIsFavorite ? 'favorite' : 'favorite_border' }}</span>
         </button>
       }
     }
@@ -49,7 +49,7 @@
 @if (isModalVisible) {
   <app-modal
     [(visible)]="isModalVisible"
-    [title]="'Sobre o ' + pet?.name"
+    [title]="'Sobre o ' + cardName"
     width="550px"
     [showFooter]="true"
     confirmLabel="Quero Adotar"
@@ -58,13 +58,13 @@
   >
     <div class="pet-modal-content">
       <div class="modal-image-wrapper">
-        <img [src]="pet?.imageUrl" [alt]="pet?.name" class="modal-image" />
+        <img [src]="cardImageUrl" [alt]="cardName" class="modal-image" />
       </div>
 
       <div class="modal-info">
         <div class="modal-description">
           <h4>Apresentação</h4>
-          <p>{{ pet?.description || defaultDescription }}</p>
+          <p>{{ cardDescription }}</p>
         </div>
 
         <h3 class="info-title">Informações</h3>
@@ -72,19 +72,19 @@
         <div class="modal-tags">
           <span class="tag">
             <strong>Idade:</strong>
-            {{ pet?.age }}
+            {{ cardAge }}
           </span>
           <span class="tag">
             <strong>Raça:</strong>
-            {{ pet?.breed }}
+            {{ cardBreed }}
           </span>
           <span class="tag">
             <strong>Sexo:</strong>
-            {{ pet?.gender }}
+            {{ cardSex }}
           </span>
           <span class="tag">
             <strong>Vacinado:</strong>
-            {{ pet?.isVaccinated ? 'Sim' : 'Não' }}
+            {{ cardVaccinated }}
           </span>
         </div>
       </div>

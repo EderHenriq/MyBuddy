@@ -112,6 +112,8 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
 
     h2 {
       font-size: 1.25rem;
@@ -130,6 +132,18 @@
 
       &:hover {
         text-decoration: underline;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      
+      .panel-actions {
+        width: 100%;
+        .panel-search-box input {
+          width: 100%;
+        }
       }
     }
   }

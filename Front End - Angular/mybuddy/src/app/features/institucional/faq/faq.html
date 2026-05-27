@@ -1,1 +1,41 @@
-<p>faq works!</p>
+<app-header-landing-page></app-header-landing-page>
+
+<main class="faq-page">
+  <div class="faq-header">
+    <span class="eyebrow">Dúvidas Frequentes</span>
+    <h1>Como podemos ajudar?</h1>
+    <p>Encontre as respostas para as perguntas mais comuns sobre o MyBuddy.</p>
+  </div>
+
+  <div class="faq-container">
+    <div class="faq-filters">
+      @for (cat of categories; track cat) {
+        <button class="filter-btn" [class.active]="activeCategory === cat" (click)="setCategory(cat)">
+          {{ cat }}
+        </button>
+      }
+    </div>
+
+    <div class="faq-list">
+      @for (faq of filteredFaqs; track faq.question) {
+        <article class="faq-item" [class.expanded]="faq.expanded" (click)="toggleFaq(faq)">
+          <div class="faq-question">
+            <h3>{{ faq.question }}</h3>
+            <button class="toggle-btn" [attr.aria-expanded]="faq.expanded">
+              <i class="fas" [ngClass]="faq.expanded ? 'fa-minus' : 'fa-plus'"></i>
+            </button>
+          </div>
+          <div class="faq-answer">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </article>
+      }
+
+      @if (filteredFaqs.length === 0) {
+        <div class="empty-state">Nenhuma dúvida encontrada para esta categoria.</div>
+      }
+    </div>
+  </div>
+</main>
+
+<app-footer></app-footer>

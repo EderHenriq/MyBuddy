@@ -15,7 +15,7 @@ export class App {
   isAdminRoute = false;
 
   constructor(private router: Router) {
-    this.router.events.subscribe((event) => {
+    this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects;
         this.isAdminRoute = url.startsWith('/admin') || url.startsWith('/ong-panel') || url.startsWith('/petshop-panel');

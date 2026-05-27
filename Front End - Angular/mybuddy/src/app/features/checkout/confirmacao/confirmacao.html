@@ -1,1 +1,123 @@
-<p>confirmacao works!</p>
+<div class="confirmacao-container">
+  <div class="confirmacao-card">
+
+    @if (status() === 'loading') {
+      <div class="status-icon loading">
+        <span class="material-icons">hourglass_empty</span>
+      </div>
+      <h2>Verificando pagamento...</h2>
+    }
+
+    @if (status() === 'APPROVED') {
+      <div class="status-icon approved">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <h2>Pagamento aprovado!</h2>
+      <p class="subtitle">Sua adoção foi confirmada com sucesso. Em breve você receberá mais informações.</p>
+    }
+
+    @if (status() === 'PENDING') {
+      <div class="status-icon pending">
+        <span class="material-icons">schedule</span>
+      </div>
+      <h2>Pagamento em processamento</h2>
+      <p class="subtitle">Seu pagamento está sendo processado. Você será notificado quando for confirmado.</p>
+    }
+
+    @if (status() === 'REJECTED') {
+      <div class="status-icon rejected">
+        <span class="material-icons">cancel</span>
+      </div>
+      <h2>Pagamento não aprovado</h2>
+      <p class="subtitle">Houve um problema com seu pagamento. Tente novamente ou use outro meio de pagamento.</p>
+    }
+
+    @if (paymentId()) {
+      <div class="payment-info">
+        <span class="label">Código da operação</span>
+        <span class="value">#{{ paymentId() }}</span>
+      </div>
+    }
+
+    <div class="confirmacao-actions">
+      @if (status() === 'APPROVED') {
+        <button class="btn-primary" (click)="adotarOutroPet()">
+          <span class="material-icons">pets</span>
+          Ver mais pets
+        </button>
+      }
+      @if (status() === 'REJECTED') {
+        <button class="btn-primary" (click)="voltarParaInicio()">
+          <span class="material-icons">refresh</span>
+          Tentar novamente
+        </button>
+      }
+      <button class="btn-secondary" (click)="voltarParaInicio()">
+        <span class="material-icons">home</span>
+        Voltar ao início
+      </button>
+    </div>
+
+  </div>
+</div><div class="confirmacao-container">
+  <div class="confirmacao-card">
+
+    @if (status() === 'loading') {
+      <div class="status-icon loading">
+        <span class="material-icons">hourglass_empty</span>
+      </div>
+      <h2>Verificando pagamento...</h2>
+    }
+
+    @if (status() === 'APPROVED') {
+      <div class="status-icon approved">
+        <span class="material-icons">check_circle</span>
+      </div>
+      <h2>Pagamento aprovado!</h2>
+      <p class="subtitle">Sua adoção foi confirmada com sucesso. Em breve você receberá mais informações.</p>
+    }
+
+    @if (status() === 'PENDING') {
+      <div class="status-icon pending">
+        <span class="material-icons">schedule</span>
+      </div>
+      <h2>Pagamento em processamento</h2>
+      <p class="subtitle">Seu pagamento está sendo processado. Você será notificado quando for confirmado.</p>
+    }
+
+    @if (status() === 'REJECTED') {
+      <div class="status-icon rejected">
+        <span class="material-icons">cancel</span>
+      </div>
+      <h2>Pagamento não aprovado</h2>
+      <p class="subtitle">Houve um problema com seu pagamento. Tente novamente ou use outro meio de pagamento.</p>
+    }
+
+    @if (paymentId()) {
+      <div class="payment-info">
+        <span class="label">Código da operação</span>
+        <span class="value">#{{ paymentId() }}</span>
+      </div>
+    }
+
+    <div class="confirmacao-actions">
+      @if (status() === 'APPROVED') {
+        <button class="btn-primary" (click)="adotarOutroPet()">
+          <span class="material-icons">pets</span>
+          Ver mais pets
+        </button>
+      }
+      @if (status() === 'REJECTED') {
+        <button class="btn-primary" (click)="voltarParaInicio()">
+          <span class="material-icons">refresh</span>
+          Tentar novamente
+        </button>
+      }
+      <button class="btn-secondary" (click)="voltarParaInicio()">
+        <span class="material-icons">home</span>
+        Voltar ao início
+      </button>
+    </div>
+
+  </div>
+</div>

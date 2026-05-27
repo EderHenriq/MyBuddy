@@ -5,6 +5,16 @@
   </div>
 
   <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Lista de Pedidos</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar pedido..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+      </div>
+    </div>
+
     <div class="table-container">
       <table>
         <thead>
@@ -25,10 +35,12 @@
               <td>{{ item.valor }}</td>
               <td>{{ item.data }}</td>
               <td>
-                <span class="status-badge" 
-                      [class.pending]="item.status === 'Aprovado'"
-                      [class.active]="item.status === 'Entregue'"
-                      [class.blocked]="item.status === 'Enviado'">
+                <span
+                  class="status-badge"
+                  [class.pending]="item.status === 'Aprovado'"
+                  [class.active]="item.status === 'Entregue'"
+                  [class.blocked]="item.status === 'Enviado'"
+                >
                   {{ item.status }}
                 </span>
               </td>
@@ -42,5 +54,8 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
   </section>
 </div>

@@ -4,6 +4,23 @@ import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
+    //Rota testes
+    path: 'empty-state',
+    loadComponent: () => import('./shared/components/empty-state/empty-state').then(m => m.EmptyState),
+  },
+  {
+    path: 'checkout/pagamento',
+    loadComponent: () => import('./features/checkout/pagamento/pagamento').then(m => m.Pagamento),
+  },
+  {
+    path: 'checkout/confirmacao',
+    loadComponent: () => import('./features/checkout/confirmacao/confirmacao').then(m => m.Confirmacao),
+  },
+  {
+    path: 'checkout/pendente',
+    loadComponent: () => import('./features/checkout/pendente/pendente').then(m => m.Pendente),
+  },
+  {
     // Redirecionamento inicial para a rota 'home'
     path: '',
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),
@@ -124,6 +141,18 @@ export const routes: Routes = [
       { path: 'pedidos', loadComponent: () => import('./features/petshop/pedidos/pedidos').then(m => m.Pedidos) },
       { path: 'chat', loadComponent: () => import('./features/petshop/chat-clientes/chat-clientes').then(m => m.ChatClientes) },
     ],
+  },
+  {
+    path: 'sobre',
+    loadComponent: () => import('./features/institucional/quem-somos/quem-somos').then(m => m.QuemSomos),
+  },
+  {
+    path: 'faq',
+    loadComponent: () => import('./features/institucional/faq/faq').then(m => m.Faq),
+  },
+  {
+    path: 'contato',
+    loadComponent: () => import('./features/institucional/contato/contato').then(m => m.Contato),
   },
   {
     // Rota para páginas não encontradas (404)

@@ -22,7 +22,7 @@ interface Servico {
   standalone: true,
   imports: [CommonModule, CardServicoComponent, Footer],
   templateUrl: './servicos.component.html',
-  styleUrl: './servicos.component.scss'
+  styleUrl: './servicos.component.scss',
 })
 export class ServicosComponent {
   servicos: Servico[] = [
@@ -37,7 +37,7 @@ export class ServicosComponent {
       distanceStr: '2.5 km',
       openHoursStr: 'Aberto 24h',
       description: 'Clínica completa com atendimento de emergência, cirurgias e especialidades diversas.',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 2,
@@ -50,7 +50,7 @@ export class ServicosComponent {
       distanceStr: '4.2 km',
       openHoursStr: 'Aberto 24h',
       description: 'Estrutura hospitalar avançada para o cuidado intensivo do seu melhor amigo.',
-      isFavorite: true
+      isFavorite: true,
     },
     {
       id: 3,
@@ -63,7 +63,7 @@ export class ServicosComponent {
       distanceStr: '15 km',
       openHoursStr: '08:00 - 18:00',
       description: 'Hotel fazenda com ampla área verde, piscina e recreação monitorada 24h.',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 4,
@@ -76,7 +76,7 @@ export class ServicosComponent {
       distanceStr: '3.1 km',
       openHoursStr: '09:00 - 17:00',
       description: 'Comportamento canino e obediência com métodos de reforço positivo.',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 5,
@@ -89,7 +89,7 @@ export class ServicosComponent {
       distanceStr: '5.0 km',
       openHoursStr: '08:00 - 20:00',
       description: 'Atendimento exclusivo para felinos com ambiente cat-friendly certificado.',
-      isFavorite: true
+      isFavorite: true,
     },
     {
       id: 6,
@@ -102,8 +102,8 @@ export class ServicosComponent {
       distanceStr: '6.5 km',
       openHoursStr: '07:00 - 19:00',
       description: 'Seu pet se diverte e gasta energia enquanto você trabalha. Muita brincadeira e amor.',
-      isFavorite: false
-    }
+      isFavorite: false,
+    },
   ];
 
   verDetalhes(servico: Servico) {

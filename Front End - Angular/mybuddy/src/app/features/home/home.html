@@ -20,20 +20,20 @@
 
       <div class="panel-divider"></div>
 
-      <nav class="quick-actions" aria-label="Atalhos da home">
-        <a routerLink="/pets" class="quick-action">
+      <nav class="quick-actions-bar" aria-label="Ações Rápidas">
+        <a [routerLink]="['/perfil']" [queryParams]="{ tab: 'pets' }" class="quick-action">
           <span>Meus Pets</span>
           <span class="material-icons">pets</span>
         </a>
-        <a routerLink="/adotante/favoritos" class="quick-action">
+        <a [routerLink]="['/perfil']" [queryParams]="{ tab: 'favoritos' }" class="quick-action">
           <span>Favoritos</span>
           <span class="material-icons">favorite</span>
         </a>
-        <a routerLink="/adotante/interesses" class="quick-action">
+        <a [routerLink]="['/perfil']" [queryParams]="{ tab: 'mensagens' }" class="quick-action">
           <span>Mensagens</span>
           <span class="material-icons">chat_bubble_outline</span>
         </a>
-        <a routerLink="/adotante/interesses" class="quick-action">
+        <a [routerLink]="['/perfil']" [queryParams]="{ tab: 'solicitacoes' }" class="quick-action">
           <span>Solicitações</span>
           <span class="material-icons">assignment</span>
         </a>
@@ -44,7 +44,7 @@
       <h2 class="section-title">Encontre tudo para o seu melhor amigo</h2>
       <div class="category-grid">
         @for (category of categories; track category.label) {
-          <a class="category-card" routerLink="/pets" [style.background-image]="'url(' + category.imageUrl + ')'">
+          <a class="category-card" [routerLink]="category.route" [style.background-image]="'url(' + category.imageUrl + ')'">
             <span>{{ category.label }}</span>
           </a>
         }
@@ -73,31 +73,49 @@
         </a>
       </div>
 
-      <div class="pets-grid">
-        @for (pet of pets; track pet.name) {
-          <article class="pet-card">
-            <img [src]="pet.imageUrl" [alt]="pet.name" />
-            <div class="pet-card-body">
-              <h3>{{ pet.name }}</h3>
-              <ul>
-                <li>Idade: {{ pet.age }}</li>
-                <li>Raça: {{ pet.breed }}</li>
-                <li>Sexo: {{ pet.sex }}</li>
-                <li>Vacinado: {{ pet.vaccinated }}</li>
-              </ul>
-              <div class="pet-card-footer">
-                <a routerLink="/pets" class="pet-info-link">
-                  Mais Informações
-                  <span class="material-icons">arrow_forward</span>
-                </a>
-                <button type="button" [attr.aria-label]="'Favoritar ' + pet.name">
-                  <span class="material-icons">favorite_border</span>
-                </button>
+      @if (isLoadingPets()) {
+        <div
+          class="loading-state"
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-secondary, #666);
+            width: 100%;
+          "
+        >
+          <i class="fas fa-circle-notch fa-spin fa-2x" style="margin-bottom: 1rem; color: var(--primary-color, #ff6b6b)"></i>
+          <p>Carregando novos buddies...</p>
+        </div>
+      } @else {
+        <div class="pets-grid">
+          @for (pet of pets(); track pet.name) {
+            <article class="pet-card">
+              <img [src]="pet.imageUrl" [alt]="pet.name" />
+              <div class="pet-card-body">
+                <h3>{{ pet.name }}</h3>
+                <ul>
+                  <li>Idade: {{ pet.age }}</li>
+                  <li>Raça: {{ pet.breed }}</li>
+                  <li>Sexo: {{ pet.sex }}</li>
+                  <li>Vacinado: {{ pet.vaccinated }}</li>
+                </ul>
+                <div class="pet-card-footer">
+                  <a routerLink="/pets" class="pet-info-link">
+                    Mais Informações
+                    <span class="material-icons">arrow_forward</span>
+                  </a>
+                  <button type="button" [attr.aria-label]="'Favoritar ' + pet.name">
+                    <span class="material-icons">favorite_border</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          </article>
-        }
-      </div>
+            </article>
+          }
+        </div>
+      }
     </section>
 
     <section class="donation-banner">
@@ -199,30 +217,5 @@
     </section>
   </section>
 
-  <footer class="home-footer">
-    <div class="footer-brand">
-      <h2>MyBuddy</h2>
-      <p>Uma plataforma que conecta humanos a pets que precisam de um lar.</p>
-      <div class="social-links">
-        <a routerLink="/" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-        <a routerLink="/" aria-label="Linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
-        <a routerLink="/" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
-      </div>
-    </div>
-
-    <nav class="footer-links" aria-label="Links do rodapé">
-      <div>
-        <h3>Sobre nós</h3>
-        <a routerLink="/">Blog</a>
-        <a routerLink="/">Quem somos</a>
-        <a routerLink="/">Dúvidas</a>
-      </div>
-      <div>
-        <h3>Fale com a gente</h3>
-        <a routerLink="/">Contact</a>
-        <a routerLink="/">Support</a>
-        <a routerLink="/">Legal</a>
-      </div>
-    </nav>
-  </footer>
+  <app-footer></app-footer>
 </main>

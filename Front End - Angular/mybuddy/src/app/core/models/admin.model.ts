@@ -1,5 +1,3 @@
-
-
 export interface Parceria {
   id: number;
   nome: string;

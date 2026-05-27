@@ -4,8 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-configuracoes',
   standalone: true,
   templateUrl: './configuracoes.html',
-  styleUrl: './configuracoes.scss'
+  styleUrl: './configuracoes.scss',
 })
-export class Configuracoes {
-
-}
+export class Configuracoes {}
