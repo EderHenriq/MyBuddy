@@ -420,13 +420,13 @@
           </div>
 
           <div class="timeline-container">
-            @if ((historico$ | async)?.length === 0) {
+            @if (((historico$ | async) || []).length === 0) {
               <div class="empty-state">
                 <i class="fas fa-history"></i>
                 <p>Nenhuma atividade registrada.</p>
               </div>
             }
-            @for (item of historico$ | async; track item.id) {
+            @for (item of (historico$ | async) || []; track item.id) {
               <div class="timeline-item">
                 <div class="timeline-icon" [ngClass]="item.tipo">
                   <i [class]="item.icone"></i>
