@@ -5,7 +5,7 @@ import com.Mybuddy.Myb.DTO.OrganizacaoResponseDTO;
 import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Organizacao;
-import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
+import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
