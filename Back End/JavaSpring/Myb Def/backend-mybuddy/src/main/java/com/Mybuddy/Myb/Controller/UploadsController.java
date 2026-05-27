@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Controller responsável por servir dinamicamente os arquivos e fotos salvos no MongoDB.
- * Mapeado na rota /uploads/{filename} para que o front-end acesse as imagens de forma transparente.
- */
 @RestController
 public class UploadsController {
 
@@ -26,9 +22,6 @@ public class UploadsController {
         this.arquivoRepository = arquivoRepository;
     }
 
-    /**
-     * Busca o arquivo pelo nome gerado no MongoDB e retorna seus bytes.
-     */
     @GetMapping("/uploads/{filename:.+}")
     public ResponseEntity<byte[]> serveFile(@PathVariable String filename) {
         log.info("Requisição recebida para baixar o arquivo: {}", filename);

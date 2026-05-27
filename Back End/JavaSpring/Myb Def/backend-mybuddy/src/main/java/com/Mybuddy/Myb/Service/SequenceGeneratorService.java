@@ -11,9 +11,6 @@ import static org.springframework.data.mongodb.core.FindAndModifyOptions.options
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
-/**
- * Serviço responsável por gerar sequências numéricas auto-incrementais exclusivas para entidades do MongoDB.
- */
 @Service
 public class SequenceGeneratorService {
 
@@ -23,9 +20,6 @@ public class SequenceGeneratorService {
         this.mongoOperations = mongoOperations;
     }
 
-    /**
-     * Gera a próxima sequência numérica para um determinado nome.
-     */
     public long generateSequence(String seqName) {
         DatabaseSequence counter = mongoOperations.findAndModify(
                 query(where("_id").is(seqName)),

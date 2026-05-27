@@ -13,10 +13,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Testes de repositório para a entidade Pet adaptados para o MongoDB.
- * Todos os logs e comentários seguem os padrões em pt-br.
- */
 @DataMongoTest
 class PetRepositoryTest {
 

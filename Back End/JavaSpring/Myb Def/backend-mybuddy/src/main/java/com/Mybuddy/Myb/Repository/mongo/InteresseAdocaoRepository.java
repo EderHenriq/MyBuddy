@@ -9,10 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * Repositório do MongoDB para a entidade InteresseAdocao.
- * Todos os logs e comentários seguem os padrões em pt-br.
- */
 @Repository
 public interface InteresseAdocaoRepository extends MongoRepository<InteresseAdocao, Long> {
 

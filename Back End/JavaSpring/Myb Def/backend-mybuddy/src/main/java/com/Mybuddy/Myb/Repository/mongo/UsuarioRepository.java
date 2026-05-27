@@ -6,10 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-/**
- * Repositório do MongoDB para a entidade Usuario.
- * Todos os logs e comentários seguem os padrões em pt-br.
- */
 @Repository
 public interface UsuarioRepository extends MongoRepository<Usuario, Long> {
 

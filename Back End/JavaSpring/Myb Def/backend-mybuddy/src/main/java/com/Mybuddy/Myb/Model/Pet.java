@@ -13,10 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.time.LocalDateTime;
 
-/**
- * Entidade Pet adaptada para o MongoDB.
- * Representa os animais disponíveis para adoção na plataforma.
- */
 @Document(collection = "pets")
 @Getter
 @Setter
@@ -45,7 +41,6 @@ public class Pet {
 
     private String sexo;
 
-    // Embutido diretamente no documento Pet
     @ToString.Exclude
     private Set<FotoPet> fotos = new HashSet<>();
 
