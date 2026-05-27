@@ -10,7 +10,7 @@ export interface ItemCarrinho {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CartService {
   private itensCarrinhoSignal = signal<ItemCarrinho[]>([]);
@@ -20,7 +20,7 @@ export class CartService {
   readonly gavetaAberta = this.gavetaAbertaSignal.asReadonly();
 
   readonly totalItens = computed(() => this.itensCarrinhoSignal().reduce((soma, item) => soma + item.quantidade, 0));
-  readonly precoTotal = computed(() => this.itensCarrinhoSignal().reduce((soma, item) => soma + (item.preco * item.quantidade), 0));
+  readonly precoTotal = computed(() => this.itensCarrinhoSignal().reduce((soma, item) => soma + item.preco * item.quantidade, 0));
 
   alternarGaveta(): void {
     this.gavetaAbertaSignal.update(estado => !estado);
@@ -54,9 +54,7 @@ export class CartService {
       this.removerDoCarrinho(itemId);
       return;
     }
-    this.itensCarrinhoSignal.update(itens => 
-      itens.map(item => item.id === itemId ? { ...item, quantidade } : item)
-    );
+    this.itensCarrinhoSignal.update(itens => itens.map(item => (item.id === itemId ? { ...item, quantidade } : item)));
   }
 
   limparCarrinho(): void {

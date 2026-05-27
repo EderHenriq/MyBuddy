@@ -8,8 +8,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./empty-state.scss'],
 })
 export class EmptyState {
-  @Input() icon?: string; 
-  @Input() imageUrl?: string; 
+  @Input() icon?: string;
+  @Input() imageUrl?: string;
   @Input() title = 'Nenhum resultado encontrado';
   @Input() description?: string;
   @Input() actionLabel?: string;

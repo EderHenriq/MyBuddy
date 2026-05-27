@@ -4,7 +4,6 @@ import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
-    
     path: 'empty-state',
     loadComponent: () => import('./shared/components/empty-state/empty-state').then(m => m.EmptyState),
   },
@@ -26,39 +25,32 @@ export const routes: Routes = [
     loadComponent: () => import('./features/landing-page/landing-page').then(m => m.LandingPage),
   },
   {
-    
     path: 'home',
     canActivate: [authGuard],
     loadComponent: () => import('./features/home/home').then(m => m.Home),
   },
   {
-    
     path: 'pets',
     canActivate: [authGuard],
     loadComponent: () => import('./features/pets/pets').then(m => m.Pets),
   },
   {
-    
     path: 'style-guide',
     loadComponent: () => import('./features/styleguide/styleguide').then(m => m.Styleguide),
   },
   {
-    
     path: 'eventos',
     loadComponent: () => import('./features/eventos/eventos.component').then(m => m.EventosComponent),
   },
   {
-    
     path: 'servicos',
     loadComponent: () => import('./features/servicos/servicos.component').then(m => m.ServicosComponent),
   },
   {
-    
     path: 'produtos',
     loadComponent: () => import('./features/marketplace/marketplace').then(m => m.Marketplace),
   },
   {
-    
     path: 'perfil',
     canActivate: [authGuard],
     loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil),
@@ -87,7 +79,6 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/recuperar-senha/recuperar-senha').then(m => m.RecuperarSenha),
   },
   {
-    
     path: 'auth/login',
     loadComponent: () => import('./features/auth/login/login').then(m => m.Login),
   },
@@ -155,7 +146,6 @@ export const routes: Routes = [
     loadComponent: () => import('./features/institucional/contato/contato').then(m => m.Contato),
   },
   {
-    
     path: '**',
     loadComponent: () => import('./shared/components/not-found/not-found').then(m => m.NotFound),
   },

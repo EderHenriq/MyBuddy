@@ -6,11 +6,10 @@ export const retryInterceptor: HttpInterceptorFn = (req, next) => {
     retry({
       count: 2,
       delay: (error: HttpErrorResponse, retryCount: number) => {
-        
         if (error.status === 0 || error.status >= 500) {
-          return timer(1000 * retryCount); 
+          return timer(1000 * retryCount);
         }
-        throw error; 
+        throw error;
       },
     }),
   );

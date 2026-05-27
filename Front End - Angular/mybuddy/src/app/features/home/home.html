@@ -74,7 +74,18 @@
       </div>
 
       @if (carregandoPets()) {
-        <div class="loading-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; color: var(--text-secondary, #666); width: 100%;">
+        <div
+          class="loading-state"
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-secondary, #666);
+            width: 100%;
+          "
+        >
           <i class="fas fa-circle-notch fa-spin fa-2x" style="margin-bottom: 1rem; color: var(--primary-color, #ff6b6b)"></i>
           <p>Carregando novos buddies...</p>
         </div>
@@ -82,7 +93,13 @@
         <div class="pets-grid">
           @for (pet of pets(); track pet.nome) {
             <app-card-pet
-              [urlImagem]="pet.fotosUrls && pet.fotosUrls.length > 0 ? (pet.fotosUrls[0].startsWith('http') ? pet.fotosUrls[0] : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]) : '/assets/logo/logo-provisoria.png'"
+              [urlImagem]="
+                pet.fotosUrls && pet.fotosUrls.length > 0
+                  ? pet.fotosUrls[0].startsWith('http')
+                    ? pet.fotosUrls[0]
+                    : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]
+                  : '/assets/logo/logo-provisoria.png'
+              "
               [nome]="pet.nome || 'Sem Nome'"
               [idade]="pet.idade || 0"
               [raca]="pet.raca || 'Não informada'"

@@ -119,7 +119,6 @@ interface ProfileRoleConfig {
 }
 
 import { NotificationService } from '@core/services/notification.service';
-import { HistoricoAtividade } from '@core/models/notification.model';
 
 @Component({
   selector: 'app-perfil',

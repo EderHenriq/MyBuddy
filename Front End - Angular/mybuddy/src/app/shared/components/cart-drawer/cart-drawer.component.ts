@@ -7,7 +7,7 @@ import { CartService } from '@core/services/cart.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './cart-drawer.component.html',
-  styleUrl: './cart-drawer.component.scss'
+  styleUrl: './cart-drawer.component.scss',
 })
 export class CartDrawerComponent {
   carrinhoService = inject(CartService);

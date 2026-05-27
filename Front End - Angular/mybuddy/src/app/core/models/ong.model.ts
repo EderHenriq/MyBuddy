@@ -1,7 +1,6 @@
 import { Usuario } from './user.model';
 import { Pet } from './pet.model';
 
-
 export interface EventoOng {
   nome: string;
   local: string;

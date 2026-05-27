@@ -145,7 +145,7 @@ export class AuthService {
 
   getUserRoles(): string[] {
     const roles = this.usuarioAtual()?.roles || [];
-    return roles.map((r: any) => typeof r === 'string' ? r : (r.name || ''));
+    return roles.map((r: any) => (typeof r === 'string' ? r : r.name || ''));
   }
 
   private definirCookie(nome: string, valor: string, maxAgeSeconds: number) {

@@ -42,17 +42,12 @@ export class DashboardLayout {
     });
 
     this.sessionService.userRole$.subscribe(role => {
-      
-      
-      
-      
       if (role === Role.ADMIN) this.roleName = 'Administrador Geral';
       if (role === Role.ONG) this.roleName = 'Gestor de ONG';
       if (role === Role.PETSHOP) this.roleName = 'Lojista';
       if (role === Role.USER) this.roleName = 'Adotante';
     });
 
-    
     this.updateMenuBasedOnRoute(this.router.url);
 
     this.notificationService.notificacoes$.subscribe((notifs: any) => {
@@ -70,7 +65,6 @@ export class DashboardLayout {
 
   onSearch(term: string): void {
     console.log(`[Dashboard Layout] Buscando globalmente por: ${term}`);
-    
   }
 
   markAsRead(id: string, event: Event): void {
@@ -111,7 +105,6 @@ export class DashboardLayout {
         { label: 'Chat de Clientes', icon: 'chat', route: '/petshop-panel/chat' },
       ];
     } else {
-      
       this.portalName = 'Admin';
       this.roleName = 'Administrador Geral';
       this.menuItems = [

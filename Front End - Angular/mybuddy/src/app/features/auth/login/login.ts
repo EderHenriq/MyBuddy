@@ -47,7 +47,6 @@ export class Login {
           this.isLoading.set(false);
           this.router.navigate(['/home']);
         } else {
-          
           this.authService.obterPerfil().subscribe({
             next: () => {
               this.isLoading.set(false);

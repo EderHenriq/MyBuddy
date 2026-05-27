@@ -1,6 +1,5 @@
 <div class="pagamento-container">
   <div class="pagamento-card">
-
     <div class="pagamento-header">
       <button class="btn-voltar" (click)="voltar()">
         <span class="material-icons">arrow_back</span>
@@ -40,10 +39,7 @@
       </div>
     }
 
-    <button
-      class="btn-pagar"
-      (click)="confirmarPagamento()"
-      [disabled]="loading()">
+    <button class="btn-pagar" (click)="confirmarPagamento()" [disabled]="loading()">
       @if (loading()) {
         <span class="material-icons">hourglass_empty</span>
         Processando...
@@ -57,10 +53,7 @@
 
     <p class="ou-texto">ou</p>
 
-    <button
-      class="btn-brick"
-      (click)="abrirPaymentBrick()"
-      [disabled]="brickLoading()">
+    <button class="btn-brick" (click)="abrirPaymentBrick()" [disabled]="brickLoading()">
       @if (brickLoading()) {
         <span class="material-icons">hourglass_empty</span>
         Carregando...
@@ -75,6 +68,5 @@
         <div id="wallet-brick"></div>
       </div>
     }
-
   </div>
 </div>

@@ -68,7 +68,13 @@
         <div class="pets-grid">
           @for (pet of animais(); track pet.nome) {
             <app-card-pet
-              [urlImagem]="pet.fotosUrls && pet.fotosUrls.length > 0 ? (pet.fotosUrls[0].startsWith('http') ? pet.fotosUrls[0] : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]) : '/assets/logo/logo-provisoria.png'"
+              [urlImagem]="
+                pet.fotosUrls && pet.fotosUrls.length > 0
+                  ? pet.fotosUrls[0].startsWith('http')
+                    ? pet.fotosUrls[0]
+                    : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]
+                  : '/assets/logo/logo-provisoria.png'
+              "
               [nome]="pet.nome || 'Sem Nome'"
               [idade]="pet.idade || 0"
               [raca]="pet.raca || 'Não informada'"

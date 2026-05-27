@@ -255,7 +255,7 @@ export class Marketplace {
       nome: produto.titulo,
       preco: produto.preco,
       urlImagem: produto.urlImagem,
-      lojaNome: produto.nomeLoja
+      lojaNome: produto.nomeLoja,
     });
   }
 

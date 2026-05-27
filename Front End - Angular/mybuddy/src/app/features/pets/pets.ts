@@ -65,7 +65,7 @@ export class Pets implements OnInit {
   ];
 
   formularioFiltro: FormGroup = this.fb.group({
-    pesquisa: ['']
+    pesquisa: [''],
   });
 
   constructor() {
@@ -79,15 +79,13 @@ export class Pets implements OnInit {
   ngOnInit(): void {
     this.carregarAnimais();
 
-    this.formularioFiltro.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe(valores => {
-        console.log('[Página de Pets] Filtros alterados. Refazendo busca...', valores);
-        this.carregando.set(true);
-        setTimeout(() => {
-          this.carregando.set(false);
-        }, 800);
-      });
+    this.formularioFiltro.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe(valores => {
+      console.log('[Página de Pets] Filtros alterados. Refazendo busca...', valores);
+      this.carregando.set(true);
+      setTimeout(() => {
+        this.carregando.set(false);
+      }, 800);
+    });
   }
 
   private carregarAnimais(): void {
@@ -106,9 +104,6 @@ export class Pets implements OnInit {
 
   alternarFavorito(pet: ItemListaPet): void {
     pet.favorito = !pet.favorito;
-  }
-
-  aoPesquisar(termo: string): void {
   }
 
   aoCarregarMais(): void {

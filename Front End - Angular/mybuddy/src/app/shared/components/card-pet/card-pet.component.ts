@@ -86,7 +86,7 @@ export class CardPetComponent {
       return this.pet.vacinado === 'Sim' || this.pet.vacinado === true ? 'Sim' : 'Não';
     }
     const val = this.vaccinated || this.vacinado || 'Sim';
-    return (val === 'Sim' || val === true) ? 'Sim' : 'Não';
+    return val === 'Sim' || val === true ? 'Sim' : 'Não';
   }
 
   get cardBadgeText(): string {

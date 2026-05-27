@@ -16,7 +16,6 @@ export class OngService {
     return this.api.get<InteresseAdocao[]>('ong/solicitacoes');
   }
 
-
   buscarEventos(): Observable<EventoOng[]> {
     return this.api.get<EventoOng[]>('ong/eventos');
   }

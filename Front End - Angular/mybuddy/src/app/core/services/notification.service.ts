@@ -188,7 +188,6 @@ export class NotificationService {
         },
       ]);
     } else {
-      
       this.notificacoesSubject.next([
         {
           id: '1',

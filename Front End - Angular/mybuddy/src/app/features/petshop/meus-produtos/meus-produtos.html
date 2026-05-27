@@ -38,7 +38,7 @@
             <tr>
               <td class="bold-text">{{ item.nome }}</td>
               <td>{{ item.categoria }}</td>
-              <td>{{ item.preco | currency:'BRL' }}</td>
+              <td>{{ item.preco | currency: 'BRL' }}</td>
               <td>
                 <span [style.color]="item.estoque === 0 ? '#c62828' : 'inherit'" [style.fontWeight]="item.estoque === 0 ? '700' : 'normal'">
                   {{ item.estoque }} un

@@ -28,8 +28,8 @@
               @if (item.lojaNome) {
                 <span class="store-name">Vendido por: {{ item.lojaNome }}</span>
               }
-              <div class="item-price">{{ item.preco | currency:'BRL' }}</div>
-              
+              <div class="item-price">{{ item.preco | currency: 'BRL' }}</div>
+
               <div class="quantity-controls">
                 <button (click)="atualizarQuantidade(item.id, item.quantidade - 1)" aria-label="Diminuir">-</button>
                 <span>{{ item.quantidade }}</span>
@@ -49,7 +49,7 @@
     <div class="cart-footer">
       <div class="cart-total">
         <span>Total:</span>
-        <strong>{{ precoTotal | currency:'BRL' }}</strong>
+        <strong>{{ precoTotal | currency: 'BRL' }}</strong>
       </div>
       <button class="checkout-btn">Finalizar Compra</button>
     </div>

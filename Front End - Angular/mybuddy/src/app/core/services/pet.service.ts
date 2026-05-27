@@ -3,8 +3,6 @@ import { ApiService } from './api.service';
 import { Pet } from '../models/pet.model';
 import { Observable, of, delay } from 'rxjs';
 
-
-
 @Injectable({
   providedIn: 'root',
 })

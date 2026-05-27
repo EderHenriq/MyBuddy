@@ -32,7 +32,7 @@
             <tr>
               <td>{{ item.id }}</td>
               <td class="bold-text">{{ item.cliente?.nome || 'Cliente Padrão' }}</td>
-              <td>{{ item.valorTotal | currency:'BRL' }}</td>
+              <td>{{ item.valorTotal | currency: 'BRL' }}</td>
               <td>{{ item.dataCriacao || '21 Mai, 2026' }}</td>
               <td>
                 <span

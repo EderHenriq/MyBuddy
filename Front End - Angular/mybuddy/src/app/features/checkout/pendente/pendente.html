@@ -1,21 +1,22 @@
 <div class="pendente-container">
   <div class="pendente-card">
-
     <div class="status-icon pending">
       <span class="material-icons">schedule</span>
     </div>
 
     @if (paymentType() === 'pix' || paymentType() === 'boleto') {
-        <div class="external-link-section">
-            <span class="material-icons">{{ paymentType() === 'pix' ? 'qr_code_2' : 'receipt_long' }}</span>
-            <p class="caption">Clique no botão abaixo para acessar seu {{ paymentType() === 'pix' ? 'QR Code PIX' : 'boleto bancário' }} no Mercado Pago.</p>
-            @if (externalResourceUrl()) {
-                <a [href]="externalResourceUrl()" target="_blank" class="btn-external">
-                    <span class="material-icons">open_in_new</span>
-                    {{ paymentType() === 'pix' ? 'Pagar com PIX' : 'Visualizar boleto' }}
-                </a>
-            }
-        </div>
+      <div class="external-link-section">
+        <span class="material-icons">{{ paymentType() === 'pix' ? 'qr_code_2' : 'receipt_long' }}</span>
+        <p class="caption">
+          Clique no botão abaixo para acessar seu {{ paymentType() === 'pix' ? 'QR Code PIX' : 'boleto bancário' }} no Mercado Pago.
+        </p>
+        @if (externalResourceUrl()) {
+          <a [href]="externalResourceUrl()" target="_blank" class="btn-external">
+            <span class="material-icons">open_in_new</span>
+            {{ paymentType() === 'pix' ? 'Pagar com PIX' : 'Visualizar boleto' }}
+          </a>
+        }
+      </div>
     }
 
     @if (paymentType() === 'outro') {
@@ -43,6 +44,5 @@
         Voltar ao início
       </button>
     </div>
-
   </div>
 </div>
