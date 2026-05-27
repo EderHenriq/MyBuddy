@@ -428,7 +428,7 @@
             }
             @for (item of (historico$ | async) || []; track item.id) {
               <div class="timeline-item">
-                <div class="timeline-icon" [ngClass]="item.tipo">
+                <div class="timeline-icon" [class]="item.tipo">
                   <i [class]="item.icone"></i>
                 </div>
                 <div class="timeline-content">
