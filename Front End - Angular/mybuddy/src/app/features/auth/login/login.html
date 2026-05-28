@@ -47,6 +47,14 @@
               autocomplete="email"
               [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
             />
+
+            <datalist id="email-domains">
+              <option value="@gmail.com"></option>
+              <option value="@icloud.com"></option>
+              <option value="@hotmail.com"></option>
+              <option value="@outlook.com"></option>
+              <option value="@yahoo.com"></option>
+            </datalist>
           </div>
 
           @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
@@ -83,8 +91,38 @@
         </div>
 
         <div class="form-actions-helper">
-          <a routerLink="/auth/recuperar-senha" class="forgor-password-link">Esqueceu a senha?</a>
+          <a routerLink="/auth/recuperar-senha" class="forgot-password-link">Esqueceu a senha?</a>
         </div>
+
+        <button type="submit" class="btn-submit" [disabled]="isLoading() || loginForm.invalid">
+          @if (isLoading()) {
+            <span class="btn-spinner" aria-hidden="true"></span>
+            <span>Entrando...</span>
+          } @else {
+            <span>Login</span>
+          }
+        </button>
+
+        <div class="form-divider" role="presentation">
+          <span class="divider-line"></span>
+          <span class="divider-text">ou</span>
+          <span class="divider-line"></span>
+        </div>
+
+        <div class="social-auth-group">
+          <button type="button" class="btn-social-auth" aria-label="Continuar com Apple">
+            <span>Continuar com Apple</span>
+          </button>
+
+          <button type="button" class="btn-social-auth" aria-label="Continuar com Google">
+            <span>Continuar com Google</span>
+          </button>
+        </div>
+
+        <p class="register-caption">
+          Não tem uma conta?
+          <a routerLink="/auth/cadastro" class="register-link">Cadastre-se</a>
+        </p>
       </form>
     </article>
   </section>
