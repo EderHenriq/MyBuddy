@@ -1,7 +1,7 @@
 <main class="login-container">
   <section class="login-background" aria-label="Destaque MyBuddy">
     <div class="brand-header">
-      <img src="../../../../../public/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="brand-logo" />
+      <img src="/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="brand-logo" />
       <span class="brand-name">MyBuddy</span>
     </div>
 
@@ -20,5 +20,72 @@
         <span class="pill" role="listitem">Comunidades</span>
       </div>
     </div>
+  </section>
+
+  <section class="login-form-side" aria-labelledby="login-headling">
+    <article class="login-card">
+      <header class="card-header">
+        <img src="/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="card-icon" aria-hidden="true" />
+        <h1 id="login-headling" class="form-title">
+          Faça login no
+          <span class="highlight">MyBuddy</span>
+        </h1>
+
+        <p class="form-subtitle">Faça login para continuar e encontrar seu parceiro.</p>
+      </header>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="input-group" [class.has-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <label class="input-label" for="email">Email</label>
+
+          <div class="input-field-wrapper">
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="you@exemplo.com"
+              autocomplete="email"
+              [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+            />
+          </div>
+
+          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+            <span class="error-message" aria-live="polite">Insira um e-mail válido</span>
+          }
+        </div>
+
+        <div class="input-group" [class.has-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <label class="input-label" for="password">Senha</label>
+
+          <div class="input-field-wrapper">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="************"
+              autocomplete="current-password"
+              [attr.aria-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword() ? 'Esconder senha' : 'Mostrar senha'"
+            >
+              <i class="pi" [class.pi-eye]="!showPassword()" [class.pi-eye-slash]="showPassword()" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+            <span class="error-message" aria-live="polite">A senha deve ter no mínimo 6 caracteres</span>
+          }
+        </div>
+
+        <div class="form-actions-helper">
+          <a routerLink="/auth/recuperar-senha" class="forgor-password-link">Esqueceu a senha?</a>
+        </div>
+      </form>
+    </article>
   </section>
 </main>
