@@ -1,196 +1,173 @@
 <app-header-landing-page></app-header-landing-page>
 
-<main class="landing-content">
-  <!-- SECTION 1: HERO -->
-  <section class="hero-section">
-    <div class="hero-grid">
+<main class="landing-page-content">
+  <div class="landing-hero-section-wrapper">
+    <section class="landing-hero-section" aria-label="Apresentação Inicial do MyBuddy">
       <div class="hero-text-col">
         <h1 class="hero-title">
           Adote aqui o seu
           <br />
           Buddy
-          <span class="highlight">perfeito</span>
+          <span class="highlight">perfeito.</span>
         </h1>
-        <p class="hero-description">Conectamos você a pets que precisam de um lar, feiras de adoção, veterinários e tudo o que seu amigo precisa.</p>
-        <div class="hero-actions">
+
+        <div class="hero-description">
+          <p>Conectamos você a pets que precisam de um lar, feiras de adoção, veterinários e tudo o que seu amigo precisa.</p>
+        </div>
+
+        <div class="hero-actions-btn">
           <a routerLink="/auth/login" class="btn btn-cta">Encontrar meu Buddy</a>
         </div>
       </div>
-      <div class="hero-image-col">
-        <div class="hero-image-wrapper">
-          <img src="/assets/landing-page/woman_with_puppy.png" alt="Mulher feliz abraçando filhote de bulldog" class="hero-img" />
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
-  <!-- SECTION 2: SERVICES -->
-  <section class="services-section" id="servicos">
-    <div class="section-header">
+  <section class="services-section" id="servicos" aria-labelledby="services-title">
+    <header class="section-header">
       <p class="section-subtitle">Conheça nossos serviços</p>
-      <h2 class="section-title">
+      <h2 id="services-title" class="section-title">
         Tudo o que seu pet
         <span class="highlight">precisa</span>
         , em um só lugar.
       </h2>
-    </div>
+    </header>
 
-    <div class="services-grid">
-      <!-- Coluna da Esquerda: Evento maior -->
+    <div class="services-grid-cards">
       <div class="services-left-col">
         <app-card-categoria
-          [title]="'Eventos'"
-          [subtitle]="'Feiras de adoção, campanhas de vacina, etc.'"
-          [imageUrl]="services[1].imageUrl"
-          class="service-card-item card-eventos"
-        ></app-card-categoria>
-      </div>
-      <!-- Coluna da Direita: Dois cards empilhados -->
-      <div class="services-right-col">
-        <app-card-categoria
+          class="services-card-item card-veterinario"
           [title]="'Veterinários'"
           [subtitle]="'Encontre clínicas próximas a você.'"
           [imageUrl]="services[0].imageUrl"
-          class="service-card-item card-veterinarios"
+          variant="landing"
         ></app-card-categoria>
+
         <app-card-categoria
+          class="services-card-item card-petshops"
           [title]="'Petshops'"
           [subtitle]="'Hotéis, escolas e muito mais.'"
+          [imageUrl]="services[1].imageUrl"
+          variant="landing"
+        ></app-card-categoria>
+      </div>
+
+      <div class="services-right-col">
+        <app-card-categoria
+          class="services-card-item card-eventos"
+          [title]="'Eventos'"
+          [subtitle]="'Feiras de adoção, campanhas de vacina, etc.'"
           [imageUrl]="services[2].imageUrl"
-          class="service-card-item card-petshops"
+          variant="landing"
         ></app-card-categoria>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 3: PARTNERS -->
-  <section class="partners-section">
-    <p class="partners-title">Torne-se um parceiro MyBuddy</p>
-    <div class="partners-logos">
-      <!-- We use gorgeous inline SVG logos from Logoipsum to look completely professional -->
-      <div class="partner-logo">
-        <svg width="150" height="40" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M24 10C24 4.47715 28.4772 0 34 0H116C121.523 0 126 4.47715 126 10V30C126 35.5228 121.523 40 116 40H34C28.4772 40 24 35.5228 24 30V10Z"
-            fill="#E2E8F0"
-            opacity="0.3"
-          />
-          <circle cx="15" cy="20" r="10" fill="currentColor" />
-          <rect x="35" y="15" width="80" height="10" rx="3" fill="currentColor" />
-        </svg>
-      </div>
-      <div class="partner-logo">
-        <svg width="150" height="40" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="15" cy="20" r="10" fill="none" stroke="currentColor" stroke-width="4" />
-          <circle cx="20" cy="20" r="5" fill="currentColor" />
-          <rect x="40" y="15" width="70" height="10" rx="3" fill="currentColor" />
-        </svg>
-      </div>
-      <div class="partner-logo">
-        <svg width="150" height="40" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="5" y="10" width="20" height="20" rx="4" fill="currentColor" />
-          <rect x="35" y="15" width="90" height="10" rx="3" fill="currentColor" />
-        </svg>
+  <section class="partners-sections" aria-label="Nossos parceiros">
+    <div class="header-partners">
+      <h2 class="partners-title">Torne-se um parceiro MyBuddy</h2>
+    </div>
+
+    <div class="partners-logos marquee-wrapper">
+      <div class="marquee-inner">
+        @for (logo of logos; track logo.alt) {
+          <img [src]="logo.src" [alt]="logo.alt" class="svg-partner" />
+        }
+
+        @for (logo of logos; track logo.alt) {
+          <img [src]="logo.src" [alt]="logo.alt" class="svg-partner" aria-hidden="true" />
+        }
       </div>
     </div>
   </section>
 
-  <!-- SECTION 4: PETS CAROUSEL -->
-  <section class="pets-section" id="adotar">
-    <div class="section-header">
+  <section class="pet-section" id="adotar" aria-labelledby="pets-title">
+    <header class="section-header">
       <p class="section-subtitle">Conheça nossos pets.</p>
-      <h2 class="section-title">
+      <h2 id="pets-title" class="section-title">
         Seu
         <span class="highlight">novo amigo</span>
         está esperando por um lar.
       </h2>
-    </div>
+    </header>
 
-    <!-- Customized Carousel Layout -->
     <div class="carousel-container">
-      <div class="carousel-track">
+      <div class="carousel-track" role="region" aria-live="polite" (mouseenter)="stopAutoplay()" (mouseleave)="startAutoplay()">
         @for (pet of pets; track pet.id; let idx = $index) {
-          <div class="carousel-slide" [class.activeSlide]="activePetIndex === idx" (click)="setCarouselPet(idx)">
-            <app-card-pet
-              [imageUrl]="pet.imageUrl"
-              [name]="pet.name"
-              [age]="pet.age"
-              [breed]="pet.breed"
-              [sex]="pet.sex"
-              [vaccinated]="pet.vaccinated"
-            ></app-card-pet>
+          <div
+            class="carousel-slide"
+            [ngClass]="getSlideClass(idx)"
+            (click)="setCarouselPet(idx)"
+            (keydown.enter)="setCarouselPet(idx)"
+            role="button"
+            tabindex="0"
+          >
+            <app-card-pet [pet]="pet" [class.card--large]="activePetIndex === idx"></app-card-pet>
           </div>
         }
       </div>
 
-      <!-- Carousel Navigation Dots -->
-      <div class="carousel-dots">
+      <nav class="carousel-dots" aria-label="Controle de carrossel">
         @for (pet of pets; track pet.id; let idx = $index) {
-          <button class="dot" [class.active]="activePetIndex === idx" (click)="setCarouselPet(idx)" aria-label="Ver slide"></button>
+          <button
+            class="dot"
+            [class.active]="activePetIndex === idx"
+            (click)="setCarouselPet(idx)"
+            [attr.aria-label]="'Ir para o slide ' + (idx + 1)"
+          ></button>
         }
-      </div>
+      </nav>
 
       <div class="view-all-container">
-        <a routerLink="/auth/login" class="view-all-link">Ver todos os pets disponíveis &rarr;</a>
+        <a routerLink="/auth/login" class="view-all-link">Ver todos os pets disponíveis</a>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 5: ADOPTION FAIRS & MAP -->
-  <section class="map-section">
+  <section class="map-section" aria-labelledby="map-title">
     <div class="map-grid">
       <div class="map-text-col">
-        <h2 class="map-title">
-          Veja feiras de adoção
-          <span class="highlight">próximas</span>
-          a você
-        </h2>
-        <p class="map-description">
-          Encontre o evento mais perto da sua casa. Navegue pelo mapa para localizar o petshop/ong disponível na sua região.
-        </p>
+        <div class="map-text-group">
+          <h2 id="map-title" class="map-title">
+            Veja feiras de adoção
+            <span class="highlight">próximas</span>
+            a você!
+          </h2>
+          <p class="map-description">
+            Encontre o evento mais próximo a sua casa. Navegue pelo mapa para localizar os petshops/ongs disponíveis na sua região
+          </p>
+        </div>
+
         <div class="map-actions">
           <a routerLink="/auth/login" class="btn btn-cta">Ver no mapa</a>
         </div>
       </div>
+
       <div class="map-visual-col">
         <div class="map-container-mock">
-          <!-- Embed an elegant stylized map mockup -->
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14629.742352528775!2d-46.666666!3d-23.555555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDMzJzIwLjAiUyA0NsKwMzknNTkuOSJX!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
-            width="100%"
-            height="100%"
-            style="border: 0; border-radius: var(--radius-lg)"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
-          <div class="map-overlay-pin">
-            <span class="material-icons pin-icon">place</span>
-          </div>
+          <div id="leaflet-map"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 6: FAQ ACCORDION -->
-  <section class="faq-section">
-    <div class="section-header">
-      <h2 class="faq-headline">
+  <section class="faq-section" aria-labelledby="faq-title">
+    <header class="section-header">
+      <h2 id="faq-title" class="faq-headline">
         <span class="highlight">Antes</span>
         de você adotar...
       </h2>
-    </div>
+    </header>
 
     <div class="faq-container">
       @for (faq of faqs; track faq.question; let idx = $index) {
         <div class="faq-item" [class.expanded]="faq.expanded">
-          <button class="faq-trigger" (click)="toggleFaq(idx)">
+          <button class="faq-trigger" (click)="toggleFaq(idx)" [aria-expanded]="faq.expanded">
             <span class="faq-question">{{ faq.question }}</span>
-            <span class="material-icons faq-arrow">
-              {{ faq.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_right' }}
-            </span>
+            <span class="material-icons faq-arrow" aria-hidden="true">{{ faq.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_right' }}</span>
           </button>
-          <div class="faq-content">
+
+          <div class="faq-content" [hidden]="!faq.expanded">
             <p>{{ faq.answer }}</p>
           </div>
         </div>

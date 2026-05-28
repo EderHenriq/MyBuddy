@@ -1,2 +1,4 @@
-<app-header-main *ngIf="!isAdminRoute"></app-header-main>
+@if (!isAdminRoute && !isLandingPageRoute) {
+  <app-header-main></app-header-main>
+}
 <router-outlet></router-outlet>

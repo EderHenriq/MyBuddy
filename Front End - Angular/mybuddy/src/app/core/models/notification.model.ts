@@ -1,18 +1,18 @@
-export interface AppNotification {
+export interface NotificacaoApp {
   id: string;
-  title: string;
-  message: string;
-  date: string;
-  read: boolean;
-  type: 'info' | 'success' | 'warning' | 'error';
+  titulo: string;
+  mensagem: string;
+  data: string;
+  lida: boolean;
+  tipo: 'info' | 'success' | 'warning' | 'error';
   link?: string;
 }
 
-export interface ActivityHistory {
+export interface HistoricoAtividade {
   id: string;
-  action: string;
-  description: string;
-  date: string;
-  icon: string;
-  type: 'auth' | 'pet' | 'system' | 'adoption';
+  acao: string;
+  descricao: string;
+  data: string;
+  icone: string;
+  tipo: 'auth' | 'pet' | 'system' | 'adoption';
 }

@@ -1,67 +1,63 @@
 import { Injectable, computed, signal } from '@angular/core';
 
-export interface CartItem {
+export interface ItemCarrinho {
   id: number;
-  name: string;
-  price: number;
-  imageUrl: string;
-  quantity: number;
+  nome: string;
+  preco: number;
+  urlImagem: string;
+  quantidade: number;
   lojaNome?: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CartService {
-  private cartItemsSignal = signal<CartItem[]>([]);
-  private isDrawerOpenSignal = signal<boolean>(false);
+  private itensCarrinhoSignal = signal<ItemCarrinho[]>([]);
+  private gavetaAbertaSignal = signal<boolean>(false);
 
-  // Expose signals
-  readonly cartItems = this.cartItemsSignal.asReadonly();
-  readonly isDrawerOpen = this.isDrawerOpenSignal.asReadonly();
+  readonly itensCarrinho = this.itensCarrinhoSignal.asReadonly();
+  readonly gavetaAberta = this.gavetaAbertaSignal.asReadonly();
 
-  // Computed totals
-  readonly totalItems = computed(() => this.cartItemsSignal().reduce((sum, item) => sum + item.quantity, 0));
-  readonly totalPrice = computed(() => this.cartItemsSignal().reduce((sum, item) => sum + (item.price * item.quantity), 0));
+  readonly totalItens = computed(() => this.itensCarrinhoSignal().reduce((soma, item) => soma + item.quantidade, 0));
+  readonly precoTotal = computed(() => this.itensCarrinhoSignal().reduce((soma, item) => soma + item.preco * item.quantidade, 0));
 
-  toggleDrawer(): void {
-    this.isDrawerOpenSignal.update(state => !state);
+  alternarGaveta(): void {
+    this.gavetaAbertaSignal.update(estado => !estado);
   }
 
-  openDrawer(): void {
-    this.isDrawerOpenSignal.set(true);
+  abrirGaveta(): void {
+    this.gavetaAbertaSignal.set(true);
   }
 
-  closeDrawer(): void {
-    this.isDrawerOpenSignal.set(false);
+  fecharGaveta(): void {
+    this.gavetaAbertaSignal.set(false);
   }
 
-  addToCart(item: Omit<CartItem, 'quantity'>): void {
-    const currentItems = this.cartItemsSignal();
-    const existingItem = currentItems.find(i => i.id === item.id);
+  adicionarAoCarrinho(item: Omit<ItemCarrinho, 'quantidade'>): void {
+    const itensAtuais = this.itensCarrinhoSignal();
+    const itemExistente = itensAtuais.find(i => i.id === item.id);
 
-    if (existingItem) {
-      this.updateQuantity(item.id, existingItem.quantity + 1);
+    if (itemExistente) {
+      this.atualizarQuantidade(item.id, itemExistente.quantidade + 1);
     } else {
-      this.cartItemsSignal.set([...currentItems, { ...item, quantity: 1 }]);
+      this.itensCarrinhoSignal.set([...itensAtuais, { ...item, quantidade: 1 }]);
     }
   }
 
-  removeFromCart(itemId: number): void {
-    this.cartItemsSignal.update(items => items.filter(i => i.id !== itemId));
+  removerDoCarrinho(itemId: number): void {
+    this.itensCarrinhoSignal.update(itens => itens.filter(i => i.id !== itemId));
   }
 
-  updateQuantity(itemId: number, quantity: number): void {
-    if (quantity <= 0) {
-      this.removeFromCart(itemId);
+  atualizarQuantidade(itemId: number, quantidade: number): void {
+    if (quantidade <= 0) {
+      this.removerDoCarrinho(itemId);
       return;
     }
-    this.cartItemsSignal.update(items => 
-      items.map(item => item.id === itemId ? { ...item, quantity } : item)
-    );
+    this.itensCarrinhoSignal.update(itens => itens.map(item => (item.id === itemId ? { ...item, quantidade } : item)));
   }
 
-  clearCart(): void {
-    this.cartItemsSignal.set([]);
+  limparCarrinho(): void {
+    this.itensCarrinhoSignal.set([]);
   }
 }

@@ -5,7 +5,7 @@ import com.Mybuddy.Myb.DTO.OrganizacaoResponseDTO;
 import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Organizacao;
-import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
+import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

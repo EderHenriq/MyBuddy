@@ -41,14 +41,13 @@ export class Login {
 
     const { email, password } = this.loginForm.value;
 
-    this.authService.loginWithCredentials(email, password).subscribe({
-      next: res => {
+    this.authService.loginComCredenciais(email, password).subscribe({
+      next: (res: any) => {
         if (res.isMock) {
           this.isLoading.set(false);
           this.router.navigate(['/home']);
         } else {
-          // Obter os detalhes do perfil real do backend
-          this.authService.getProfile().subscribe({
+          this.authService.obterPerfil().subscribe({
             next: () => {
               this.isLoading.set(false);
               this.router.navigate(['/home']);

@@ -16,7 +16,7 @@ import { filter, Subscription } from 'rxjs';
 import { SessionService } from '../../../core/services/session.service';
 import { Role } from '../../../core/models/role.model';
 import { NotificationService } from '../../../core/services/notification.service';
-import { AppNotification } from '../../../core/models/notification.model';
+import { NotificacaoApp } from '../../../core/models/notification.model';
 
 @Component({
   selector: 'app-header-main',
@@ -33,23 +33,23 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   private notificationService = inject(NotificationService);
   @ViewChildren('navLink') navLinks!: QueryList<ElementRef>;
 
-  pillStyle: { left: string; width: string } = { left: '0px', width: '0px' };
-  pillVisible = false;
-  showHeader = true;
-  hoveredIndex = -1;
-  userRole: Role | null = null;
-  panelRoute = '';
+  estiloPill: { left: string; width: string } = { left: '0px', width: '0px' };
+  pillVisivel = false;
+  mostrarHeader = true;
+  indiceHover = -1;
+  papelUsuario: Role | null = null;
+  rotaPainel = '';
 
-  notifications: AppNotification[] = [];
-  unreadCount = 0;
-  isNotificationsOpen = false;
+  notificacoes: NotificacaoApp[] = [];
+  contadorNaoLidas = 0;
+  notificacoesAbertas = false;
 
   readonly links = [
-    { path: '/home', label: 'Home' },
-    { path: '/pets', label: 'Adotar' },
-    { path: '/eventos', label: 'Eventos' },
-    { path: '/produtos', label: 'Produtos' },
-    { path: '/servicos', label: 'Serviços' },
+    { caminho: '/home', rotulo: 'Home' },
+    { caminho: '/pets', rotulo: 'Adotar' },
+    { caminho: '/eventos', rotulo: 'Eventos' },
+    { caminho: '/produtos', rotulo: 'Produtos' },
+    { caminho: '/servicos', rotulo: 'Serviços' },
   ];
 
   private routerSubscription!: Subscription;
@@ -57,55 +57,55 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   constructor() {
     const isBrowser = isPlatformBrowser(this.platform);
     if (isBrowser) {
-      this.checkRoute(this.router.url);
+      this.verificarRota(this.router.url);
       this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe(event => {
-        this.checkRoute(event.urlAfterRedirects || event.url);
+        this.verificarRota(event.urlAfterRedirects || event.url);
       });
     }
 
     this.sessionService.userRole$.subscribe(role => {
-      this.userRole = role;
-      if (role === Role.ADMIN) this.panelRoute = '/admin/dashboard';
-      else if (role === Role.ONG) this.panelRoute = '/ong-panel/dashboard';
-      else if (role === Role.PETSHOP) this.panelRoute = '/petshop-panel/dashboard';
+      this.papelUsuario = role;
+      if (role === Role.ADMIN) this.rotaPainel = '/admin/dashboard';
+      else if (role === Role.ONG) this.rotaPainel = '/ong-panel/dashboard';
+      else if (role === Role.PETSHOP) this.rotaPainel = '/petshop-panel/dashboard';
     });
 
-    this.notificationService.notifications$.subscribe(notifs => {
-      this.notifications = notifs;
+    this.notificationService.notificacoes$.subscribe(notifs => {
+      this.notificacoes = notifs;
     });
 
-    this.notificationService.getUnreadCount().subscribe(count => {
-      this.unreadCount = count;
+    this.notificationService.buscarContagemNaoLidas().subscribe(count => {
+      this.contadorNaoLidas = count;
     });
   }
 
-  toggleNotifications(): void {
-    this.isNotificationsOpen = !this.isNotificationsOpen;
+  alternarNotificacoes(): void {
+    this.notificacoesAbertas = !this.notificacoesAbertas;
   }
 
-  markAsRead(id: string, event: Event): void {
+  marcarComoLida(id: string, event: Event): void {
     event.stopPropagation();
-    this.notificationService.markAsRead(id);
+    this.notificationService.marcarComoLida(id);
   }
 
-  markAllAsRead(event: Event): void {
+  marcarTodasComoLidas(event: Event): void {
     event.stopPropagation();
-    this.notificationService.markAllAsRead();
+    this.notificationService.marcarTodasComoLidas();
   }
 
   @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event): void {
+  aoClicarFora(event: Event): void {
     const targetElement = event.target as HTMLElement;
-    if (this.isNotificationsOpen && !targetElement.closest('.notifications-btn')) {
-      this.isNotificationsOpen = false;
+    if (this.notificacoesAbertas && !targetElement.closest('.notifications-btn')) {
+      this.notificacoesAbertas = false;
     }
   }
 
-  checkRoute(url: string): void {
+  verificarRota(url: string): void {
     const publicPaths = ['/auth', '/styleguide', '/institucional'];
     const isRoot = url === '/' || url === '';
     const isPublic = publicPaths.some(path => url.startsWith(path));
-    this.showHeader = !isRoot && !isPublic;
+    this.mostrarHeader = !isRoot && !isPublic;
   }
 
   ngAfterViewInit(): void {
@@ -113,12 +113,12 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this.updatePillPosition();
+    this.atualizarPosicaoPill();
     this.cdr.detectChanges();
 
     this.routerSubscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       setTimeout(() => {
-        this.updatePillPosition();
+        this.atualizarPosicaoPill();
         this.cdr.detectChanges();
       }, 0);
     });
@@ -129,32 +129,32 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   }
 
   @HostListener('window:resize')
-  onResize(): void {
+  aoRedimensionar(): void {
     if (!isPlatformBrowser(this.platform)) {
       return;
     }
-    this.updatePillPosition();
+    this.atualizarPosicaoPill();
   }
 
-  setHoverIndex(index: number, event: HTMLElement): void {
-    this.hoveredIndex = index;
-    this.movePill(event);
+  definirIndiceHover(index: number, event: HTMLElement): void {
+    this.indiceHover = index;
+    this.moverPill(event);
   }
 
-  resetPill(): void {
-    this.hoveredIndex = -1;
-    this.updatePillPosition();
+  redefinirPill(): void {
+    this.indiceHover = -1;
+    this.atualizarPosicaoPill();
   }
 
-  updatePillPosition(): void {
+  atualizarPosicaoPill(): void {
     if (!isPlatformBrowser(this.platform)) {
       return;
     }
 
-    if (this.hoveredIndex !== -1) {
-      const hoveredElement = this.navLinks.toArray()[this.hoveredIndex];
+    if (this.indiceHover !== -1) {
+      const hoveredElement = this.navLinks.toArray()[this.indiceHover];
       if (hoveredElement) {
-        this.movePill(hoveredElement.nativeElement);
+        this.moverPill(hoveredElement.nativeElement);
         return;
       }
     }
@@ -162,30 +162,30 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
     const activeElement = this.navLinks.find(link => link.nativeElement.classList.contains('active'));
 
     if (!activeElement) {
-      this.pillVisible = false;
+      this.pillVisivel = false;
       this.cdr.detectChanges();
       return;
     }
 
-    this.movePill(activeElement.nativeElement);
+    this.moverPill(activeElement.nativeElement);
   }
 
-  onLinkClick(event: HTMLElement): void {
-    this.movePill(event);
+  aoClicarLink(event: HTMLElement): void {
+    this.moverPill(event);
   }
 
-  private movePill(element: HTMLElement): void {
+  private moverPill(element: HTMLElement): void {
     if (!isPlatformBrowser(this.platform)) return;
     const nav = element.closest('ul') as HTMLElement;
     if (!nav) return;
     const navRect = nav.getBoundingClientRect();
     const linkRect = element.getBoundingClientRect();
 
-    this.pillStyle = {
+    this.estiloPill = {
       left: `${linkRect.left - navRect.left}px`,
       width: `${linkRect.width}px`,
     };
-    this.pillVisible = true;
+    this.pillVisivel = true;
     this.cdr.detectChanges();
   }
 }

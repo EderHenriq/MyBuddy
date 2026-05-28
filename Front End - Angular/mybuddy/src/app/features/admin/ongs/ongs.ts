@@ -20,7 +20,7 @@ export class Ongs implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.adminService.getOngs().subscribe(data => {
+    this.adminService.buscarOngs().subscribe(data => {
       this.parcerias = data;
     });
   }

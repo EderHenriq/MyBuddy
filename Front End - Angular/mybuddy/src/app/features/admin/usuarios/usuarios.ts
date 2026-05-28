@@ -20,7 +20,7 @@ export class Usuarios implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.adminService.getUsuarios().subscribe(data => {
+    this.adminService.buscarUsuarios().subscribe(data => {
       this.usuarios = data;
     });
   }

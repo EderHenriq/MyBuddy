@@ -5,7 +5,7 @@ import { SessionService } from '../../services/session.service';
 import { AuthService } from '../../services/auth.service';
 import { Role } from '../../models/role.model';
 import { NotificationService } from '../../services/notification.service';
-import { AppNotification } from '../../models/notification.model';
+import { NotificacaoApp } from '../../models/notification.model';
 import { DebounceDirective } from '../../../shared/directives/debounce.directive';
 
 interface MenuItem {
@@ -27,7 +27,7 @@ export class DashboardLayout {
   menuItems: MenuItem[] = [];
 
   private notificationService = inject(NotificationService);
-  notifications: AppNotification[] = [];
+  notifications: NotificacaoApp[] = [];
   unreadCount = 0;
   isNotificationsOpen = false;
 
@@ -42,24 +42,19 @@ export class DashboardLayout {
     });
 
     this.sessionService.userRole$.subscribe(role => {
-      // Aqui poderíamos forçar o menu baseado apenas na role,
-      // mas mantemos baseado na URL para permitir que o ADMIN consiga visualizar e testar
-      // os outros painéis (como ong-panel e petshop-panel) tranquilamente.
-      // O roleName do header agora reflete a role real:
       if (role === Role.ADMIN) this.roleName = 'Administrador Geral';
       if (role === Role.ONG) this.roleName = 'Gestor de ONG';
       if (role === Role.PETSHOP) this.roleName = 'Lojista';
       if (role === Role.USER) this.roleName = 'Adotante';
     });
 
-    // Config inicial
     this.updateMenuBasedOnRoute(this.router.url);
 
-    this.notificationService.notifications$.subscribe(notifs => {
+    this.notificationService.notificacoes$.subscribe((notifs: any) => {
       this.notifications = notifs;
     });
 
-    this.notificationService.getUnreadCount().subscribe(count => {
+    this.notificationService.buscarContagemNaoLidas().subscribe((count: any) => {
       this.unreadCount = count;
     });
   }
@@ -70,17 +65,16 @@ export class DashboardLayout {
 
   onSearch(term: string): void {
     console.log(`[Dashboard Layout] Buscando globalmente por: ${term}`);
-    // Futuramente: Chamar API global ou repassar via service para a tela ativa
   }
 
   markAsRead(id: string, event: Event): void {
     event.stopPropagation();
-    this.notificationService.markAsRead(id);
+    this.notificationService.marcarComoLida(id);
   }
 
   markAllAsRead(event: Event): void {
     event.stopPropagation();
-    this.notificationService.markAllAsRead();
+    this.notificationService.marcarTodasComoLidas();
   }
 
   @HostListener('document:click', ['$event'])
@@ -111,7 +105,6 @@ export class DashboardLayout {
         { label: 'Chat de Clientes', icon: 'chat', route: '/petshop-panel/chat' },
       ];
     } else {
-      // Default to Admin
       this.portalName = 'Admin';
       this.roleName = 'Administrador Geral';
       this.menuItems = [

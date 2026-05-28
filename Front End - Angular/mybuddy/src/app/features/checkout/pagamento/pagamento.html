@@ -11,12 +11,10 @@
       <div class="resumo-icon">
         <span class="material-icons">pets</span>
       </div>
-
       <div class="resumo-info">
         <h3>{{ petNome() || 'Doação MyBuddy' }}</h3>
         <p class="caption">{{ petNome() ? 'Taxa de adoção' : 'Contribuição para a plataforma' }}</p>
       </div>
-
       <div class="resumo-valor">
         <span class="valor">R$ {{ amount().toFixed(2) }}</span>
       </div>
@@ -41,10 +39,7 @@
       </div>
     }
 
-    <button
-      class="btn-pagar"
-      (click)="confirmarPagamento()"
-      [disabled]="loading()">
+    <button class="btn-pagar" (click)="confirmarPagamento()" [disabled]="loading()">
       @if (loading()) {
         <span class="material-icons">hourglass_empty</span>
         Processando...
@@ -53,5 +48,25 @@
         Pagar com Mercado Pago
       }
     </button>
+
+    <div class="pagamento-divider"></div>
+
+    <p class="ou-texto">ou</p>
+
+    <button class="btn-brick" (click)="abrirPaymentBrick()" [disabled]="brickLoading()">
+      @if (brickLoading()) {
+        <span class="material-icons">hourglass_empty</span>
+        Carregando...
+      } @else {
+        <span class="material-icons">credit_card</span>
+        Pagar no site
+      }
+    </button>
+
+    @if (showBrick()) {
+      <div class="brick-container">
+        <div id="wallet-brick"></div>
+      </div>
+    }
   </div>
 </div>

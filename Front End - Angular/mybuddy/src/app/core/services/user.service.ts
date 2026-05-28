@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
-import { User } from '../models/user.model';
+import { Usuario } from '../models/user.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,25 +8,25 @@ import { Observable } from 'rxjs';
 })
 export class UserService {
   private api = inject(ApiService);
-  private readonly endpoint = 'users';
+  private readonly endpoint = 'usuarios';
 
-  getAll(): Observable<User[]> {
-    return this.api.get<User[]>(this.endpoint);
+  buscarTodos(): Observable<Usuario[]> {
+    return this.api.get<Usuario[]>(this.endpoint);
   }
 
-  getById(id: string): Observable<User> {
-    return this.api.get<User>(`${this.endpoint}/${id}`);
+  buscarPorId(id: string): Observable<Usuario> {
+    return this.api.get<Usuario>(`${this.endpoint}/${id}`);
   }
 
-  create(user: Partial<User>): Observable<User> {
-    return this.api.post<User>(this.endpoint, user);
+  criar(usuario: Partial<Usuario>): Observable<Usuario> {
+    return this.api.post<Usuario>(this.endpoint, usuario);
   }
 
-  update(id: string, user: Partial<User>): Observable<User> {
-    return this.api.put<User>(`${this.endpoint}/${id}`, user);
+  atualizar(id: string, usuario: Partial<Usuario>): Observable<Usuario> {
+    return this.api.put<Usuario>(`${this.endpoint}/${id}`, usuario);
   }
 
-  delete(id: string): Observable<void> {
+  deletar(id: string): Observable<void> {
     return this.api.delete<void>(`${this.endpoint}/${id}`);
   }
 }

@@ -9,11 +9,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './card-loja.component.scss',
 })
 export class CardLojaComponent {
-  @Input() logoUrl = '';
-  @Input() storeName = '';
-  @Input() rating = 0;
-  @Input() deliveryTime = '';
-  @Input() deliveryFee?: number;
+  @Input() urlLogo = '';
+  @Input() nomeLoja = '';
+  @Input() avaliacao = 0;
+  @Input() tempoEntrega = '';
+  @Input() taxaEntrega?: number;
 
-  @Output() storeClick = new EventEmitter<void>();
+  @Output() cliqueLoja = new EventEmitter<void>();
 }

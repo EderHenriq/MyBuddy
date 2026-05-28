@@ -37,7 +37,6 @@ export class Contato {
 
     this.isSubmitting.set(true);
 
-    // Mock API call
     setTimeout(() => {
       this.isSubmitting.set(false);
       this.successMessage.set(true);

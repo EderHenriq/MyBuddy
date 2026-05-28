@@ -6,24 +6,18 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { providePrimeNG } from 'primeng/config';
 import { MyBuddyPreset } from '../styles/mypreset';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
-import { mockInterceptor } from './core/interceptors/mock.interceptor';
 import { cacheInterceptor } from './core/interceptors/cache.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { retryInterceptor } from './core/interceptors/retry.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([
-      authInterceptor, 
-      mockInterceptor, 
-      cacheInterceptor, 
-      errorInterceptor, 
-      loadingInterceptor,
-    ])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, cacheInterceptor, retryInterceptor, errorInterceptor, loadingInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     providePrimeNG({
       theme: {

@@ -2,14 +2,18 @@ package com.Mybuddy.Myb.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "pets")
+@Document(collection = "pets")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,65 +22,52 @@ import java.util.Set;
 public class Pet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(length = 80, nullable = false)
     private String nome;
 
-    @Column(length = 60, nullable = false)
     private String raca;
 
-    @Column(nullable = false)
     private Integer idade;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 40, nullable = false)
     private Especie especie;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
     private Porte porte;
 
-    @Column(length = 30, nullable = false)
     private String cor;
 
-    @Column(length = 60)
     private String pelagem;
 
-    @Column(length = 10, nullable = false)
     private String sexo;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
     @ToString.Exclude
     private Set<FotoPet> fotos = new HashSet<>();
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
     private StatusAdocao statusAdocao = StatusAdocao.DISPONIVEL;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "organizacao_id", nullable = false)
+    @DocumentReference(lazy = true)
     @JsonBackReference
     @ToString.Exclude
     private Organizacao organizacao;
 
-    @Column(nullable = false)
     private boolean microchipado;
 
-    @Column(nullable = false)
     private boolean vacinado;
 
-    @Column(nullable = false)
     private boolean castrado;
 
-    @Column(length = 100)
     private String cidade;
 
-    @Column(length = 100)
     private String estado;
+
+    private Double peso;
+
+    @CreatedDate
+    private LocalDateTime dataCriacao;
+
+    @LastModifiedDate
+    private LocalDateTime dataAtualizacao;
 
     public Pet(String nome, String raca, Integer idade, Especie especie, Porte porte,
                String cor, String pelagem, String sexo, Organizacao organizacao,
@@ -102,19 +93,16 @@ public class Pet {
     public void addFoto(FotoPet foto) {
         if (foto != null && !this.fotos.contains(foto)) {
             this.fotos.add(foto);
-            foto.setPet(this);
         }
     }
 
     public void removeFoto(FotoPet foto) {
         if (foto != null && this.fotos.contains(foto)) {
             this.fotos.remove(foto);
-            foto.setPet(null);
         }
     }
 
     public void clearFotos() {
-        this.fotos.forEach(foto -> foto.setPet(null));
         this.fotos.clear();
     }
 }

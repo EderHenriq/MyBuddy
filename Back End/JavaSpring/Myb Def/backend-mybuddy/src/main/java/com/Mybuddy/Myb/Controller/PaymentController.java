@@ -50,8 +50,8 @@ public class PaymentController {
                 saved.getId(),
                 saved.getMpPreferenceId(),
                 saved.getMpPaymentId(),
-                saved.getUsuario().getId(),
-                saved.getPet() != null ? saved.getPet().getId() : null,
+                saved.getUsuarioId(),
+                saved.getPetId(),
                 saved.getAmount(),
                 saved.getStatus(),
                 result.initPoint(),
@@ -72,8 +72,8 @@ public class PaymentController {
                 payment.getId(),
                 payment.getMpPreferenceId(),
                 payment.getMpPaymentId(),
-                payment.getUsuario().getId(),
-                payment.getPet().getId(),
+                payment.getUsuarioId(),
+                payment.getPetId(),
                 payment.getAmount(),
                 payment.getStatus(),
                 null,
@@ -113,5 +113,24 @@ public class PaymentController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/preference/{mpPreferenceId}")
+    public ResponseEntity<PaymentResponseDTO> getPaymentByPreferenceId(
+            @PathVariable String mpPreferenceId) {
+        Payment payment = paymentService.findByMpPreferenceId(mpPreferenceId)
+                .orElseThrow(() -> new RuntimeException("Payment não encontrado: " + mpPreferenceId));
+
+        return ResponseEntity.ok(new PaymentResponseDTO(
+                payment.getId(),
+                payment.getMpPreferenceId(),
+                payment.getMpPaymentId(),
+                payment.getUsuarioId(),
+                payment.getPetId(),
+                payment.getAmount(),
+                payment.getStatus(),
+                null,
+                payment.getCreatedAt(),
+                payment.getUpdatedAt()));
     }
 }

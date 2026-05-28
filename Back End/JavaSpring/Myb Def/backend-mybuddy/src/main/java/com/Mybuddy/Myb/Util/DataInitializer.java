@@ -1,10 +1,8 @@
 package com.Mybuddy.Myb.Util;
 
-import com.Mybuddy.Myb.Model.Organizacao;
-import com.Mybuddy.Myb.Model.Usuario;
-import com.Mybuddy.Myb.Repository.OrganizacaoRepository;
-import com.Mybuddy.Myb.Repository.RoleRepository;
-import com.Mybuddy.Myb.Repository.UsuarioRepository;
+import com.Mybuddy.Myb.Model.*;
+import com.Mybuddy.Myb.Repository.jpa.*;
+import com.Mybuddy.Myb.Repository.mongo.*;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
 import jakarta.annotation.PostConstruct;
@@ -14,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,21 +25,35 @@ public class DataInitializer {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final OrganizacaoRepository organizacaoRepository;
+    private final PetRepository petRepository;
+    private final PetshopRepository petshopRepository;
+    private final ProdutoRepository produtoRepository;
+    private final EventoOngRepository eventoOngRepository;
+    private final ChatRepository chatRepository;
 
     public DataInitializer(
             UsuarioRepository usuarioRepository,
             RoleRepository roleRepository,
             PasswordEncoder encoder,
-            OrganizacaoRepository organizacaoRepository
+            OrganizacaoRepository organizacaoRepository,
+            PetRepository petRepository,
+            PetshopRepository petshopRepository,
+            ProdutoRepository produtoRepository,
+            EventoOngRepository eventoOngRepository,
+            ChatRepository chatRepository
     ) {
         this.usuarioRepository = usuarioRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.organizacaoRepository = organizacaoRepository;
+        this.petRepository = petRepository;
+        this.petshopRepository = petshopRepository;
+        this.produtoRepository = produtoRepository;
+        this.eventoOngRepository = eventoOngRepository;
+        this.chatRepository = chatRepository;
     }
 
     @PostConstruct
-    @Transactional
     public void initData() {
         log.info("Iniciando inicialização de dados...");
 
@@ -62,6 +75,12 @@ public class DataInitializer {
                 .orElseGet(() -> {
                     log.info("Criando ROLE_ADOTANTE...");
                     return roleRepository.save(new Role(ERole.ROLE_ADOTANTE));
+                });
+
+        Role petshopRole = roleRepository.findByName(ERole.ROLE_PETSHOP)
+                .orElseGet(() -> {
+                    log.info("Criando ROLE_PETSHOP...");
+                    return roleRepository.save(new Role(ERole.ROLE_PETSHOP));
                 });
 
         // 2. Cria uma Organização de teste usando o Padrão BUILDER do Lombok
@@ -91,7 +110,7 @@ public class DataInitializer {
                     "Administrador MyBuddy",
                     "admin@mybuddy.com",
                     "(11) 99999-9999",
-                    encoder.encode("admin123"),
+                    encoder.encode("Senha123"),
                     null,
                     adminRoles
             );
@@ -107,7 +126,7 @@ public class DataInitializer {
                     "ONG Teste",
                     "ong@mybuddy.com",
                     "(11) 98888-8888",
-                    encoder.encode("ong123"),
+                    encoder.encode("Senha123"),
                     myBuddyOrg,
                     ongRoles
             );
@@ -115,20 +134,129 @@ public class DataInitializer {
             log.info("Usuário ONG criado!");
         }
 
-        if (usuarioRepository.findByEmail("adotante@mybuddy.com").isEmpty()) {
+        if (usuarioRepository.findByEmail("user@mybuddy.com").isEmpty()) {
             Set<Role> adotanteRoles = new HashSet<>();
             adotanteRoles.add(adotanteRole);
 
             Usuario adotanteUser = new Usuario(
                     "Adotante Teste",
-                    "adotante@mybuddy.com",
+                    "user@mybuddy.com",
                     "(11) 97777-7777",
-                    encoder.encode("adotante123"),
+                    encoder.encode("Senha123"),
                     null,
                     adotanteRoles
             );
             usuarioRepository.save(adotanteUser);
             log.info("Usuário Adotante criado!");
+        }
+
+        // 4. Criação de Petshop e Produtos
+        Petshop petshop = petshopRepository.findByCnpj("22.333.444/0001-55")
+                .orElseGet(() -> {
+                    log.info("Criando Petshop...");
+                    return petshopRepository.save(Petshop.builder()
+                            .nomeFantasia("PetLovers Shop")
+                            .emailContato("vendas@petlovers.com")
+                            .cnpj("22.333.444/0001-55")
+                            .telefoneContato("(11) 91234-5678")
+                            .endereco("Av Paulista, 1000 - SP")
+                            .website("http://www.petlovers.com")
+                            .build());
+                });
+
+        if (usuarioRepository.findByEmail("petshop@mybuddy.com").isEmpty()) {
+            Set<Role> roles = new HashSet<>();
+            roles.add(petshopRole);
+
+            Usuario petshopUser = new Usuario(
+                    "Petshop Parceiro",
+                    "petshop@mybuddy.com",
+                    "(11) 96666-6666",
+                    encoder.encode("Senha123"),
+                    null,
+                    roles
+            );
+            petshopUser.setPetshop(petshop);
+            usuarioRepository.save(petshopUser);
+            log.info("Usuário Petshop criado!");
+        }
+
+
+
+        if (produtoRepository.count() == 0) {
+            log.info("Criando Produtos reais...");
+            Produto prod1 = new Produto();
+            prod1.setNome("Ração Golden Premier 15kg");
+            prod1.setCategoria("Ração");
+            prod1.setPreco(new BigDecimal("149.90"));
+            prod1.setEstoque(15);
+            prod1.setPetshopId(petshop.getId());
+            prod1.setStatus(StatusProduto.ATIVO);
+            FotoProduto f1 = new FotoProduto();
+            f1.setUrl("https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=600");
+            prod1.addFoto(f1);
+            produtoRepository.save(prod1);
+
+            Produto prod2 = new Produto();
+            prod2.setNome("Coleira Anti-pulgas");
+            prod2.setCategoria("Acessórios");
+            prod2.setPreco(new BigDecimal("89.90"));
+            prod2.setEstoque(0);
+            prod2.setPetshopId(petshop.getId());
+            prod2.setStatus(StatusProduto.ATIVO);
+            FotoProduto f2 = new FotoProduto();
+            f2.setUrl("https://images.unsplash.com/photo-1601633519842-83569502ab45?auto=format&fit=crop&q=80&w=600");
+            prod2.addFoto(f2);
+            produtoRepository.save(prod2);
+        }
+
+        // 5. Criação de Pets vinculados à ONG
+        if (petRepository.count() < 3) {
+            log.info("Garantindo Pets reais no banco de dados...");
+            if (petRepository.findByNome("Zeus").isEmpty()) {
+                Pet p1 = new Pet("Zeus", "SRD", 2, Especie.CAO, Porte.MEDIO, "Marrom", "Curta", "Macho", myBuddyOrg, true, true, true, "São Paulo", "SP");
+                p1.setId(1L);
+                FotoPet f1 = new FotoPet();
+                f1.setUrl("https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600");
+                f1.setPrincipal(true);
+                p1.addFoto(f1);
+                petRepository.save(p1);
+                log.info("Pet Zeus criado com ID 1!");
+            }
+            if (petRepository.findByNome("Mia").isEmpty()) {
+                Pet p2 = new Pet("Mia", "Persa", 1, Especie.GATO, Porte.PEQUENO, "Branco", "Longa", "Fêmea", myBuddyOrg, true, true, false, "São Paulo", "SP");
+                p2.setId(2L);
+                FotoPet f2 = new FotoPet();
+                f2.setUrl("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=600");
+                f2.setPrincipal(true);
+                p2.addFoto(f2);
+                petRepository.save(p2);
+                log.info("Pet Mia criado com ID 2!");
+            }
+            if (petRepository.findByNome("Thor").isEmpty()) {
+                Pet p3 = new Pet("Thor", "Golden Retriever", 1, Especie.CAO, Porte.GRANDE, "Dourado", "Longa", "Macho", myBuddyOrg, true, true, true, "São Paulo", "SP");
+                p3.setId(3L);
+                FotoPet f3 = new FotoPet();
+                f3.setUrl("https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=600");
+                f3.setPrincipal(true);
+                p3.addFoto(f3);
+                petRepository.save(p3);
+                log.info("Pet Thor criado com ID 3!");
+            }
+        }
+
+        // 6. Criação de Eventos de ONG
+        if (eventoOngRepository.count() == 0) {
+            log.info("Criando Eventos de ONG...");
+            eventoOngRepository.save(new EventoOng(null, "Feirinha de Adoção Inverno", "Parque Ibirapuera", "25 Jul, 2026", "Agendado"));
+            eventoOngRepository.save(new EventoOng(null, "Mega Adoção", "Shopping SP", "05 Mai, 2026", "Concluído"));
+        }
+
+        // 7. Criação de Chats
+        if (chatRepository.count() == 0) {
+            log.info("Criando Chats de Suporte...");
+            chatRepository.save(new Chat(null, "Ana Souza", "A ração já foi enviada?", "14:32", "Não Lido"));
+            chatRepository.save(new Chat(null, "Carlos Lima", "Obrigado pela adoção!", "Ontem", "Lido"));
         }
 
         log.info("Finalizada inicialização de dados.");

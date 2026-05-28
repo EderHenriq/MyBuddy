@@ -13,12 +13,14 @@ import { CommonModule } from '@angular/common';
 })
 export class App {
   isAdminRoute = false;
+  isLandingPageRoute = false;
 
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects;
         this.isAdminRoute = url.startsWith('/admin') || url.startsWith('/ong-panel') || url.startsWith('/petshop-panel');
+        this.isLandingPageRoute = url === '/' || url === '' || url.split('?')[0] === '/';
       }
     });
   }

@@ -26,13 +26,15 @@ public class Payment {
     @Column(name = "mp_payment_id")
     private String mpPaymentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "Usuario_id", nullable = false)
-    private Usuario usuario;
+    @Column(name = "usuario_id", nullable = false)
+    private Long usuarioId;
+
+    @Column(name = "pet_id", nullable = true)
+    private Long petId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_id", nullable = true)
-    private Pet pet;
+    @JoinColumn(name = "pedido_id", nullable = true)
+    private Pedido pedido;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;

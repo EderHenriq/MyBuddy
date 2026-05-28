@@ -1,12 +1,12 @@
 @use '../../../../styles/mixins' as *;
 
-//Estilização do corpo do header
+
 .header {
   @include flex-between;
   padding: 0 50px;
   background-color: rgba(244, 244, 244, 0.65);
   backdrop-filter: blur(8.75px);
-  -webkit-backdrop-filter: blur(8.75px); //Adicionado para navegadores como o Safari
+  -webkit-backdrop-filter: blur(8.75px); 
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -35,7 +35,7 @@
   }
 }
 
-//Estilização dos links rápidos do header
+
 .quick-links {
   @include flex-center;
   background-color: var(--surface-card);
@@ -89,7 +89,7 @@
 }
 
 
-//Pilula de destaque para o link ativo
+
 .sliding-pills {
   position: absolute;
   top: 50%;
@@ -112,7 +112,7 @@
   }
 }
 
-//Estilização dos modais de perfil e notificações
+
 .quick-btn {
   @include flex-center;
   gap: var(--spacing-md);
@@ -144,7 +144,7 @@
   }
 }
 
-// Estilos do Dropdown de Notificações
+
 .notifications-btn {
   position: relative;
 
