@@ -5,6 +5,8 @@ import com.Mybuddy.Myb.Model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.Mybuddy.Myb.Repository.mongo.PetRepository;
+import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
 
 import java.util.List;
 import java.util.Optional;

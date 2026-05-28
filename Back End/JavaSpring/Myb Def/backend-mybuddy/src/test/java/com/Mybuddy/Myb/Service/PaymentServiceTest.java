@@ -2,8 +2,8 @@ package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Model.Payment;
 import com.Mybuddy.Myb.Model.PaymentStatus;
-import com.Mybuddy.Myb.Repository.PaymentRepository;
-import com.Mybuddy.Myb.Repository.PetRepository;
+import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
+import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
