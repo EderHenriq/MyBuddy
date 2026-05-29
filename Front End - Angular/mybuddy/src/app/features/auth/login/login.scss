@@ -11,21 +11,13 @@
 
 //Estilização do Background
 .login-hero {
-  position: relative;
+  @include overlay(0.65, 2.5px);
   flex: 1;
-  @include flex-between;
+  display: flex;
+  justify-content: space-between;
   padding: var(--spacing-lg);
   overflow: hidden;
   background: url('../../../../../public/assets/imagem/Adoption.jpg') center center / cover no-repeat;
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.65);
-    backdrop-filter: blur(2.5px);
-    z-index: 0;
-  }
 
   > * {
     position: relative;
@@ -35,9 +27,8 @@
 
 //Estilização do Header e do conteúdo da da página
 .brand-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
+  @include flex-start;
+  gap: var(--spacing-xs);
 }
 
 .brand-logo {
@@ -58,18 +49,14 @@
 }
 
 .hero-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+  @include flex-column;
+  gap: var(--spacing-sm);
   max-width: 540px;
 }
 
 .hero-title {
-  font-family: var(--font-family-primary);
-  font-size: 36px;
-  font-weight: var(--font-weight-bold);
+  @include heading-x1;
   color: var(--text-color-white);
-  line-height: 1;
   margin: 0;
 }
 
@@ -83,19 +70,16 @@
 }
 
 .hero-pills {
-  display: flex;
-  flex-wrap: wrap;
+  @include flex-wrap;
   gap: var(--spacing-xs);
 }
 
 .pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center;
   padding: 6px var(--spacing-sm);
-  font-family: var(--font-family-primary);
+  font-family: var(--font-family-secondary);
   font-size: var(--font-size-sm);
-  color: var(--surface-ground);
+  color: var(--text-color-white);
   background: rgba(255,123,0,0.5);
   border: 1px solid var(--primary-color);
   border-radius: var(--radius-max);
@@ -107,31 +91,27 @@
 
 .login-form-side {
   @include flex-center;
-  width: 460px;
-  min-height: 100vh;
-  padding: var(--spacing-lg) var(--spacing-md);
-  background: transparent;
   position: absolute;
   right: 0;
   top: 0;
   bottom: 0;
+  width: 460px;
+  padding: var(--spacing-lg) var(--spacing-md);
 }
 
 .login-card {
+  @include flex-column;
   width: 100%;
   max-width: 395px;
-  background: var(--surface-ground);
+  gap: var(--spacing-xs);
+  background: #f5f5f5;
   border-radius: var(--radius-xxl);
   box-shadow: 4px 4px 25px rgba(0,0,0,0.37);
   padding: var(--spacing-xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
 }
 
 .card-header {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs);
 }
@@ -141,6 +121,28 @@
   height: 48px;
   object-fit: contain;
 }
+
+.form-title {
+  font-size: 1.625px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-color-black);
+  line-height: 1;
+  margin: 0;
+
+  .highlight {
+    @include text-highlight;
+  }
+}
+
+.form-subtitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: #6f6e6e;
+  line-height: 1;
+  margin: 0;
+}
+
+//Estilização do formulário
 
 //Estilização dos botões sociais de autenticação
 .social-auth-group {
