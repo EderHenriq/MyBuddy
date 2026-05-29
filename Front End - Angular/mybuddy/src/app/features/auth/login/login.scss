@@ -195,7 +195,86 @@
     &:focus {
       border-color: var(--border-color-focus);
     }
+  }
 
+  ::ng-deep p-autocomplete {
+    display: block;
+    width: 100%;
+
+    .p-autocomplete {
+      width: 100%;
+    }
+
+    p.inputtext {
+      height: 40px;
+      padding: 12px var(--spacing-sm);
+      font-size: var(--font-size-md);
+      color: var(--text-color);
+      background: var(--surface-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      box-shadow: none;
+      transition: border-color 0.2s ease;
+
+      &::placeholder{
+        color: #b3b3b3;
+        font-size: var(--font-size-sm);
+      }
+
+      &:focus {
+        border-color: var(--border-color-focus);
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  @include flex-center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 0;
+
+  i {
+    font-size: var(--font-size-md);
+  }
+}
+
+.error-message {
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  color: #e53935;
+  line-height: 1;
+
+  &--global {
+    text-align: center;
+  }
+}
+
+.form-helpers {
+  @include flex-end;
+  padding: var(--spacing-xxs) 0;
+}
+
+.forgot-password-link {
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  color: var(--text-color-black);
+  text-decoration: none;
+  line-height: 1;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
   }
 }
 
