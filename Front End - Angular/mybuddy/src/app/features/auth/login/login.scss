@@ -322,6 +322,25 @@
   }
 }
 
+//Estilização dos divisores de div
+
+.form-divider {
+  @include flex-center;
+  gap: var(--spacing-xs);
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: #6f6e6e;
+}
+
+.divider-text {
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  color: #6f6e6e;
+}
+
 //Estilização dos botões sociais de autenticação
 .social-auth-group {
   @include flex-column;
@@ -355,5 +374,23 @@
   &:hover {
     box-shadow: 0 0 8px rgba(0,0,0,0.2);
   }
+}
 
+//Estilização do footer do container
+.register-caption {
+  text-align: center;
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  color: var(--text-color-black);
+  margin: 0;
+}
+
+.register-link {
+  @include text-highlight;
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
