@@ -6,6 +6,7 @@
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
 //Estilização do Background
@@ -139,4 +140,40 @@
   width: 48px;
   height: 48px;
   object-fit: contain;
+}
+
+//Estilização dos botões sociais de autenticação
+.social-auth-group {
+  @include flex-column;
+  gap: var(--spacing-xs);
+}
+
+.btn-social-auth {
+  @include flex-center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  height: 40px;
+  padding: var(--spacing-sm);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-color);
+  background: var(--surface-card);
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 4px rgba(0,0,0,0.25);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+
+  img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  }
+
 }
