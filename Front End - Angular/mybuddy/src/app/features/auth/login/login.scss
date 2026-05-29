@@ -101,3 +101,42 @@
   line-height: 1;
   white-space: nowrap;
 }
+
+//Estilização do container do form
+
+.login-form-side {
+  @include flex-center;
+  width: 460px;
+  min-height: 100vh;
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: transparent;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 395px;
+  background: var(--surface-ground);
+  border-radius: var(--radius-xxl);
+  box-shadow: 4px 4px 25px rgba(0,0,0,0.37);
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs);
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
