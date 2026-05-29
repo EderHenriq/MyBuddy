@@ -1,13 +1,15 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, DestroyRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, AutoCompleteModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -15,6 +17,7 @@ export class Login implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   loginForm!: FormGroup;
 
@@ -22,7 +25,6 @@ export class Login implements OnInit {
   errorMessage = signal<string | null>(null);
   isLoading = signal<boolean>(false);
   showPassword = signal<boolean>(false);
-
   emailSuggestions = signal<string[]>([]);
 
   private readonly defaultDomains = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
@@ -32,29 +34,23 @@ export class Login implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
-
-    this.listenEmailChanges();
   }
 
   //Sugestões de e-mail
-  private listenEmailChanges(): void {
-    this.loginForm.get('email')?.valueChanges.subscribe((value: string) => {
-      if (!value) {
-        this.emailSuggestions.set([]);
-        return;
-      }
+  onEmailInput(event: AutoCompleteCompleteEvent): void {
+    const value = event.query;
 
-      if (value.includes('@')) {
-        const [username, domainPart] = value.split('@');
+    if (!value) {
+      this.emailSuggestions.set([]);
+      return;
+    }
 
-        const filtered = this.defaultDomains.filter(domain => domain.startsWith(domainPart.toLowerCase())).map(domain => `${username}@${domain}`);
-
-        this.emailSuggestions.set(filtered);
-      } else {
-        const suggestions = this.defaultDomains.map(domain => `${value}@${domain}`);
-        this.emailSuggestions.set(suggestions);
-      }
-    });
+    if (value.includes('@')) {
+      const [username, domainPart] = value.split('@');
+      this.emailSuggestions.set(this.defaultDomains.filter(d => d.startsWith(domainPart.toLowerCase())).map(d => `${username}@${d}`));
+    } else {
+      this.emailSuggestions.set(this.defaultDomains.map(d => `${value}@${d}`));
+    }
   }
 
   togglePasswordVisibility(): void {
@@ -74,7 +70,10 @@ export class Login implements OnInit {
 
     this.authService
       .loginComCredenciais(email, password)
-      .pipe(switchMap(() => this.authService.obterPerfil()))
+      .pipe(
+        switchMap(() => this.authService.obterPerfil()),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: () => {
           this.isLoading.set(false);

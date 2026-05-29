@@ -67,13 +67,15 @@
           <label class="input-label" for="password">Senha</label>
 
           <div class="input-field-wrapper">
-            <input
-              id="password"
-              [type]="showPassword() ? 'text' : 'password'"
-              formControlName="password"
-              placeholder="************"
-              autocomplete="current-password"
-              [attr.aria-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            <p-autocomplete
+              inputId="email"
+              formControlName="email"
+              [suggestions]="emailSuggestions()"
+              (completeMethod)="onEmailInput($event)"
+              placeholder="you@exemplo.com"
+              [dropdown]="false"
+              [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+              autocomplete="email"
             />
 
             <button
