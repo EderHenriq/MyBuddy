@@ -143,6 +143,61 @@
 }
 
 //Estilização do formulário
+.login-form {
+  @include flex-column;
+  gap: var(--spacing-xs);
+}
+
+.input-group {
+  @include flex-column;
+  gap: var(--spacing-xs);
+
+  &.has-error {
+    .input-field-wrapper input {
+      border-color: #e53935;
+    }
+
+    ::ng-deep, p.inputtext {
+      border-color: #e53935 !important;
+    }
+  }
+}
+
+.input-label {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-color);
+  line-height: var(--line-height-md);
+}
+
+.input-field-wrapper {
+  position: relative;
+  @include flex-center;
+
+  .input {
+    width: 100%;
+    height: 40px;
+    padding: 12px 40px 12px var(--spacing-sm);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-color);
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &::placeholder {
+      color: #b3b3b3;
+    }
+
+    &:focus {
+      border-color: var(--border-color-focus);
+    }
+
+  }
+}
 
 //Estilização dos botões sociais de autenticação
 .social-auth-group {
