@@ -44,7 +44,7 @@
               formControlName="email"
               [suggestions]="emailSuggestions()"
               (completeMethod)="onEmailInput($event)"
-              placeholder="you@exemplo.com"
+              placeholder="Digite seu email"
               [dropdown]="false"
               autocomplete="off"
               [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
@@ -72,7 +72,7 @@
               id="password"
               [type]="showPassword() ? 'text' : 'password'"
               formControlName="password"
-              placeholder="************"
+              placeholder="Digite sua senha"
               autocomplete="current-password"
               [attr.aria-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
             />

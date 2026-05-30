@@ -54,6 +54,7 @@
 .hero-content {
   @include flex-column;
   gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
   max-width: 540px;
 }
 
@@ -99,14 +100,14 @@
   top: 0;
   bottom: 0;
   width: 520px;
-  padding: var(--spacing-lg) var(--spacing-md);
+  padding: var(--spacing-lg);
 }
 
 .login-card {
   @include flex-column;
   width: 100%;
   max-width: 440px;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-lg);
   background: #f5f5f5;
   border-radius: var(--radius-xxl);
   box-shadow: 4px 4px 25px rgba(0,0,0,0.37);
@@ -148,7 +149,7 @@
 //Estilização do formulário
 .login-form {
   @include flex-column;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
 }
 
 .input-group {
@@ -260,7 +261,7 @@
   padding: 0;
 
   i {
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-sm);
     pointer-events: none;
   }
 }
