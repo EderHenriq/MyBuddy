@@ -1,11 +1,14 @@
 import 'package:get_it/get_it.dart';
+import 'package:mybuddy_app/features/auth/data/repositories/auth_repository_mock.dart';
+import 'package:mybuddy_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // Auth
-  // sl.registerFactory(() => AuthBloc(loginUsecase: sl()));
+  // BLoC
+  sl.registerFactory(() => AuthBloc(authRepository: sl()));
 
-  // Core
-  // sl.registerLazySingleton(() => DioClient());
+  // Repository
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryMock());
 }
