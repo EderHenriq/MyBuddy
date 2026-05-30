@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:mybuddy_app/core/constants/app_config.dart';
 
 class DioClient {
-  static const String _baseUrl = 'http://localhost/api/';
-
   static Dio create() {
     final dio = Dio(
       BaseOptions(
-        baseUrl: _baseUrl,
+        baseUrl: AppConfig.apiBaseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         headers: {
@@ -16,15 +15,16 @@ class DioClient {
       ),
     );
 
-    // Log interceptor em desenvolvimento
-    dio.interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        error: true,
-        logPrint: (o) => print(o),
-      ),
-    );
+    if (AppConfig.showLogs) {
+      dio.interceptors.add(
+        LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          error: true,
+          logPrint: (o) => print(o),
+        ),
+      );
+    }
 
     return dio;
   }
