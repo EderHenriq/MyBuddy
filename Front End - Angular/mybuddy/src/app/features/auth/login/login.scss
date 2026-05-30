@@ -14,10 +14,13 @@
   @include overlay(0.65, 2.5px);
   flex: 1;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  padding-right: 520px;
   overflow: hidden;
   background: url('../../../../../public/assets/imagem/Adoption.jpg') center center / cover no-repeat;
+  width: 100%;
 
   > * {
     position: relative;
@@ -42,7 +45,7 @@
 
 .brand-name {
   font-family: var(--font-family-primary);
-  font-size: var(font-size-xxl);
+  font-size: var(--font-size-xxl);
   font-weight: var(--font-weight-semibold);
   color: var(--primary-color);
   line-height: 1;
@@ -95,25 +98,25 @@
   right: 0;
   top: 0;
   bottom: 0;
-  width: 460px;
+  width: 520px;
   padding: var(--spacing-lg) var(--spacing-md);
 }
 
 .login-card {
   @include flex-column;
   width: 100%;
-  max-width: 395px;
+  max-width: 440px;
   gap: var(--spacing-xs);
   background: #f5f5f5;
   border-radius: var(--radius-xxl);
   box-shadow: 4px 4px 25px rgba(0,0,0,0.37);
-  padding: var(--spacing-xl);
+  padding: 2.5rem;
 }
 
 .card-header {
   @include flex-column;
   gap: var(--spacing-xs);
-  padding: var(--spacing-xs);
+  padding: 0;
 }
 
 .card-icon {
@@ -123,7 +126,7 @@
 }
 
 .form-title {
-  font-size: 1.625px;
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--text-color-black);
   line-height: 1;
@@ -157,7 +160,7 @@
       border-color: #e53935;
     }
 
-    ::ng-deep, p.inputtext {
+    ::ng-deep, .p-inputtext {
       border-color: #e53935 !important;
     }
   }
@@ -172,12 +175,14 @@
 
 .input-field-wrapper {
   position: relative;
-  @include flex-center;
+  width: 100%;
+  display: flex;
+  align-items: center;
 
-  .input {
+  input {
     width: 100%;
     height: 40px;
-    padding: 12px 40px 12px var(--spacing-sm);
+    padding: 12px 44px 12px var(--spacing-sm);
     font-family: var(--font-family-primary);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
@@ -185,6 +190,8 @@
     background: var(--surface-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
+    appearance: none;
+    -webkit-appearance: none;
     outline: none;
     transition: border-color 0.2s ease;
 
@@ -205,16 +212,20 @@
       width: 100%;
     }
 
-    p.inputtext {
+    .p-inputtext {
+      width: 100%;
       height: 40px;
       padding: 12px var(--spacing-sm);
+      font-family: var(--font-family-primary);
       font-size: var(--font-size-md);
       color: var(--text-color);
       background: var(--surface-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
       box-shadow: none;
+      appearance: none;
       transition: border-color 0.2s ease;
+      box-sizing: border-box;
 
       &::placeholder{
         color: #b3b3b3;
@@ -226,6 +237,10 @@
         box-shadow: none;
       }
     }
+
+    .p-autocomplete-dropdown {
+      display: none;
+    }
   }
 }
 
@@ -234,6 +249,7 @@
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 10;
   @include flex-center;
   width: 24px;
   height: 24px;
@@ -245,6 +261,7 @@
 
   i {
     font-size: var(--font-size-md);
+    pointer-events: none;
   }
 }
 
