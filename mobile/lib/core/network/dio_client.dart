@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:mybuddy_app/core/constants/app_config.dart';
+import 'package:mybuddy_app/core/network/auth_interceptor.dart';
 
 class DioClient {
   static Dio create() {
@@ -14,6 +15,8 @@ class DioClient {
         },
       ),
     );
+
+    dio.interceptors.add(AuthInterceptor());
 
     if (AppConfig.showLogs) {
       dio.interceptors.add(
