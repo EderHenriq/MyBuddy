@@ -9,6 +9,8 @@ import 'package:mybuddy_app/shared/theme/app_theme.dart';
 class MyBuddyApp extends StatefulWidget {
   const MyBuddyApp({super.key});
 
+  static final navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   State<MyBuddyApp> createState() => _MyBuddyAppState();
 }
