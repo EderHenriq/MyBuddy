@@ -14,11 +14,21 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     services:
       mongodb:
         image: mongo:7.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+        options: >-
+          --health-cmd mongosh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
           - 27017:27017
+
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
