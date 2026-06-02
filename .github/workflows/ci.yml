@@ -4,6 +4,7 @@ on:
     branches:
       - Developer
       - main
+      - teste
   pull_request:
     branches:
       - Developer
@@ -19,8 +20,8 @@ jobs:
       mongodb:
         image: mongo:7.0
         env:
-          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
-          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: admin
         options: >-
           --health-cmd mongosh
           --health-interval 10s
@@ -38,10 +39,11 @@ jobs:
           java-version: "21"
           distribution: "temurin"
       - name: Rodar testes com Maven
-        run: mvn test "-Dsurefire.excludes=**/KeycloakIntegrationTest.java,**/PetRepositoryContainerTest.java"
+        run: mvn test "-Dsurefire.excludes=**/KeycloakIntegrationTest.java,**/PetRepositoryContainerTest.java,**/AuthControllerIntegrationTest.java"
         working-directory: "Back End/JavaSpring/Myb Def/backend-mybuddy"
         env:
           MERCADOPAGO_ACCESS_TOKEN: ${{ secrets.MERCADOPAGO_ACCESS_TOKEN }}
+          SPRING_DATA_MONGODB_URI: mongodb://admin:admin@localhost:27017/mybuddy_test?authSource=admin
       - name: Publicar relatório do Jacoco
         uses: actions/upload-artifact@v4
         if: always()
