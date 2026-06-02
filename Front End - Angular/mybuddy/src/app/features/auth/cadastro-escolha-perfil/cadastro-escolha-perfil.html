@@ -80,6 +80,64 @@
         @if (currentStep() === 2) {
           <fieldset class="step-content" aria-labelledby="step2-legend">
             <legend id="step2-legend" class="step-legend">Seus dados</legend>
+
+            <div class="input-group" [class.has-error]="registerForm.get('nome')?.invalid && registerForm.get('nome')?.touched">
+              <label class="input-label" for="nome">Nome completo</label>
+
+              <div class="input-wrapper">
+                <input id="nome" type="text" formControlName="nome" placeholder="Digite seu nome completo" autocomplete="name" />
+              </div>
+
+              @if (registerForm.get('nome')?.invalid && registerForm.get('nome')?.touched) {
+                <span class="error-message" aria-live="polite">O nome deve ter entre 3 e 200 caracteres</span>
+              }
+            </div>
+
+            <div class="input-group" [class.has-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+              <label id="input-label" for="email">Email</label>
+
+              <div class="input-wrapper">
+                <input id="email" type="email" formControlName="email" placeholder="you@exemplo.com" autocomplete="email" />
+              </div>
+
+              @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+                <span class="error-message" aria-live="polite">Insira um e-mail válido</span>
+              }
+            </div>
+
+            <div class="input-group" [class.has-error]="registerForm.get('telefone')?.invalid && registerForm.get('telefone')?.touched">
+              <label class="input-label" for="telefone">Telefone</label>
+              <div class="input-wrapper">
+                <input
+                  id="telefone"
+                  type="tel"
+                  formControlName="telefone"
+                  placeholder="(00) 90000-0000"
+                  autocomplete="tel"
+                  (input)="onTelefoneInput($event)"
+                />
+              </div>
+
+              @if (registerForm.get('telefone')?.invalid && registerForm.get('telefone')?.touched) {
+                <span class="error-message" aria-live="polite">Formato: (XX) 9XXXX-XXXX</span>
+              }
+            </div>
+          </fieldset>
+        }
+
+        @if (currentStep() === 3 && isBusinessProfile()) {
+          <fieldset class="step-content" aria-labelledby="step3-legend">
+            <legend id="step3-legend" class="step-legend">Dados da {{ organizationLabel() }}</legend>
+
+            <div
+              class="input-group"
+              [class.has-error]="registerForm.get('organizacaoNomeFantasia')?.invalid && registerForm.get('organizacaoNomeFantasia')?.touched"
+            >
+              <label id="organizacaoNomeFantasia" for="organizacaoNomeFantasia">{{ organizationLabel() }}</label>
+              <div class="input-wrapper">
+                <input id="organizacaoNomeFantasia" type="text" formControlName="organizacaoNomeFantasia" placeholder="Nome Fantasia" />
+              </div>
+            </div>
           </fieldset>
         }
       </form>
