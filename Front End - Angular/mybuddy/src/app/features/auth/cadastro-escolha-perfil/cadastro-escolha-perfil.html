@@ -209,6 +209,106 @@
             </div>
           </fieldset>
         }
+
+        @if (currentStep() === lastSteo()) {
+          <fieldset class="step-content" aria-labelledby="step-final-legend">
+            <legend id="step-final-legend" class="step-legend">Crie sua senha</legend>
+
+            <div class="input-group" [class.has-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+              <label class="input-label" for="password">Senha</label>
+              <div class="input-wrapper">
+                <input
+                  id="password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="************"
+                  autocomplete="new-password"
+                />
+
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePassword()"
+                  [attr.aria-label]="showPassword() ? 'Esconder senha' : 'Mostrar senha'"
+                >
+                  <span class="material-icons" aria-hidden="true">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+                </button>
+              </div>
+
+              @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+                <span class="error-message" aria-live="polite">A senha deve conter entre 8 e 40 caracteres</span>
+              }
+            </div>
+
+            <div class="input-group" [class.has-error]="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched">
+              <label class="input-label" for="confirmPassword">Confirmar Senha</label>
+              <div class="input-wrapper">
+                <input
+                  id="confirmPassword"
+                  [type]="showConfirmPassword() ? 'text' : 'password'"
+                  formControlName="confirmPassword"
+                  placeholder="************"
+                  autocomplete="new-password"
+                />
+
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="toggleConfirmPassword()"
+                  [attr.aria-label]="showConfirmPassword() ? 'Esconder senha' : 'Mostrar senha'"
+                >
+                  <span class="material-icons" aria-hidden="true">{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</span>
+                </button>
+              </div>
+
+              @if (registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
+                <span class="error-message" aria-live="polite">As senhas não coincidem</span>
+              }
+            </div>
+
+            <label class="terms-label">
+              <input type="checkbox" formControlName="terms" />
+              <span>
+                Eu aceito os
+                <a routerLink="/">Termos de Serviço</a>
+                e a
+                <a routerLink="/">Política de Privacidade</a>
+              </span>
+            </label>
+          </fieldset>
+        }
+
+        <div class="step-actions">
+          @if (currentStep() > 1) {
+            <button type="button" class="btn btn-back" (click)="prevStep()">
+              <span class="material-icons" aria-hidden="true">arrow-back</span>
+              Voltar
+            </button>
+          }
+
+          @if (currentStep() < lastStep()) {
+            <button type="button" class="btn btn-next" (click)="nextStep()" [disabled]="!isCurrentStepValid()">
+              Continuar
+              <span class="material-icons" aria-hidden="true">arrow_forward</span>
+            </button>
+          }
+
+          @if (currentStep() === lastStep()) {
+            <button type="submit" class="btn btn-signup" [disabled]="registerForm.invalid || isLoading()">
+              @if (isLoading()){
+                <span class="spinner" aria-hidden="true"></span>
+                <span>Criando conta...</span>
+              } @else {
+                <span>Cadastrar</span>
+              }
+            </button>
+          }
+        </div>
+
+        <p class="login-prompt">
+          Já tem uma conta?
+          <a routerLink="/auth/login" class="login-link">Entrar></a>
+        </p>
       </form>
     </div>
   </section>
