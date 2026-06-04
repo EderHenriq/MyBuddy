@@ -137,6 +137,75 @@
               <div class="input-wrapper">
                 <input id="organizacaoNomeFantasia" type="text" formControlName="organizacaoNomeFantasia" placeholder="Nome Fantasia" />
               </div>
+
+              @if (registerForm.get('organizacaoNomeFantasia')?.invalid && registerForm.get('organizacaoNomeFantasia')?.touched) {
+                <span class="error-message" aria-live="polite">Informe o nome fantasia</span>
+              }
+            </div>
+
+            <div class="input-group" [class.has-error]="registerForm.get('oranizacaoCnpj')?.invalid && registerForm.get('organizacaoCnpj')?.touched">
+              <label class="input-label for=" organizacaoCnpj>{{ cnpjLabel() }}</label>
+              <div class="input-wrapper">
+                <input
+                  id="organizacaoCnpj"
+                  type="text"
+                  formControlName="organizacaoCnpj"
+                  placeholder="00.000.000/0000-00"
+                  (input)="onCnpjInput($event)"
+                />
+              </div>
+
+              @if (registerForm.get('organizacaoCnpj')?.invalid && registerForm.get('organizacaoCnpj')?.touched) {
+                <span class="error-message" aria-live="assertive">Formato: XX.XXX.XXX/XXXX-XX</span>
+              }
+            </div>
+
+            <div
+              class="input-group"
+              [class.has-error]="registerForm.get('organizacaoEmailContato')?.invalid && registerForm.get('organizacaoEmailContato')?.touched"
+            >
+              <label class="input-label" for="organizacaoEmailContato">{{ emailContatoLabel() }}</label>
+              <div class="input-wrapper">
+                <input id="organizacaoEmailContato" type="email" formControlName="organizacaoEmailContato" placeholder="contato@exemplo.com" />
+              </div>
+
+              @if (registerForm.get('organizacaoEmailContato')?.invalid && registerForm.get('organizacaoEmailContato')?.touched) {
+                <span class="error-message" aria-live="polite">Insira um e-mail de contato válido</span>
+              }
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="organizacaoTelefoneContato">Telefone de Contato</label>
+              <div class="input-wrapper">
+                <input
+                  id="organizacaoTelefoneContato"
+                  type="tel"
+                  formControlName="organizacaoTelefoneContato"
+                  placeholder="(44) 99999-9999"
+                  (input)="onTelefoneInput($event, 'organizacaoTelefoneContato')"
+                />
+              </div>
+            </div>
+
+            <div
+              class="input-group"
+              [class.has-error]="registerForm.get('organizacaoEndereco')?.invalid && registerForm.get('organizacaoEndereco')?.touched"
+            >
+              <label class="input-label" for="organizacaoEndereco">{{ enderecoLabel() }}</label>
+              <div class="input-wrapper">
+                <input id="organizacaoEndereco" type="text" formControlName="organizacaoEndereco" placeholder="Rua, número, cidade/UF" />
+              </div>
+
+              @if (registerForm.get('organizacaoEndereco')?.invalid && registerForm.get('organizacaoEndereco')?.touched) {
+                <span class="error-message" aria-live="polite">Informe o endereço completo</span>
+              }
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="organizacaoDescricao">Descrição</label>
+              <div class="input-wrapper">
+                <textarea id="organizacaoDescricao" formControlName="organizacaoDescricao" placeholder="descricaoPlaceholder()"></textarea>
+              </div>
             </div>
           </fieldset>
         }
