@@ -53,7 +53,7 @@
       }
 
       @if (successMessage()) {
-        <div class="alert alert-error" role="alert" aria-live="polite">
+        <div class="alert alert-success" role="alert" aria-live="polite">
           <span class="material-icons" aria-hidden="true">check_circle</span>
           <span>{{ successMessage() }}</span>
         </div>
@@ -70,8 +70,8 @@
                   type="button"
                   class="profile-option"
                   role="radio"
-                  [class.active]="selectedProfile() === option.value"
-                  [attr.aria-checked]="selectedProfile() === option.value"
+                  [class.active]="selectedPerfil() === option.value"
+                  [attr.aria-checked]="selectedPerfil() === option.value"
                   (click)="selectProfile(option.value)"
                 >
                   <span class="material-icons option-icon" aria-hidden="true">{{ option.icon }}</span>
@@ -139,7 +139,7 @@
               class="input-group"
               [class.has-error]="registerForm.get('organizacaoNomeFantasia')?.invalid && registerForm.get('organizacaoNomeFantasia')?.touched"
             >
-              <label id="organizacaoNomeFantasia" for="organizacaoNomeFantasia">{{ organizationLabel() }}</label>
+              <label class="input-label" for="organizacaoNomeFantasia">{{ organizationLabel() }}</label>
               <div class="input-wrapper">
                 <input id="organizacaoNomeFantasia" type="text" formControlName="organizacaoNomeFantasia" placeholder="Nome Fantasia" />
               </div>
@@ -149,7 +149,7 @@
               }
             </div>
 
-            <div class="input-group" [class.has-error]="registerForm.get('oranizacaoCnpj')?.invalid && registerForm.get('organizacaoCnpj')?.touched">
+            <div class="input-group" [class.has-error]="registerForm.get('organizacaoCnpj')?.invalid && registerForm.get('organizacaoCnpj')?.touched">
               <label class="input-label" for="organizacaoCnpj">{{ cnpjLabel() }}</label>
               <div class="input-wrapper">
                 <input
@@ -162,7 +162,7 @@
               </div>
 
               @if (registerForm.get('organizacaoCnpj')?.invalid && registerForm.get('organizacaoCnpj')?.touched) {
-                <span class="error-message" aria-live="assertive">Formato: XX.XXX.XXX/XXXX-XX</span>
+                <span class="error-message" aria-live="polite">Formato: XX.XXX.XXX/XXXX-XX</span>
               }
             </div>
 

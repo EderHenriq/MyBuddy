@@ -2,7 +2,6 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type TipoPerfil = 'ADOTANTE' | 'ONG' | 'PETSHOP';
 
@@ -41,13 +40,9 @@ export class CadastroEscolhaPerfil {
   showConfirmPassword = signal<boolean>(false);
 
   //Steps dinamicos por tipo de perfil
-  totalSteps = computed<number[]>(() => {
-    this.isBusinessProfile() ? [1, 2, 3, 4] : [1, 2, 3];
-  });
+  totalSteps = computed<number[]>(() => (this.isBusinessProfile() ? [1, 2, 3, 4] : [1, 2, 3]));
 
-  lastStep = computed<number>(() => {
-    this.isBusinessProfile() ? 4 : 3;
-  });
+  lastStep = computed<number>(() => (this.isBusinessProfile() ? 4 : 3));
 
   stepSubtitle = computed<string>(() => {
     const step = this.currentStep();
@@ -126,18 +121,18 @@ export class CadastroEscolhaPerfil {
 
   //Seção de perfis de usuários
   selectProfile(profile: TipoPerfil): void {
-    this.selectProfile.set(profile);
+    this.selectedPerfil.set(profile);
     this.errorMessage.set(null);
     this.successMessage.set(null);
     this.updateProfileValidators();
   }
 
   isBusinessProfile(): boolean {
-    return this.selectedProfile() === 'ONG' || this.selectProfile() === 'PETSHOP';
+    return this.selectedPerfil() === 'ONG' || this.selectedPerfil() === 'PETSHOP';
   }
 
   organizationLabel(): string {
-    return this.selectedProfile() === 'ONG' ? 'Nome fantasia da ONG' : 'Nome fantasia do Petshop';
+    return this.selectedPerfil() === 'ONG' ? 'Nome fantasia da ONG' : 'Nome fantasia do Petshop';
   }
 
   cnpjLabel(): string {
@@ -225,7 +220,7 @@ export class CadastroEscolhaPerfil {
     };
 
     if (this.isBusinessProfile()) {
-      payload.organizacaoCnpj = values.oranizacaoCnpj;
+      payload.organizacaoCnpj = values.organizacaoCnpj;
       payload.organizacaoNomeFantasia = values.organizacaoNomeFantasia;
       payload.organizacaoEmailContato = values.organizacaoEmailContato;
       payload.organizacaoEndereco = values.organizacaoEndereco;
@@ -239,7 +234,7 @@ export class CadastroEscolhaPerfil {
         this.successMessage.set('Cadastro realizado com sucesso! Redirecionando para login...');
         setTimeout(() => this.router.navigate(['/auth/login']), 2000);
       },
-      error: (err: unknown) => {
+      error: (err: { error?: { message?: string } }) => {
         this.isLoading.set(false);
         this.errorMessage.set(err.error?.message || 'Ocorreu um erro durante o cadastro. Por favor, verifique os dados e tente novamente.');
       },
