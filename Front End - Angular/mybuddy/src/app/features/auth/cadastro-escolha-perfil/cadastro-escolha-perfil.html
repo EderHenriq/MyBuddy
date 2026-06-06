@@ -22,7 +22,7 @@
     </div>
   </section>
 
-  <section class="signup-form-side" aria-labelledby="signup-headling">
+  <section class="signup-form-side" aria-labelledby="signup-heading">
     <div class="signup-card">
       <header class="card-header">
         <img src="/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="card-icon" aria-hidden="true" />
@@ -31,7 +31,7 @@
           <span class="highlight">MyBuddy</span>
         </h1>
 
-        <p class="form-subtitle">{{ stepSubtitle }}</p>
+        <p class="form-subtitle">{{ stepSubtitle() }}</p>
       </header>
 
       <nav class="step-indicator" aria-label="Progresso do cadastro">
@@ -47,8 +47,15 @@
 
       @if (errorMessage()) {
         <div class="alert alert-error" role="alert" aria-live="polite">
+          <span class="material-icons" aria-hidden="true">error_outline</span>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      @if (successMessage()) {
+        <div class="alert alert-error" role="alert" aria-live="polite">
           <span class="material-icons" aria-hidden="true">check_circle</span>
-          <span>{{ successMessage }}</span>
+          <span>{{ successMessage() }}</span>
         </div>
       }
 
@@ -58,7 +65,6 @@
             <legend id="step1-legend" class="step-legend">Qual é o seu perfil?</legend>
 
             <div class="profile-selector" role="radiogroup" aria-label="Tipo de cadastro">
-              @
               @for (option of profileOptions; track option.value) {
                 <button
                   type="button"
@@ -94,7 +100,7 @@
             </div>
 
             <div class="input-group" [class.has-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
-              <label id="input-label" for="email">Email</label>
+              <label class="input-label" for="email">Email</label>
 
               <div class="input-wrapper">
                 <input id="email" type="email" formControlName="email" placeholder="you@exemplo.com" autocomplete="email" />
@@ -144,7 +150,7 @@
             </div>
 
             <div class="input-group" [class.has-error]="registerForm.get('oranizacaoCnpj')?.invalid && registerForm.get('organizacaoCnpj')?.touched">
-              <label class="input-label for=" organizacaoCnpj>{{ cnpjLabel() }}</label>
+              <label class="input-label" for="organizacaoCnpj">{{ cnpjLabel() }}</label>
               <div class="input-wrapper">
                 <input
                   id="organizacaoCnpj"
@@ -204,13 +210,13 @@
             <div class="input-group">
               <label class="input-label" for="organizacaoDescricao">Descrição</label>
               <div class="input-wrapper">
-                <textarea id="organizacaoDescricao" formControlName="organizacaoDescricao" placeholder="descricaoPlaceholder()"></textarea>
+                <textarea id="organizacaoDescricao" formControlName="organizacaoDescricao" [placeholder]="descricaoPlaceholder()"></textarea>
               </div>
             </div>
           </fieldset>
         }
 
-        @if (currentStep() === lastSteo()) {
+        @if (currentStep() === lastStep()) {
           <fieldset class="step-content" aria-labelledby="step-final-legend">
             <legend id="step-final-legend" class="step-legend">Crie sua senha</legend>
 
@@ -281,7 +287,7 @@
         <div class="step-actions">
           @if (currentStep() > 1) {
             <button type="button" class="btn btn-back" (click)="prevStep()">
-              <span class="material-icons" aria-hidden="true">arrow-back</span>
+              <span class="material-icons" aria-hidden="true">arrow_back</span>
               Voltar
             </button>
           }
@@ -295,7 +301,7 @@
 
           @if (currentStep() === lastStep()) {
             <button type="submit" class="btn btn-signup" [disabled]="registerForm.invalid || isLoading()">
-              @if (isLoading()){
+              @if (isLoading()) {
                 <span class="spinner" aria-hidden="true"></span>
                 <span>Criando conta...</span>
               } @else {
@@ -307,7 +313,7 @@
 
         <p class="login-prompt">
           Já tem uma conta?
-          <a routerLink="/auth/login" class="login-link">Entrar></a>
+          <a routerLink="/auth/login" class="login-link">Entrar</a>
         </p>
       </form>
     </div>
