@@ -75,8 +75,10 @@
                   (click)="selectProfile(option.value)"
                 >
                   <span class="material-icons option-icon" aria-hidden="true">{{ option.icon }}</span>
-                  <span class="option-title">{{ option.label }}</span>
-                  <span class="option-helper">{{ option.helper }}</span>
+                  <div class="option-text">
+                    <span class="option-title">{{ option.label }}</span>
+                    <span class="option-helper">{{ option.helper }}</span>
+                  </div>
                 </button>
               }
             </div>
@@ -288,7 +290,6 @@
           @if (currentStep() > 1) {
             <button type="button" class="btn btn-back" (click)="prevStep()">
               <span class="material-icons" aria-hidden="true">arrow_back</span>
-              Voltar
             </button>
           }
 

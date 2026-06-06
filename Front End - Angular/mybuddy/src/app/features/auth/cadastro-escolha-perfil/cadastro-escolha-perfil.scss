@@ -107,7 +107,8 @@
   @include flex-column;
   width: 100%;
   max-width: 480px;
-  gap: var(--spacing-sm);
+  height: 650px;
+  gap: var(--spacing-lg);
   background: #f5f5f5;
   border-radius: var(--radius-xxl);
   box-shadow: 4px 4px 25px rgba(0, 0, 0, 0.37);
@@ -150,6 +151,7 @@
 //Estilização do step indicator
 .step-indicator {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: var(--spacing-xs);
 }
@@ -326,22 +328,23 @@
   width: 100%;
   padding: var(--spacing-sm);
   background: var(--surface-card);
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition:
-    border-color 0.3s ease,
-    background 0.3s ease;
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
   text-align: left;
 
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+
   &:hover {
-    border-color: var(--primary-color);
-    background: var(--surface-card-hover);
+    transform: translateY(-2px);
   }
 
   &.active {
-    border-color: var(--primary-color);
-    background: var(--surface-card-hover);
+    transform: translateY(0);
 
     .option-title {
       color: var(--primary-color);
@@ -366,6 +369,12 @@
   color: var(--text-color-black);
   line-height: 1;
   transition: color 0.3s ease;
+}
+
+.option-text {
+  @include flex-column;
+  gap: 4px;
+  align-items: flex-start;
 }
 
 .option-helper {
@@ -431,12 +440,12 @@
 .btn {
   @include flex-center;
   gap: var(--spacing-xxs);
-  height: 40px;
+  height: 45px;
   padding: 12px var(--spacing-sm);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition:
     background 0.3s ease,
@@ -454,14 +463,15 @@
   }
 
   &-back {
+    padding: var(--spacing-sm);
     background: transparent;
+    border-radius: var(--radius-max);
     border: 1px solid var(--border-color);
     color: var(--text-color);
     flex-shrink: 0;
 
     &:hover:not(:disabled) {
-      background: var(--primary-color);
-      color: var(--primary-color);
+      transform: translateY(-2px);
     }
   }
 
@@ -473,6 +483,7 @@
 
     &:hover:not(:disabled) {
       background: var(--hover-btn-primary);
+      transform: translateY(-2px);
     }
   }
 
@@ -484,6 +495,43 @@
 
     &:hover:not(:disabled) {
       background: var(--hover-btn-primary);
+      transform: translateY(-2px);
     }
+  }
+}
+
+//Estilização do spinner
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-top-color: var(--text-color-white);
+  border-radius: var(--radius-max);
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+//Estilização do footer do forms
+.login-prompt {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-color-black);
+  margin: 0;
+}
+
+.login-link {
+  @include text-highlight;
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
