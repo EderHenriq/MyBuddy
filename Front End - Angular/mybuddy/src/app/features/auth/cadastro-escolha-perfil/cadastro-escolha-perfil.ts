@@ -96,7 +96,7 @@ export class CadastroEscolhaPerfil {
     }
   }
 
-  prevSteo(): void {
+  prevStep(): void {
     if (this.currentStep() > 1) {
       this.currentStep.update(s => s - 1);
     }
@@ -200,5 +200,84 @@ export class CadastroEscolhaPerfil {
     }
 
     this.registerForm.get('organizacaoCnpj')?.setValue(input, { emitEvent: false });
+  }
+
+  //Seção de envio
+  onSubmit(): void {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    const values = this.registerForm.value;
+    const profile = this.selectedPerfil();
+
+    const payload: CadastroPayload = {
+      nome: values.nome,
+      email: values.email,
+      telefone: values.telefone,
+      password: values.password,
+      roles: [profile],
+    };
+
+    if (this.isBusinessProfile()) {
+      payload.organizacaoCnpj = values.oranizacaoCnpj;
+      payload.organizacaoNomeFantasia = values.organizacaoNomeFantasia;
+      payload.organizacaoEmailContato = values.organizacaoEmailContato;
+      payload.organizacaoEndereco = values.organizacaoEndereco;
+      payload.organizacaoTelefoneContato = values.organizacaoTelefoneContato;
+      payload.organizacaoDescricao = values.organizacaoDescricao;
+    }
+
+    this.authService.registrar(payload).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.successMessage.set('Cadastro realizado com sucesso! Redirecionando para login...');
+        setTimeout(() => this.router.navigate(['/auth/login']), 2000);
+      },
+      error: (err: unknown) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(err.error?.message || 'Ocorreu um erro durante o cadastro. Por favor, verifique os dados e tente novamente.');
+      },
+    });
+  }
+
+  //Seção de validadores privados
+  private updateProfileValidators(): void {
+    const businessValidators = {
+      organizacaoNomeFantasia: [Validators.required, Validators.minLength(3)],
+      organizacaoCnpj: [Validators.required, Validators.pattern(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/)],
+      organizacaoEmailContato: [Validators.required, Validators.email],
+      organizacaoEndereco: [Validators.required],
+    };
+
+    Object.entries(businessValidators).forEach(([field, validators]) => {
+      const control = this.registerForm.get(field);
+      if (!control) return;
+
+      if (this.isBusinessProfile()) {
+        control.setValidators(validators);
+      } else {
+        control.clearValidators();
+        control.setValue('', { emitEvent: false });
+      }
+
+      control.updateValueAndValidity({ emitEvent: false });
+    });
+
+    if (!this.isBusinessProfile()) {
+      this.registerForm.patchValue({ organizacaoTelefoneContato: '', organizacaoDescricao: '' }, { emitEvent: false });
+    }
+  }
+
+  private passwordMatchValidator(group: FormGroup) {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+
+    return password === confirmPassword ? null : { passwordMismatch: true };
   }
 }
