@@ -157,4 +157,48 @@ export class CadastroEscolhaPerfil {
       ? 'Conte-nos um pouco sobre o propósito e a história de sua ONG...'
       : 'Conte-nos um pouco sobre seus produtos, serviços e especialidades...';
   }
+
+  //Seção de toggles de senhas
+  togglePassword(): void {
+    this.showPassword.update(v => !v);
+  }
+
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword.update(v => !v);
+  }
+
+  //Seção de máscaras
+  onTelefoneInput(event: Event, fieldName = 'telefone'): void {
+    const target = event.target as HTMLInputElement;
+    let input = target.value.replace(/\D/g, '');
+    if (input.length > 11) input = input.substring(0, 11);
+
+    if (input.length > 6) {
+      input = `(${input.substring(0, 2)}) ${input.substring(2, 7)}-${input.substring(7)}`;
+    } else if (input.length > 2) {
+      input = `(${input.substring(0, 2)}) ${input.substring(2)}`;
+    } else if (input.length > 0) {
+      input = `(${input}`;
+    }
+
+    this.registerForm.get(fieldName)?.setValue(input, { emitEvent: false });
+  }
+
+  onCnpjInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    let input = target.value.replace(/\D/g, '');
+    if (input.length > 14) input = input.substring(0, 14);
+
+    if (input.length > 12) {
+      input = `${input.substring(0, 2)}.${input.substring(2, 5)}.${input.substring(5, 8)}/${input.substring(8, 12)}-${input.substring(12)}`;
+    } else if (input.length > 8) {
+      input = `${input.substring(0, 2)}.${input.substring(2, 5)}.${input.substring(5, 8)}/${input.substring(8)}`;
+    } else if (input.length > 5) {
+      input = `${input.substring(0, 2)}.${input.substring(2, 5)}.${input.substring(5)}`;
+    } else if (input.length > 2) {
+      input = `${input.substring(0, 2)}.${input.substring(2)}`;
+    }
+
+    this.registerForm.get('organizacaoCnpj')?.setValue(input, { emitEvent: false });
+  }
 }
