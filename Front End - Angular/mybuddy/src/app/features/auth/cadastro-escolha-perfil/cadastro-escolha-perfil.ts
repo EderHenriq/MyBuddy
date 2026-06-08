@@ -3,14 +3,15 @@ import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angula
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 
-type TipoPerfil = 'ADOTANTE' | 'ONG' | 'PETSHOP';
+type TipoPerfil = 'ADOTANTE' | 'ORGANIZACAO';
+type TipoOrg = 'ONG' | 'PETSHOP' | 'VETERINARIO';
 
 interface CadastroPayload {
   nome: string;
   email: string;
   telefone: string;
   password: string;
-  roles: TipoPerfil[];
+  roles: (TipoPerfil | TipoOrg)[];
   organizacaoCnpj?: string;
   organizacaoNomeFantasia?: string;
   organizacaoEmailContato?: string;
@@ -32,6 +33,7 @@ export class CadastroEscolhaPerfil {
 
   //Seção de estados de controle
   selectedPerfil = signal<TipoPerfil>('ADOTANTE');
+  selectedOrgSubtype = signal<TipoOrg>('ONG');
   currentStep = signal<number>(1);
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
@@ -57,8 +59,13 @@ export class CadastroEscolhaPerfil {
   //Seção de opções de perfis
   readonly profileOptions: { value: TipoPerfil; label: string; helper: string; icon: string }[] = [
     { value: 'ADOTANTE', label: 'Adotante', helper: 'Quero adotar e cuidar de um pet.', icon: 'pets' },
-    { value: 'ONG', label: 'ONG', helper: 'Represento uma instituição.', icon: 'volunteer_activism' },
-    { value: 'PETSHOP', label: 'Petshop', helper: 'Ofereço produtos ou serviços.', icon: 'storefront' },
+    { value: 'ORGANIZACAO', label: 'Organização', helper: 'Represento uma ONG, Veterinário ou um Petshop.', icon: 'store' },
+  ];
+
+  readonly orgSubtypeOptions: { value: TipoOrg; label: string; helper: string; icon: string }[] = [
+    { value: 'ONG', label: 'Ong', helper: 'Instituição sem fins lucrativos', icon: 'volunteer_activism' },
+    { value: 'PETSHOP', label: 'Petshop', helper: 'Comércio de produtos e serviços para pets', icon: 'storefront' },
+    { value: 'VETERINARIO', label: 'Veterinário', helper: 'Centro médico para animais domésticos', icon: 'medical_services' },
   ];
 
   //Seção de formulário de cadastro
@@ -101,7 +108,12 @@ export class CadastroEscolhaPerfil {
     const step = this.currentStep();
     const form = this.registerForm;
 
-    if (step === 1) return !!this.selectedPerfil();
+    if (step === 1) {
+      if (this.selectedPerfil() === 'ORGANIZACAO') {
+        return !!this.selectedOrgSubtype();
+      }
+      return !!this.selectedPerfil();
+    }
 
     if (step === 2) {
       return form.get('nome')!.valid && form.get('email')!.valid && form.get('telefone')!.valid;
@@ -127,28 +139,32 @@ export class CadastroEscolhaPerfil {
     this.updateProfileValidators();
   }
 
+  selectOrgSubtype(subtype: TipoOrg): void {
+    this.selectedOrgSubtype.set(subtype);
+  }
+
   isBusinessProfile(): boolean {
-    return this.selectedPerfil() === 'ONG' || this.selectedPerfil() === 'PETSHOP';
+    return this.selectedPerfil() === 'ORGANIZACAO';
   }
 
   organizationLabel(): string {
-    return this.selectedPerfil() === 'ONG' ? 'Nome fantasia da ONG' : 'Nome fantasia do Petshop';
+    return this.selectedOrgSubtype() === 'ONG' ? 'Nome fantasia da ONG' : 'Nome fantasia do Petshop';
   }
 
   cnpjLabel(): string {
-    return this.selectedPerfil() === 'ONG' ? 'CNPJ da ONG' : 'CNPJ do Petshop';
+    return this.selectedOrgSubtype() === 'ONG' ? 'CNPJ da ONG' : 'CNPJ do Petshop';
   }
 
   emailContatoLabel(): string {
-    return this.selectedPerfil() === 'ONG' ? 'E-mail de contato da ONG' : 'E-mail de contato do Petshop';
+    return this.selectedOrgSubtype() === 'ONG' ? 'E-mail de contato da ONG' : 'E-mail de contato do Petshop';
   }
 
   enderecoLabel(): string {
-    return this.selectedPerfil() === 'ONG' ? 'Endereço da ONG' : 'Endereço do Petshop';
+    return this.selectedOrgSubtype() === 'ONG' ? 'Endereço da ONG' : 'Endereço do Petshop';
   }
 
   descricaoPlaceholder(): string {
-    return this.selectedPerfil() === 'ONG'
+    return this.selectedOrgSubtype() === 'ONG'
       ? 'Conte-nos um pouco sobre o propósito e a história de sua ONG...'
       : 'Conte-nos um pouco sobre seus produtos, serviços e especialidades...';
   }
@@ -209,14 +225,15 @@ export class CadastroEscolhaPerfil {
     this.successMessage.set(null);
 
     const values = this.registerForm.value;
-    const profile = this.selectedPerfil();
+
+    const roles: (TipoPerfil | TipoOrg)[] = this.isBusinessProfile() ? [this.selectedOrgSubtype()] : ['ADOTANTE'];
 
     const payload: CadastroPayload = {
       nome: values.nome,
       email: values.email,
       telefone: values.telefone,
       password: values.password,
-      roles: [profile],
+      roles,
     };
 
     if (this.isBusinessProfile()) {
