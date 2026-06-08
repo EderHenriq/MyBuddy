@@ -24,16 +24,6 @@
 
   <section class="signup-form-side" aria-labelledby="signup-heading">
     <div class="signup-card">
-      <header class="card-header">
-        <img src="/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="card-icon" aria-hidden="true" />
-        <h1 id="signup-heading" class="form-title">
-          Cadastre-se no
-          <span class="highlight">MyBuddy</span>
-        </h1>
-
-        <p class="form-subtitle">{{ stepSubtitle() }}</p>
-      </header>
-
       <nav class="step-indicator" aria-label="Progresso do cadastro">
         @for (step of totalSteps(); track step) {
           <span
@@ -44,6 +34,25 @@
           ></span>
         }
       </nav>
+
+      <header class="card-header">
+        @if (currentStep() === 1) {
+          <img src="/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="card-icon" aria-hidden="true" />
+        }
+
+        @if (currentStep() > 1) {
+          <button type="button" class="btn-header back" (click)="prevStep()" aria-label="Voltar ao espaço anterior">
+            <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
+          </button>
+        }
+
+        <h1 id="signup-heading" class="form-title">
+          Cadastre-se no
+          <span class="highlight">MyBuddy</span>
+        </h1>
+
+        <p class="form-subtitle">{{ stepSubtitle() }}</p>
+      </header>
 
       @if (errorMessage()) {
         <div class="alert alert-error" role="alert" aria-live="polite">
@@ -75,6 +84,7 @@
                   (click)="selectProfile(option.value)"
                 >
                   <span class="material-icons option-icon" aria-hidden="true">{{ option.icon }}</span>
+
                   <div class="option-text">
                     <span class="option-title">{{ option.label }}</span>
                     <span class="option-helper">{{ option.helper }}</span>
@@ -82,6 +92,29 @@
                 </button>
               }
             </div>
+
+            @if (selectedPerfil() === 'ORGANIZACAO') {
+              <div class="org-subtype-selector" role="radiogroup" aria-label="Tipo de organização">
+                <p class="org-subtype-label">Que tipo de organização?</p>
+
+                @for (sub of orgSubtypeOptions; track sub.value) {
+                  <button
+                    type="button"
+                    class="subtype-option"
+                    role="radio"
+                    [class.active]="selectedOrgSubtype() === sub.value"
+                    [attr.aria-checked]="selectedOrgSubtype() === sub.value"
+                    (click)="selectOrgSubtype(sub.value)"
+                  >
+                    <span class="material-icons option-icon" aria-hidden="true">{{ sub.icon }}</span>
+                    <div class="option-text">
+                      <span class="option-title">{{ sub.label }}</span>
+                      <span class="option-helper">{{ sub.helper }}</span>
+                    </div>
+                  </button>
+                }
+              </div>
+            }
           </fieldset>
         }
 
@@ -287,12 +320,6 @@
         }
 
         <div class="step-actions">
-          @if (currentStep() > 1) {
-            <button type="button" class="btn btn-back" (click)="prevStep()">
-              <span class="material-icons" aria-hidden="true">arrow_back</span>
-            </button>
-          }
-
           @if (currentStep() < lastStep()) {
             <button type="button" class="btn btn-next" (click)="nextStep()" [disabled]="!isCurrentStepValid()">
               Continuar
