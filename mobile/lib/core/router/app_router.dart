@@ -8,6 +8,7 @@ import 'package:mybuddy_app/features/auth/presentation/pages/splash_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/onboarding_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/cadastro_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/pets_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/pet_detail_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/favoritos_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/perfil_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/marketplace_page.dart';
@@ -95,6 +96,16 @@ class AppRouter {
               path: '/pets',
               name: 'pets',
               pageBuilder: (context, state) => _fadeRoute(state, const PetsPage()),
+              routes: [
+                GoRoute(
+                  path: ':id',
+                  name: 'pet-detail',
+                  pageBuilder: (context, state) {
+                    final id = state.pathParameters['id'] ?? '1';
+                    return _slideRoute(state, PetDetailPage(petId: id));
+                  },
+                ),
+              ],
             ),
             GoRoute(
               path: '/favoritos',
