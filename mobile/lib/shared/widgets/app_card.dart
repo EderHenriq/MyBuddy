@@ -10,6 +10,7 @@ class AppCard extends StatefulWidget {
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry? margin;
   final BorderSide? border;
+  final bool showShadow;
 
   const AppCard({
     super.key,
@@ -21,6 +22,7 @@ class AppCard extends StatefulWidget {
     this.padding = const EdgeInsets.all(16.0),
     this.margin,
     this.border,
+    this.showShadow = true,
   });
 
   @override
@@ -66,24 +68,30 @@ class _AppCardState extends State<AppCard> {
       );
     }
 
-    Widget result = Container(
+    final isPressed = _scale < 1.0;
+
+    Widget result = AnimatedContainer(
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeOut,
       margin: widget.margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadius),
-        boxShadow: [
-          BoxShadow(
-            color: shadowColor,
-            blurRadius: 6,
-            spreadRadius: -1,
-            offset: const Offset(0, 4), // --shadow-md do Angular
-          ),
-          BoxShadow(
-            color: secondaryShadowColor,
-            blurRadius: 4,
-            spreadRadius: -1,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: widget.showShadow
+            ? [
+                BoxShadow(
+                  color: shadowColor,
+                  blurRadius: isPressed ? 3 : 6,
+                  spreadRadius: isPressed ? -1.5 : -1,
+                  offset: isPressed ? const Offset(0, 2) : const Offset(0, 4), // --shadow-md do Angular
+                ),
+                BoxShadow(
+                  color: secondaryShadowColor,
+                  blurRadius: isPressed ? 2 : 4,
+                  spreadRadius: isPressed ? -1.5 : -1,
+                  offset: isPressed ? const Offset(0, 1) : const Offset(0, 2),
+                ),
+              ]
+            : null,
       ),
       child: Material(
         color: Colors.transparent,
