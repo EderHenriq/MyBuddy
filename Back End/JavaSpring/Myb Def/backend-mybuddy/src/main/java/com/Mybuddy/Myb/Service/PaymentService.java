@@ -68,6 +68,8 @@ public class PaymentService {
         Payment payment = new Payment();
         payment.setUsuarioId(usuario.getId());
         payment.setPetId(pet != null ? pet.getId() : null);
+        payment.setCampanhaId(request.campanhaId());
+        payment.setOrganizacaoId(request.organizacaoId());
         payment.setAmount(request.amount());
         payment.setMpPreferenceId(preference.getId());
 
