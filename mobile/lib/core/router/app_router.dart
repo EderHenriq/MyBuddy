@@ -6,6 +6,7 @@ import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/login_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/splash_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/onboarding_page.dart';
+import 'package:mybuddy_app/features/auth/presentation/pages/cadastro_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/pets_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/favoritos_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/perfil_page.dart';
@@ -51,15 +52,16 @@ class AppRouter {
         final isSplash = location == '/splash';
         final isOnboarding = location == '/onboarding';
         final isLogin = location == '/login';
+        final isCadastro = location == '/cadastro';
 
         if (!isAuthenticated) {
-          // Se não estiver logado, permite acessar apenas splash, onboarding e login
-          if (isSplash || isOnboarding || isLogin) return null;
+          // Se não estiver logado, permite acessar apenas splash, onboarding, login e cadastro
+          if (isSplash || isOnboarding || isLogin || isCadastro) return null;
           return '/splash';
         }
 
         // Se estiver autenticado e tentar ir para as telas de auth, manda para o feed
-        if (isAuthenticated && (isSplash || isOnboarding || isLogin)) {
+        if (isAuthenticated && (isSplash || isOnboarding || isLogin || isCadastro)) {
           return '/pets';
         }
 
@@ -80,6 +82,11 @@ class AppRouter {
           path: '/login',
           name: 'login',
           pageBuilder: (context, state) => _slideRoute(state, const LoginPage()),
+        ),
+        GoRoute(
+          path: '/cadastro',
+          name: 'cadastro',
+          pageBuilder: (context, state) => _slideRoute(state, const CadastroPage()),
         ),
         ShellRoute(
           builder: (context, state, child) => MainScaffold(child: child),
