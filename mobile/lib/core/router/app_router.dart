@@ -7,6 +7,8 @@ import 'package:mybuddy_app/features/auth/presentation/pages/login_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/splash_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/onboarding_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/pets_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/favoritos_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/perfil_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/marketplace_page.dart';
 import 'package:mybuddy_app/features/adocao/presentation/pages/adocao_page.dart';
 import 'package:mybuddy_app/shared/widgets/main_scaffold.dart';
@@ -62,6 +64,11 @@ class AppRouter {
               builder: (context, state) => const PetsPage(),
             ),
             GoRoute(
+              path: '/favoritos',
+              name: 'favoritos',
+              builder: (context, state) => const FavoritosPage(),
+            ),
+            GoRoute(
               path: '/marketplace',
               name: 'marketplace',
               builder: (context, state) => const MarketplacePage(),
@@ -70,6 +77,11 @@ class AppRouter {
               path: '/adocao',
               name: 'adocao',
               builder: (context, state) => const AdocaoPage(),
+            ),
+            GoRoute(
+              path: '/perfil',
+              name: 'perfil',
+              builder: (context, state) => const PerfilPage(),
             ),
           ],
         ),
