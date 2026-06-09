@@ -11,6 +11,11 @@ import com.Mybuddy.Myb.Service.PaymentService;
 import com.Mybuddy.Myb.Util.MercadoPagoWebhookValidator;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
+import com.mercadopago.client.preapproval.PreapprovalClient;
+// import com.mercadopago.client.preapproval.PreapprovalRequest;
+import com.mercadopago.resources.preapproval.Preapproval;
+import com.Mybuddy.Myb.Repository.jpa.DonationSubscriptionRepository;
+import com.Mybuddy.Myb.Model.DonationSubscription;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +27,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import java.util.Map;
 
@@ -35,6 +43,7 @@ public class PaymentController {
     private final KeycloakUserSyncService keycloakUserSyncService;
     private final ApplicationEventPublisher eventPublisher;
     private final MercadoPagoWebhookValidator webhookValidator;
+    private final DonationSubscriptionRepository donationSubscriptionRepository;
 
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
@@ -59,6 +68,59 @@ public class PaymentController {
                 result.initPoint(),
                 saved.getCreatedAt(),
                 saved.getUpdatedAt()
+        ));
+    }
+
+    @PostMapping("/subscribe")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, String>> createSubscription(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody Map<String, Object> payload) throws MPException, MPApiException {
+        
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        BigDecimal amount = new BigDecimal(payload.get("amount").toString());
+        String frequency = (String) payload.get("frequency"); // monthly ou weekly
+        Long orgId = payload.get("organizacaoId") != null ? Long.valueOf(payload.get("organizacaoId").toString()) : null;
+
+        PreapprovalClient client = new PreapprovalClient();
+        
+        // Define as datas da recorrência
+        java.time.OffsetDateTime now = java.time.OffsetDateTime.now();
+        java.time.OffsetDateTime end = now.plusYears(1); // Assinatura com validade de 1 ano
+
+        com.mercadopago.client.preapproval.PreapprovalCreateRequest preapprovalRequest = 
+                com.mercadopago.client.preapproval.PreapprovalCreateRequest.builder()
+                .backUrl("http://localhost/checkout/confirmacao")
+                .reason(frequency.equalsIgnoreCase("monthly") ? "Assinatura Mensal - MyBuddy" : "Assinatura Semanal - MyBuddy")
+                .payerEmail(usuario.getEmail())
+                .autoRecurring(
+                        com.mercadopago.client.preapproval.PreApprovalAutoRecurringCreateRequest.builder()
+                                .frequency(1)
+                                .frequencyType(frequency.equalsIgnoreCase("monthly") ? "months" : "weeks")
+                                .transactionAmount(amount)
+                                .currencyId("BRL")
+                                .startDate(now)
+                                .endDate(end)
+                                .build()
+                )
+                .build();
+
+        Preapproval preapproval = client.create(preapprovalRequest);
+
+        // Salvar a assinatura pendente localmente
+        DonationSubscription sub = DonationSubscription.builder()
+                .mpPreapprovalId(preapproval.getId())
+                .usuarioId(usuario.getId())
+                .organizacaoId(orgId)
+                .amount(amount)
+                .frequency(frequency)
+                .status("pending")
+                .build();
+        donationSubscriptionRepository.save(sub);
+
+        return ResponseEntity.ok(Map.of(
+                "preapprovalId", preapproval.getId(),
+                "initPoint", preapproval.getSandboxInitPoint() != null ? preapproval.getSandboxInitPoint() : preapproval.getInitPoint()
         ));
     }
 
