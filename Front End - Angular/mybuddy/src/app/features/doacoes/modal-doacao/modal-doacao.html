@@ -1,1 +1,126 @@
-<p>modal-doacao works!</p>
+<div class="modal-backdrop" (click)="fechar()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+
+    <!-- Sucesso State -->
+    @if (sucesso()) {
+      <div class="modal-success">
+        <div class="success-icon">
+          <span class="material-icons">favorite</span>
+        </div>
+        <h2>Obrigado pela sua doação! 🐾</h2>
+        <p>Sua contribuição vai fazer a diferença na vida de muitos pets.</p>
+        <button class="btn-submit" (click)="fechar()">Fechar</button>
+      </div>
+    }
+
+    <!-- Normal Flow -->
+    @if (!sucesso()) {
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="modal-header-icon">
+          <span class="material-icons">favorite</span>
+        </div>
+        <div class="modal-header-text">
+          <h2>Doe para: {{ campanha ? campanha.titulo : 'MyBuddy' }}</h2>
+          @if (campanha?.localizacao) {
+            <p>{{ campanha?.organizacaoId ? 'ONG Parceira' : 'Geral' }} · {{ campanha?.localizacao }}</p>
+          } @else {
+            <p>Patinhas Unidas · São Paulo, SP</p>
+          }
+        </div>
+        <button class="btn-close-modal" (click)="fechar()" aria-label="Fechar">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Escolha o valor -->
+        <label class="section-label">Escolha o valor</label>
+        <div class="values-grid">
+          @for (val of valoresFixos; track val) {
+            <button
+              class="value-btn"
+              [class.active]="valorSelecionado() === val && !isValorCustom()"
+              (click)="selecionarValor(val)"
+            >
+              R$ {{ val }}
+            </button>
+          }
+        </div>
+
+        <div class="custom-value-container">
+          <span class="currency-prefix">R$</span>
+          <input
+            type="number"
+            placeholder="Outro valor"
+            [(ngModel)]="valorPersonalizado"
+            min="1"
+            step="0.01"
+            id="custom-donation-value"
+          />
+        </div>
+
+        <!-- Forma de pagamento -->
+        <label class="section-label">Forma de pagamento</label>
+        <div class="payment-methods">
+          <button
+            class="payment-btn"
+            [class.active]="formaPagamento() === 'pix'"
+            (click)="formaPagamento.set('pix')"
+          >
+            <span class="material-icons">grid_view</span>
+            Pix
+          </button>
+          <button
+            class="payment-btn"
+            [class.active]="formaPagamento() === 'cartao'"
+            (click)="formaPagamento.set('cartao')"
+          >
+            <span class="material-icons">credit_card</span>
+            Cartão
+          </button>
+          <button
+            class="payment-btn"
+            [class.active]="formaPagamento() === 'boleto'"
+            (click)="formaPagamento.set('boleto')"
+          >
+            <span class="material-icons">receipt</span>
+            Boleto
+          </button>
+        </div>
+
+        <!-- Erro -->
+        @if (error()) {
+          <div class="error-msg">
+            <span class="material-icons">error_outline</span>
+            {{ error() }}
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button
+          class="btn-submit"
+          [disabled]="loading()"
+          (click)="confirmarDoacao()"
+          id="confirm-donation-btn"
+        >
+          @if (!loading()) {
+            <span>Confirmar doação de R$ {{ getValorFinal() | number:'1.2-2' }}</span>
+          } @else {
+            <span class="loading-text">
+              <span class="spinner"></span>
+              Processando...
+            </span>
+          }
+        </button>
+        <p class="security-note">
+          <span class="material-icons">lock</span>
+          Transação segura · Recibo por e-mail
+        </p>
+      </div>
+    }
+
+  </div>
+</div>
