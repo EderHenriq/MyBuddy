@@ -5,6 +5,7 @@ import { AuthService } from '@core/services/auth.service';
 import { Footer } from '@shared/components/footer/footer';
 import { PetService } from '@core/services/pet.service';
 import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
+import { HeroSectionComponent } from '@shared/components/hero-section/hero-section.component';
 
 interface CartaoCategoria {
   rotulo: string;
@@ -53,7 +54,7 @@ interface CategoriaProduto {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, Footer, CardPetComponent],
+  imports: [RouterLink, Footer, CardPetComponent, HeroSectionComponent],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

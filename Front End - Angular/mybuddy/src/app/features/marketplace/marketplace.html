@@ -1,11 +1,10 @@
 <main class="marketplace-page">
-  <section class="marketplace-hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <h1>Tudo o que seu pet precisa, entregue em minutos.</h1>
-      <p class="hero-subtitle">Rações, brinquedos, medicamentos e muito mais.</p>
-    </div>
-  </section>
+  <app-hero-section
+    [title]="'Tudo para o seu pet,'"
+    [highlightedText]="'entregue em minutos.'"
+    [subtitle]="'Rações, brinquedos, medicamentos e muito mais'"
+    [backgroundImageUrl]="'https://images.unsplash.com/photo-1516734212829-9e86c07513eb?auto=format&fit=crop&q=80&w=2000'"
+  ></app-hero-section>
 
   <div class="marketplace-content">
     <section class="search-panel" aria-label="Busca e endereço">

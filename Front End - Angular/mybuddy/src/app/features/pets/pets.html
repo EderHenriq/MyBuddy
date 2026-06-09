@@ -1,101 +1,111 @@
 <main class="adoption-page" appInfiniteScroll (scrolled)="aoCarregarMais()">
-  <section class="search-panel" aria-label="Busca e filtros principais" [formGroup]="formularioFiltro">
-    <label class="search-field">
-      <input type="search" placeholder="Buscar pets" formControlName="pesquisa" />
-      <span class="material-icons">search</span>
-    </label>
+  <app-hero-section
+    [title]="'Encontre seu novo'"
+    [highlightedText]="'melhor amigo.'"
+    [subtitle]="'Milhares de pets esperando por um lar amoroso'"
+    [backgroundImageUrl]="'https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&q=80&w=1800'"
+  ></app-hero-section>
 
-    <span class="panel-divider" aria-hidden="true"></span>
+  <div class="adoption-shell">
+    <section class="search-panel" aria-label="Busca e filtros principais" [formGroup]="formularioFiltro">
+      <label class="search-field">
+        <input type="search" placeholder="Buscar pets" formControlName="pesquisa" />
+        <span class="material-icons">search</span>
+      </label>
 
-    <div class="quick-filter-list">
-      <button type="button" class="quick-filter">
-        <span>Favoritos</span>
-        <i class="fa-solid fa-heart"></i>
-      </button>
-      <button type="button" class="quick-filter">
-        <span>Localização</span>
-        <span class="material-icons">keyboard_arrow_down</span>
-      </button>
-      <button type="button" class="quick-filter">
-        <span>Ordenar</span>
-        <span class="material-icons">list</span>
-      </button>
-      <button type="button" class="quick-filter">
-        <span>ONG/Protetor</span>
-        <span class="material-icons">person_search</span>
-      </button>
-    </div>
-  </section>
+      <span class="panel-divider" aria-hidden="true"></span>
 
-  <section class="adoption-content">
-    <aside class="filters-card" aria-label="Filtros de pets">
-      @for (grupo of gruposFiltro; track grupo.titulo; let last = $last) {
-        <div class="filter-group">
-          <h2>{{ grupo.titulo }}</h2>
-          <div class="filter-options" [formGroup]="formularioFiltro">
-            @for (opcao of grupo.opcoes; track opcao) {
-              <label class="filter-option">
-                <input type="checkbox" [formControlName]="opcao" />
-                <span>{{ opcao }}</span>
-              </label>
+      <div class="quick-filter-list">
+        <button type="button" class="quick-filter">
+          <span>Favoritos</span>
+          <i class="fa-solid fa-heart"></i>
+        </button>
+        <button type="button" class="quick-filter">
+          <span>Localização</span>
+          <span class="material-icons">keyboard_arrow_down</span>
+        </button>
+        <button type="button" class="quick-filter">
+          <span>Ordenar</span>
+          <span class="material-icons">list</span>
+        </button>
+        <button type="button" class="quick-filter">
+          <span>ONG/Protetor</span>
+          <span class="material-icons">person_search</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="adoption-content">
+      <aside class="filters-card" aria-label="Filtros de pets">
+        @for (grupo of gruposFiltro; track grupo.titulo; let last = $last) {
+          <div class="filter-group">
+            <h2>{{ grupo.titulo }}</h2>
+            <div class="filter-options" [formGroup]="formularioFiltro">
+              @for (opcao of grupo.opcoes; track opcao) {
+                <label class="filter-option">
+                  <input type="checkbox" [formControlName]="opcao" />
+                  <span>{{ opcao }}</span>
+                </label>
+              }
+            </div>
+          </div>
+          @if (!last) {
+            <hr />
+          }
+        }
+      </aside>
+
+      <div class="pets-area">
+        @if (carregando()) {
+          <div
+            class="loading-state"
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              padding: 4rem;
+              color: var(--text-secondary, #666);
+              width: 100%;
+            "
+          >
+            <i class="fas fa-circle-notch fa-spin fa-2x" style="margin-bottom: 1rem; color: var(--primary-color, #ff6b6b)"></i>
+            <p>Buscando os melhores buddies para você...</p>
+          </div>
+        } @else {
+          <div class="pets-grid">
+            @for (pet of animais(); track pet.nome) {
+              <app-card-pet
+                [urlImagem]="
+                  pet.fotosUrls && pet.fotosUrls.length > 0
+                    ? pet.fotosUrls[0].startsWith('http')
+                      ? pet.fotosUrls[0]
+                      : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]
+                    : '/assets/logo/logo-provisoria.png'
+                "
+                [nome]="pet.nome || 'Sem Nome'"
+                [id]="pet.nome || ''"
+                [idade]="pet.idade || 0"
+                [raca]="pet.raca || 'Não informada'"
+                [sexo]="pet.sexo || 'Não informado'"
+                [vacinado]="pet.vacinado"
+                [castrado]="pet.castrado"
+                [porte]="pet.porte"
+                [cor]="pet.cor"
+                [pelagem]="pet.pelagem"
+                [favorito]="pet.favorito"
+                (cliqueFavorito)="alternarFavorito(pet)"
+              ></app-card-pet>
             }
           </div>
-        </div>
-        @if (!last) {
-          <hr />
         }
-      }
-    </aside>
 
-    <div class="pets-area">
-      @if (carregando()) {
-        <div
-          class="loading-state"
-          style="
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem;
-            color: var(--text-secondary, #666);
-            width: 100%;
-          "
-        >
-          <i class="fas fa-circle-notch fa-spin fa-2x" style="margin-bottom: 1rem; color: var(--primary-color, #ff6b6b)"></i>
-          <p>Buscando os melhores buddies para você...</p>
+        <div class="infinite-scroll-loader">
+          <p>Rode para baixo para carregar mais pets...</p>
         </div>
-      } @else {
-        <div class="pets-grid">
-          @for (pet of animais(); track pet.nome) {
-            <app-card-pet
-              [urlImagem]="
-                pet.fotosUrls && pet.fotosUrls.length > 0
-                  ? pet.fotosUrls[0].startsWith('http')
-                    ? pet.fotosUrls[0]
-                    : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]
-                  : '/assets/logo/logo-provisoria.png'
-              "
-              [nome]="pet.nome || 'Sem Nome'"
-              [idade]="pet.idade || 0"
-              [raca]="pet.raca || 'Não informada'"
-              [sexo]="pet.sexo || 'Não informado'"
-              [vacinado]="pet.vacinado"
-              [castrado]="pet.castrado"
-              [porte]="pet.porte"
-              [cor]="pet.cor"
-              [pelagem]="pet.pelagem"
-              [favorito]="pet.favorito"
-              (cliqueFavorito)="alternarFavorito(pet)"
-            ></app-card-pet>
-          }
-        </div>
-      }
-
-      <div class="infinite-scroll-loader">
-        <p>Rode para baixo para carregar mais pets...</p>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </main>
 
 <app-footer></app-footer>
