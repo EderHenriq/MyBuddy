@@ -1,103 +1,29 @@
 <main class="donations-page">
 
-  <!-- ════════════════════════════════════════════
-       HERO SECTION  — dark background + stats
-  ════════════════════════════════════════════ -->
-  <section class="hero-donation">
-    <div class="hero-donation-overlay"></div>
-    <div class="hero-donation-content">
-      <div class="hero-donation-left">
-        <span class="hero-tag">
-          <span class="material-icons">favorite</span>
-          Faça a diferença hoje
-        </span>
+  <!-- ─── HERO (padrão do site) ─── -->
+  <app-hero-section
+    [title]="'Apoie pets e'"
+    [highlightedText]="'ONGs que precisam de você.'"
+    [subtitle]="'Sua doação alimenta, cuida e salva vidas. Escolha uma causa e comece agora.'"
+    [backgroundImageUrl]="'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=1800'"
+  ></app-hero-section>
 
-        <h1>
-          Doe para pets e <span class="highlight-text">ONGs</span><br>
-          que precisam de você
-        </h1>
+  <!-- ─── SHELL ─── -->
+  <div class="donations-shell">
 
-        <p class="hero-subtitle">
-          Sua doação alimenta, cuida e salva vidas.<br>
-          Escolha uma causa e comece agora.
-        </p>
-
-        <div class="hero-buttons">
-          <button class="btn-hero-primary" id="hero-quero-doar-btn" (click)="abrirModalDoacao()">
-            <span class="material-icons">favorite</span>
-            Quero Doar
-          </button>
-          <button class="btn-hero-secondary" (click)="scrollToCampanhas()">
-            Ver ONGs parceiras
-          </button>
-        </div>
-      </div>
-
-      <div class="hero-donation-image">
-        <img
-          src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=800"
-          alt="Pets que precisam de ajuda"
-          loading="eager"
-        />
-      </div>
-    </div>
-
-    <!-- Stats bar -->
-    <div class="hero-stats">
-      <div class="stat-item">
-        @if (carregandoStats()) {
-          <span class="stat-skeleton"></span>
-        } @else {
-          <strong>{{ stats().petsSalvos | number }}</strong>
-        }
-        <span>pets salvos</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        @if (carregandoStats()) {
-          <span class="stat-skeleton"></span>
-        } @else {
-          <strong>{{ stats().ongsParceiras }}</strong>
-        }
-        <span>ONGs parceiras</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        @if (carregandoStats()) {
-          <span class="stat-skeleton"></span>
-        } @else {
-          <strong>{{ formatarValor(stats().totalArrecadado) }}</strong>
-        }
-        <span>arrecadados</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        @if (carregandoStats()) {
-          <span class="stat-skeleton"></span>
-        } @else {
-          <strong>{{ stats().doadoresAtivos | number }}</strong>
-        }
-        <span>doadores ativos</span>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ════════════════════════════════════════════
-       FILTER / SEARCH BAR
-  ════════════════════════════════════════════ -->
-  <section class="filter-section" id="filter-section">
-    <div class="filter-inner">
-      <div class="search-bar">
-        <span class="material-icons search-icon">search</span>
+    <!-- Search / Filter bar (mesma posição flutuante do site) -->
+    <section class="search-panel">
+      <label class="search-field">
+        <span class="material-icons">search</span>
         <input
-          type="text"
+          type="search"
           placeholder="O que você procura?"
           [(ngModel)]="searchText"
           id="donation-search-input"
-          aria-label="Buscar campanhas"
         />
-      </div>
+      </label>
+
+      <span class="panel-divider" aria-hidden="true"></span>
 
       <div class="chips-row">
         @for (cat of categorias; track cat) {
@@ -105,58 +31,45 @@
             class="chip-btn"
             [class.active]="categoriaSelecionada() === cat"
             (click)="selecionarCategoria(cat)"
-            [id]="'chip-' + cat.toLowerCase().replace(' ', '-')"
-          >
-            {{ cat }}
-          </button>
+          >{{ cat }}</button>
         }
         <button class="chip-btn chip-filter">
           <span class="material-icons">tune</span>
           Filtros
         </button>
       </div>
-    </div>
-  </section>
+    </section>
 
+    <!-- Stats bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <strong>{{ carregandoStats() ? '—' : (stats().petsSalvos | number) }}</strong>
+        <span>pets salvos</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <strong>{{ carregandoStats() ? '—' : stats().ongsParceiras }}</strong>
+        <span>ONGs parceiras</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <strong>{{ carregandoStats() ? '—' : formatarValor(stats().totalArrecadado) }}</strong>
+        <span>arrecadados</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <strong>{{ carregandoStats() ? '—' : (stats().doadoresAtivos | number) }}</strong>
+        <span>doadores ativos</span>
+      </div>
 
-  <!-- ════════════════════════════════════════════
-       DOADOR RECORRENTE BANNER
-  ════════════════════════════════════════════ -->
-  <section class="content-shell">
-    <div class="recurring-banner">
-      <div class="recurring-text">
-        <h2>Torne-se um doador recorrente</h2>
-        <p>
-          Configure uma doação automática mensal ou semanal e ajude ONGs parceiras
-          de forma contínua. Você pode cancelar a qualquer momento.
-        </p>
-      </div>
-      <div class="recurring-actions">
-        <button
-          class="btn-recurring"
-          [class.active]="frequenciaRecorrente() === 'mensal'"
-          (click)="frequenciaRecorrente.set('mensal'); abrirModalDoacao()"
-          id="btn-mensal"
-        >Mensal</button>
-        <button
-          class="btn-recurring"
-          [class.active]="frequenciaRecorrente() === 'semanal'"
-          (click)="frequenciaRecorrente.set('semanal'); abrirModalDoacao()"
-          id="btn-semanal"
-        >Semanal</button>
-        <button
-          class="btn-recurring"
-          [class.active]="frequenciaRecorrente() === 'unica'"
-          (click)="frequenciaRecorrente.set('unica'); abrirModalDoacao()"
-          id="btn-unica-vez"
-        >Única vez</button>
-      </div>
+      <button class="btn-doar-hero" id="hero-quero-doar-btn" (click)="abrirModalDoacao()">
+        <span class="material-icons">favorite</span>
+        Quero Doar
+      </button>
     </div>
 
 
-    <!-- ════════════════════════════════════════════
-         CAMPANHAS EM DESTAQUE
-    ════════════════════════════════════════════ -->
+    <!-- ─── CAMPANHAS EM DESTAQUE ─── -->
     <div class="section-header">
       <h2 class="section-title">Campanhas em destaque</h2>
       <a class="ver-todas-link" href="#">Ver todas →</a>
@@ -193,7 +106,11 @@
                   <span class="material-icons">pets</span>
                 </div>
               }
-              <span class="card-badge" [class.badge-urgente]="c.categoria === 'Urgente'" [class.badge-concluido]="isMetaAtingida(c)">
+              <span
+                class="card-badge"
+                [class.badge-urgente]="c.categoria === 'Urgente'"
+                [class.badge-concluido]="isMetaAtingida(c)"
+              >
                 {{ isMetaAtingida(c) ? 'META ATINGIDA' : c.categoria.toUpperCase() }}
               </span>
             </div>
@@ -204,20 +121,17 @@
               <div class="card-meta">
                 @if (c.localizacao) {
                   <span class="meta-tag">
-                    <span class="material-icons">place</span>
-                    {{ c.localizacao }}
+                    <span class="material-icons">place</span>{{ c.localizacao }}
                   </span>
                 }
                 @if (c.diasRestantes !== undefined && c.diasRestantes > 0) {
                   <span class="meta-tag">
-                    <span class="material-icons">schedule</span>
-                    {{ c.diasRestantes }} dias restantes
+                    <span class="material-icons">schedule</span>{{ c.diasRestantes }} dias restantes
                   </span>
                 }
                 @if (c.totalDoadores) {
                   <span class="meta-tag">
-                    <span class="material-icons">group</span>
-                    {{ c.totalDoadores }} doadores
+                    <span class="material-icons">group</span>{{ c.totalDoadores }} doadores
                   </span>
                 }
               </div>
@@ -249,9 +163,7 @@
                     class="btn-card-donate"
                     (click)="abrirModalDoacao(c)"
                     [id]="'btn-doar-' + c.id"
-                  >
-                    Doar agora
-                  </button>
+                  >Doar agora</button>
                 }
                 <button class="btn-icon" title="Salvar campanha">
                   <span class="material-icons">favorite_border</span>
@@ -267,9 +179,7 @@
     }
 
 
-    <!-- ════════════════════════════════════════════
-         ONGs PARCEIRAS
-    ════════════════════════════════════════════ -->
+    <!-- ─── ONGs PARCEIRAS ─── -->
     <div class="section-header" style="margin-top: 3rem;">
       <h2 class="section-title">ONGs parceiras que precisam de apoio</h2>
       <a class="ver-todas-link" href="#">Ver todas →</a>
@@ -288,10 +198,7 @@
             </div>
             <div class="ong-info">
               <h3>{{ ong.nome }}</h3>
-              <p>
-                <span class="material-icons">place</span>
-                {{ ong.localizacao }} · {{ ong.totalAnimais }} animais
-              </p>
+              <p><span class="material-icons">place</span>{{ ong.localizacao }} · {{ ong.totalAnimais }} animais</p>
             </div>
           </div>
           <div class="ong-divider"></div>
@@ -301,22 +208,49 @@
               <span class="ong-tag">{{ tag }}</span>
             }
           </div>
-          <button
-            class="btn-apoiar-ong"
-            (click)="abrirModalDoacao()"
-            [id]="'btn-apoiar-ong-' + ong.id"
-          >
+          <button class="btn-apoiar-ong" (click)="abrirModalDoacao()" [id]="'btn-apoiar-ong-' + ong.id">
             Apoiar esta ONG
           </button>
         </div>
       }
     </div>
 
-  </section><!-- /content-shell -->
+
+    <!-- ─── DOADOR RECORRENTE (final da página) ─── -->
+    <div class="recurring-banner">
+      <div class="recurring-text">
+        <h2>Torne-se um doador recorrente</h2>
+        <p>
+          Configure uma doação automática mensal ou semanal e ajude ONGs parceiras
+          de forma contínua. Você pode cancelar a qualquer momento.
+        </p>
+      </div>
+      <div class="recurring-actions">
+        <button
+          class="btn-recurring"
+          [class.active]="frequenciaRecorrente() === 'mensal'"
+          (click)="frequenciaRecorrente.set('mensal'); abrirModalDoacao()"
+          id="btn-mensal"
+        >Mensal</button>
+        <button
+          class="btn-recurring"
+          [class.active]="frequenciaRecorrente() === 'semanal'"
+          (click)="frequenciaRecorrente.set('semanal'); abrirModalDoacao()"
+          id="btn-semanal"
+        >Semanal</button>
+        <button
+          class="btn-recurring"
+          [class.active]="frequenciaRecorrente() === 'unica'"
+          (click)="frequenciaRecorrente.set('unica'); abrirModalDoacao()"
+          id="btn-unica-vez"
+        >Única vez</button>
+      </div>
+    </div>
+
+  </div><!-- /donations-shell -->
 
 </main>
 
-<!-- Footer -->
 <app-footer></app-footer>
 
 <!-- Modal de Doação -->

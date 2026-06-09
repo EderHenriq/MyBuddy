@@ -7,13 +7,14 @@ import {
   DonationStats,
   OngParceira,
 } from '../../../core/services/donation.service';
+import { HeroSectionComponent } from '../../../shared/components/hero-section/hero-section.component';
 import { Footer } from '../../../shared/components/footer/footer';
 import { ModalDoacao } from '../modal-doacao/modal-doacao';
 
 @Component({
   selector: 'app-pagina-institucional',
   standalone: true,
-  imports: [CommonModule, FormsModule, Footer, ModalDoacao],
+  imports: [CommonModule, FormsModule, HeroSectionComponent, Footer, ModalDoacao],
   templateUrl: './pagina-institucional.html',
   styleUrl: './pagina-institucional.scss',
 })
