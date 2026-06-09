@@ -20,6 +20,9 @@ void main() {
 
     // Verifica que a tela de login (ou a primeira tela) é carregada
     expect(find.byType(MyBuddyApp), findsOneWidget);
+
+    // Aguarda o timer da SplashPage terminar para não deixar timers pendentes
+    await tester.pump(const Duration(seconds: 3));
   });
 }
 
