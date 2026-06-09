@@ -6,6 +6,7 @@ import 'package:mybuddy_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:mybuddy_app/shared/widgets/app_button.dart';
 import 'package:mybuddy_app/shared/widgets/app_input.dart';
+import 'package:mybuddy_app/shared/theme/app_colors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -115,10 +116,63 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 32),
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
-                      return AppButton(
-                        text: 'Entrar',
-                        isLoading: state is AuthLoading,
-                        onPressed: _onLogin,
+                      final isDark = Theme.of(context).brightness == Brightness.dark;
+                      return Column(
+                        children: [
+                          AppButton(
+                            text: 'Entrar',
+                            isLoading: state is AuthLoading,
+                            onPressed: _onLogin,
+                          ),
+                          const SizedBox(height: 24),
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: isDark ? AppColors.darkBorder : AppColors.border)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  'ou continue com',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: isDark ? AppColors.darkTextSecondary : AppColors.textLight,
+                                      ),
+                                ),
+                              ),
+                              Expanded(child: Divider(color: isDark ? AppColors.darkBorder : AppColors.border)),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          AppButton(
+                            text: 'Entrar com Keycloak',
+                            type: AppButtonType.outline,
+                            isLoading: state is AuthLoading,
+                            icon: Icons.vpn_key_outlined,
+                            onPressed: () {
+                              context.read<AuthBloc>().add(LoginWithKeycloakRequested());
+                            },
+                          ),
+                          const SizedBox(height: 32),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Não tem uma conta? ',
+                                style: TextStyle(
+                                  color: isDark ? AppColors.darkTextSecondary : AppColors.textLight,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () => context.go('/cadastro'),
+                                child: const Text(
+                                  'Cadastre-se',
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       );
                     },
                   ),
