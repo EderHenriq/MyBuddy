@@ -107,7 +107,7 @@
   @include flex-column;
   width: 100%;
   max-width: 480px;
-  height: 650px;
+  min-height: 450px;
   gap: var(--spacing-lg);
   background: #f5f5f5;
   border-radius: var(--radius-xxl);
@@ -230,7 +230,8 @@
   gap: var(--spacing-xs);
 
   &.has-error {
-    input, textarea {
+    input,
+    textarea {
       border-color: #e53935 !important;
     }
   }
@@ -255,7 +256,7 @@
     padding: 12px var(--spacing-sm);
     font-family: var(--font-family-primary);
     font-size: var(--font-size-md);
-    font-weight: var(--weight-regular);
+    font-weight: var(--font-weight-regular);
     color: var(--text-color);
     background: var(--surface-card);
     border: 1px solid var(--border-color);
@@ -286,34 +287,34 @@
     padding-right: var(--spacing-sm);
     line-height: var(--line-height-md);
   }
+}
 
-  .password-toggle {
-    position: absolute;
-    right: var(--spacing-sm);
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    @include flex-center;
-    width: 24px;
-    height: 24px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: var(--text-color);
-    padding: 0;
+.password-toggle {
+  position: absolute;
+  right: var(--spacing-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  @include flex-center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 0;
 
-    .material-icons {
-      font-size: var(--font-size-md);
-      pointer-events: none;
-    }
+  .material-icons {
+    font-size: var(--font-size-md);
+    pointer-events: none;
   }
+}
 
-  .error-message {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
-    color: #e53935;
-    line-height: 1;
-  }
+.error-message {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: #e53935;
+  line-height: 1;
 }
 
 //Estilização da seleção de perfil
@@ -384,20 +385,6 @@
   line-height: 1;
   display: block;
   margin-top: 2px;
-}
-
-.profile-option {
-  .option-title,
-  .option-helper {
-    display: block;
-  }
-
-  align-items: center;
-  > span:not(.option-icon) {
-    @include flex-column;
-    gap: 4px;
-    align-items: flex-start;
-  }
 }
 
 //Estilização dos termos
@@ -508,7 +495,6 @@
     color: var(--primary-color);
   }
 }
-
 
 //Estilização do spinner
 .spinner {

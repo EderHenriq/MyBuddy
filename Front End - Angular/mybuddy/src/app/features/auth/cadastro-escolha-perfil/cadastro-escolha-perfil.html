@@ -29,19 +29,19 @@
           <span
             class="step-dot"
             [class.active]="currentStep() === step"
-            [class.completed]="currentStep() > step"
+            [class.completed]="isStepCompleted(step)"
             [attr.aria-label]="'Step ' + step + ' de ' + totalSteps().length"
           ></span>
         }
       </nav>
 
       <header class="card-header">
-        @if (currentStep() !== 'perfil') {
+        @if (currentStep() === 'perfil') {
           <img src="/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="card-icon" aria-hidden="true" />
         }
 
         @if (currentStep() !== 'perfil') {
-          <button type="button" class="btn-header back" (click)="prevStep()" aria-label="Voltar ao espaço anterior">
+          <button type="button" class="btn-header-back" (click)="prevStep()" aria-label="Voltar ao espaço anterior">
             <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
           </button>
         }
@@ -92,31 +92,31 @@
                 </button>
               }
             </div>
+          </fieldset>
+        }
 
-            @if (currentStep() === 'subtipo-org') {
-              <fieldset class="step-content" aria-labelledby="step-subtipo-legend">
-                <legend id="step-subtipo-legend" class="step-legend">Tipo de organização</legend>
+        @if (currentStep() === 'subtipo-org') {
+          <fieldset class="step-content" aria-labelledby="step-subtipo-legend">
+            <legend id="step-subtipo-legend" class="step-legend">Tipo de organização</legend>
 
-                <div class="profile-selector" role="radiogroup" aria-label="Tipo de organização">
-                  @for (sub of orgSubtypeOptions; track sub.value) {
-                    <button
-                      type="button"
-                      class="profile-option"
-                      role="radio"
-                      [class.active]="selectedOrgSubtype() === sub.value"
-                      [attr.aria-checked]="selectedOrgSubtype() === sub.value"
-                      (click)="selectOrgSubtype(sub.value)"
-                    >
-                      <span class="material-icons option-icon" aria-hidden="true">{{ sub.icon }}</span>
-                      <div class="option-text">
-                        <span class="option-title">{{ sub.label }}</span>
-                        <span class="option-helper">{{ sub.helper }}</span>
-                      </div>
-                    </button>
-                  }
-                </div>
-              </fieldset>
-            }
+            <div class="profile-selector" role="radiogroup" aria-label="Tipo de organização">
+              @for (sub of orgSubtypeOptions; track sub.value) {
+                <button
+                  type="button"
+                  class="profile-option"
+                  role="radio"
+                  [class.active]="selectedOrgSubtype() === sub.value"
+                  [attr.aria-checked]="selectedOrgSubtype() === sub.value"
+                  (click)="selectOrgSubtype(sub.value)"
+                >
+                  <span class="material-icons option-icon" aria-hidden="true">{{ sub.icon }}</span>
+                  <div class="option-text">
+                    <span class="option-title">{{ sub.label }}</span>
+                    <span class="option-helper">{{ sub.helper }}</span>
+                  </div>
+                </button>
+              }
+            </div>
           </fieldset>
         }
 
