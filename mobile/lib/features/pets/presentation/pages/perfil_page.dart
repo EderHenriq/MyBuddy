@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mybuddy_app/features/auth/domain/entities/user.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
+import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
+import 'package:mybuddy_app/shared/theme/theme_cubit.dart';
 import 'package:mybuddy_app/shared/widgets/app_button.dart';
 import 'package:mybuddy_app/shared/widgets/app_card.dart';
 import 'package:mybuddy_app/shared/widgets/app_input.dart';
@@ -25,13 +30,27 @@ class _PerfilPageState extends State<PerfilPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
+    // Sincronizar _themePreference com o estado real do ThemeCubit
+    final currentThemeMode = context.read<ThemeCubit>().state;
+    if (currentThemeMode == ThemeMode.system) {
+      _themePreference = 'Sistema';
+    } else if (currentThemeMode == ThemeMode.light) {
+      _themePreference = 'Claro';
+    } else {
+      _themePreference = 'Escuro';
+    }
+
     // Pegando dados do estado de auth se estiver disponível
     final authState = context.read<AuthBloc>().state;
-    String userName = _localName ?? 'Eder Henrique';
-    String userEmail = _localEmail ?? 'eder@mybuddy.com';
+    User? loggedUser;
+    String userId = '';
+    String userName = _localName ?? 'Adotante MyBuddy';
+    String userEmail = _localEmail ?? 'user@mybuddy.com';
 
     if (authState is AuthAuthenticated) {
+      loggedUser = authState.user;
+      userId = authState.user.id;
       userName = _localName ?? authState.user.nome;
       userEmail = _localEmail ?? authState.user.email;
     }
@@ -152,7 +171,7 @@ class _PerfilPageState extends State<PerfilPage> {
       );
     }
 
-    // Modal de Processos de Adoção
+    // Modal de Processos de Adoção (Reativo com AdocaoCubit)
     void showAdoptionProcessesModal() {
       showModalBottomSheet(
         context: context,
@@ -174,11 +193,128 @@ class _PerfilPageState extends State<PerfilPage> {
                 ),
                 const SizedBox(height: 20),
                 Expanded(
-                  child: ListView(
-                    children: [
-                      _buildProcessItem('Pipoca', 'Golden Retriever', 'Aguardando Entrevista', Colors.orange, isDark),
-                      _buildProcessItem('Mia', 'Siamês', 'Aprovado! Aguardando Retirada', Colors.green, isDark),
-                    ],
+                  child: BlocBuilder<AdocaoCubit, AdocaoState>(
+                    builder: (context, state) {
+                      if (state is AdocaoLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is AdocaoLoaded) {
+                        // Filtra por ID do adotante (não por email, que pode ser editado localmente)
+                        final minhasSolicitacoes = userId.isNotEmpty
+                            ? state.solicitacoes.where((s) => s.adotanteId == userId).toList()
+                            : state.solicitacoes.where((s) => s.adotanteEmail == userEmail).toList();
+
+                        if (minhasSolicitacoes.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text('Nenhum processo de adoção em andamento.'),
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: minhasSolicitacoes.length,
+                          itemBuilder: (context, idx) {
+                            final sol = minhasSolicitacoes[idx];
+                            Color statusColor = Colors.orange;
+                            if (sol.status.contains('Aprovado')) statusColor = AppColors.success;
+                            if (sol.status.contains('Recusado')) statusColor = Colors.red;
+
+                            return _buildProcessItem(sol.petNome, sol.status, statusColor, isDark);
+                          },
+                        );
+                      }
+                      return const Center(child: Text('Erro ao carregar processos.'));
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
+
+    // Modal de Pedidos Realizados (Reativo com ProductsCubit)
+    void showPurchasesModal() {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (context) {
+          return Container(
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkSurface : Colors.white,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Minhas Compras',
+                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: BlocBuilder<ProductsCubit, ProductsState>(
+                    builder: (context, state) {
+                      if (state is ProductsLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is ProductsLoaded) {
+                        final minhasCompras = state.pedidos.where((p) => p.clienteNome == userName).toList();
+
+                        if (minhasCompras.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text('Nenhuma compra realizada no Marketplace.'),
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: minhasCompras.length,
+                          itemBuilder: (context, idx) {
+                            final comp = minhasCompras[idx];
+                            Color statusColor = Colors.orange;
+                            if (comp.status == 'Enviado') statusColor = Colors.blue;
+                            if (comp.status == 'Entregue') statusColor = AppColors.success;
+
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: isDark ? AppColors.darkBackground : AppColors.background,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(comp.produtoNome, style: const TextStyle(fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+                                        const SizedBox(height: 4),
+                                        Text('Status: ${comp.status}', style: TextStyle(color: statusColor, fontWeight: FontWeight.bold, fontSize: 12)),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                    'R\$ ${comp.preco.toStringAsFixed(2)}',
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      }
+                      return const Center(child: Text('Erro ao carregar compras.'));
+                    },
                   ),
                 ),
               ],
@@ -215,7 +351,8 @@ class _PerfilPageState extends State<PerfilPage> {
                     SwitchListTile(
                       title: const Text('Notificações Push'),
                       subtitle: const Text('Receba avisos de adoções e ofertas'),
-                      activeColor: AppColors.primary,
+                      activeThumbColor: AppColors.primary,
+                      activeTrackColor: AppColors.primary.withAlpha(100),
                       value: _notificationsEnabled,
                       onChanged: (value) {
                         setModalState(() {
@@ -245,6 +382,17 @@ class _PerfilPageState extends State<PerfilPage> {
                             setState(() {
                               _themePreference = value;
                             });
+
+                            ThemeMode mode;
+                            if (value == 'Sistema') {
+                              mode = ThemeMode.system;
+                            } else if (value == 'Claro') {
+                              mode = ThemeMode.light;
+                            } else {
+                              mode = ThemeMode.dark;
+                            }
+                            context.read<ThemeCubit>().updateTheme(mode);
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Preferência de tema alterada para: $value'),
@@ -301,13 +449,59 @@ class _PerfilPageState extends State<PerfilPage> {
                 color: isDark ? AppColors.darkTextSecondary : AppColors.textLight,
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 32),
 
-            // Itens interativos do perfil
-            _buildProfileItem(context, Icons.edit_outlined, 'Editar Dados', showEditProfileModal, isDark),
-            _buildProfileItem(context, Icons.pets_outlined, 'Meus Processos de Adoção', showAdoptionProcessesModal, isDark),
-            _buildProfileItem(context, Icons.history_rounded, 'Histórico de Doações', showDonationHistoryModal, isDark),
-            _buildProfileItem(context, Icons.settings_outlined, 'Configurações', showSettingsModal, isDark),
+            // Exibir badge do perfil
+            if (loggedUser != null) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withAlpha(20),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.primary.withAlpha(80)),
+                ),
+                child: Text(
+                  loggedUser.isOng 
+                      ? 'PERFIL ONG' 
+                      : (loggedUser.isPetshop 
+                          ? 'PERFIL PETSHOP' 
+                          : (loggedUser.isAdmin ? 'ADMINISTRADOR' : 'PERFIL ADOTANTE')),
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+
+            // Itens interativos do perfil de acordo com a Role
+            if (loggedUser != null && loggedUser.isOng) ...[
+              _buildProfileItem(context, Icons.edit_outlined, 'Editar Dados', showEditProfileModal, isDark),
+              _buildProfileItem(context, Icons.add_circle_outline_rounded, 'Cadastrar Novo Pet', () => context.push('/cadastrar-pet'), isDark),
+              _buildProfileItem(context, Icons.pets_outlined, 'Meus Pets Cadastrados', () => context.push('/meus-pets'), isDark),
+              _buildProfileItem(context, Icons.receipt_long_outlined, 'Solicitações de Adoção', () => context.push('/solicitacoes-ong'), isDark),
+              _buildProfileItem(context, Icons.settings_outlined, 'Configurações', showSettingsModal, isDark),
+            ] else if (loggedUser != null && loggedUser.isPetshop) ...[
+              _buildProfileItem(context, Icons.edit_outlined, 'Editar Dados', showEditProfileModal, isDark),
+              _buildProfileItem(context, Icons.add_business_outlined, 'Cadastrar Novo Produto', () => context.push('/cadastrar-produto'), isDark),
+              _buildProfileItem(context, Icons.storefront_outlined, 'Meus Produtos à Venda', () => context.push('/meus-produtos'), isDark),
+              _buildProfileItem(context, Icons.receipt_long_outlined, 'Pedidos Recebidos', () => context.push('/pedidos-petshop'), isDark),
+              _buildProfileItem(context, Icons.settings_outlined, 'Configurações', showSettingsModal, isDark),
+            ] else if (loggedUser != null && loggedUser.isAdmin) ...[
+              _buildProfileItem(context, Icons.edit_outlined, 'Editar Dados', showEditProfileModal, isDark),
+              _buildProfileItem(context, Icons.dashboard_outlined, 'Painel Administrativo', () => context.push('/admin-dashboard'), isDark),
+              _buildProfileItem(context, Icons.settings_outlined, 'Configurações', showSettingsModal, isDark),
+            ] else ...[
+              // Adotante (ou Padrão)
+              _buildProfileItem(context, Icons.edit_outlined, 'Editar Dados', showEditProfileModal, isDark),
+              _buildProfileItem(context, Icons.favorite_outline_rounded, 'Meus Favoritos', () => context.push('/favoritos'), isDark),
+              _buildProfileItem(context, Icons.pets_outlined, 'Meus Processos de Adoção', showAdoptionProcessesModal, isDark),
+              _buildProfileItem(context, Icons.shopping_bag_outlined, 'Minhas Compras', showPurchasesModal, isDark),
+              _buildProfileItem(context, Icons.history_rounded, 'Histórico de Doações', showDonationHistoryModal, isDark),
+              _buildProfileItem(context, Icons.settings_outlined, 'Configurações', showSettingsModal, isDark),
+            ],
 
             const SizedBox(height: 40),
             // Botão de Sair (Logout)
@@ -382,7 +576,7 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-  Widget _buildProcessItem(String name, String breed, String status, Color statusColor, bool isDark) {
+  Widget _buildProcessItem(String name, String status, Color statusColor, bool isDark) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -401,7 +595,7 @@ class _PerfilPageState extends State<PerfilPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('$name ($breed)', style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 Text(
                   status,

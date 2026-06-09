@@ -16,4 +16,5 @@ class User {
   bool get isAdmin => roles.contains('ROLE_ADMIN');
   bool get isOng => roles.contains('ROLE_ONG');
   bool get isAdotante => roles.contains('ROLE_ADOTANTE');
+  bool get isPetshop => roles.contains('ROLE_PETSHOP');
 }
