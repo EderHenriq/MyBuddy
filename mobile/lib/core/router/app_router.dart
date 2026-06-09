@@ -14,6 +14,32 @@ import 'package:mybuddy_app/features/adocao/presentation/pages/adocao_page.dart'
 import 'package:mybuddy_app/shared/widgets/main_scaffold.dart';
 
 class AppRouter {
+  static CustomTransitionPage<void> _fadeRoute(GoRouterState state, Widget child) {
+    return CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: child,
+      transitionDuration: const Duration(milliseconds: 250),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    );
+  }
+
+  static CustomTransitionPage<void> _slideRoute(GoRouterState state, Widget child) {
+    return CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: child,
+      transitionDuration: const Duration(milliseconds: 350),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOutCubic;
+        final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        return SlideTransition(position: animation.drive(tween), child: child);
+      },
+    );
+  }
+
   static GoRouter router(BuildContext context) {
     return GoRouter(
       initialLocation: '/splash',
@@ -43,17 +69,17 @@ class AppRouter {
         GoRoute(
           path: '/splash',
           name: 'splash',
-          builder: (context, state) => const SplashPage(),
+          pageBuilder: (context, state) => _fadeRoute(state, const SplashPage()),
         ),
         GoRoute(
           path: '/onboarding',
           name: 'onboarding',
-          builder: (context, state) => const OnboardingPage(),
+          pageBuilder: (context, state) => _slideRoute(state, const OnboardingPage()),
         ),
         GoRoute(
           path: '/login',
           name: 'login',
-          builder: (context, state) => const LoginPage(),
+          pageBuilder: (context, state) => _slideRoute(state, const LoginPage()),
         ),
         ShellRoute(
           builder: (context, state, child) => MainScaffold(child: child),
@@ -61,27 +87,27 @@ class AppRouter {
             GoRoute(
               path: '/pets',
               name: 'pets',
-              builder: (context, state) => const PetsPage(),
+              pageBuilder: (context, state) => _fadeRoute(state, const PetsPage()),
             ),
             GoRoute(
               path: '/favoritos',
               name: 'favoritos',
-              builder: (context, state) => const FavoritosPage(),
+              pageBuilder: (context, state) => _fadeRoute(state, const FavoritosPage()),
             ),
             GoRoute(
               path: '/marketplace',
               name: 'marketplace',
-              builder: (context, state) => const MarketplacePage(),
+              pageBuilder: (context, state) => _fadeRoute(state, const MarketplacePage()),
             ),
             GoRoute(
               path: '/adocao',
               name: 'adocao',
-              builder: (context, state) => const AdocaoPage(),
+              pageBuilder: (context, state) => _fadeRoute(state, const AdocaoPage()),
             ),
             GoRoute(
               path: '/perfil',
               name: 'perfil',
-              builder: (context, state) => const PerfilPage(),
+              pageBuilder: (context, state) => _fadeRoute(state, const PerfilPage()),
             ),
           ],
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
 
-class AppCard extends StatelessWidget {
+class AppCard extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
   final Color? color;
@@ -24,23 +24,30 @@ class AppCard extends StatelessWidget {
   });
 
   @override
+  State<AppCard> createState() => _AppCardState();
+}
+
+class _AppCardState extends State<AppCard> {
+  double _scale = 1.0;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final cardColor = color ?? (isDark ? AppColors.darkSurface : AppColors.surface);
+    final cardColor = widget.color ?? (isDark ? AppColors.darkSurface : AppColors.surface);
     final shadowColor = isDark ? const Color(0x4D000000) : const Color(0x14000000);
     final secondaryShadowColor = isDark ? const Color(0x2E000000) : const Color(0x0C000000);
-    final defaultBorder = border ?? BorderSide(
+    final defaultBorder = widget.border ?? BorderSide(
       color: isDark ? AppColors.darkBorder : AppColors.border,
       width: 1,
     );
 
     Widget cardContent = Container(
-      padding: padding,
+      padding: widget.padding,
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(widget.borderRadius),
         border: defaultBorder != BorderSide.none ? Border(
           top: defaultBorder,
           bottom: defaultBorder,
@@ -48,21 +55,21 @@ class AppCard extends StatelessWidget {
           right: defaultBorder,
         ) : null,
       ),
-      child: child,
+      child: widget.child,
     );
 
-    if (onTap != null) {
+    if (widget.onTap != null) {
       cardContent = InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(borderRadius),
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(widget.borderRadius),
         child: cardContent,
       );
     }
 
-    return Container(
-      margin: margin,
+    Widget result = Container(
+      margin: widget.margin,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.circular(widget.borderRadius),
         boxShadow: [
           BoxShadow(
             color: shadowColor,
@@ -83,5 +90,21 @@ class AppCard extends StatelessWidget {
         child: cardContent,
       ),
     );
+
+    if (widget.onTap != null) {
+      return GestureDetector(
+        onTapDown: (_) => setState(() => _scale = 0.98),
+        onTapUp: (_) => setState(() => _scale = 1.0),
+        onTapCancel: () => setState(() => _scale = 1.0),
+        child: AnimatedScale(
+          scale: _scale,
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeOut,
+          child: result,
+        ),
+      );
+    }
+
+    return result;
   }
 }
