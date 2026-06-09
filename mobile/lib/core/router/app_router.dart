@@ -6,9 +6,12 @@ import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/login_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/splash_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/onboarding_page.dart';
+import 'package:mybuddy_app/features/auth/presentation/pages/cadastro_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/pets_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/pet_detail_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/favoritos_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/perfil_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/notificacoes_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/marketplace_page.dart';
 import 'package:mybuddy_app/features/adocao/presentation/pages/adocao_page.dart';
 import 'package:mybuddy_app/shared/widgets/main_scaffold.dart';
@@ -51,15 +54,16 @@ class AppRouter {
         final isSplash = location == '/splash';
         final isOnboarding = location == '/onboarding';
         final isLogin = location == '/login';
+        final isCadastro = location == '/cadastro';
 
         if (!isAuthenticated) {
-          // Se não estiver logado, permite acessar apenas splash, onboarding e login
-          if (isSplash || isOnboarding || isLogin) return null;
+          // Se não estiver logado, permite acessar apenas splash, onboarding, login e cadastro
+          if (isSplash || isOnboarding || isLogin || isCadastro) return null;
           return '/splash';
         }
 
         // Se estiver autenticado e tentar ir para as telas de auth, manda para o feed
-        if (isAuthenticated && (isSplash || isOnboarding || isLogin)) {
+        if (isAuthenticated && (isSplash || isOnboarding || isLogin || isCadastro)) {
           return '/pets';
         }
 
@@ -81,6 +85,16 @@ class AppRouter {
           name: 'login',
           pageBuilder: (context, state) => _slideRoute(state, const LoginPage()),
         ),
+        GoRoute(
+          path: '/cadastro',
+          name: 'cadastro',
+          pageBuilder: (context, state) => _slideRoute(state, const CadastroPage()),
+        ),
+        GoRoute(
+          path: '/notificacoes',
+          name: 'notificacoes',
+          pageBuilder: (context, state) => _slideRoute(state, const NotificacoesPage()),
+        ),
         ShellRoute(
           builder: (context, state, child) => MainScaffold(child: child),
           routes: [
@@ -88,6 +102,16 @@ class AppRouter {
               path: '/pets',
               name: 'pets',
               pageBuilder: (context, state) => _fadeRoute(state, const PetsPage()),
+              routes: [
+                GoRoute(
+                  path: ':id',
+                  name: 'pet-detail',
+                  pageBuilder: (context, state) {
+                    final id = state.pathParameters['id'] ?? '1';
+                    return _slideRoute(state, PetDetailPage(petId: id));
+                  },
+                ),
+              ],
             ),
             GoRoute(
               path: '/favoritos',
