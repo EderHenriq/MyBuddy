@@ -19,15 +19,15 @@
 /* ─── SEARCH PANEL (padrão flutuante do site) ───────── */
 .search-panel {
   display: grid;
-  grid-template-columns: minmax(240px, 380px) auto 1fr;
+  grid-template-columns: 260px 1px 1fr;
   align-items: center;
-  gap: 1.35rem;
+  gap: 24px;
   min-height: 72px;
-  margin: -34px auto 2rem;
-  padding: 0.9rem 1.05rem;
-  border-radius: 24px;
+  margin: -34px auto 42px;
+  padding: 12px 18px;
   background: #ffffff;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.14);
+  border-radius: 22px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
   position: relative;
   z-index: 5;
 }
@@ -35,46 +35,43 @@
 .search-field {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 12px;
   height: 44px;
-  padding: 0 1rem;
-  border-radius: 12px;
-  background: #f0eeee;
-
-  .material-icons {
-    color: #151515;
-    font-size: 22px;
-    flex-shrink: 0;
-  }
+  padding: 0 14px 0 18px;
+  background: #efeeee;
+  border-radius: 9px;
 
   input {
     width: 100%;
-    border: 0;
-    outline: 0;
+    border: none;
+    outline: none;
     background: transparent;
-    color: #242424;
-    font: inherit;
-    font-size: 1rem;
-    font-weight: 600;
+    color: #4a4a4a;
+    font-size: 0.95rem;
+    font-weight: 500;
 
     &::placeholder {
-      color: #777;
-      opacity: 1;
+      color: #777777;
     }
+  }
+
+  .material-icons {
+    color: #1e1e1e;
+    font-size: 21px;
+    flex-shrink: 0;
   }
 }
 
 .panel-divider {
-  width: 1px;
-  height: 42px;
-  background: #c9c9c9;
+  height: 46px;
+  background: #d6d6d6;
 }
 
 /* ─── CHIPS ─────────────────────────────────────────── */
 .chips-row {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -82,16 +79,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  min-height: 44px;
-  padding: 0 1rem;
+  gap: 6px;
+  height: 42px;
+  padding: 0 12px;
   border: 0;
-  border-radius: 12px;
-  background: #f0eeee;
-  color: #48484f;
+  border-radius: 9px;
+  background: #efeeee;
+  color: #2b2b2b;
   font: inherit;
   font-size: 0.88rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   transition: transform 0.2s ease, background-color 0.2s ease;
@@ -99,16 +96,20 @@
   .material-icons { font-size: 18px; }
 
   &:hover {
-    background: #fff3e5;
+    background: #e6e4e4;
     transform: translateY(-1px);
   }
 
   &.active {
     background: #ff7900;
     color: #fff;
+    
+    &:hover {
+      background: #e06a00;
+    }
   }
 
-  &.chip-filter { background: #f0eeee; }
+  &.chip-filter { background: #efeeee; }
 }
 
 /* ─── STATS BAR ─────────────────────────────────────── */

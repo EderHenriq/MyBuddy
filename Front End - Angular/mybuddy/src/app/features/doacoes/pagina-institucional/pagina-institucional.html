@@ -13,14 +13,14 @@
 
     <!-- Search / Filter bar (mesma posição flutuante do site) -->
     <section class="search-panel">
-      <label class="search-field">
-        <span class="material-icons">search</span>
+      <label class="search-field" for="donation-search-input">
         <input
           type="search"
           placeholder="O que você procura?"
           [(ngModel)]="searchText"
           id="donation-search-input"
         />
+        <span class="material-icons">search</span>
       </label>
 
       <span class="panel-divider" aria-hidden="true"></span>
