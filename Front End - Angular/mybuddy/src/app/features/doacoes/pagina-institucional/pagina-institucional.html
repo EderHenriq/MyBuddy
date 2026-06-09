@@ -1,21 +1,328 @@
 <main class="donations-page">
-  <app-hero-section
-    [title]="'Apoie e salve vidas de'"
-    [highlightedText]="'animais indefesos.'"
-    [subtitle]="'Sua doação ajuda a manter ONGs e garantir alimento, tratamento e carinho'"
-    [backgroundImageUrl]="'https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&q=80&w=1800'"
-  ></app-hero-section>
 
-  <div class="donations-shell">
-    <div style="text-align: center; padding: 5rem 2rem;">
-      <h2 style="font-size: 2.2rem; font-weight: 800; color: #1e1e1e; margin-bottom: 1.5rem;">
-        Espaço de Doações MyBuddy
-      </h2>
-      <p style="font-size: 1.2rem; color: #555; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-        Estamos preparando um espaço incrível para conectar campanhas de doação de ONGs e protetores parceiros diretamente com você. Em breve você poderá contribuir e acompanhar o impacto de sua ajuda!
-      </p>
+  <!-- ════════════════════════════════════════════
+       HERO SECTION  — dark background + stats
+  ════════════════════════════════════════════ -->
+  <section class="hero-donation">
+    <div class="hero-donation-overlay"></div>
+    <div class="hero-donation-content">
+      <div class="hero-donation-left">
+        <span class="hero-tag">
+          <span class="material-icons">favorite</span>
+          Faça a diferença hoje
+        </span>
+
+        <h1>
+          Doe para pets e <span class="highlight-text">ONGs</span><br>
+          que precisam de você
+        </h1>
+
+        <p class="hero-subtitle">
+          Sua doação alimenta, cuida e salva vidas.<br>
+          Escolha uma causa e comece agora.
+        </p>
+
+        <div class="hero-buttons">
+          <button class="btn-hero-primary" id="hero-quero-doar-btn" (click)="abrirModalDoacao()">
+            <span class="material-icons">favorite</span>
+            Quero Doar
+          </button>
+          <button class="btn-hero-secondary" (click)="scrollToCampanhas()">
+            Ver ONGs parceiras
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-donation-image">
+        <img
+          src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=800"
+          alt="Pets que precisam de ajuda"
+          loading="eager"
+        />
+      </div>
     </div>
-  </div>
+
+    <!-- Stats bar -->
+    <div class="hero-stats">
+      <div class="stat-item">
+        @if (carregandoStats()) {
+          <span class="stat-skeleton"></span>
+        } @else {
+          <strong>{{ stats().petsSalvos | number }}</strong>
+        }
+        <span>pets salvos</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        @if (carregandoStats()) {
+          <span class="stat-skeleton"></span>
+        } @else {
+          <strong>{{ stats().ongsParceiras }}</strong>
+        }
+        <span>ONGs parceiras</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        @if (carregandoStats()) {
+          <span class="stat-skeleton"></span>
+        } @else {
+          <strong>{{ formatarValor(stats().totalArrecadado) }}</strong>
+        }
+        <span>arrecadados</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        @if (carregandoStats()) {
+          <span class="stat-skeleton"></span>
+        } @else {
+          <strong>{{ stats().doadoresAtivos | number }}</strong>
+        }
+        <span>doadores ativos</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════
+       FILTER / SEARCH BAR
+  ════════════════════════════════════════════ -->
+  <section class="filter-section" id="filter-section">
+    <div class="filter-inner">
+      <div class="search-bar">
+        <span class="material-icons search-icon">search</span>
+        <input
+          type="text"
+          placeholder="O que você procura?"
+          [(ngModel)]="searchText"
+          id="donation-search-input"
+          aria-label="Buscar campanhas"
+        />
+      </div>
+
+      <div class="chips-row">
+        @for (cat of categorias; track cat) {
+          <button
+            class="chip-btn"
+            [class.active]="categoriaSelecionada() === cat"
+            (click)="selecionarCategoria(cat)"
+            [id]="'chip-' + cat.toLowerCase().replace(' ', '-')"
+          >
+            {{ cat }}
+          </button>
+        }
+        <button class="chip-btn chip-filter">
+          <span class="material-icons">tune</span>
+          Filtros
+        </button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════
+       DOADOR RECORRENTE BANNER
+  ════════════════════════════════════════════ -->
+  <section class="content-shell">
+    <div class="recurring-banner">
+      <div class="recurring-text">
+        <h2>Torne-se um doador recorrente</h2>
+        <p>
+          Configure uma doação automática mensal ou semanal e ajude ONGs parceiras
+          de forma contínua. Você pode cancelar a qualquer momento.
+        </p>
+      </div>
+      <div class="recurring-actions">
+        <button
+          class="btn-recurring"
+          [class.active]="frequenciaRecorrente() === 'mensal'"
+          (click)="frequenciaRecorrente.set('mensal'); abrirModalDoacao()"
+          id="btn-mensal"
+        >Mensal</button>
+        <button
+          class="btn-recurring"
+          [class.active]="frequenciaRecorrente() === 'semanal'"
+          (click)="frequenciaRecorrente.set('semanal'); abrirModalDoacao()"
+          id="btn-semanal"
+        >Semanal</button>
+        <button
+          class="btn-recurring"
+          [class.active]="frequenciaRecorrente() === 'unica'"
+          (click)="frequenciaRecorrente.set('unica'); abrirModalDoacao()"
+          id="btn-unica-vez"
+        >Única vez</button>
+      </div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════
+         CAMPANHAS EM DESTAQUE
+    ════════════════════════════════════════════ -->
+    <div class="section-header">
+      <h2 class="section-title">Campanhas em destaque</h2>
+      <a class="ver-todas-link" href="#">Ver todas →</a>
+    </div>
+
+    @if (carregandoCampanhas()) {
+      <div class="campaigns-grid">
+        @for (i of [1,2,3]; track i) {
+          <div class="campaign-card skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-line w80"></div>
+              <div class="skeleton-line w60"></div>
+              <div class="skeleton-line w40"></div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (getCampanhasFiltradas().length === 0) {
+      <div class="empty-state">
+        <span class="material-icons">pets</span>
+        <p>Nenhuma campanha encontrada para este filtro.</p>
+      </div>
+    } @else {
+      <div class="campaigns-grid">
+        @for (c of getCampanhasFiltradas(); track c.id) {
+          <div class="campaign-card" [class.meta-atingida]="isMetaAtingida(c)">
+
+            <div class="card-img">
+              @if (c.imagemUrl) {
+                <img [src]="c.imagemUrl" [alt]="c.titulo" loading="lazy" />
+              } @else {
+                <div class="card-img-placeholder">
+                  <span class="material-icons">pets</span>
+                </div>
+              }
+              <span class="card-badge" [class.badge-urgente]="c.categoria === 'Urgente'" [class.badge-concluido]="isMetaAtingida(c)">
+                {{ isMetaAtingida(c) ? 'META ATINGIDA' : c.categoria.toUpperCase() }}
+              </span>
+            </div>
+
+            <div class="card-body">
+              <h3 class="card-title">{{ c.titulo }}</h3>
+
+              <div class="card-meta">
+                @if (c.localizacao) {
+                  <span class="meta-tag">
+                    <span class="material-icons">place</span>
+                    {{ c.localizacao }}
+                  </span>
+                }
+                @if (c.diasRestantes !== undefined && c.diasRestantes > 0) {
+                  <span class="meta-tag">
+                    <span class="material-icons">schedule</span>
+                    {{ c.diasRestantes }} dias restantes
+                  </span>
+                }
+                @if (c.totalDoadores) {
+                  <span class="meta-tag">
+                    <span class="material-icons">group</span>
+                    {{ c.totalDoadores }} doadores
+                  </span>
+                }
+              </div>
+
+              <div class="progress-section">
+                <div class="progress-bar-track">
+                  <div
+                    class="progress-bar-fill"
+                    [class.fill-green]="isMetaAtingida(c)"
+                    [style.width.%]="getPorcentagemArrecadada(c)"
+                  ></div>
+                </div>
+                <div class="progress-values">
+                  <span class="label-arrecadado">Arrecadado</span>
+                  <span class="values-text" [class.text-green]="isMetaAtingida(c)">
+                    {{ c.arrecadado | currency:'BRL':'symbol':'1.0-0' }} / {{ c.meta | currency:'BRL':'symbol':'1.0-0' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="card-actions">
+                @if (isMetaAtingida(c)) {
+                  <button class="btn-card-success">
+                    <span class="material-icons">check_circle</span>
+                    Meta atingida!
+                  </button>
+                } @else {
+                  <button
+                    class="btn-card-donate"
+                    (click)="abrirModalDoacao(c)"
+                    [id]="'btn-doar-' + c.id"
+                  >
+                    Doar agora
+                  </button>
+                }
+                <button class="btn-icon" title="Salvar campanha">
+                  <span class="material-icons">favorite_border</span>
+                </button>
+                <button class="btn-icon" title="Compartilhar">
+                  <span class="material-icons">share</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+
+    <!-- ════════════════════════════════════════════
+         ONGs PARCEIRAS
+    ════════════════════════════════════════════ -->
+    <div class="section-header" style="margin-top: 3rem;">
+      <h2 class="section-title">ONGs parceiras que precisam de apoio</h2>
+      <a class="ver-todas-link" href="#">Ver todas →</a>
+    </div>
+
+    <div class="ongs-grid">
+      @for (ong of ongs(); track ong.id) {
+        <div class="ong-card">
+          <div class="ong-header">
+            <div class="ong-avatar">
+              @if (ong.imagemUrl) {
+                <img [src]="ong.imagemUrl" [alt]="ong.nome" />
+              } @else {
+                <span class="material-icons">business</span>
+              }
+            </div>
+            <div class="ong-info">
+              <h3>{{ ong.nome }}</h3>
+              <p>
+                <span class="material-icons">place</span>
+                {{ ong.localizacao }} · {{ ong.totalAnimais }} animais
+              </p>
+            </div>
+          </div>
+          <div class="ong-divider"></div>
+          <p class="ong-desc">{{ ong.descricao }}</p>
+          <div class="ong-tags">
+            @for (tag of ong.necessidades; track tag) {
+              <span class="ong-tag">{{ tag }}</span>
+            }
+          </div>
+          <button
+            class="btn-apoiar-ong"
+            (click)="abrirModalDoacao()"
+            [id]="'btn-apoiar-ong-' + ong.id"
+          >
+            Apoiar esta ONG
+          </button>
+        </div>
+      }
+    </div>
+
+  </section><!-- /content-shell -->
+
 </main>
 
+<!-- Footer -->
 <app-footer></app-footer>
+
+<!-- Modal de Doação -->
+@if (showModal()) {
+  <app-modal-doacao
+    [campanha]="selectedCampanha()"
+    (close)="fecharModal()"
+  ></app-modal-doacao>
+}
