@@ -7,13 +7,21 @@ import 'package:mybuddy_app/features/auth/presentation/pages/login_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/splash_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/onboarding_page.dart';
 import 'package:mybuddy_app/features/auth/presentation/pages/cadastro_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/home_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/pets_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/pet_detail_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/favoritos_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/perfil_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/notificacoes_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/cadastrar_pet_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/meus_pets_page.dart';
+import 'package:mybuddy_app/features/adocao/presentation/pages/solicitacoes_ong_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/marketplace_page.dart';
-import 'package:mybuddy_app/features/adocao/presentation/pages/adocao_page.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/pages/cadastrar_produto_page.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/pages/meus_produtos_page.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/pages/pedidos_petshop_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/admin_dashboard_page.dart';
+import 'package:mybuddy_app/features/adocao/presentation/pages/eventos_page.dart';
 import 'package:mybuddy_app/shared/widgets/main_scaffold.dart';
 
 class AppRouter {
@@ -62,9 +70,9 @@ class AppRouter {
           return '/splash';
         }
 
-        // Se estiver autenticado e tentar ir para as telas de auth, manda para o feed
+        // Se estiver autenticado e tentar ir para as telas de auth, manda para a home
         if (isAuthenticated && (isSplash || isOnboarding || isLogin || isCadastro)) {
-          return '/pets';
+          return '/home';
         }
 
         return null;
@@ -99,6 +107,21 @@ class AppRouter {
           builder: (context, state, child) => MainScaffold(child: child),
           routes: [
             GoRoute(
+              path: '/home',
+              name: 'home',
+              pageBuilder: (context, state) => _fadeRoute(state, const HomePage()),
+            ),
+            GoRoute(
+              path: '/eventos',
+              name: 'eventos',
+              pageBuilder: (context, state) => _fadeRoute(state, const EventosPage()),
+            ),
+            GoRoute(
+              path: '/marketplace',
+              name: 'marketplace',
+              pageBuilder: (context, state) => _fadeRoute(state, const MarketplacePage()),
+            ),
+            GoRoute(
               path: '/pets',
               name: 'pets',
               pageBuilder: (context, state) => _fadeRoute(state, const PetsPage()),
@@ -114,26 +137,51 @@ class AppRouter {
               ],
             ),
             GoRoute(
-              path: '/favoritos',
-              name: 'favoritos',
-              pageBuilder: (context, state) => _fadeRoute(state, const FavoritosPage()),
-            ),
-            GoRoute(
-              path: '/marketplace',
-              name: 'marketplace',
-              pageBuilder: (context, state) => _fadeRoute(state, const MarketplacePage()),
-            ),
-            GoRoute(
-              path: '/adocao',
-              name: 'adocao',
-              pageBuilder: (context, state) => _fadeRoute(state, const AdocaoPage()),
-            ),
-            GoRoute(
               path: '/perfil',
               name: 'perfil',
               pageBuilder: (context, state) => _fadeRoute(state, const PerfilPage()),
             ),
           ],
+        ),
+        GoRoute(
+          path: '/favoritos',
+          name: 'favoritos',
+          pageBuilder: (context, state) => _slideRoute(state, const FavoritosPage()),
+        ),
+        GoRoute(
+          path: '/cadastrar-pet',
+          name: 'cadastrar-pet',
+          pageBuilder: (context, state) => _slideRoute(state, const CadastrarPetPage()),
+        ),
+        GoRoute(
+          path: '/meus-pets',
+          name: 'meus-pets',
+          pageBuilder: (context, state) => _slideRoute(state, const MeusPetsPage()),
+        ),
+        GoRoute(
+          path: '/solicitacoes-ong',
+          name: 'solicitacoes-ong',
+          pageBuilder: (context, state) => _slideRoute(state, const SolicitacoesOngPage()),
+        ),
+        GoRoute(
+          path: '/cadastrar-produto',
+          name: 'cadastrar-produto',
+          pageBuilder: (context, state) => _slideRoute(state, const CadastrarProdutoPage()),
+        ),
+        GoRoute(
+          path: '/meus-produtos',
+          name: 'meus-produtos',
+          pageBuilder: (context, state) => _slideRoute(state, const MeusProdutosPage()),
+        ),
+        GoRoute(
+          path: '/pedidos-petshop',
+          name: 'pedidos-petshop',
+          pageBuilder: (context, state) => _slideRoute(state, const PedidosPetshopPage()),
+        ),
+        GoRoute(
+          path: '/admin-dashboard',
+          name: 'admin-dashboard',
+          pageBuilder: (context, state) => _slideRoute(state, const AdminDashboardPage()),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(
@@ -149,7 +197,7 @@ class AppRouter {
               ),
               const SizedBox(height: 8),
               TextButton(
-                onPressed: () => context.go('/pets'),
+                onPressed: () => context.go('/home'),
                 child: const Text('Voltar ao início'),
               ),
             ],
