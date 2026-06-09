@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angula
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 
+type TipoStep = 'perfil' | 'subtipo-org' | 'dados-pessoais' | 'dados-org' | 'senha';
 type TipoPerfil = 'ADOTANTE' | 'ORGANIZACAO';
 type TipoOrg = 'ONG' | 'PETSHOP' | 'VETERINARIO';
 
@@ -34,7 +35,7 @@ export class CadastroEscolhaPerfil {
   //Seção de estados de controle
   selectedPerfil = signal<TipoPerfil>('ADOTANTE');
   selectedOrgSubtype = signal<TipoOrg>('ONG');
-  currentStep = signal<number>(1);
+  currentStep = signal<TipoStep>('perfil');
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
   isLoading = signal<boolean>(false);
@@ -42,17 +43,23 @@ export class CadastroEscolhaPerfil {
   showConfirmPassword = signal<boolean>(false);
 
   //Steps dinamicos por tipo de perfil
-  totalSteps = computed<number[]>(() => (this.isBusinessProfile() ? [1, 2, 3, 4] : [1, 2, 3]));
+  totalSteps = computed<TipoStep[]>(() => {
+    if (this.isBusinessProfile()) {
+      return ['perfil', 'subtipo-org', 'dados-pessoais', 'dados-org', 'senha'];
+    }
+    return ['perfil', 'dados-pessoais', 'senha'];
+  });
 
-  lastStep = computed<number>(() => (this.isBusinessProfile() ? 4 : 3));
+  lastStep = computed<TipoStep>(() => 'senha');
 
   stepSubtitle = computed<string>(() => {
     const step = this.currentStep();
-    const isBusiness = this.isBusinessProfile();
 
-    if (step === 1) return 'Escolha como você vai usar o MyBuddy.';
-    if (step === 2) return 'Preencha seus dados pessoais.';
-    if (step === 3 && isBusiness) return 'Dados da sua organização.';
+    if (step === 'perfil') return 'Escolha como você vai usar o MyBuddy.';
+    if (step === 'subtipo-org') return 'Que tipo de organização você representa?';
+    if (step === 'dados-pessoais') return 'Preencha seus dados pessoais.';
+    if (step === 'dados-org') return 'Dados da sua organização.';
+
     return 'Crie sua senha de acesso.';
   });
 
@@ -93,14 +100,46 @@ export class CadastroEscolhaPerfil {
 
   //Construção da navegação multi-step do formulário
   nextStep(): void {
-    if (this.currentStep() < this.lastStep()) {
-      this.currentStep.update(s => s + 1);
+    const step = this.currentStep();
+
+    if (step === 'perfil') {
+      this.currentStep.set(this.isBusinessProfile() ? 'subtipo-org' : 'dados-pessoais');
+      return;
+    }
+
+    if (step === 'subtipo-org') {
+      this.currentStep.set('dados-pessoais');
+      return;
+    }
+    if (step === 'dados-pessoais') {
+      this.currentStep.set(this.isBusinessProfile() ? 'dados-org' : 'senha');
+      return;
+    }
+
+    if (step === 'dados-org') {
+      this.currentStep.set('senha');
+      return;
     }
   }
 
   prevStep(): void {
-    if (this.currentStep() > 1) {
-      this.currentStep.update(s => s - 1);
+    const step = this.currentStep();
+
+    if (step === 'subtipo-org') {
+      this.currentStep.set('perfil');
+      return;
+    }
+    if (step === 'dados-pessoais') {
+      this.currentStep.set(this.isBusinessProfile() ? 'subtipo-org' : 'perfil');
+      return;
+    }
+    if (step === 'dados-org') {
+      this.currentStep.set('dados-pessoais');
+      return;
+    }
+    if (step === 'senha') {
+      this.currentStep.set(this.isBusinessProfile() ? 'dados-org' : 'dados-pessoais');
+      return;
     }
   }
 
@@ -108,18 +147,13 @@ export class CadastroEscolhaPerfil {
     const step = this.currentStep();
     const form = this.registerForm;
 
-    if (step === 1) {
-      if (this.selectedPerfil() === 'ORGANIZACAO') {
-        return !!this.selectedOrgSubtype();
-      }
-      return !!this.selectedPerfil();
-    }
-
-    if (step === 2) {
+    if (step === 'perfil') return !!this.selectedPerfil();
+    if (step === 'subtipo-org') return !!this.selectedOrgSubtype();
+    if (step === 'dados-pessoais') {
       return form.get('nome')!.valid && form.get('email')!.valid && form.get('telefone')!.valid;
     }
 
-    if (step === 3 && this.isBusinessProfile()) {
+    if (step === 'dados-org') {
       return (
         form.get('organizacaoNomeFantasia')!.valid &&
         form.get('organizacaoCnpj')!.valid &&
@@ -148,25 +182,38 @@ export class CadastroEscolhaPerfil {
   }
 
   organizationLabel(): string {
-    return this.selectedOrgSubtype() === 'ONG' ? 'Nome fantasia da ONG' : 'Nome fantasia do Petshop';
+    const sub = this.selectedOrgSubtype();
+    if (sub === 'ONG') return 'Nome fantasia da ONG';
+    if (sub === 'VETERINARIO') return 'Nome do consultório veterinário';
+    return 'Nome fantasia do Petshop';
   }
 
   cnpjLabel(): string {
-    return this.selectedOrgSubtype() === 'ONG' ? 'CNPJ da ONG' : 'CNPJ do Petshop';
+    const sub = this.selectedOrgSubtype();
+    if (sub === 'ONG') return 'CNPJ da ONG';
+    if (sub === 'VETERINARIO') return 'CNPJ do consultório veterinário';
+    return 'CNPJ do Petshop';
   }
 
   emailContatoLabel(): string {
-    return this.selectedOrgSubtype() === 'ONG' ? 'E-mail de contato da ONG' : 'E-mail de contato do Petshop';
+    const sub = this.selectedOrgSubtype();
+    if (sub === 'ONG') return 'E-mail de contato da ONG';
+    if (sub === 'VETERINARIO') return 'E-mail de contato do consultório veterinário';
+    return 'E-mail de contato do Petshop';
   }
 
   enderecoLabel(): string {
-    return this.selectedOrgSubtype() === 'ONG' ? 'Endereço da ONG' : 'Endereço do Petshop';
+    const sub = this.selectedOrgSubtype();
+    if (sub === 'ONG') return 'Endereço da ONG';
+    if (sub === 'VETERINARIO') return 'Endereço do consultório veterinário';
+    return 'Endereço do Petshop';
   }
 
   descricaoPlaceholder(): string {
-    return this.selectedOrgSubtype() === 'ONG'
-      ? 'Conte-nos um pouco sobre o propósito e a história de sua ONG...'
-      : 'Conte-nos um pouco sobre seus produtos, serviços e especialidades...';
+    const sub = this.selectedOrgSubtype();
+    if (sub === 'ONG') return 'Conte-nos um pouco sobre o propósito e a história de sua ONG...';
+    if (sub === 'VETERINARIO') return 'Conte-nos um pouco sobre os serviços e especialidades da sua clínica veterinária...';
+    return 'Conte-nos um pouco sobre seus produtos, serviços e especialidades...';
   }
 
   //Seção de toggles de senhas
@@ -259,6 +306,11 @@ export class CadastroEscolhaPerfil {
   }
 
   //Seção de validadores privados
+  isStepCompleted(step: TipoStep): boolean {
+    const order: TipoStep[] = ['perfil', 'subtipo-org', 'dados-pessoais', 'dados-org', 'senha'];
+    return order.indexOf(step) < order.indexOf(this.currentStep());
+  }
+
   private updateProfileValidators(): void {
     const businessValidators = {
       organizacaoNomeFantasia: [Validators.required, Validators.minLength(3)],

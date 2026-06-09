@@ -230,8 +230,8 @@
   gap: var(--spacing-xs);
 
   &.has-error {
-    .input-field-wrapper input {
-      border-color: #e53935;
+    input, textarea {
+      border-color: #e53935 !important;
     }
   }
 }
@@ -462,19 +462,6 @@
     cursor: not-allowed;
   }
 
-  &-back {
-    padding: var(--spacing-sm);
-    background: transparent;
-    border-radius: var(--radius-max);
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    flex-shrink: 0;
-
-    &:hover:not(:disabled) {
-      transform: translateY(-2px);
-    }
-  }
-
   &-next {
     flex: 1;
     background: var(--primary-color);
@@ -499,6 +486,29 @@
     }
   }
 }
+
+.btn-header-back {
+  @include flex-start;
+  gap: var(--spacing-xxs);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: 0;
+  transition: color 0.2s ease;
+
+  .material-icons {
+    font-size: var(--font-size-sm);
+    pointer-events: none;
+  }
+
+  &:hover {
+    color: var(--primary-color);
+  }
+}
+
 
 //Estilização do spinner
 .spinner {
