@@ -4,12 +4,14 @@ import 'package:mybuddy_app/core/network/dio_client.dart';
 import 'package:mybuddy_app/features/auth/data/repositories/auth_repository_mock.dart';
 import 'package:mybuddy_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   _registerCore();
   _registerAuth();
+  _registerPets();
 }
 
 void _registerCore() {
@@ -28,3 +30,11 @@ void _registerAuth() {
     () => AuthRepositoryMock(),
   );
 }
+
+void _registerPets() {
+  // Cubit de favoritos persistente na sessão
+  sl.registerLazySingleton<FavoritosCubit>(
+    () => FavoritosCubit(),
+  );
+}
+

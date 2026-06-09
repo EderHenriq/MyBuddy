@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
+import 'package:mybuddy_app/shared/widgets/app_button.dart';
+import 'package:mybuddy_app/shared/widgets/app_input.dart';
+import 'package:mybuddy_app/shared/theme/app_colors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,7 +19,6 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -79,13 +81,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                   ),
                   const SizedBox(height: 48),
-                  TextFormField(
+                  AppInput(
                     controller: _emailController,
+                    labelText: 'Email',
+                    hintText: 'Digite seu email',
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email_outlined),
-                    ),
+                    prefixIcon: Icons.email_outlined,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Informe o email';
@@ -97,22 +98,14 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
+                  AppInput(
                     controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    decoration: InputDecoration(
-                      labelText: 'Senha',
-                      prefixIcon: const Icon(Icons.lock_outlined),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                        ),
-                        onPressed: () => setState(
-                            () => _obscurePassword = !_obscurePassword),
-                      ),
-                    ),
+                    labelText: 'Senha',
+                    hintText: 'Digite sua senha',
+                    isPassword: true,
+                    prefixIcon: Icons.lock_outlined,
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) => _onLogin(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Informe a senha';
@@ -123,19 +116,63 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 32),
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed:
-                            state is AuthLoading ? null : _onLogin,
-                        child: state is AuthLoading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
+                      final isDark = Theme.of(context).brightness == Brightness.dark;
+                      return Column(
+                        children: [
+                          AppButton(
+                            text: 'Entrar',
+                            isLoading: state is AuthLoading,
+                            onPressed: _onLogin,
+                          ),
+                          const SizedBox(height: 24),
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: isDark ? AppColors.darkBorder : AppColors.border)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  'ou continue com',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: isDark ? AppColors.darkTextSecondary : AppColors.textLight,
+                                      ),
                                 ),
-                              )
-                            : const Text('Entrar'),
+                              ),
+                              Expanded(child: Divider(color: isDark ? AppColors.darkBorder : AppColors.border)),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          AppButton(
+                            text: 'Entrar com Keycloak',
+                            type: AppButtonType.outline,
+                            isLoading: state is AuthLoading,
+                            icon: Icons.vpn_key_outlined,
+                            onPressed: () {
+                              context.read<AuthBloc>().add(LoginWithKeycloakRequested());
+                            },
+                          ),
+                          const SizedBox(height: 32),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Não tem uma conta? ',
+                                style: TextStyle(
+                                  color: isDark ? AppColors.darkTextSecondary : AppColors.textLight,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () => context.go('/cadastro'),
+                                child: const Text(
+                                  'Cadastre-se',
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       );
                     },
                   ),

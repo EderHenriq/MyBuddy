@@ -26,6 +26,19 @@ class AuthRepositoryMock implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, User>> loginWithKeycloak() async {
+    await Future.delayed(const Duration(milliseconds: 1500));
+    _currentUser = const User(
+      id: '5df8a715-5321-4dc7-b388-5325ce4253e2',
+      email: 'keycloak@mybuddy.com',
+      nome: 'Eder Henrique (SSO)',
+      roles: ['ROLE_ADOTANTE'],
+    );
+    _isAuthenticated = true;
+    return Right(_currentUser!);
+  }
+
+  @override
   Future<Either<Failure, void>> logout() async {
     _isAuthenticated = false;
     _currentUser = null;
