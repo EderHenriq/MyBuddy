@@ -33,6 +33,8 @@ class _MyBuddyAppState extends State<MyBuddyApp> {
             title: 'MyBuddy',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            themeMode: ThemeMode.system,
             routerConfig: AppRouter.router(context),
           );
         },
