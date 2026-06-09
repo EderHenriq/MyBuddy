@@ -51,6 +51,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/marketplace/marketplace').then(m => m.Marketplace),
   },
   {
+    path: 'doacoes',
+    loadComponent: () => import('./features/doacoes/pagina-institucional/pagina-institucional').then(m => m.PaginaInstitucional),
+  },
+  {
     path: 'perfil',
     canActivate: [authGuard],
     loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil),

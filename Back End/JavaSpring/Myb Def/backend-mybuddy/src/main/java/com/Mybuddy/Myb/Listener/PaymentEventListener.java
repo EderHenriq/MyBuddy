@@ -30,14 +30,39 @@ public class PaymentEventListener {
             Payment mpPayment = client.get(Long.parseLong(event.getPaymentId()));
 
             String mpStatus = mpPayment.getStatus();
-            log.info("Status no MP para paymentId={}: {}", event.getPaymentId(), mpStatus);
+            String tempPreferenceId = null;
+            if (mpPayment.getResponse() != null && mpPayment.getResponse().getContent() != null) {
+                try {
+                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    com.fasterxml.jackson.databind.JsonNode node = mapper.readTree(mpPayment.getResponse().getContent());
+                    if (node.has("preference_id")) {
+                        tempPreferenceId = node.get("preference_id").asText();
+                    }
+                } catch (Exception parseEx) {
+                    log.error("Erro ao fazer parse do preference_id do JSON do MP: {}", parseEx.getMessage());
+                }
+            }
+            final String preferenceId = tempPreferenceId;
+            log.info("Status no MP para paymentId={} (preferenceId={}): {}", event.getPaymentId(), preferenceId, mpStatus);
 
-            paymentService.findByMpPaymentId(event.getPaymentId())
-                    .ifPresentOrElse(payment -> {
-                        PaymentStatus newStatus = mapStatus(mpStatus);
-                        paymentService.updateStatus(payment, newStatus);
-                        log.info("Payment {} atualizado para {}", payment.getId(), newStatus);
-                    }, () -> log.warn("Payment não encontrado para mpPaymentId={}", event.getPaymentId()));
+            // Tenta localizar por mpPaymentId primeiro
+            var localPaymentOpt = paymentService.findByMpPaymentId(event.getPaymentId());
+            
+            // Se não encontrar, localiza por mpPreferenceId
+            if (localPaymentOpt.isEmpty() && preferenceId != null) {
+                localPaymentOpt = paymentService.findByMpPreferenceId(preferenceId);
+            }
+
+            localPaymentOpt.ifPresentOrElse(payment -> {
+                // Atualiza o id do pagamento do Mercado Pago caso esteja vazio
+                if (payment.getMpPaymentId() == null) {
+                    payment.setMpPaymentId(event.getPaymentId());
+                }
+                
+                PaymentStatus newStatus = mapStatus(mpStatus);
+                paymentService.updateStatus(payment, newStatus);
+                log.info("Payment local {} (MP ID: {}) atualizado para {}", payment.getId(), event.getPaymentId(), newStatus);
+            }, () -> log.warn("Payment não encontrado localmente para mpPaymentId={} ou preferenceId={}", event.getPaymentId(), preferenceId));
 
         } catch (MPException | MPApiException e) {
             log.error("Erro ao consultar MP para paymentId={}: {}", event.getPaymentId(), e.getMessage());

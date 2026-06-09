@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { CardServicoComponent } from '@shared/components/card-servico/card-servico.component';
 import { Footer } from '@shared/components/footer/footer';
+import { HeroSectionComponent } from '@shared/components/hero-section/hero-section.component';
 
 interface Servico {
   id: number;
@@ -20,7 +21,7 @@ interface Servico {
 @Component({
   selector: 'app-servicos',
   standalone: true,
-  imports: [CommonModule, CardServicoComponent, Footer],
+  imports: [CommonModule, CardServicoComponent, Footer, HeroSectionComponent],
   templateUrl: './servicos.component.html',
   styleUrl: './servicos.component.scss',
 })

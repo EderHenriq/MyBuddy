@@ -5,8 +5,9 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public record PaymentRequestDTO(
-
     Long petId,
+    Long campanhaId,
+    Long organizacaoId,
 
     @NotNull(message = "amount é obrigatório")
     @Positive(message = "amount deve ser positivo")

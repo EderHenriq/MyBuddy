@@ -50,6 +50,7 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
     { caminho: '/eventos', rotulo: 'Eventos' },
     { caminho: '/produtos', rotulo: 'Produtos' },
     { caminho: '/servicos', rotulo: 'Serviços' },
+    { caminho: '/doacoes', rotulo: 'Doações' },
   ];
 
   private routerSubscription!: Subscription;

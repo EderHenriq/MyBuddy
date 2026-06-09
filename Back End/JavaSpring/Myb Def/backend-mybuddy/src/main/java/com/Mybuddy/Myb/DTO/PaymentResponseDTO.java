@@ -10,6 +10,8 @@ public record PaymentResponseDTO(
     String mpPaymentId,
     Long usuarioId,
     Long petId,
+    Long campanhaId,
+    Long organizacaoId,
     BigDecimal amount,
     PaymentStatus status,
     String initPoint,
