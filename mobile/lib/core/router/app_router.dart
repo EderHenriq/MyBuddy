@@ -11,6 +11,7 @@ import 'package:mybuddy_app/features/pets/presentation/pages/pets_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/pet_detail_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/favoritos_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/perfil_page.dart';
+import 'package:mybuddy_app/features/pets/presentation/pages/notificacoes_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/marketplace_page.dart';
 import 'package:mybuddy_app/features/adocao/presentation/pages/adocao_page.dart';
 import 'package:mybuddy_app/shared/widgets/main_scaffold.dart';
@@ -88,6 +89,11 @@ class AppRouter {
           path: '/cadastro',
           name: 'cadastro',
           pageBuilder: (context, state) => _slideRoute(state, const CadastroPage()),
+        ),
+        GoRoute(
+          path: '/notificacoes',
+          name: 'notificacoes',
+          pageBuilder: (context, state) => _slideRoute(state, const NotificacoesPage()),
         ),
         ShellRoute(
           builder: (context, state, child) => MainScaffold(child: child),
