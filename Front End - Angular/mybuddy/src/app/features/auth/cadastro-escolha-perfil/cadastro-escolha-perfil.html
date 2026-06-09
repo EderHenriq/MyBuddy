@@ -30,19 +30,15 @@
             class="step-dot"
             [class.active]="currentStep() === step"
             [class.completed]="isStepCompleted(step)"
-            [attr.aria-label]="'Step ' + step + ' de ' + totalSteps().length"
+            [attr.aria-label]="'Step ' + step"
           ></span>
         }
       </nav>
 
       <header class="card-header">
-        @if (currentStep() === 'perfil') {
-          <img src="/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="card-icon" aria-hidden="true" />
-        }
-
         @if (currentStep() !== 'perfil') {
-          <button type="button" class="btn-header-back" (click)="prevStep()" aria-label="Voltar ao espaço anterior">
-            <span class="material-icons" aria-hidden="true">keyboard_arrow_left</span>
+          <button type="button" class="btn-header-back" (click)="prevStep()" aria-label="Voltar">
+            <span class="material-icons">keyboard_arrow_left</span>
           </button>
         }
 
