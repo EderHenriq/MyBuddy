@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class CampanhaDoacao {
+public class CampanhaDoacao implements Identifiable {
 
     @Id
     @EqualsAndHashCode.Include

@@ -2,7 +2,12 @@ package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Model.Payment;
 import com.Mybuddy.Myb.Model.PaymentStatus;
+import com.Mybuddy.Myb.Model.CampanhaDoacao;
+import com.Mybuddy.Myb.Model.Pedido;
+import com.Mybuddy.Myb.Model.StatusPedido;
 import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
+import com.Mybuddy.Myb.Repository.jpa.PedidoRepository;
+import com.Mybuddy.Myb.Repository.mongo.CampanhaDoacaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +32,12 @@ class PaymentServiceTest {
 
     @Mock
     private PetRepository petRepository;
+
+    @Mock
+    private CampanhaDoacaoRepository campanhaDoacaoRepository;
+
+    @Mock
+    private PedidoRepository pedidoRepository;
 
     @InjectMocks
     private PaymentService paymentService;
@@ -191,5 +202,64 @@ class PaymentServiceTest {
         Payment result = paymentService.updateStatus(payment, PaymentStatus.REFUNDED);
 
         assertThat(result.getStatus()).isEqualTo(PaymentStatus.REFUNDED);
+    }
+
+    @Test
+    void deveAtualizarStatusDoPaymentEAtualizarCampanhaSeAprovado() {
+        payment.setStatus(PaymentStatus.PENDING);
+        payment.setCampanhaId(10L);
+        payment.setAmount(new BigDecimal("100.00"));
+
+        CampanhaDoacao campanha = new CampanhaDoacao();
+        campanha.setId(10L);
+        campanha.setArrecadado(new BigDecimal("50.00"));
+        campanha.setMeta(new BigDecimal("120.00"));
+
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
+        when(campanhaDoacaoRepository.findById(10L)).thenReturn(Optional.of(campanha));
+        when(campanhaDoacaoRepository.save(any(CampanhaDoacao.class))).thenReturn(campanha);
+
+        Payment result = paymentService.updateStatus(payment, PaymentStatus.APPROVED);
+
+        assertThat(result).isNotNull();
+        assertThat(campanha.getArrecadado()).isEqualTo(new BigDecimal("150.00"));
+        assertThat(campanha.getStatus()).isEqualTo("META_ATINGIDA");
+        verify(campanhaDoacaoRepository, times(1)).save(campanha);
+    }
+
+    @Test
+    void deveAtualizarStatusDoPaymentEAtualizarPedidoSeAprovado() {
+        payment.setStatus(PaymentStatus.PENDING);
+        Pedido pedido = new Pedido();
+        pedido.setId(5L);
+        pedido.setStatus(StatusPedido.PENDENTE);
+        payment.setPedido(pedido);
+
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
+        when(pedidoRepository.save(any(Pedido.class))).thenReturn(pedido);
+
+        Payment result = paymentService.updateStatus(payment, PaymentStatus.APPROVED);
+
+        assertThat(result).isNotNull();
+        assertThat(pedido.getStatus()).isEqualTo(StatusPedido.PAGO);
+        verify(pedidoRepository, times(1)).save(pedido);
+    }
+
+    @Test
+    void deveAtualizarStatusDoPaymentEAtualizarPedidoSeCancelado() {
+        payment.setStatus(PaymentStatus.PENDING);
+        Pedido pedido = new Pedido();
+        pedido.setId(5L);
+        pedido.setStatus(StatusPedido.PENDENTE);
+        payment.setPedido(pedido);
+
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
+        when(pedidoRepository.save(any(Pedido.class))).thenReturn(pedido);
+
+        Payment result = paymentService.updateStatus(payment, PaymentStatus.CANCELLED);
+
+        assertThat(result).isNotNull();
+        assertThat(pedido.getStatus()).isEqualTo(StatusPedido.CANCELADO);
+        verify(pedidoRepository, times(1)).save(pedido);
     }
 }

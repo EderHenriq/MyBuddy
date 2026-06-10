@@ -47,9 +47,15 @@ public class InteresseAdocaoController {
     @PreAuthorize("hasAnyRole('ADMIN','ONG')")
     public ResponseEntity<InteresseResponse> atualizarStatus(
             @PathVariable Long id,
-            @RequestBody @Valid AtualizarStatusRequest req) {
+            @RequestBody @Valid AtualizarStatusRequest req,
+            @AuthenticationPrincipal Jwt jwt) {
         logger.debug("atualizarStatus: MÉTODO ACESSADO!");
-        var resp = service.atualizarStatus(id, req.status());
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        boolean isAdmin = usuario.getRoles().stream()
+                .anyMatch(r -> r.getName() == com.Mybuddy.Myb.Security.ERole.ROLE_ADMIN);
+        Long userOrgId = (usuario.getOrganizacao() != null) ? usuario.getOrganizacao().getId() : null;
+
+        var resp = service.atualizarStatus(id, req.status(), userOrgId, isAdmin);
         return ResponseEntity.ok(resp);
     }
 

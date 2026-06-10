@@ -56,11 +56,42 @@ public class InteresseAdocaoService {
 
     @Transactional
     public InteresseResponse atualizarStatus(Long interesseId, StatusInteresse novoStatus) {
+        return atualizarStatus(interesseId, novoStatus, null, true);
+    }
+
+    @Transactional
+    public InteresseResponse atualizarStatus(Long interesseId, StatusInteresse novoStatus, Long userOrgId, boolean isAdmin) {
         InteresseAdocao interesse = interesseRepo.findById(interesseId)
                 .orElseThrow(() -> new IllegalArgumentException("Interesse não encontrado: " + interesseId));
 
+        if (!isAdmin) {
+            if (interesse.getPet() == null || interesse.getPet().getOrganizacao() == null ||
+                    userOrgId == null || !interesse.getPet().getOrganizacao().getId().equals(userOrgId)) {
+                throw new org.springframework.security.authorization.AuthorizationDeniedException(
+                        "Você não tem permissão para alterar o status deste interesse de adoção."
+                );
+            }
+        }
+
         interesse.setStatus(novoStatus);
         interesse.setAtualizadoEm(LocalDateTime.now());
+
+        if (novoStatus == StatusInteresse.APROVADO) {
+            Pet pet = interesse.getPet();
+            if (pet != null) {
+                pet.setStatusAdocao(StatusAdocao.ADOTADO);
+                petRepo.save(pet);
+
+                List<InteresseAdocao> outros = interesseRepo.findByPetId(pet.getId());
+                for (InteresseAdocao outro : outros) {
+                    if (!outro.getId().equals(interesseId) && outro.getStatus() == StatusInteresse.PENDENTE) {
+                        outro.setStatus(StatusInteresse.REJEITADO);
+                        outro.setAtualizadoEm(LocalDateTime.now());
+                        interesseRepo.save(outro);
+                    }
+                }
+            }
+        }
 
         var salvo = interesseRepo.save(interesse);
         return InteresseAdocaoMapper.toResponse(salvo);

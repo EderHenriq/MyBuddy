@@ -5,25 +5,27 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "fotos_produto")
+@Table(name = "subcategorias")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class FotoProduto {
+public class SubCategoria {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false, length = 500)
-    private String url;
+    @Column(nullable = false)
+    private String nome;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produto_id", nullable = false)
-    @JsonBackReference(value = "produto-fotos")
+    @JoinColumn(name = "categoria_id", nullable = false)
+    @JsonBackReference
     @ToString.Exclude
-    private Produto produto;
+    private Categoria categoria;
 }

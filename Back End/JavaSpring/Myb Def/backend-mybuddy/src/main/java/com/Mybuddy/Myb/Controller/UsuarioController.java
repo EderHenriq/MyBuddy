@@ -1,6 +1,7 @@
 package com.Mybuddy.Myb.Controller;
 
 import com.Mybuddy.Myb.Model.Usuario;
+import com.Mybuddy.Myb.Service.FotoPetService;
 import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import com.Mybuddy.Myb.Service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,10 +20,12 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final KeycloakUserSyncService keycloakUserSyncService;
+    private final FotoPetService fotoPetService;
 
-    public UsuarioController(UsuarioService usuarioService, KeycloakUserSyncService keycloakUserSyncService) {
+    public UsuarioController(UsuarioService usuarioService, KeycloakUserSyncService keycloakUserSyncService, FotoPetService fotoPetService) {
         this.usuarioService = usuarioService;
         this.keycloakUserSyncService = keycloakUserSyncService;
+        this.fotoPetService = fotoPetService;
     }
 
     @PostMapping
@@ -45,6 +49,36 @@ public class UsuarioController {
     public ResponseEntity<Usuario> getMeuPerfil(@AuthenticationPrincipal Jwt jwt) {
         Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
         return ResponseEntity.ok(usuario);
+    }
+
+    @PutMapping("/meu-perfil")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Usuario> atualizarMeuPerfil(@AuthenticationPrincipal Jwt jwt, @RequestBody Usuario dadosUsuario) {
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        usuario.setNome(dadosUsuario.getNome());
+        usuario.setTelefone(dadosUsuario.getTelefone());
+        Usuario usuarioAtualizado = usuarioService.atualizarUsuario(usuario.getId(), usuario);
+        return ResponseEntity.ok(usuarioAtualizado);
+    }
+
+    @PostMapping("/meu-perfil/avatar")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> uploadAvatar(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal Jwt jwt) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Por favor selecione um arquivo.");
+        }
+        try {
+            String fileName = fotoPetService.storeFile(file);
+            Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+            usuario.setUrlAvatar("/uploads/" + fileName);
+            usuarioService.atualizarUsuario(usuario.getId(), usuario);
+            return ResponseEntity.ok("/uploads/" + fileName);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao salvar avatar: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")

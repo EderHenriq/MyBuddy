@@ -27,8 +27,15 @@ public class Pedido {
     @Column(name = "cliente_id", nullable = false)
     private Long clienteId;
 
-    @Column(name = "petshop_id", nullable = false)
-    private Long petshopId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "petshop_id", nullable = false)
+    @JsonBackReference(value = "petshop-pedidos")
+    @ToString.Exclude
+    private Petshop petshop;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "endereco_entrega_id")
+    private EnderecoEntrega enderecoEntrega;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference

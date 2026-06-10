@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Pet {
+public class Pet implements Identifiable {
 
     @Id
     @EqualsAndHashCode.Include

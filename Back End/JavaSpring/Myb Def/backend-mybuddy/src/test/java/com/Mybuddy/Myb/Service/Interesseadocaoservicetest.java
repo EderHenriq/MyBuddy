@@ -123,7 +123,7 @@ class InteresseAdocaoServiceTest {
         when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
         when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
 
-        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.APROVADO);
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.REJEITADO);
 
         assertThat(result).isNotNull();
         verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
@@ -177,5 +177,66 @@ class InteresseAdocaoServiceTest {
         List<InteresseResponse> result = interesseAdocaoService.listarPorUsuario(99L);
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void deveAtualizarStatusInteresseQuandoForAdmin() {
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.REJEITADO, null, true);
+
+        assertThat(result).isNotNull();
+        verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
+    }
+
+    @Test
+    void deveAtualizarStatusInteresseQuandoForDonoDoPet() {
+        Organizacao org = new Organizacao();
+        org.setId(10L);
+        pet.setOrganizacao(org);
+
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.REJEITADO, 10L, false);
+
+        assertThat(result).isNotNull();
+        verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtualizarStatusQuandoNaoForDonoDoPet() {
+        Organizacao org = new Organizacao();
+        org.setId(10L);
+        pet.setOrganizacao(org);
+
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+
+        assertThatThrownBy(() -> interesseAdocaoService.atualizarStatus(1L, StatusInteresse.APROVADO, 20L, false))
+                .isInstanceOf(org.springframework.security.authorization.AuthorizationDeniedException.class)
+                .hasMessageContaining("Você não tem permissão para alterar o status deste interesse de adoção.");
+
+        verify(interesseRepo, never()).save(any());
+    }
+
+    @Test
+    void deveAtualizarStatusInteresseParaAprovadoEAtualizarPetERejeitarOutros() {
+        InteresseAdocao outroInteresse = new InteresseAdocao();
+        outroInteresse.setId(2L);
+        outroInteresse.setStatus(StatusInteresse.PENDENTE);
+
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+        when(petRepo.save(any(Pet.class))).thenReturn(pet);
+        when(interesseRepo.findByPetId(1L)).thenReturn(List.of(interesse, outroInteresse));
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.APROVADO, null, true);
+
+        assertThat(result).isNotNull();
+        assertThat(pet.getStatusAdocao()).isEqualTo(StatusAdocao.ADOTADO);
+        assertThat(outroInteresse.getStatus()).isEqualTo(StatusInteresse.REJEITADO);
+        verify(petRepo, times(1)).save(pet);
+        verify(interesseRepo, atLeastOnce()).save(any(InteresseAdocao.class));
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/donations/stats")
@@ -26,25 +25,10 @@ public class DonationStatsController {
 
     @GetMapping
     public ResponseEntity<DonationStatsResponseDTO> getStats() {
-        // 1. Contar pets adotados (salvos)
-        long petsSalvos = petRepository.findAll().stream()
-                .filter(p -> p.getStatusAdocao() == StatusAdocao.ADOTADO)
-                .count();
-
-        // 2. Contar ONGs parceiras
+        long petsSalvos = petRepository.countByStatusAdocao(StatusAdocao.ADOTADO);
         long ongsParceiras = organizacaoRepository.count();
-
-        // 3. Obter total arrecadado das doações/pagamentos aprovados
-        BigDecimal totalArrecadado = paymentRepository.findByStatus(PaymentStatus.APPROVED).stream()
-                .map(p -> Objects.requireNonNullElse(p.getAmount(), BigDecimal.ZERO))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        // 4. Obter contagem de doadores ativos (usuários distintos com pagamentos aprovados)
-        long doadoresAtivos = paymentRepository.findByStatus(PaymentStatus.APPROVED).stream()
-                .map(p -> p.getUsuarioId())
-                .filter(Objects::nonNull)
-                .distinct()
-                .count();
+        BigDecimal totalArrecadado = paymentRepository.sumAmountByStatus(PaymentStatus.APPROVED);
+        long doadoresAtivos = paymentRepository.countDistinctUsuarioIdByStatus(PaymentStatus.APPROVED);
 
         return ResponseEntity.ok(new DonationStatsResponseDTO(
                 petsSalvos,

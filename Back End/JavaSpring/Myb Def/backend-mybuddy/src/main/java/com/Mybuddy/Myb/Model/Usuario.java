@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Usuario {
+public class Usuario implements Identifiable {
 
     @Id
     @EqualsAndHashCode.Include
@@ -42,10 +42,7 @@ public class Usuario {
     @ToString.Exclude
     private Organizacao organizacao;
 
-    @DocumentReference(lazy = true)
-    @JsonBackReference
-    @ToString.Exclude
-    private Petshop petshop;
+    private Long petshopId;
 
     private String keycloakId;
 
