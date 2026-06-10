@@ -51,9 +51,14 @@ public class Produto {
     private Petshop petshop;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference(value = "produto-fotos")
     @ToString.Exclude
     private Set<FotoProduto> fotos = new HashSet<>();
+
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "produto-avaliacoes")
+    @ToString.Exclude
+    private Set<AvaliacaoProduto> avaliacoes = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "data_criacao", updatable = false)
