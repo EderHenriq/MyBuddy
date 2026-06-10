@@ -50,3 +50,37 @@ jobs:
         with:
           name: jacoco-report
           path: "Back End/JavaSpring/Myb Def/backend-mybuddy/target/site/jacoco/"
+
+  e2e-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'Front End - Angular/mybuddy/package.json'
+
+      - name: Instalar dependências
+        run: npm install --legacy-peer-deps
+        working-directory: 'Front End - Angular/mybuddy'
+
+      - name: Instalar browsers do Playwright
+        run: npx playwright install chromium --with-deps
+        working-directory: 'Front End - Angular/mybuddy'
+
+      - name: Executar testes E2E do Playwright
+        run: npm run e2e
+        working-directory: 'Front End - Angular/mybuddy'
+
+      - name: Upload de relatórios em caso de falha
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: 'Front End - Angular/mybuddy/playwright-report/'
+          retention-days: 30
+

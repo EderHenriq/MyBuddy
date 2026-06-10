@@ -31,15 +31,7 @@ interface Produto {
 @Component({
   selector: 'app-marketplace',
   standalone: true,
-  imports: [
-    CommonModule,
-    Footer,
-    CardProdutoComponent,
-    CardLojaComponent,
-    CategoryCarouselComponent,
-    CartDrawerComponent,
-    HeroSectionComponent,
-  ],
+  imports: [CommonModule, Footer, CardProdutoComponent, CardLojaComponent, CategoryCarouselComponent, CartDrawerComponent, HeroSectionComponent],
   templateUrl: './marketplace.html',
   styleUrl: './marketplace.scss',
 })

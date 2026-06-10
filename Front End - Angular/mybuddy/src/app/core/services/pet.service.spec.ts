@@ -29,7 +29,7 @@ describe('PetService', () => {
   it('should fetch pets', () => {
     const mockPets: Pet[] = [{ id: '1', ownerId: '1', name: 'Rex', species: 'Dog' }];
 
-    service.getAll().subscribe(pets => {
+    service.buscarTodos().subscribe((pets: Pet[]) => {
       expect(pets.length).toBe(1);
       expect(pets).toEqual(mockPets);
     });

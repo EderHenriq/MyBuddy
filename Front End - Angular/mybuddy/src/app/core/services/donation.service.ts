@@ -51,34 +51,21 @@ export class DonationService {
           ongsParceiras: 38,
           totalArrecadado: 92000,
           doadoresAtivos: 4800,
-        })
-      )
+        }),
+      ),
     );
   }
 
   getCampaigns(categoria?: string): Observable<CampanhaDoacao[]> {
-    const path =
-      categoria && categoria !== 'Todos'
-        ? `campanhas?categoria=${encodeURIComponent(categoria)}`
-        : 'campanhas';
-    return this.api.get<CampanhaDoacao[]>(path).pipe(
-      catchError(() => of(this.getMockCampaigns(categoria)))
-    );
+    const path = categoria && categoria !== 'Todos' ? `campanhas?categoria=${encodeURIComponent(categoria)}` : 'campanhas';
+    return this.api.get<CampanhaDoacao[]>(path).pipe(catchError(() => of(this.getMockCampaigns(categoria))));
   }
 
   getOngsParceiras(): Observable<OngParceira[]> {
-    return this.api.get<OngParceira[]>('ongs/parceiras').pipe(
-      catchError(() => of(this.getMockOngs()))
-    );
+    return this.api.get<OngParceira[]>('ongs/parceiras').pipe(catchError(() => of(this.getMockOngs())));
   }
 
-  createSingleDonation(
-    amount: number,
-    description: string,
-    petId?: number,
-    campanhaId?: number,
-    organizacaoId?: number
-  ): Observable<any> {
+  createSingleDonation(amount: number, description: string, petId?: number, campanhaId?: number, organizacaoId?: number): Observable<any> {
     return this.api.post('payments/create', {
       amount,
       description,
@@ -88,11 +75,7 @@ export class DonationService {
     });
   }
 
-  createRecurringDonation(
-    amount: number,
-    frequency: 'weekly' | 'monthly',
-    organizacaoId?: number
-  ): Observable<any> {
+  createRecurringDonation(amount: number, frequency: 'weekly' | 'monthly', organizacaoId?: number): Observable<any> {
     return this.api.post('payments/subscribe', {
       amount,
       frequency,
