@@ -108,4 +108,35 @@ class AuthServiceTest {
 
         verify(usuarioRepository, never()).save(any());
     }
+
+    @Test
+    void deveFazerCleanupDaOrganizacaoQuandoSalvarUsuarioFalha() {
+        signupRequest.setRoles(Set.of("ONG"));
+        signupRequest.setOrganizacaoCnpj("12.345.678/0001-90");
+        signupRequest.setOrganizacaoNomeFantasia("ONG Teste");
+        signupRequest.setOrganizacaoEmailContato("ong@teste.com");
+        signupRequest.setOrganizacaoEndereco("Rua das ONGs");
+
+        Role roleOng = new Role();
+        roleOng.setName(ERole.ROLE_ONG);
+
+        com.Mybuddy.Myb.Model.Organizacao orgCriada = new com.Mybuddy.Myb.Model.Organizacao();
+        orgCriada.setId(123L);
+        orgCriada.setCnpj("12.345.678/0001-90");
+
+        when(usuarioRepository.existsByEmail(signupRequest.getEmail())).thenReturn(false);
+        when(usuarioRepository.existsByTelefone(signupRequest.getTelefone())).thenReturn(false);
+        when(roleRepository.findByName(ERole.ROLE_ONG)).thenReturn(Optional.of(roleOng));
+        when(organizacaoService.existeOrganizacaoPorCnpj(any(String.class))).thenReturn(false);
+        when(organizacaoService.criarOrganizacao(any(com.Mybuddy.Myb.Model.Organizacao.class))).thenReturn(orgCriada);
+        when(encoder.encode(any())).thenReturn("senhaCriptografada");
+        
+        when(usuarioRepository.save(any())).thenThrow(new RuntimeException("Database error saving user"));
+
+        assertThatThrownBy(() -> authService.registerUser(signupRequest))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Database error saving user");
+
+        verify(organizacaoService, times(1)).deletarOrganizacao(123L);
+    }
 }

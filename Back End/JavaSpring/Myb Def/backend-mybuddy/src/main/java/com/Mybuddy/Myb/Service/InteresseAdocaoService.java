@@ -56,8 +56,22 @@ public class InteresseAdocaoService {
 
     @Transactional
     public InteresseResponse atualizarStatus(Long interesseId, StatusInteresse novoStatus) {
+        return atualizarStatus(interesseId, novoStatus, null, true);
+    }
+
+    @Transactional
+    public InteresseResponse atualizarStatus(Long interesseId, StatusInteresse novoStatus, Long userOrgId, boolean isAdmin) {
         InteresseAdocao interesse = interesseRepo.findById(interesseId)
                 .orElseThrow(() -> new IllegalArgumentException("Interesse não encontrado: " + interesseId));
+
+        if (!isAdmin) {
+            if (interesse.getPet() == null || interesse.getPet().getOrganizacao() == null ||
+                    userOrgId == null || !interesse.getPet().getOrganizacao().getId().equals(userOrgId)) {
+                throw new org.springframework.security.authorization.AuthorizationDeniedException(
+                        "Você não tem permissão para alterar o status deste interesse de adoção."
+                );
+            }
+        }
 
         interesse.setStatus(novoStatus);
         interesse.setAtualizadoEm(LocalDateTime.now());

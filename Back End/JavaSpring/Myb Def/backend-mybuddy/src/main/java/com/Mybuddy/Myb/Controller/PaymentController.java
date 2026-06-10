@@ -16,6 +16,7 @@ import com.mercadopago.client.preapproval.PreapprovalClient;
 import com.mercadopago.resources.preapproval.Preapproval;
 import com.Mybuddy.Myb.Repository.jpa.DonationSubscriptionRepository;
 import com.Mybuddy.Myb.Model.DonationSubscription;
+import com.Mybuddy.Myb.Model.PaymentStatus;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -200,5 +201,76 @@ public class PaymentController {
                 null,
                 payment.getCreatedAt(),
                 payment.getUpdatedAt()));
+    }
+
+    @PostMapping("/sync-redirection")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<PaymentResponseDTO> syncRedirection(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(required = false) String paymentId,
+            @RequestParam(required = false) String preferenceId) throws MPException, MPApiException {
+        
+        log.info("Requisição de sincronização recebida: paymentId={}, preferenceId={}", paymentId, preferenceId);
+        
+        if (paymentId == null && preferenceId == null) {
+            throw new IllegalArgumentException("paymentId ou preferenceId é obrigatório para sincronização.");
+        }
+
+        java.util.Optional<Payment> paymentOpt = java.util.Optional.empty();
+        if (paymentId != null) {
+            paymentOpt = paymentService.findByMpPaymentId(paymentId);
+        }
+        if (paymentOpt.isEmpty() && preferenceId != null) {
+            paymentOpt = paymentService.findByMpPreferenceId(preferenceId);
+        }
+
+        if (paymentOpt.isEmpty()) {
+            throw new RuntimeException("Pagamento local correspondente não encontrado.");
+        }
+
+        Payment payment = paymentOpt.get();
+
+        if (payment.getStatus() == PaymentStatus.PENDING) {
+            if (paymentId != null) {
+                try {
+                    com.mercadopago.client.payment.PaymentClient client = new com.mercadopago.client.payment.PaymentClient();
+                    com.mercadopago.resources.payment.Payment mpPayment = client.get(Long.parseLong(paymentId));
+                    String mpStatus = mpPayment.getStatus();
+                    
+                    if (payment.getMpPaymentId() == null) {
+                        payment.setMpPaymentId(paymentId);
+                    }
+
+                    PaymentStatus newStatus = switch (mpStatus) {
+                        case "approved" -> PaymentStatus.APPROVED;
+                        case "rejected" -> PaymentStatus.REJECTED;
+                        case "cancelled" -> PaymentStatus.CANCELLED;
+                        case "refunded" -> PaymentStatus.REFUNDED;
+                        default -> PaymentStatus.PENDING;
+                    };
+                    
+                    if (newStatus != payment.getStatus()) {
+                        paymentService.updateStatus(payment, newStatus);
+                    }
+                } catch (Exception e) {
+                    log.error("Erro ao sincronizar com Mercado Pago para paymentId {}: {}", paymentId, e.getMessage());
+                }
+            }
+        }
+
+        return ResponseEntity.ok(new PaymentResponseDTO(
+                payment.getId(),
+                payment.getMpPreferenceId(),
+                payment.getMpPaymentId(),
+                payment.getUsuarioId(),
+                payment.getPetId(),
+                payment.getCampanhaId(),
+                payment.getOrganizacaoId(),
+                payment.getAmount(),
+                payment.getStatus(),
+                null,
+                payment.getCreatedAt(),
+                payment.getUpdatedAt()
+        ));
     }
 }

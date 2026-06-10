@@ -57,8 +57,26 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDetails> handleAuthorizationDeniedException(AuthorizationDeniedException ex, WebRequest request) {
         logger.warn("Acesso negado: {}", ex.getMessage());
         return new ResponseEntity<>(
-                new ErrorDetails(LocalDateTime.now(), "Acesso negado", request.getDescription(false)),
+                new ErrorDetails(LocalDateTime.now(), "Acesso negado: " + ex.getMessage(), request.getDescription(false)),
                 HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ErrorDetails> handleBadRequestException(RuntimeException ex, WebRequest request) {
+        logger.error("Requisição inválida: {}", ex.getMessage());
+        return new ResponseEntity<>(
+                new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false)),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler({com.mercadopago.exceptions.MPException.class, com.mercadopago.exceptions.MPApiException.class})
+    public ResponseEntity<ErrorDetails> handleMercadoPagoException(Exception ex, WebRequest request) {
+        logger.error("Erro na API do Mercado Pago: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(
+                new ErrorDetails(LocalDateTime.now(), "Serviço de pagamento temporariamente indisponível. Por favor, tente novamente mais tarde.", request.getDescription(false)),
+                HttpStatus.BAD_GATEWAY
         );
     }
 

@@ -178,4 +178,45 @@ class InteresseAdocaoServiceTest {
 
         assertThat(result).isEmpty();
     }
+
+    @Test
+    void deveAtualizarStatusInteresseQuandoForAdmin() {
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.APROVADO, null, true);
+
+        assertThat(result).isNotNull();
+        verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
+    }
+
+    @Test
+    void deveAtualizarStatusInteresseQuandoForDonoDoPet() {
+        Organizacao org = new Organizacao();
+        org.setId(10L);
+        pet.setOrganizacao(org);
+
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.APROVADO, 10L, false);
+
+        assertThat(result).isNotNull();
+        verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtualizarStatusQuandoNaoForDonoDoPet() {
+        Organizacao org = new Organizacao();
+        org.setId(10L);
+        pet.setOrganizacao(org);
+
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+
+        assertThatThrownBy(() -> interesseAdocaoService.atualizarStatus(1L, StatusInteresse.APROVADO, 20L, false))
+                .isInstanceOf(org.springframework.security.authorization.AuthorizationDeniedException.class)
+                .hasMessageContaining("Você não tem permissão para alterar o status deste interesse de adoção.");
+
+        verify(interesseRepo, never()).save(any());
+    }
 }

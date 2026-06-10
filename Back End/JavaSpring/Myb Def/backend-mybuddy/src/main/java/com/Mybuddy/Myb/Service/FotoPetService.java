@@ -32,6 +32,17 @@ public class FotoPetService {
      * Salva um arquivo/foto no MongoDB.
      */
     public String storeFile(MultipartFile file) throws IOException {
+        // Validar tipo de conteúdo (apenas imagens permitidas)
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("Apenas arquivos de imagem são permitidos.");
+        }
+
+        // Validar tamanho (máximo 5MB)
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new IllegalArgumentException("O tamanho máximo permitido para o arquivo é 5MB.");
+        }
+
         String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
         String fileExtension = "";
         int dotIndex = originalFileName.lastIndexOf('.');

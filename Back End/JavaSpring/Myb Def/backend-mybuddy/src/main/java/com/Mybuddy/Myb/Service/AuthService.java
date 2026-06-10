@@ -49,68 +49,79 @@ public class AuthService {
         Set<Role> roles = new HashSet<>();
         Organizacao organizacaoAssociada = null;
 
-        if (strRoles == null || strRoles.isEmpty()) {
-            Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
-                    .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ADOTANTE não encontrada."));
-            roles.add(adotanteRole);
-        } else {
-            for (String roleName : strRoles) {
-                switch (roleName.toUpperCase()) {
-                    case "ADMIN":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ADMIN não encontrada."));
-                        roles.add(adminRole);
-                        break;
+        try {
+            if (strRoles == null || strRoles.isEmpty()) {
+                Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
+                        .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ADOTANTE não encontrada."));
+                roles.add(adotanteRole);
+            } else {
+                for (String roleName : strRoles) {
+                    switch (roleName.toUpperCase()) {
+                        case "ADMIN":
+                            Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                    .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ADMIN não encontrada."));
+                            roles.add(adminRole);
+                            break;
 
-                    case "ONG":
-                        Role ongRole = roleRepository.findByName(ERole.ROLE_ONG)
-                                .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ONG não encontrada."));
-                        roles.add(ongRole);
+                        case "ONG":
+                            Role ongRole = roleRepository.findByName(ERole.ROLE_ONG)
+                                    .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ONG não encontrada."));
+                            roles.add(ongRole);
 
-                        if (signUpRequest.getOrganizacaoCnpj() == null || signUpRequest.getOrganizacaoCnpj().trim().isEmpty())
-                            throw new RuntimeException("O CNPJ da organização é obrigatório para a role ONG.");
-                        if (signUpRequest.getOrganizacaoNomeFantasia() == null || signUpRequest.getOrganizacaoNomeFantasia().trim().isEmpty())
-                            throw new RuntimeException("O Nome Fantasia da organização é obrigatório para a role ONG.");
-                        if (signUpRequest.getOrganizacaoEmailContato() == null || signUpRequest.getOrganizacaoEmailContato().trim().isEmpty())
-                            throw new RuntimeException("O E-mail de Contato da organização é obrigatório para a role ONG.");
-                        if (signUpRequest.getOrganizacaoEndereco() == null || signUpRequest.getOrganizacaoEndereco().trim().isEmpty())
-                            throw new RuntimeException("O Endereço da organização é obrigatório para a role ONG.");
+                            if (signUpRequest.getOrganizacaoCnpj() == null || signUpRequest.getOrganizacaoCnpj().trim().isEmpty())
+                                throw new RuntimeException("O CNPJ da organização é obrigatório para a role ONG.");
+                            if (signUpRequest.getOrganizacaoNomeFantasia() == null || signUpRequest.getOrganizacaoNomeFantasia().trim().isEmpty())
+                                throw new RuntimeException("O Nome Fantasia da organização é obrigatório para a role ONG.");
+                            if (signUpRequest.getOrganizacaoEmailContato() == null || signUpRequest.getOrganizacaoEmailContato().trim().isEmpty())
+                                throw new RuntimeException("O E-mail de Contato da organização é obrigatório para a role ONG.");
+                            if (signUpRequest.getOrganizacaoEndereco() == null || signUpRequest.getOrganizacaoEndereco().trim().isEmpty())
+                                throw new RuntimeException("O Endereço da organização é obrigatório para a role ONG.");
 
-                        if (organizacaoService.existeOrganizacaoPorCnpj(signUpRequest.getOrganizacaoCnpj()))
-                            throw new ConflictException("Já existe uma organização com o CNPJ: " + signUpRequest.getOrganizacaoCnpj());
+                            if (organizacaoService.existeOrganizacaoPorCnpj(signUpRequest.getOrganizacaoCnpj()))
+                                throw new ConflictException("Já existe uma organização com o CNPJ: " + signUpRequest.getOrganizacaoCnpj());
 
-                        Organizacao novaOrganizacao = new Organizacao();
-                        novaOrganizacao.setCnpj(signUpRequest.getOrganizacaoCnpj());
-                        novaOrganizacao.setNomeFantasia(signUpRequest.getOrganizacaoNomeFantasia());
-                        novaOrganizacao.setEmailContato(signUpRequest.getOrganizacaoEmailContato());
-                        novaOrganizacao.setTelefoneContato(signUpRequest.getOrganizacaoTelefoneContato());
-                        novaOrganizacao.setEndereco(signUpRequest.getOrganizacaoEndereco());
-                        novaOrganizacao.setDescricao(signUpRequest.getOrganizacaoDescricao());
-                        novaOrganizacao.setWebsite(signUpRequest.getOrganizacaoWebsite());
+                            Organizacao novaOrganizacao = new Organizacao();
+                            novaOrganizacao.setCnpj(signUpRequest.getOrganizacaoCnpj());
+                            novaOrganizacao.setNomeFantasia(signUpRequest.getOrganizacaoNomeFantasia());
+                            novaOrganizacao.setEmailContato(signUpRequest.getOrganizacaoEmailContato());
+                            novaOrganizacao.setTelefoneContato(signUpRequest.getOrganizacaoTelefoneContato());
+                            novaOrganizacao.setEndereco(signUpRequest.getOrganizacaoEndereco());
+                            novaOrganizacao.setDescricao(signUpRequest.getOrganizacaoDescricao());
+                            novaOrganizacao.setWebsite(signUpRequest.getOrganizacaoWebsite());
 
-                        organizacaoAssociada = organizacaoService.criarOrganizacao(novaOrganizacao);
-                        break;
+                            organizacaoAssociada = organizacaoService.criarOrganizacao(novaOrganizacao);
+                            break;
 
-                    case "ADOTANTE":
-                        Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
-                                .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ADOTANTE não encontrada."));
-                        roles.add(adotanteRole);
-                        break;
+                        case "ADOTANTE":
+                            Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
+                                    .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ADOTANTE não encontrada."));
+                            roles.add(adotanteRole);
+                            break;
 
-                    default:
-                        throw new RuntimeException("Erro: Role inválida: " + roleName);
+                        default:
+                            throw new RuntimeException("Erro: Role inválida: " + roleName);
+                    }
                 }
             }
-        }
 
-        Usuario user = new Usuario(
-                signUpRequest.getNome(),
-                signUpRequest.getEmail(),
-                signUpRequest.getTelefone(),
-                encoder.encode(signUpRequest.getPassword())
-        );
-        user.setOrganizacao(organizacaoAssociada);
-        user.setRoles(roles);
-        usuarioRepository.save(user);
+            Usuario user = new Usuario(
+                    signUpRequest.getNome(),
+                    signUpRequest.getEmail(),
+                    signUpRequest.getTelefone(),
+                    encoder.encode(signUpRequest.getPassword())
+            );
+            user.setOrganizacao(organizacaoAssociada);
+            user.setRoles(roles);
+            usuarioRepository.save(user);
+        } catch (Exception ex) {
+            if (organizacaoAssociada != null && organizacaoAssociada.getId() != null) {
+                try {
+                    organizacaoService.deletarOrganizacao(organizacaoAssociada.getId());
+                } catch (Exception cleanupEx) {
+                    // Ignore, to throw original exception
+                }
+            }
+            throw ex;
+        }
     }
 }
