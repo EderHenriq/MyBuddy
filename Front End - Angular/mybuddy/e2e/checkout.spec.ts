@@ -3,6 +3,38 @@ import { test, expect } from '@playwright/test';
 test.describe('Fluxo de Checkout e Pagamento', () => {
   // Configurar o mock do SDK do Mercado Pago para todas as rotas de script do MP
   test.beforeEach(async ({ page }) => {
+    // Capturar logs e erros do console do navegador
+    page.on('console', msg => console.log(`[Browser Console] ${msg.type()}: ${msg.text()}`));
+    page.on('pageerror', err => console.error(`[Browser PageError] ${err.message}`));
+
+    // Interceptar a rota de configuração do Keycloak
+    await page.route('**/realms/mybuddy', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          realm: 'mybuddy',
+          public_key: 'mock-public-key',
+        }),
+      });
+    });
+
+    await page.route('**/realms/mybuddy/.well-known/openid-configuration', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          issuer: 'http://localhost:8080/realms/mybuddy',
+          authorization_endpoint: 'http://localhost:8080/realms/mybuddy/protocol/openid-connect/auth',
+          token_endpoint: 'http://localhost:8080/realms/mybuddy/protocol/openid-connect/token',
+          userinfo_endpoint: 'http://localhost:8080/realms/mybuddy/protocol/openid-connect/userinfo',
+          end_session_endpoint: 'http://localhost:8080/realms/mybuddy/protocol/openid-connect/logout',
+          jwks_uri: 'http://localhost:8080/realms/mybuddy/protocol/openid-connect/certs',
+          grant_types_supported: ['password', 'authorization_code', 'refresh_token'],
+        }),
+      });
+    });
+
     await page.route('https://sdk.mercadopago.com/js/v2', async (route) => {
       await route.fulfill({
         status: 200,
