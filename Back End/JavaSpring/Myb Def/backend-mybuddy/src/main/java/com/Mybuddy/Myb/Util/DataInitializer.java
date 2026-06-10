@@ -30,6 +30,8 @@ public class DataInitializer {
     private final ProdutoRepository produtoRepository;
     private final EventoOngRepository eventoOngRepository;
     private final ChatRepository chatRepository;
+    private final CategoriaRepository categoriaRepository;
+    private final SubCategoriaRepository subCategoriaRepository;
 
     public DataInitializer(
             UsuarioRepository usuarioRepository,
@@ -40,7 +42,9 @@ public class DataInitializer {
             PetshopRepository petshopRepository,
             ProdutoRepository produtoRepository,
             EventoOngRepository eventoOngRepository,
-            ChatRepository chatRepository
+            ChatRepository chatRepository,
+            CategoriaRepository categoriaRepository,
+            SubCategoriaRepository subCategoriaRepository
     ) {
         this.usuarioRepository = usuarioRepository;
         this.roleRepository = roleRepository;
@@ -51,6 +55,8 @@ public class DataInitializer {
         this.produtoRepository = produtoRepository;
         this.eventoOngRepository = eventoOngRepository;
         this.chatRepository = chatRepository;
+        this.categoriaRepository = categoriaRepository;
+        this.subCategoriaRepository = subCategoriaRepository;
     }
 
     @PostConstruct
@@ -176,21 +182,32 @@ public class DataInitializer {
                     null,
                     roles
             );
-            petshopUser.setPetshop(petshop);
+            petshopUser.setPetshopId(petshop.getId());
             usuarioRepository.save(petshopUser);
             log.info("Usuário Petshop criado!");
         }
 
+        // Inicialização de Categorias e SubCategorias
+        Categoria catAlimentacao = categoriaRepository.findByNome("Alimentação")
+                .orElseGet(() -> categoriaRepository.save(Categoria.builder().nome("Alimentação").build()));
 
+        Categoria catAcessorios = categoriaRepository.findByNome("Acessórios")
+                .orElseGet(() -> categoriaRepository.save(Categoria.builder().nome("Acessórios").build()));
+
+        SubCategoria subRacao = subCategoriaRepository.findByNomeAndCategoriaId("Ração", catAlimentacao.getId())
+                .orElseGet(() -> subCategoriaRepository.save(SubCategoria.builder().nome("Ração").categoria(catAlimentacao).build()));
+
+        SubCategoria subColeira = subCategoriaRepository.findByNomeAndCategoriaId("Coleiras", catAcessorios.getId())
+                .orElseGet(() -> subCategoriaRepository.save(SubCategoria.builder().nome("Coleiras").categoria(catAcessorios).build()));
 
         if (produtoRepository.count() == 0) {
             log.info("Criando Produtos reais...");
             Produto prod1 = new Produto();
             prod1.setNome("Ração Golden Premier 15kg");
-            prod1.setCategoria("Ração");
+            prod1.setSubCategoria(subRacao);
             prod1.setPreco(new BigDecimal("149.90"));
             prod1.setEstoque(15);
-            prod1.setPetshopId(petshop.getId());
+            prod1.setPetshop(petshop);
             prod1.setStatus(StatusProduto.ATIVO);
             FotoProduto f1 = new FotoProduto();
             f1.setUrl("https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=600");
@@ -199,10 +216,10 @@ public class DataInitializer {
 
             Produto prod2 = new Produto();
             prod2.setNome("Coleira Anti-pulgas");
-            prod2.setCategoria("Acessórios");
+            prod2.setSubCategoria(subColeira);
             prod2.setPreco(new BigDecimal("89.90"));
             prod2.setEstoque(0);
-            prod2.setPetshopId(petshop.getId());
+            prod2.setPetshop(petshop);
             prod2.setStatus(StatusProduto.ATIVO);
             FotoProduto f2 = new FotoProduto();
             f2.setUrl("https://images.unsplash.com/photo-1601633519842-83569502ab45?auto=format&fit=crop&q=80&w=600");
