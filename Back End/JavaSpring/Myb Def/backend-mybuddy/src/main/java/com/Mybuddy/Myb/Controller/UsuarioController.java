@@ -51,6 +51,16 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
+    @PutMapping("/meu-perfil")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Usuario> atualizarMeuPerfil(@AuthenticationPrincipal Jwt jwt, @RequestBody Usuario dadosUsuario) {
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        usuario.setNome(dadosUsuario.getNome());
+        usuario.setTelefone(dadosUsuario.getTelefone());
+        Usuario usuarioAtualizado = usuarioService.atualizarUsuario(usuario.getId(), usuario);
+        return ResponseEntity.ok(usuarioAtualizado);
+    }
+
     @PostMapping("/meu-perfil/avatar")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> uploadAvatar(
