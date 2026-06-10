@@ -14,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Chat {
+public class Chat implements Identifiable {
 
     @Id
     private Long id;

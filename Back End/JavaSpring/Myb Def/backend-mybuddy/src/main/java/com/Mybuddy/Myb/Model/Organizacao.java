@@ -21,7 +21,7 @@ import java.util.Set;
 @Builder
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Organizacao {
+public class Organizacao implements Identifiable {
 
     @Id
     @EqualsAndHashCode.Include

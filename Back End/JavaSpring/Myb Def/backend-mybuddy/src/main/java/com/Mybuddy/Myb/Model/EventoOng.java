@@ -14,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EventoOng {
+public class EventoOng implements Identifiable {
 
     @Id
     private Long id;
