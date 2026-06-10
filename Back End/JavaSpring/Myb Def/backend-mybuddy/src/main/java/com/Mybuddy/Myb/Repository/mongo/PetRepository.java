@@ -13,4 +13,6 @@ public interface PetRepository extends MongoRepository<Pet, Long> {
     Optional<Pet> findByNome(String nome);
 
     List<Pet> findByOrganizacaoId(Long organizacaoId);
+
+    long countByStatusAdocao(com.Mybuddy.Myb.Model.StatusAdocao statusAdocao);
 }

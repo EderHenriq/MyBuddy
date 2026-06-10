@@ -10,7 +10,12 @@ import com.Mybuddy.Myb.DTO.PaymentRequestDTO;
 import com.Mybuddy.Myb.Model.Payment;
 import com.Mybuddy.Myb.Model.PaymentStatus;
 import com.Mybuddy.Myb.Model.Usuario;
+import com.Mybuddy.Myb.Model.CampanhaDoacao;
+import com.Mybuddy.Myb.Model.Pedido;
+import com.Mybuddy.Myb.Model.StatusPedido;
 import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
+import com.Mybuddy.Myb.Repository.jpa.PedidoRepository;
+import com.Mybuddy.Myb.Repository.mongo.CampanhaDoacaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
@@ -31,6 +36,8 @@ public class PaymentService {
     
     private final PaymentRepository paymentRepository;
     private final PetRepository petRepository;
+    private final CampanhaDoacaoRepository campanhaDoacaoRepository;
+    private final PedidoRepository pedidoRepository;
 
     @Transactional
     public PaymentCreationResult createPayment(Usuario usuario, PaymentRequestDTO request)
@@ -117,7 +124,34 @@ public class PaymentService {
     @Transactional
     public Payment updateStatus(Payment payment, PaymentStatus newStatus) {
         log.info("Atualizando status do pagamento ID {}: de {} para -> {}", payment.getId(), payment.getStatus(), newStatus);
+        PaymentStatus oldStatus = payment.getStatus();
         payment.setStatus(newStatus);
-        return paymentRepository.save(payment);
+        Payment saved = paymentRepository.save(payment);
+
+        if (newStatus == PaymentStatus.APPROVED && oldStatus != PaymentStatus.APPROVED) {
+            if (payment.getCampanhaId() != null) {
+                campanhaDoacaoRepository.findById(payment.getCampanhaId()).ifPresent(campanha -> {
+                    java.math.BigDecimal arrecadado = campanha.getArrecadado() != null ? campanha.getArrecadado() : java.math.BigDecimal.ZERO;
+                    campanha.setArrecadado(arrecadado.add(payment.getAmount()));
+                    if (campanha.getMeta() != null && campanha.getArrecadado().compareTo(campanha.getMeta()) >= 0) {
+                        campanha.setStatus("META_ATINGIDA");
+                    }
+                    campanhaDoacaoRepository.save(campanha);
+                });
+            }
+            if (payment.getPedido() != null) {
+                Pedido pedido = payment.getPedido();
+                pedido.setStatus(StatusPedido.PAGO);
+                pedidoRepository.save(pedido);
+            }
+        } else if ((newStatus == PaymentStatus.REJECTED || newStatus == PaymentStatus.CANCELLED)
+                && oldStatus != PaymentStatus.REJECTED && oldStatus != PaymentStatus.CANCELLED) {
+            if (payment.getPedido() != null) {
+                Pedido pedido = payment.getPedido();
+                pedido.setStatus(StatusPedido.CANCELADO);
+                pedidoRepository.save(pedido);
+            }
+        }
+        return saved;
     }
 }

@@ -23,4 +23,10 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByPetId(Long petId);
 
     List<Payment> findByStatus(PaymentStatus status);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.status = :status")
+    java.math.BigDecimal sumAmountByStatus(PaymentStatus status);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT p.usuarioId) FROM Payment p WHERE p.status = :status")
+    long countDistinctUsuarioIdByStatus(PaymentStatus status);
 }

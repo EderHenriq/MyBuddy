@@ -76,6 +76,23 @@ public class InteresseAdocaoService {
         interesse.setStatus(novoStatus);
         interesse.setAtualizadoEm(LocalDateTime.now());
 
+        if (novoStatus == StatusInteresse.APROVADO) {
+            Pet pet = interesse.getPet();
+            if (pet != null) {
+                pet.setStatusAdocao(StatusAdocao.ADOTADO);
+                petRepo.save(pet);
+
+                List<InteresseAdocao> outros = interesseRepo.findByPetId(pet.getId());
+                for (InteresseAdocao outro : outros) {
+                    if (!outro.getId().equals(interesseId) && outro.getStatus() == StatusInteresse.PENDENTE) {
+                        outro.setStatus(StatusInteresse.REJEITADO);
+                        outro.setAtualizadoEm(LocalDateTime.now());
+                        interesseRepo.save(outro);
+                    }
+                }
+            }
+        }
+
         var salvo = interesseRepo.save(interesse);
         return InteresseAdocaoMapper.toResponse(salvo);
     }

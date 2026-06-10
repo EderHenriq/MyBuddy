@@ -7,6 +7,12 @@ import com.Mybuddy.Myb.Model.StatusAdocao;
 import com.Mybuddy.Myb.Security.JwtAuthConverter;
 import com.Mybuddy.Myb.Service.FotoPetService;
 import com.Mybuddy.Myb.Service.PetService;
+import com.Mybuddy.Myb.Model.Usuario;
+import com.Mybuddy.Myb.Model.Organizacao;
+import com.Mybuddy.Myb.Security.ERole;
+import com.Mybuddy.Myb.Security.Role;
+import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +48,12 @@ class PetControllerTest {
     @MockitoBean
     private FotoPetService fotoPetService;
 
+    @MockitoBean
+    private KeycloakUserSyncService keycloakUserSyncService;
+
     private PetResponse petResponse;
+    private Usuario adminUser;
+    private Usuario ongUser;
 
     private static final String PET_JSON = """
             {
@@ -69,6 +80,17 @@ class PetControllerTest {
                 StatusAdocao.DISPONIVEL, "ONG Teste", 1L,
                 false, true, true, null, null
         );
+
+        adminUser = new Usuario();
+        adminUser.setId(1L);
+        adminUser.setRoles(Set.of(new Role(ERole.ROLE_ADMIN)));
+
+        ongUser = new Usuario();
+        ongUser.setId(2L);
+        Organizacao org = new Organizacao();
+        org.setId(1L);
+        ongUser.setOrganizacao(org);
+        ongUser.setRoles(Set.of(new Role(ERole.ROLE_ONG)));
     }
 
     // ===================== GET /api/pets =====================
@@ -152,6 +174,7 @@ class PetControllerTest {
 
     @Test
     void deveRetornar201QuandoOngCriaPet() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(ongUser);
         when(petService.criarPet(any(PetRequestDTO.class))).thenReturn(petResponse);
 
         mockMvc.perform(post("/api/pets")
@@ -165,6 +188,7 @@ class PetControllerTest {
 
     @Test
     void deveRetornar201QuandoAdminCriaPet() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(adminUser);
         when(petService.criarPet(any(PetRequestDTO.class))).thenReturn(petResponse);
 
         mockMvc.perform(post("/api/pets")
@@ -195,6 +219,8 @@ class PetControllerTest {
 
     @Test
     void deveRetornar200QuandoOngAtualizaPet() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(ongUser);
+        when(petService.isPetOwnedByCurrentUser(eq(1L), eq(1L))).thenReturn(true);
         when(petService.atualizarPet(eq(1L), any(PetRequestDTO.class))).thenReturn(petResponse);
 
         mockMvc.perform(put("/api/pets/1")
@@ -207,6 +233,7 @@ class PetControllerTest {
 
     @Test
     void deveRetornar200QuandoAdminAtualizaPet() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(adminUser);
         when(petService.atualizarPet(eq(1L), any(PetRequestDTO.class))).thenReturn(petResponse);
 
         mockMvc.perform(put("/api/pets/1")
@@ -264,6 +291,7 @@ class PetControllerTest {
 
     @Test
     void deveRetornar200QuandoOngBuscaPetsPorOrganizacao() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(ongUser);
         when(petService.buscarPetsPorOrganizacaoId(1L)).thenReturn(List.of(petResponse));
 
         mockMvc.perform(get("/api/pets/organizacao/1")
@@ -277,6 +305,7 @@ class PetControllerTest {
 
     @Test
     void deveRetornar200QuandoAdminBuscaPetsPorOrganizacao() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(adminUser);
         when(petService.buscarPetsPorOrganizacaoId(1L)).thenReturn(List.of(petResponse));
 
         mockMvc.perform(get("/api/pets/organizacao/1")

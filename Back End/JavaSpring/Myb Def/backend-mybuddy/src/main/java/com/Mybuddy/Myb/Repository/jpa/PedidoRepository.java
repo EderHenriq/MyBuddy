@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
+    java.util.List<Pedido> findByPetshopId(Long petshopId);
 }
