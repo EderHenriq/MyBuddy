@@ -62,10 +62,10 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: 'Front End - Angular/mybuddy/package-lock.json'
+          cache-dependency-path: 'Front End - Angular/mybuddy/package.json'
 
       - name: Instalar dependências
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
         working-directory: 'Front End - Angular/mybuddy'
 
       - name: Instalar browsers do Playwright
