@@ -46,13 +46,13 @@ public class Petshop {
     private String website;
 
     @OneToMany(mappedBy = "petshop", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference(value = "petshop-produtos")
     @ToString.Exclude
     @Builder.Default
     private Set<Produto> produtos = new HashSet<>();
 
     @OneToMany(mappedBy = "petshop", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference(value = "petshop-pedidos")
     @ToString.Exclude
     @Builder.Default
     private Set<Pedido> pedidos = new HashSet<>();

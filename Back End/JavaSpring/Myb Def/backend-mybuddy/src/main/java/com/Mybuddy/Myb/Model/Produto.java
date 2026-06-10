@@ -30,8 +30,9 @@ public class Produto {
     @Column(columnDefinition = "TEXT")
     private String descricao;
 
-    @Column(length = 50, nullable = false)
-    private String categoria;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subcategoria_id", nullable = false)
+    private SubCategoria subCategoria;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
@@ -43,8 +44,11 @@ public class Produto {
     @Column(length = 20, nullable = false)
     private StatusProduto status = StatusProduto.ATIVO;
 
-    @Column(name = "petshop_id", nullable = false)
-    private Long petshopId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "petshop_id", nullable = false)
+    @JsonBackReference(value = "petshop-produtos")
+    @ToString.Exclude
+    private Petshop petshop;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
