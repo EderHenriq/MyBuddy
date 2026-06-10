@@ -110,17 +110,16 @@ class UsuarioServiceTest {
 
     @Test
     void deveAtualizarUsuarioComSucesso() {
-        // Arrange
         Usuario dadosNovos = new Usuario("Eder Atualizado", "novo@mybuddy.com", "44988888888", "senha456");
+        dadosNovos.setUrlAvatar("/uploads/novo-avatar.png");
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(usuario)).thenReturn(usuario);
 
-        // Act
         Usuario resultado = usuarioService.atualizarUsuario(1L, dadosNovos);
 
-        // Assert
         assertThat(resultado.getNome()).isEqualTo("Eder Atualizado");
         assertThat(resultado.getEmail()).isEqualTo("novo@mybuddy.com");
+        assertThat(resultado.getUrlAvatar()).isEqualTo("/uploads/novo-avatar.png");
     }
 
     @Test
