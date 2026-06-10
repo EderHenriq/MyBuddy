@@ -117,11 +117,13 @@ class _LoginPageState extends State<LoginPage> {
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
                       final isDark = Theme.of(context).brightness == Brightness.dark;
+                      final isLoading = state is AuthLoading;
                       return Column(
                         children: [
                           AppButton(
                             text: 'Entrar',
-                            isLoading: state is AuthLoading,
+                            isLoading: isLoading && state is! LoginWithKeycloakRequested,
+                            isDisabled: isLoading,
                             onPressed: _onLogin,
                           ),
                           const SizedBox(height: 24),
@@ -140,12 +142,47 @@ class _LoginPageState extends State<LoginPage> {
                               Expanded(child: Divider(color: isDark ? AppColors.darkBorder : AppColors.border)),
                             ],
                           ),
-                          const SizedBox(height: 24),
-                          AppButton(
+                          const SizedBox(height: 20),
+                          _SocialButton(
+                            text: 'Continuar com Google',
+                            logo: Image.network(
+                              'https://developers.google.com/static/identity/images/g-logo.png',
+                              width: 18,
+                              height: 18,
+                              errorBuilder: (context, error, stackTrace) => const Icon(
+                                Icons.g_mobiledata,
+                                size: 22,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            isDisabled: isLoading,
+                            onPressed: () {
+                              context.read<AuthBloc>().add(LoginWithKeycloakRequested());
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _SocialButton(
+                            text: 'Continuar com Apple',
+                            logo: Icon(
+                              Icons.apple,
+                              size: 20,
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
+                            isDisabled: isLoading,
+                            onPressed: () {
+                              context.read<AuthBloc>().add(LoginWithKeycloakRequested());
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          _SocialButton(
                             text: 'Entrar com Keycloak',
-                            type: AppButtonType.outline,
-                            isLoading: state is AuthLoading,
-                            icon: Icons.vpn_key_outlined,
+                            logo: Icon(
+                              Icons.vpn_key_outlined,
+                              size: 18,
+                              color: isDark ? Colors.white70 : Colors.black87,
+                            ),
+                            isLoading: isLoading,
+                            isDisabled: isLoading,
                             onPressed: () {
                               context.read<AuthBloc>().add(LoginWithKeycloakRequested());
                             },
@@ -180,6 +217,89 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SocialButton extends StatelessWidget {
+  final String text;
+  final Widget logo;
+  final VoidCallback onPressed;
+  final bool isLoading;
+  final bool isDisabled;
+
+  const _SocialButton({
+    required this.text,
+    required this.logo,
+    required this.onPressed,
+    this.isLoading = false,
+    this.isDisabled = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final isButtonDisabled = isDisabled || isLoading;
+
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: OutlinedButton(
+        onPressed: isButtonDisabled ? null : onPressed,
+        style: OutlinedButton.styleFrom(
+          backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
+          foregroundColor: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+          side: BorderSide(
+            color: isButtonDisabled
+                ? (isDark ? Colors.white10 : Colors.grey.shade200)
+                : (isDark ? AppColors.darkBorder : AppColors.border),
+            width: 1.5,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 0,
+        ).copyWith(
+          overlayColor: WidgetStateProperty.resolveWith<Color?>(
+            (states) {
+              if (states.contains(WidgetState.pressed)) {
+                return (isDark ? Colors.white : Colors.black).withOpacity(0.05);
+              }
+              return null;
+            },
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (isLoading)
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isDark ? AppColors.primary : AppColors.primary,
+                  ),
+                ),
+              )
+            else
+              logo,
+            const SizedBox(width: 12),
+            Text(
+              text,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: isButtonDisabled
+                    ? (isDark ? Colors.white38 : Colors.grey.shade400)
+                    : (isDark ? AppColors.darkTextPrimary : AppColors.textPrimary),
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
     );
