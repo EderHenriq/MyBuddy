@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -54,6 +55,7 @@ class AppRouter {
   static GoRouter router(BuildContext context) {
     return GoRouter(
       initialLocation: '/splash',
+      refreshListenable: GoRouterRefreshStream(context.read<AuthBloc>().stream),
       redirect: (context, state) {
         final authState = context.read<AuthBloc>().state;
         final isAuthenticated = authState is AuthAuthenticated;
@@ -67,7 +69,7 @@ class AppRouter {
         if (!isAuthenticated) {
           // Se não estiver logado, permite acessar apenas splash, onboarding, login e cadastro
           if (isSplash || isOnboarding || isLogin || isCadastro) return null;
-          return '/splash';
+          return '/login';
         }
 
         // Se estiver autenticado e tentar ir para as telas de auth, manda para a home
@@ -205,5 +207,22 @@ class AppRouter {
         ),
       ),
     );
+  }
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  late final StreamSubscription<dynamic> _subscription;
+
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (dynamic _) => notifyListeners(),
+        );
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }
