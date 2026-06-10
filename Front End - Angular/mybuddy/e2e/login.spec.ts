@@ -2,11 +2,9 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Fluxo de Autenticação / Login', () => {
   test.beforeEach(async ({ page }) => {
-    // Capturar logs e erros do console do navegador
     page.on('console', msg => console.log(`[Browser Console] ${msg.type()}: ${msg.text()}`));
     page.on('pageerror', err => console.error(`[Browser PageError] ${err.message}`));
 
-    // Interceptar a rota de configuração do Keycloak
     await page.route('**/realms/mybuddy', async (route) => {
       await route.fulfill({
         status: 200,
@@ -36,7 +34,6 @@ test.describe('Fluxo de Autenticação / Login', () => {
   });
 
   test('deve realizar login com sucesso e redirecionar para a home', async ({ page }) => {
-    // Interceptar a chamada de token do Keycloak
     await page.route('**/protocol/openid-connect/token', async (route) => {
       await route.fulfill({
         status: 200,
@@ -49,7 +46,6 @@ test.describe('Fluxo de Autenticação / Login', () => {
       });
     });
 
-    // Interceptar a chamada de perfil do usuário
     await page.route('**/api/usuarios/meu-perfil', async (route) => {
       await route.fulfill({
         status: 200,
@@ -63,25 +59,19 @@ test.describe('Fluxo de Autenticação / Login', () => {
       });
     });
 
-    // Acessar a tela de login
+    const hydrationPromise = page.waitForEvent('console', msg => msg.text().includes('Angular hydrated'));
     await page.goto('/auth/login');
-    
-    // Aguardar a hidratação do Angular completar
-    await page.waitForTimeout(2000);
+    await hydrationPromise;
 
-    // Preencher campos de e-mail e senha
     await page.fill('#email', 'user@mybuddy.com');
     await page.fill('#password', 'Senha123');
 
-    // Submeter formulário
     await page.click('button[type="submit"]');
 
-    // Verificar se redirecionou para /home
     await expect(page).toHaveURL(/\/home/);
   });
 
   test('deve exibir mensagem de erro ao falhar na autenticação', async ({ page }) => {
-    // Interceptar com erro 401
     await page.route('**/protocol/openid-connect/token', async (route) => {
       await route.fulfill({
         status: 401,
@@ -93,20 +83,15 @@ test.describe('Fluxo de Autenticação / Login', () => {
       });
     });
 
-    // Acessar a tela de login
+    const hydrationPromise = page.waitForEvent('console', msg => msg.text().includes('Angular hydrated'));
     await page.goto('/auth/login');
+    await hydrationPromise;
 
-    // Aguardar a hidratação do Angular completar
-    await page.waitForTimeout(2000);
-
-    // Preencher campos incorretamente
     await page.fill('#email', 'invalid@mybuddy.com');
     await page.fill('#password', 'WrongPassword123');
 
-    // Submeter formulário
     await page.click('button[type="submit"]');
 
-    // Verificar a exibição da mensagem de alerta de erro
     const alert = page.locator('.alert-error');
     await expect(alert).toBeVisible();
     await expect(alert).toContainText('E-mail ou senha incorretos');

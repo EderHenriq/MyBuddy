@@ -3,16 +3,15 @@
   "compilerOptions": {
     "composite": true,
     "declaration": true,
-    "outDir": "./out-tsc/app",
-    "rootDir": "src",
+    "outDir": "./out-tsc/e2e",
+    "module": "commonjs",
+    "target": "es2022",
     "types": [
       "node"
     ]
   },
   "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "src/**/*.spec.ts"
+    "playwright.config.ts",
+    "e2e/**/*.ts"
   ]
 }

@@ -4,7 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
 import { environment } from '../../../environments/environment';
-import { User } from '../models/user.model';
+import { Usuario } from '../models/user.model';
 
 describe('UserService', () => {
   let service: UserService;
@@ -27,14 +27,14 @@ describe('UserService', () => {
   });
 
   it('should fetch users', () => {
-    const mockUsers: User[] = [{ id: '1', name: 'Eder', email: 'eder@test.com' }];
+    const mockUsers: Usuario[] = [{ id: 1, nome: 'Eder', email: 'eder@test.com' }];
 
-    service.getAll().subscribe(users => {
+    service.buscarTodos().subscribe((users: Usuario[]) => {
       expect(users.length).toBe(1);
       expect(users).toEqual(mockUsers);
     });
 
-    const req = httpMock.expectOne(`${environment.apiUrl}users`);
+    const req = httpMock.expectOne(`${environment.apiUrl}usuarios`);
     expect(req.request.method).toBe('GET');
     req.flush(mockUsers);
   });

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { HeaderLandingPage } from './header-landing-page';
 
@@ -9,6 +10,7 @@ describe('HeaderLandingPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HeaderLandingPage],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderLandingPage);

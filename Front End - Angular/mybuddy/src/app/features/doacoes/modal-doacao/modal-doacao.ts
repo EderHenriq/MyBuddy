@@ -55,54 +55,38 @@ export class ModalDoacao {
       return;
     }
 
-    const desc = this.campanha
-      ? `Campanha - ${this.campanha.titulo}`
-      : 'Doação Geral - MyBuddy';
+    const desc = this.campanha ? `Campanha - ${this.campanha.titulo}` : 'Doação Geral - MyBuddy';
 
     if (this.tipoDoacao() === 'unica') {
-      this.donationService
-        .createSingleDonation(
-          valor,
-          desc,
-          this.campanha?.petId,
-          this.campanha?.id,
-          this.campanha?.organizacaoId
-        )
-        .subscribe({
-          next: (response) => {
-            if (response?.initPoint) {
-              window.location.href = response.initPoint;
-            } else {
-              this.sucesso.set(true);
-              this.loading.set(false);
-            }
-          },
-          error: () => {
-            this.error.set('Erro ao processar doação. Tente novamente.');
+      this.donationService.createSingleDonation(valor, desc, this.campanha?.petId, this.campanha?.id, this.campanha?.organizacaoId).subscribe({
+        next: response => {
+          if (response?.initPoint) {
+            window.location.href = response.initPoint;
+          } else {
+            this.sucesso.set(true);
             this.loading.set(false);
-          },
-        });
+          }
+        },
+        error: () => {
+          this.error.set('Erro ao processar doação. Tente novamente.');
+          this.loading.set(false);
+        },
+      });
     } else {
-      this.donationService
-        .createRecurringDonation(
-          valor,
-          this.frequenciaRecorrente(),
-          this.campanha?.organizacaoId
-        )
-        .subscribe({
-          next: (response) => {
-            if (response?.initPoint) {
-              window.location.href = response.initPoint;
-            } else {
-              this.sucesso.set(true);
-              this.loading.set(false);
-            }
-          },
-          error: () => {
-            this.error.set('Erro ao criar assinatura recorrente. Tente novamente.');
+      this.donationService.createRecurringDonation(valor, this.frequenciaRecorrente(), this.campanha?.organizacaoId).subscribe({
+        next: response => {
+          if (response?.initPoint) {
+            window.location.href = response.initPoint;
+          } else {
+            this.sucesso.set(true);
             this.loading.set(false);
-          },
-        });
+          }
+        },
+        error: () => {
+          this.error.set('Erro ao criar assinatura recorrente. Tente novamente.');
+          this.loading.set(false);
+        },
+      });
     }
   }
 

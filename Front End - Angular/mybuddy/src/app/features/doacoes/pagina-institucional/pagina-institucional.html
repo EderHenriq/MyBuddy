@@ -1,5 +1,4 @@
 <main class="donations-page">
-
   <!-- ─── HERO (padrão do site) ─── -->
   <app-hero-section
     [title]="'Apoie pets e'"
@@ -10,16 +9,10 @@
 
   <!-- ─── SHELL ─── -->
   <div class="donations-shell">
-
     <!-- Search / Filter bar (mesma posição flutuante do site) -->
     <section class="search-panel">
       <label class="search-field" for="donation-search-input">
-        <input
-          type="search"
-          placeholder="O que você procura?"
-          [(ngModel)]="searchText"
-          id="donation-search-input"
-        />
+        <input type="search" placeholder="O que você procura?" [(ngModel)]="searchText" id="donation-search-input" />
         <span class="material-icons">search</span>
       </label>
 
@@ -27,11 +20,7 @@
 
       <div class="chips-row">
         @for (cat of categorias; track cat) {
-          <button
-            class="chip-btn"
-            [class.active]="categoriaSelecionada() === cat"
-            (click)="selecionarCategoria(cat)"
-          >{{ cat }}</button>
+          <button class="chip-btn" [class.active]="categoriaSelecionada() === cat" (click)="selecionarCategoria(cat)">{{ cat }}</button>
         }
         <button class="chip-btn chip-filter">
           <span class="material-icons">tune</span>
@@ -68,7 +57,6 @@
       </button>
     </div>
 
-
     <!-- ─── CAMPANHAS EM DESTAQUE ─── -->
     <div class="section-header">
       <h2 class="section-title">Campanhas em destaque</h2>
@@ -77,7 +65,7 @@
 
     @if (carregandoCampanhas()) {
       <div class="campaigns-grid">
-        @for (i of [1,2,3]; track i) {
+        @for (i of [1, 2, 3]; track i) {
           <div class="campaign-card skeleton-card">
             <div class="skeleton-img"></div>
             <div class="skeleton-body">
@@ -97,7 +85,6 @@
       <div class="campaigns-grid">
         @for (c of getCampanhasFiltradas(); track c.id) {
           <div class="campaign-card" [class.meta-atingida]="isMetaAtingida(c)">
-
             <div class="card-img">
               @if (c.imagemUrl) {
                 <img [src]="c.imagemUrl" [alt]="c.titulo" loading="lazy" />
@@ -106,11 +93,7 @@
                   <span class="material-icons">pets</span>
                 </div>
               }
-              <span
-                class="card-badge"
-                [class.badge-urgente]="c.categoria === 'Urgente'"
-                [class.badge-concluido]="isMetaAtingida(c)"
-              >
+              <span class="card-badge" [class.badge-urgente]="c.categoria === 'Urgente'" [class.badge-concluido]="isMetaAtingida(c)">
                 {{ isMetaAtingida(c) ? 'META ATINGIDA' : c.categoria.toUpperCase() }}
               </span>
             </div>
@@ -121,33 +104,32 @@
               <div class="card-meta">
                 @if (c.localizacao) {
                   <span class="meta-tag">
-                    <span class="material-icons">place</span>{{ c.localizacao }}
+                    <span class="material-icons">place</span>
+                    {{ c.localizacao }}
                   </span>
                 }
                 @if (c.diasRestantes !== undefined && c.diasRestantes > 0) {
                   <span class="meta-tag">
-                    <span class="material-icons">schedule</span>{{ c.diasRestantes }} dias restantes
+                    <span class="material-icons">schedule</span>
+                    {{ c.diasRestantes }} dias restantes
                   </span>
                 }
                 @if (c.totalDoadores) {
                   <span class="meta-tag">
-                    <span class="material-icons">group</span>{{ c.totalDoadores }} doadores
+                    <span class="material-icons">group</span>
+                    {{ c.totalDoadores }} doadores
                   </span>
                 }
               </div>
 
               <div class="progress-section">
                 <div class="progress-bar-track">
-                  <div
-                    class="progress-bar-fill"
-                    [class.fill-green]="isMetaAtingida(c)"
-                    [style.width.%]="getPorcentagemArrecadada(c)"
-                  ></div>
+                  <div class="progress-bar-fill" [class.fill-green]="isMetaAtingida(c)" [style.width.%]="getPorcentagemArrecadada(c)"></div>
                 </div>
                 <div class="progress-values">
                   <span class="label-arrecadado">Arrecadado</span>
                   <span class="values-text" [class.text-green]="isMetaAtingida(c)">
-                    {{ c.arrecadado | currency:'BRL':'symbol':'1.0-0' }} / {{ c.meta | currency:'BRL':'symbol':'1.0-0' }}
+                    {{ c.arrecadado | currency: 'BRL' : 'symbol' : '1.0-0' }} / {{ c.meta | currency: 'BRL' : 'symbol' : '1.0-0' }}
                   </span>
                 </div>
               </div>
@@ -159,11 +141,7 @@
                     Meta atingida!
                   </button>
                 } @else {
-                  <button
-                    class="btn-card-donate"
-                    (click)="abrirModalDoacao(c)"
-                    [id]="'btn-doar-' + c.id"
-                  >Doar agora</button>
+                  <button class="btn-card-donate" (click)="abrirModalDoacao(c)" [id]="'btn-doar-' + c.id">Doar agora</button>
                 }
                 <button class="btn-icon" title="Salvar campanha">
                   <span class="material-icons">favorite_border</span>
@@ -178,9 +156,8 @@
       </div>
     }
 
-
     <!-- ─── ONGs PARCEIRAS ─── -->
-    <div class="section-header" style="margin-top: 3rem;">
+    <div class="section-header" style="margin-top: 3rem">
       <h2 class="section-title">ONGs parceiras que precisam de apoio</h2>
       <a class="ver-todas-link" href="#">Ver todas →</a>
     </div>
@@ -198,7 +175,10 @@
             </div>
             <div class="ong-info">
               <h3>{{ ong.nome }}</h3>
-              <p><span class="material-icons">place</span>{{ ong.localizacao }} · {{ ong.totalAnimais }} animais</p>
+              <p>
+                <span class="material-icons">place</span>
+                {{ ong.localizacao }} · {{ ong.totalAnimais }} animais
+              </p>
             </div>
           </div>
           <div class="ong-divider"></div>
@@ -208,22 +188,16 @@
               <span class="ong-tag">{{ tag }}</span>
             }
           </div>
-          <button class="btn-apoiar-ong" (click)="abrirModalDoacao()" [id]="'btn-apoiar-ong-' + ong.id">
-            Apoiar esta ONG
-          </button>
+          <button class="btn-apoiar-ong" (click)="abrirModalDoacao()" [id]="'btn-apoiar-ong-' + ong.id">Apoiar esta ONG</button>
         </div>
       }
     </div>
-
 
     <!-- ─── DOADOR RECORRENTE (final da página) ─── -->
     <div class="recurring-banner">
       <div class="recurring-text">
         <h2>Torne-se um doador recorrente</h2>
-        <p>
-          Configure uma doação automática mensal ou semanal e ajude ONGs parceiras
-          de forma contínua. Você pode cancelar a qualquer momento.
-        </p>
+        <p>Configure uma doação automática mensal ou semanal e ajude ONGs parceiras de forma contínua. Você pode cancelar a qualquer momento.</p>
       </div>
       <div class="recurring-actions">
         <button
@@ -231,32 +205,34 @@
           [class.active]="frequenciaRecorrente() === 'mensal'"
           (click)="frequenciaRecorrente.set('mensal'); abrirModalDoacao()"
           id="btn-mensal"
-        >Mensal</button>
+        >
+          Mensal
+        </button>
         <button
           class="btn-recurring"
           [class.active]="frequenciaRecorrente() === 'semanal'"
           (click)="frequenciaRecorrente.set('semanal'); abrirModalDoacao()"
           id="btn-semanal"
-        >Semanal</button>
+        >
+          Semanal
+        </button>
         <button
           class="btn-recurring"
           [class.active]="frequenciaRecorrente() === 'unica'"
           (click)="frequenciaRecorrente.set('unica'); abrirModalDoacao()"
           id="btn-unica-vez"
-        >Única vez</button>
+        >
+          Única vez
+        </button>
       </div>
     </div>
-
-  </div><!-- /donations-shell -->
-
+  </div>
+  <!-- /donations-shell -->
 </main>
 
 <app-footer></app-footer>
 
 <!-- Modal de Doação -->
 @if (showModal()) {
-  <app-modal-doacao
-    [campanha]="selectedCampanha()"
-    (close)="fecharModal()"
-  ></app-modal-doacao>
+  <app-modal-doacao [campanha]="selectedCampanha()" (close)="fecharModal()"></app-modal-doacao>
 }

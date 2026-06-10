@@ -1,12 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  DonationService,
-  CampanhaDoacao,
-  DonationStats,
-  OngParceira,
-} from '../../../core/services/donation.service';
+import { DonationService, CampanhaDoacao, DonationStats, OngParceira } from '../../../core/services/donation.service';
 import { HeroSectionComponent } from '../../../shared/components/hero-section/hero-section.component';
 import { Footer } from '../../../shared/components/footer/footer';
 import { ModalDoacao } from '../modal-doacao/modal-doacao';
@@ -30,14 +25,7 @@ export class PaginaInstitucional implements OnInit {
   campanhas = signal<CampanhaDoacao[]>([]);
   ongs = signal<OngParceira[]>([]);
 
-  categorias = [
-    'Todos',
-    'Pets em tratamento',
-    'Ração e alimentação',
-    'Cirurgias',
-    'Abrigo / ONG',
-    'Urgente',
-  ];
+  categorias = ['Todos', 'Pets em tratamento', 'Ração e alimentação', 'Cirurgias', 'Abrigo / ONG', 'Urgente'];
   categoriaSelecionada = signal<string>('Todos');
   searchText = '';
   frequenciaRecorrente = signal<'mensal' | 'semanal' | 'unica'>('mensal');
@@ -56,7 +44,7 @@ export class PaginaInstitucional implements OnInit {
 
   carregarStats() {
     this.carregandoStats.set(true);
-    this.donationService.getStats().subscribe((data) => {
+    this.donationService.getStats().subscribe(data => {
       this.stats.set(data);
       this.carregandoStats.set(false);
     });
@@ -64,16 +52,14 @@ export class PaginaInstitucional implements OnInit {
 
   carregarCampanhas() {
     this.carregandoCampanhas.set(true);
-    this.donationService
-      .getCampaigns(this.categoriaSelecionada())
-      .subscribe((data) => {
-        this.campanhas.set(data);
-        this.carregandoCampanhas.set(false);
-      });
+    this.donationService.getCampaigns(this.categoriaSelecionada()).subscribe(data => {
+      this.campanhas.set(data);
+      this.carregandoCampanhas.set(false);
+    });
   }
 
   carregarOngs() {
-    this.donationService.getOngsParceiras().subscribe((data) => {
+    this.donationService.getOngsParceiras().subscribe(data => {
       this.ongs.set(data);
     });
   }
@@ -109,10 +95,7 @@ export class PaginaInstitucional implements OnInit {
     if (!this.searchText.trim()) return this.campanhas();
     const q = this.searchText.toLowerCase();
     return this.campanhas().filter(
-      (c) =>
-        c.titulo.toLowerCase().includes(q) ||
-        c.descricao.toLowerCase().includes(q) ||
-        c.localizacao?.toLowerCase().includes(q)
+      c => c.titulo.toLowerCase().includes(q) || c.descricao.toLowerCase().includes(q) || c.localizacao?.toLowerCase().includes(q),
     );
   }
 
