@@ -42,10 +42,8 @@ public class ProdutoService {
         Specification<Produto> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // Apenas produtos ativos por padrão na busca pública
             predicates.add(cb.equal(root.get("status"), StatusProduto.ATIVO));
 
-            // Regra de aprovação: apenas produtos de Petshops APROVADOS aparecem publicamente
             predicates.add(cb.equal(
                     root.get("petshop").get("statusAprovacao"), StatusAprovacao.APROVADO));
 
@@ -104,7 +102,6 @@ public class ProdutoService {
         Petshop petshop = petshopRepository.findById(usuario.getPetshopId())
                 .orElseThrow(() -> new ResourceNotFoundException("Petshop associado ao usuário não encontrado."));
 
-        // Regra de aprovação: apenas Petshops APROVADOS podem cadastrar produtos
         if (!petshop.isAprovado()) {
             throw new AuthorizationDeniedException(
                     "Seu petshop ainda não foi aprovado pela plataforma. Status atual: "
@@ -158,7 +155,6 @@ public class ProdutoService {
         produto.setEstoque(request.getEstoque());
         produto.setSubCategoria(subCategoria);
 
-        // Atualizar fotos se enviado
         if (request.getImagens() != null) {
             fotoProdutoRepository.deleteByProdutoId(id);
             produto.getFotos().clear();
@@ -215,5 +211,9 @@ public class ProdutoService {
                 .imagens(fotos)
                 .notaMedia(media)
                 .build();
+    }
+
+    public ProdutoResponseDTO mapToResponseDTO(Produto p) {
+        return toResponseDTO(p);
     }
 }

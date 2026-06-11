@@ -5,6 +5,7 @@ import com.Mybuddy.Myb.DTO.ProdutoResponseDTO;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import com.Mybuddy.Myb.Service.ProdutoService;
+import com.Mybuddy.Myb.Service.RecomendacaoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -30,6 +32,7 @@ public class ProdutoController {
 
     private final ProdutoService produtoService;
     private final KeycloakUserSyncService keycloakUserSyncService;
+    private final RecomendacaoService recomendacaoService;
 
     @GetMapping
     public ResponseEntity<Page<ProdutoResponseDTO>> buscarComFiltros(
@@ -51,6 +54,14 @@ public class ProdutoController {
     public ResponseEntity<ProdutoResponseDTO> buscarPorId(@PathVariable Long id) {
         log.info("Buscando produto por ID: {}", id);
         return ResponseEntity.ok(produtoService.buscarPorIdDTO(id));
+    }
+
+    @GetMapping("/recomendados")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<ProdutoResponseDTO>> buscarRecomendados(@AuthenticationPrincipal Jwt jwt) {
+        log.info("Buscando produtos recomendados para o usuário logado.");
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        return ResponseEntity.ok(recomendacaoService.obterRecomendacoesParaUsuario(usuario.getId()));
     }
 
     @GetMapping("/petshop/{petshopId}")

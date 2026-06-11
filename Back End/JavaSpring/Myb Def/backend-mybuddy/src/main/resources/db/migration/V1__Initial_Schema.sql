@@ -1,4 +1,3 @@
--- ── 1. Criar Tabela de Petshops ──
 CREATE TABLE petshops (
     id BIGSERIAL PRIMARY KEY,
     nome_fantasia VARCHAR(255) NOT NULL,
@@ -17,13 +16,11 @@ CREATE TABLE petshops (
 
 CREATE INDEX idx_petshops_status_aprovacao ON petshops (status_aprovacao);
 
--- ── 2. Criar Tabela de Categorias ──
 CREATE TABLE categorias (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL UNIQUE
 );
 
--- ── 3. Criar Tabela de SubCategorias ──
 CREATE TABLE subcategorias (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
@@ -31,7 +28,6 @@ CREATE TABLE subcategorias (
     CONSTRAINT fk_subcategorias_categoria FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE CASCADE
 );
 
--- ── 4. Criar Tabela de Produtos ──
 CREATE TABLE produtos (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
@@ -48,7 +44,6 @@ CREATE TABLE produtos (
     CONSTRAINT fk_produtos_petshop FOREIGN KEY (petshop_id) REFERENCES petshops(id) ON DELETE CASCADE
 );
 
--- ── 5. Criar Tabela de Fotos do Produto ──
 CREATE TABLE fotos_produto (
     id BIGSERIAL PRIMARY KEY,
     url VARCHAR(500) NOT NULL,
@@ -56,7 +51,6 @@ CREATE TABLE fotos_produto (
     CONSTRAINT fk_fotos_produto_produto FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
 );
 
--- ── 6. Criar Tabela de Endereços de Entrega ──
 CREATE TABLE enderecos_entrega (
     id BIGSERIAL PRIMARY KEY,
     cep VARCHAR(20) NOT NULL,
@@ -70,7 +64,6 @@ CREATE TABLE enderecos_entrega (
     longitude DOUBLE PRECISION
 );
 
--- ── 7. Criar Tabela de Pedidos ──
 CREATE TABLE pedidos (
     id BIGSERIAL PRIMARY KEY,
     cliente_id BIGINT NOT NULL,
@@ -87,7 +80,6 @@ CREATE TABLE pedidos (
     CONSTRAINT fk_pedidos_endereco_entrega FOREIGN KEY (endereco_entrega_id) REFERENCES enderecos_entrega(id) ON DELETE SET NULL
 );
 
--- ── 8. Criar Tabela de Itens do Pedido ──
 CREATE TABLE itens_pedido (
     id BIGSERIAL PRIMARY KEY,
     pedido_id BIGINT NOT NULL,
@@ -98,7 +90,6 @@ CREATE TABLE itens_pedido (
     CONSTRAINT fk_itens_pedido_produto FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
--- ── 9. Criar Tabela de Avaliações do Produto ──
 CREATE TABLE avaliacoes_produto (
     id BIGSERIAL PRIMARY KEY,
     produto_id BIGINT NOT NULL,
@@ -109,7 +100,6 @@ CREATE TABLE avaliacoes_produto (
     CONSTRAINT fk_avaliacoes_produto_produto FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
 );
 
--- ── 10. Criar Tabela de Assinaturas de Doação ──
 CREATE TABLE donation_subscriptions (
     id BIGSERIAL PRIMARY KEY,
     mp_preapproval_id VARCHAR(255) UNIQUE,
@@ -121,7 +111,6 @@ CREATE TABLE donation_subscriptions (
     created_at TIMESTAMP
 );
 
--- ── 11. Criar Tabela de Pagamentos ──
 CREATE TABLE payments (
     id BIGSERIAL PRIMARY KEY,
     mp_preference_id VARCHAR(255) UNIQUE,
@@ -138,7 +127,6 @@ CREATE TABLE payments (
     CONSTRAINT fk_payments_pedido FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE SET NULL
 );
 
--- ── 12. Criar Tabela de Cupons ──
 CREATE TABLE cupons (
     id BIGSERIAL PRIMARY KEY,
     codigo VARCHAR(100) UNIQUE NOT NULL,
@@ -153,7 +141,6 @@ CREATE TABLE cupons (
     CONSTRAINT fk_cupons_petshop FOREIGN KEY (petshop_id) REFERENCES petshops(id) ON DELETE CASCADE
 );
 
--- ── 13. Criar Tabela de Rastreamento de Uso de Cupons por Usuário ──
 CREATE TABLE cupons_usuarios (
     id          BIGSERIAL PRIMARY KEY,
     cupom_id    BIGINT NOT NULL,
@@ -167,7 +154,6 @@ CREATE TABLE cupons_usuarios (
 CREATE INDEX idx_cupons_usuarios_usuario_id ON cupons_usuarios (usuario_id);
 CREATE INDEX idx_cupons_usuarios_cupom_id ON cupons_usuarios (cupom_id);
 
--- ── 14. Criar Tabela de Serviços (Marketplace de Serviços) ──
 CREATE TABLE servicos (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
@@ -179,7 +165,6 @@ CREATE TABLE servicos (
     CONSTRAINT fk_servicos_petshop FOREIGN KEY (petshop_id) REFERENCES petshops(id) ON DELETE CASCADE
 );
 
--- ── 15. Criar Tabela de Agendamentos ──
 CREATE TABLE agendamentos (
     id BIGSERIAL PRIMARY KEY,
     cliente_id BIGINT NOT NULL,
