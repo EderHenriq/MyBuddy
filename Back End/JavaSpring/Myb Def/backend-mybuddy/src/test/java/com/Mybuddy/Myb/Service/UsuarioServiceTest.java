@@ -4,6 +4,11 @@ import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
+import com.Mybuddy.Myb.Repository.jpa.PedidoRepository;
+import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
+import com.Mybuddy.Myb.Model.Pedido;
+import com.Mybuddy.Myb.Model.EnderecoEntrega;
+import com.Mybuddy.Myb.Model.InteresseAdocao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +29,12 @@ class UsuarioServiceTest {
 
     @Mock //cria o repo 'falso'
     private UsuarioRepository usuarioRepository;
+
+    @Mock
+    private PedidoRepository pedidoRepository;
+
+    @Mock
+    private InteresseAdocaoRepository interesseAdocaoRepository;
 
     @InjectMocks // cria o service real, e coloca o mock dentro dele
     private UsuarioService usuarioService;
@@ -141,6 +153,8 @@ class UsuarioServiceTest {
     void deveDeletarUsuarioComSucesso() {
         // Arrange
         when(usuarioRepository.existsById(1L)).thenReturn(true);
+        when(pedidoRepository.findByClienteId(1L)).thenReturn(Collections.emptyList());
+        when(interesseAdocaoRepository.findByUsuarioId(1L)).thenReturn(Collections.emptyList());
 
         // Act
         usuarioService.deletarUsuario(1L);
@@ -160,5 +174,53 @@ class UsuarioServiceTest {
                 .hasMessage("Usuário com ID 99 não encontrado.");
 
         verify(usuarioRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deveDeletarUsuarioEAnonimizarPedidosEInteresses() {
+        // Arrange
+        when(usuarioRepository.existsById(1L)).thenReturn(true);
+        
+        Pedido pedido = new Pedido();
+        pedido.setId(10L);
+        pedido.setClienteId(1L);
+        EnderecoEntrega endereco = EnderecoEntrega.builder()
+                .logradouro("Rua A")
+                .numero("123")
+                .complemento("Ap 1")
+                .bairro("Bairro")
+                .cep("87000-000")
+                .cidade("Maringá")
+                .estado("PR")
+                .build();
+        pedido.setEnderecoEntrega(endereco);
+
+        InteresseAdocao interesse = new InteresseAdocao();
+        interesse.setId(20L);
+        interesse.setUsuario(usuario);
+        interesse.setCpfAdotante("12345678901");
+        interesse.setMensagem("Quero adotar!");
+        interesse.setMotivoAdocao("Companhia");
+
+        when(pedidoRepository.findByClienteId(1L)).thenReturn(List.of(pedido));
+        when(interesseAdocaoRepository.findByUsuarioId(1L)).thenReturn(List.of(interesse));
+
+        // Act
+        usuarioService.deletarUsuario(1L);
+
+        // Assert
+        // Pedido anonimizado
+        assertThat(pedido.getEnderecoEntrega().getLogradouro()).isEqualTo("CLIENTE ANONIMIZADO");
+        assertThat(pedido.getEnderecoEntrega().getCep()).isEqualTo("00000000");
+        verify(pedidoRepository, times(1)).save(pedido);
+
+        // Interesse anonimizado
+        assertThat(interesse.getCpfAdotante()).isEqualTo("00000000000");
+        assertThat(interesse.getMensagem()).isEqualTo("CONTEÚDO ANONIMIZADO PARA LGPD");
+        assertThat(interesse.getUsuario()).isNull();
+        verify(interesseAdocaoRepository, times(1)).save(interesse);
+
+        // Usuário deletado
+        verify(usuarioRepository, times(1)).deleteById(1L);
     }
 }
