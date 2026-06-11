@@ -19,6 +19,7 @@ import java.util.Set;
 
 @Configuration
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class DataInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);

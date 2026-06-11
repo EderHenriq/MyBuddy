@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @EnableAsync
+@SuppressWarnings("null")
 public class MybApplication {
 
 	@Value("${file.upload-dir}")

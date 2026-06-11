@@ -11,6 +11,7 @@ import java.util.HexFormat;
 
 @Slf4j
 @Component
+@SuppressWarnings("null")
 public class MercadoPagoWebhookValidator {
 
     @Value("${mercadopago.webhook-secret}")
