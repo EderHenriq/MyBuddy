@@ -38,6 +38,15 @@ public class PedidoServiceTest {
     @Mock
     private PetshopRepository petshopRepository;
 
+    @Mock
+    private UsuarioRepository usuarioRepository;
+
+    @Mock
+    private CupomRepository cupomRepository;
+
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
     private PedidoService pedidoService;
 
@@ -56,10 +65,16 @@ public class PedidoServiceTest {
         usuario = new Usuario();
         usuario.setId(1L);
         usuario.setPetshopId(10L);
+        usuario.setEmail("cliente@gmail.com");
+        usuario.setNome("João Adotante");
+        Role role = new Role();
+        role.setName(ERole.ROLE_ADOTANTE);
+        usuario.setRoles(Set.of(role));
 
         petshop = Petshop.builder()
                 .id(10L)
                 .nomeFantasia("Petshop Ed")
+                .valorMinimoFreteGratis(new BigDecimal("150.00"))
                 .build();
 
         produto = new Produto();
@@ -118,6 +133,7 @@ public class PedidoServiceTest {
 
         when(pedidoRepository.findById(30L)).thenReturn(Optional.of(pedido));
         when(pedidoRepository.save(any(Pedido.class))).thenReturn(pedido);
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
 
         PedidoResponseDTO response = pedidoService.atualizarStatus(30L, StatusPedido.PAGO, usuario);
 
@@ -141,6 +157,7 @@ public class PedidoServiceTest {
     void cancelarPedido_DevolveEstoque_PendenteParaCancelado() {
         when(pedidoRepository.findById(30L)).thenReturn(Optional.of(pedido));
         when(pedidoRepository.save(any(Pedido.class))).thenReturn(pedido);
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
 
         int estoqueAntes = produto.getEstoque();
 
@@ -150,5 +167,129 @@ public class PedidoServiceTest {
         assertEquals(StatusPedido.CANCELADO.name(), response.getStatus());
         assertEquals(estoqueAntes + 2, produto.getEstoque()); // devolveu 2 itens
         verify(produtoRepository, times(1)).save(produto);
+        verify(pedidoRepository, times(1)).save(any(Pedido.class));
+    }
+
+    @Test
+    void criarPedido_SemRoleAdotante_DeveLancarExcecao() {
+        usuario.setRoles(Collections.emptySet()); // remove roles
+
+        assertThrows(AuthorizationDeniedException.class, () -> pedidoService.criar(requestDTO, usuario));
+        verify(pedidoRepository, never()).save(any(Pedido.class));
+    }
+
+    @Test
+    void criarPedido_ComFretePadrao_CEPInteriorSP() {
+        // CEP começa com "1" -> R$ 10.00
+        requestDTO.getEnderecoEntrega().setCep("13000-000");
+        petshop.setValorMinimoFreteGratis(new BigDecimal("300.00")); // Acima do subtotal (200.00)
+
+        when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
+        when(produtoRepository.findById(20L)).thenReturn(Optional.of(produto));
+        when(pedidoRepository.save(any(Pedido.class))).thenAnswer(invocation -> {
+            Pedido p = invocation.getArgument(0);
+            p.setId(30L);
+            return p;
+        });
+
+        PedidoResponseDTO response = pedidoService.criar(requestDTO, usuario);
+
+        assertNotNull(response);
+        assertEquals(new BigDecimal("10.00"), response.getValorFrete());
+        assertEquals(new BigDecimal("210.00"), response.getValorTotal()); // 200.00 subtotal + 10.00 frete
+        verify(emailService, times(1)).enviarEmail(any(), any(), any());
+    }
+
+    @Test
+    void criarPedido_ComFreteGratis_SubtotalAtingeLimite() {
+        // Subtotal = R$ 200.00 (2 itens de 100.00)
+        petshop.setValorMinimoFreteGratis(new BigDecimal("150.00")); // Menor que o subtotal
+
+        when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
+        when(produtoRepository.findById(20L)).thenReturn(Optional.of(produto));
+        when(pedidoRepository.save(any(Pedido.class))).thenAnswer(invocation -> {
+            Pedido p = invocation.getArgument(0);
+            p.setId(30L);
+            return p;
+        });
+
+        PedidoResponseDTO response = pedidoService.criar(requestDTO, usuario);
+
+        assertNotNull(response);
+        assertEquals(BigDecimal.ZERO, response.getValorFrete()); // Frete grátis!
+        assertEquals(new BigDecimal("200.00"), response.getValorTotal());
+    }
+
+    @Test
+    void criarPedido_ComCupomValido_PercentualDesconto() {
+        requestDTO.setCupomDesconto("DESCONTO15");
+        petshop.setValorMinimoFreteGratis(new BigDecimal("300.00")); // Sem frete grátis automático
+        requestDTO.getEnderecoEntrega().setCep("13000-000"); // Frete R$ 10.00
+
+        Cupom cupomDesconto = Cupom.builder()
+                .codigo("DESCONTO15")
+                .percentualDesconto(new BigDecimal("15.00")) // 15% de desconto
+                .petshop(petshop)
+                .ativo(true)
+                .build();
+
+        when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
+        when(produtoRepository.findById(20L)).thenReturn(Optional.of(produto));
+        when(cupomRepository.findByCodigoAndAtivoTrue("DESCONTO15")).thenReturn(Optional.of(cupomDesconto));
+        when(pedidoRepository.save(any(Pedido.class))).thenAnswer(invocation -> {
+            Pedido p = invocation.getArgument(0);
+            p.setId(30L);
+            return p;
+        });
+
+        PedidoResponseDTO response = pedidoService.criar(requestDTO, usuario);
+
+        assertNotNull(response);
+        // Subtotal: 200.00. Desconto 15%: 30.00. Frete: 10.00. Total: 200 + 10 - 30 = 180.00
+        assertEquals(new BigDecimal("30.00"), response.getValorDesconto());
+        assertEquals(new BigDecimal("10.00"), response.getValorFrete());
+        assertEquals(new BigDecimal("180.00"), response.getValorTotal());
+    }
+
+    @Test
+    void criarPedido_ComCupomIncompativelPetshop_DeveLancarExcecao() {
+        requestDTO.setCupomDesconto("OUTROPETSHOP");
+
+        Petshop outroPetshop = Petshop.builder().id(999L).build();
+        Cupom cupomIncompativel = Cupom.builder()
+                .codigo("OUTROPETSHOP")
+                .percentualDesconto(new BigDecimal("10.00"))
+                .petshop(outroPetshop)
+                .ativo(true)
+                .build();
+
+        when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
+        when(produtoRepository.findById(20L)).thenReturn(Optional.of(produto));
+        when(cupomRepository.findByCodigoAndAtivoTrue("OUTROPETSHOP")).thenReturn(Optional.of(cupomIncompativel));
+
+        assertThrows(IllegalArgumentException.class, () -> pedidoService.criar(requestDTO, usuario));
+        verify(pedidoRepository, never()).save(any(Pedido.class));
+    }
+
+    @Test
+    void criarPedido_ComCupomLegadoFreteGratis() {
+        requestDTO.setCupomDesconto("FRETEGRATIS");
+        requestDTO.getEnderecoEntrega().setCep("13000-000"); // Seria R$ 10.00
+        petshop.setValorMinimoFreteGratis(new BigDecimal("300.00")); // Acima do subtotal
+
+        when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
+        when(produtoRepository.findById(20L)).thenReturn(Optional.of(produto));
+        when(pedidoRepository.save(any(Pedido.class))).thenAnswer(invocation -> {
+            Pedido p = invocation.getArgument(0);
+            p.setId(30L);
+            return p;
+        });
+
+        PedidoResponseDTO response = pedidoService.criar(requestDTO, usuario);
+
+        assertNotNull(response);
+        assertEquals(BigDecimal.ZERO, response.getValorFrete()); // Cupom FRETEGRATIS zerou o frete
+        assertEquals(BigDecimal.ZERO, response.getValorDesconto());
+        assertEquals(new BigDecimal("200.00"), response.getValorTotal());
     }
 }
