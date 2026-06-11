@@ -49,6 +49,25 @@ public class Petshop {
     @Column(name = "valor_minimo_frete_gratis", precision = 10, scale = 2)
     private BigDecimal valorMinimoFreteGratis;
 
+    /**
+     * Status de aprovação do Petshop na plataforma.
+     * Apenas Petshops APROVADOS podem cadastrar produtos e aparecer publicamente.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_aprovacao", nullable = false, length = 30)
+    @Builder.Default
+    private StatusAprovacao statusAprovacao = StatusAprovacao.PENDENTE_APROVACAO;
+
+    /** Verifica se o petshop está aprovado para operar. */
+    public boolean isAprovado() {
+        return StatusAprovacao.APROVADO == this.statusAprovacao;
+    }
+
+    /** Verifica se o petshop ainda aguarda aprovação. */
+    public boolean isPendente() {
+        return StatusAprovacao.PENDENTE_APROVACAO == this.statusAprovacao;
+    }
+
     @OneToMany(mappedBy = "petshop", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "petshop-produtos")
     @ToString.Exclude

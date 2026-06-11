@@ -41,6 +41,24 @@ public class Organizacao implements Identifiable {
 
     private String website;
 
+    /**
+     * Status de aprovação da ONG na plataforma.
+     * Apenas ONGs APROVADAS podem criar campanhas de doação e listar pets publicamente.
+     * O CNPJ é coletado no cadastro e validado pelo administrador antes da aprovação.
+     */
+    @Builder.Default
+    private StatusAprovacao statusAprovacao = StatusAprovacao.PENDENTE_APROVACAO;
+
+    /** Verifica se a ONG está aprovada para operar. */
+    public boolean isAprovada() {
+        return StatusAprovacao.APROVADO == this.statusAprovacao;
+    }
+
+    /** Verifica se a ONG ainda aguarda aprovação. */
+    public boolean isPendente() {
+        return StatusAprovacao.PENDENTE_APROVACAO == this.statusAprovacao;
+    }
+
     @DocumentReference(lazy = true)
     @JsonManagedReference
     @ToString.Exclude

@@ -5,6 +5,7 @@ import com.Mybuddy.Myb.DTO.PetshopResponseDTO;
 import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Petshop;
+import com.Mybuddy.Myb.Model.StatusAprovacao;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Repository.jpa.PetshopRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
@@ -17,6 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Serviço de gestão de Petshops.
+ *
+ * Regras de negócio implementadas:
+ *  - Novo Petshop é criado com status PENDENTE_APROVACAO
+ *  - Listagem pública exibe apenas Petshops com status APROVADO
+ *  - Admins podem ver todos e alterar o status de aprovação
+ *  - Petshops PENDENTES ou REJEITADOS não podem cadastrar produtos (regra aplicada no ProdutoService)
+ */
 @Service
 @RequiredArgsConstructor
 public class PetshopService {
@@ -34,6 +44,7 @@ public class PetshopService {
             throw new IllegalArgumentException("Este usuário já possui um petshop associado.");
         }
 
+        // Novo petshop entra como PENDENTE_APROVACAO — não opera até aprovação do admin
         Petshop petshop = Petshop.builder()
                 .nomeFantasia(request.getNomeFantasia())
                 .emailContato(request.getEmailContato())
@@ -43,6 +54,7 @@ public class PetshopService {
                 .descricao(request.getDescricao())
                 .website(request.getWebsite())
                 .valorMinimoFreteGratis(request.getValorMinimoFreteGratis())
+                .statusAprovacao(StatusAprovacao.PENDENTE_APROVACAO)
                 .build();
 
         Petshop salvo = petshopRepository.save(petshop);
@@ -61,11 +73,69 @@ public class PetshopService {
         return toResponseDTO(petshop);
     }
 
+    /**
+     * Listagem pública: exibe apenas Petshops APROVADOS.
+     * Adotantes/visitantes não veem petshops pendentes ou rejeitados.
+     */
     @Transactional(readOnly = true)
-    public List<PetshopResponseDTO> listarTodos() {
+    public List<PetshopResponseDTO> listarAprovados() {
+        return petshopRepository.findByStatusAprovacao(StatusAprovacao.APROVADO).stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Listagem administrativa: exibe TODOS os Petshops (qualquer status).
+     * Restrito a administradores.
+     */
+    @Transactional(readOnly = true)
+    public List<PetshopResponseDTO> listarTodos(Usuario usuario) {
+        boolean isAdmin = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_ADMIN);
+        if (!isAdmin) {
+            throw new AuthorizationDeniedException("Apenas administradores podem listar todos os petshops.");
+        }
         return petshopRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Listagem de petshops pendentes para o painel administrativo de aprovação.
+     */
+    @Transactional(readOnly = true)
+    public List<PetshopResponseDTO> listarPendentes(Usuario usuario) {
+        boolean isAdmin = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_ADMIN);
+        if (!isAdmin) {
+            throw new AuthorizationDeniedException("Apenas administradores podem acessar a fila de aprovação.");
+        }
+        return petshopRepository.findByStatusAprovacao(StatusAprovacao.PENDENTE_APROVACAO).stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Aprova ou rejeita um Petshop. Exclusivo para administradores.
+     *
+     * @param id          ID do petshop
+     * @param novoStatus  APROVADO ou REJEITADO
+     * @param usuario     administrador executando a ação
+     */
+    @Transactional
+    public PetshopResponseDTO alterarStatusAprovacao(Long id, StatusAprovacao novoStatus, Usuario usuario) {
+        boolean isAdmin = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_ADMIN);
+        if (!isAdmin) {
+            throw new AuthorizationDeniedException("Apenas administradores podem alterar o status de aprovação.");
+        }
+
+        if (novoStatus == StatusAprovacao.PENDENTE_APROVACAO) {
+            throw new IllegalArgumentException("Não é possível definir o status como PENDENTE_APROVACAO manualmente.");
+        }
+
+        Petshop petshop = petshopRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Petshop não encontrado com o ID: " + id));
+
+        petshop.setStatusAprovacao(novoStatus);
+        return toResponseDTO(petshopRepository.save(petshop));
     }
 
     @Transactional
@@ -120,6 +190,7 @@ public class PetshopService {
                 .descricao(petshop.getDescricao())
                 .website(petshop.getWebsite())
                 .valorMinimoFreteGratis(petshop.getValorMinimoFreteGratis())
+                .statusAprovacao(petshop.getStatusAprovacao())
                 .build();
     }
 }

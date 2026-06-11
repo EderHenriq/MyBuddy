@@ -45,6 +45,10 @@ public class ProdutoService {
             // Apenas produtos ativos por padrão na busca pública
             predicates.add(cb.equal(root.get("status"), StatusProduto.ATIVO));
 
+            // Regra de aprovação: apenas produtos de Petshops APROVADOS aparecem publicamente
+            predicates.add(cb.equal(
+                    root.get("petshop").get("statusAprovacao"), StatusAprovacao.APROVADO));
+
             if (busca != null && !busca.isBlank()) {
                 String term = "%" + busca.toLowerCase() + "%";
                 predicates.add(cb.or(
@@ -99,6 +103,14 @@ public class ProdutoService {
 
         Petshop petshop = petshopRepository.findById(usuario.getPetshopId())
                 .orElseThrow(() -> new ResourceNotFoundException("Petshop associado ao usuário não encontrado."));
+
+        // Regra de aprovação: apenas Petshops APROVADOS podem cadastrar produtos
+        if (!petshop.isAprovado()) {
+            throw new AuthorizationDeniedException(
+                    "Seu petshop ainda não foi aprovado pela plataforma. Status atual: "
+                            + petshop.getStatusAprovacao().name()
+                            + ". Aguarde a aprovação da equipe MyBuddy para publicar produtos.");
+        }
 
         SubCategoria subCategoria = subCategoriaRepository.findById(request.getSubCategoriaId())
                 .orElseThrow(() -> new ResourceNotFoundException("Subcategoria não encontrada com ID: " + request.getSubCategoriaId()));

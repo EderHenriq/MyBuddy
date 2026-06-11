@@ -61,6 +61,7 @@ public class ProdutoServiceTest {
         petshop = Petshop.builder()
                 .id(10L)
                 .nomeFantasia("Petshop Ed")
+                .statusAprovacao(StatusAprovacao.APROVADO)
                 .build();
 
         categoria = Categoria.builder().id(5L).nome("Cães").build();
@@ -154,5 +155,14 @@ public class ProdutoServiceTest {
         produtoService.deletar(20L, usuario);
 
         verify(produtoRepository, times(1)).delete(produto);
+    }
+
+    @Test
+    void criarProduto_PetshopNaoAprovado_DeveLancarExcecao() {
+        petshop.setStatusAprovacao(StatusAprovacao.PENDENTE_APROVACAO);
+        when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
+
+        assertThrows(AuthorizationDeniedException.class, () -> produtoService.criar(requestDTO, usuario));
+        verify(produtoRepository, never()).save(any(Produto.class));
     }
 }
