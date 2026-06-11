@@ -62,9 +62,27 @@ class InteresseAdocaoServiceTest {
         interesse.setCpfAdotante("12345678901");
         interesse.setIdadeAdotante(25);
         interesse.setMotivoAdocao("Quero um companheiro");
+        interesse.setTipoResidencia("CASA");
+        interesse.setPossuiTelasProtecao(true);
+        interesse.setOutrosAnimais("Um cachorro pequeno");
+        interesse.setTempoSozinhoHoras(4);
+        interesse.setTodosCientes(true);
+        interesse.setEspacoAdequado(true);
         interesse.setStatus(StatusInteresse.PENDENTE);
 
-        request = new RegistrarInteresseRequest(1L, "Quero adotar!", "12345678901", 25, "Quero um companheiro");
+        request = new RegistrarInteresseRequest(
+                1L,
+                "Quero adotar!",
+                "12345678901",
+                25,
+                "Quero um companheiro",
+                "CASA",
+                true,
+                "Um cachorro pequeno",
+                4,
+                true,
+                true
+        );
     }
 
     // ===================== MANIFESTAR INTERESSE =====================
@@ -79,6 +97,12 @@ class InteresseAdocaoServiceTest {
         InteresseResponse result = interesseAdocaoService.manifestarInteresse(1L, request);
 
         assertThat(result).isNotNull();
+        assertThat(result.tipoResidencia()).isEqualTo("CASA");
+        assertThat(result.possuiTelasProtecao()).isTrue();
+        assertThat(result.outrosAnimais()).isEqualTo("Um cachorro pequeno");
+        assertThat(result.tempoSozinhoHoras()).isEqualTo(4);
+        assertThat(result.todosCientes()).isTrue();
+        assertThat(result.espacoAdequado()).isTrue();
         verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
     }
 
@@ -94,7 +118,17 @@ class InteresseAdocaoServiceTest {
     @Test
     void deveLancarExcecaoAoManifestarInteresseComPetInexistente() {
         RegistrarInteresseRequest requestComPetInexistente = new RegistrarInteresseRequest(
-                99L, "mensagem", "12345678901", 25, "Quero um companheiro"
+                99L,
+                "mensagem",
+                "12345678901",
+                25,
+                "Quero um companheiro",
+                "CASA",
+                true,
+                "Um cachorro pequeno",
+                4,
+                true,
+                true
         );
         when(usuarioRepo.findById(1L)).thenReturn(Optional.of(usuario));
         when(petRepo.findById(99L)).thenReturn(Optional.empty());

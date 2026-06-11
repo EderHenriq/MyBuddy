@@ -23,7 +23,13 @@ public final class InteresseAdocaoMapper {
                 i.getAtualizadoEm(),
                 i.getCpfAdotante(),
                 i.getIdadeAdotante(),
-                i.getMotivoAdocao()
+                i.getMotivoAdocao(),
+                i.getTipoResidencia(),
+                i.getPossuiTelasProtecao(),
+                i.getOutrosAnimais(),
+                i.getTempoSozinhoHoras(),
+                i.getTodosCientes(),
+                i.getEspacoAdequado()
         );
     }
 }

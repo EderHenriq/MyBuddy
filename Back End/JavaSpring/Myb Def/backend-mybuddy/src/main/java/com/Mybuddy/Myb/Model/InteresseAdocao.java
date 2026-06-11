@@ -43,6 +43,18 @@ public class InteresseAdocao implements Identifiable {
 
     private String motivoAdocao;
 
+    private String tipoResidencia;
+
+    private Boolean possuiTelasProtecao;
+
+    private String outrosAnimais;
+
+    private Integer tempoSozinhoHoras;
+
+    private Boolean todosCientes;
+
+    private Boolean espacoAdequado;
+
     @CreatedDate
     private LocalDateTime criadoEm;
 

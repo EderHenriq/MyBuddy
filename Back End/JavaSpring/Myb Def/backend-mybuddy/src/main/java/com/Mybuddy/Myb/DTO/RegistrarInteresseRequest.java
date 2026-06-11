@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.DTO;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,5 +23,25 @@ public record RegistrarInteresseRequest(
 
         @NotBlank(message = "O motivo da adoção é obrigatório.")
         @Size(max = 500, message = "O motivo não pode exceder 500 caracteres.")
-        String motivoAdocao
+        String motivoAdocao,
+
+        @NotBlank(message = "O tipo de residência é obrigatório.")
+        String tipoResidencia,
+
+        @NotNull(message = "A informação sobre telas de proteção é obrigatória.")
+        Boolean possuiTelasProtecao,
+
+        @NotBlank(message = "A informação sobre outros animais é obrigatória.")
+        String outrosAnimais,
+
+        @NotNull(message = "O tempo que o animal ficará sozinho é obrigatório.")
+        @Min(value = 0, message = "O tempo sozinho não pode ser negativo.")
+        @Max(value = 24, message = "O tempo sozinho não pode exceder 24 horas.")
+        Integer tempoSozinhoHoras,
+
+        @NotNull(message = "A confirmação de que todos na residência estão cientes é obrigatória.")
+        Boolean todosCientes,
+
+        @NotNull(message = "A confirmação de espaço adequado é obrigatória.")
+        Boolean espacoAdequado
 ) {}

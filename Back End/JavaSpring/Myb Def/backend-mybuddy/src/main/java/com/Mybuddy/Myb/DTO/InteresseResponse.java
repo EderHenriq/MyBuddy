@@ -13,5 +13,11 @@ public record InteresseResponse(
         LocalDateTime atualizadoEm,
         String cpfAdotante,
         Integer idadeAdotante,
-        String motivoAdocao
+        String motivoAdocao,
+        String tipoResidencia,
+        Boolean possuiTelasProtecao,
+        String outrosAnimais,
+        Integer tempoSozinhoHoras,
+        Boolean todosCientes,
+        Boolean espacoAdequado
 ) {}
