@@ -45,6 +45,9 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/payments/preference/**").permitAll()
                         .requestMatchers("/api/payments/webhook").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/produtos/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/categorias/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/petshop/**").permitAll()
                         .anyRequest().authenticated())
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin()))
