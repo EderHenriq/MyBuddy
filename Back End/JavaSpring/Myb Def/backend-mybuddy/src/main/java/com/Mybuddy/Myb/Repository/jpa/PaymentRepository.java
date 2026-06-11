@@ -24,6 +24,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findByStatus(PaymentStatus status);
 
+    List<Payment> findByPedidoId(Long pedidoId);
+
     @org.springframework.data.jpa.repository.Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.status = :status")
     java.math.BigDecimal sumAmountByStatus(PaymentStatus status);
 

@@ -10,11 +10,15 @@ import com.Mybuddy.Myb.Repository.jpa.CupomRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
+import com.mercadopago.client.payment.PaymentRefundClient;
+import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 
@@ -51,6 +55,9 @@ public class PedidoServiceTest {
 
     @Mock
     private CupomService cupomService;
+
+    @Mock
+    private PaymentRepository paymentRepository;
 
     @InjectMocks
     private PedidoService pedidoService;
@@ -318,5 +325,81 @@ public class PedidoServiceTest {
         assertEquals(estoqueAntes + 2, produto.getEstoque());
         verify(produtoRepository, times(1)).save(produto);
         verify(pedidoRepository, times(1)).save(pedido);
+    }
+
+    @Test
+    void cancelarPedido_PedidoPagoComPagamentoAssociado_DeveDispararReembolso() throws Exception {
+        pedido.setStatus(StatusPedido.PAGO);
+        
+        Payment payment = new Payment();
+        payment.setId(50L);
+        payment.setMpPaymentId("987654321");
+        payment.setStatus(PaymentStatus.APPROVED);
+        payment.setAmount(new BigDecimal("200.00"));
+        payment.setPedido(pedido);
+
+        when(pedidoRepository.findById(30L)).thenReturn(Optional.of(pedido));
+        when(paymentRepository.findByPedidoId(30L)).thenReturn(List.of(payment));
+        when(pedidoRepository.save(any(Pedido.class))).thenReturn(pedido);
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        try (MockedConstruction<PaymentRefundClient> mocked = Mockito.mockConstruction(PaymentRefundClient.class,
+                (mock, context) -> {
+                    // Não lança exceção ao chamar refund
+                })) {
+
+            PedidoResponseDTO response = pedidoService.cancelar(30L, usuario);
+
+            assertNotNull(response);
+            assertEquals(StatusPedido.CANCELADO.name(), response.getStatus());
+            assertEquals(PaymentStatus.REFUNDED, payment.getStatus());
+            verify(paymentRepository, times(1)).save(payment);
+            verify(pedidoRepository, times(1)).save(any(Pedido.class));
+        }
+    }
+
+    @Test
+    void cancelarPedido_PedidoPagoSemPagamentoAssociado_DeveApenasCancelar() {
+        pedido.setStatus(StatusPedido.PAGO);
+
+        when(pedidoRepository.findById(30L)).thenReturn(Optional.of(pedido));
+        when(paymentRepository.findByPedidoId(30L)).thenReturn(List.of());
+        when(pedidoRepository.save(any(Pedido.class))).thenReturn(pedido);
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        PedidoResponseDTO response = pedidoService.cancelar(30L, usuario);
+
+        assertNotNull(response);
+        assertEquals(StatusPedido.CANCELADO.name(), response.getStatus());
+        verify(paymentRepository, never()).save(any(Payment.class));
+        verify(pedidoRepository, times(1)).save(any(Pedido.class));
+    }
+
+    @Test
+    void cancelarPedido_FalhaAoReembolsar_DeveLancarExcecao() {
+        pedido.setStatus(StatusPedido.PAGO);
+        
+        Payment payment = new Payment();
+        payment.setId(50L);
+        payment.setMpPaymentId("987654321");
+        payment.setStatus(PaymentStatus.APPROVED);
+        payment.setAmount(new BigDecimal("200.00"));
+        payment.setPedido(pedido);
+
+        when(pedidoRepository.findById(30L)).thenReturn(Optional.of(pedido));
+        when(paymentRepository.findByPedidoId(30L)).thenReturn(List.of(payment));
+
+        try (MockedConstruction<PaymentRefundClient> mocked = Mockito.mockConstruction(PaymentRefundClient.class,
+                (mock, context) -> {
+                    doThrow(new RuntimeException("API Error")).when(mock).refund(anyLong());
+                })) {
+
+            assertThrows(RuntimeException.class, () -> pedidoService.cancelar(30L, usuario));
+            
+            // O pagamento não deve ser marcado como REFUNDED e o pedido não deve ser cancelado
+            assertEquals(PaymentStatus.APPROVED, payment.getStatus());
+            verify(paymentRepository, never()).save(payment);
+            verify(pedidoRepository, never()).save(any(Pedido.class));
+        }
     }
 }

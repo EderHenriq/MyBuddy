@@ -9,16 +9,21 @@ import com.Mybuddy.Myb.Repository.jpa.ProdutoRepository;
 import com.Mybuddy.Myb.Repository.jpa.CupomRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
+import com.mercadopago.client.payment.PaymentRefundClient;
+import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PedidoService {
 
@@ -29,6 +34,7 @@ public class PedidoService {
     private final CupomRepository cupomRepository;
     private final CupomService cupomService;
     private final EmailService emailService;
+    private final PaymentRepository paymentRepository;
 
     @Transactional
     public PedidoResponseDTO criar(PedidoRequestDTO request, Usuario usuario) {
@@ -211,6 +217,34 @@ public class PedidoService {
         // Regra aprovada: Só pode cancelar se estiver PENDENTE ou PAGO
         if (pedido.getStatus() != StatusPedido.PENDENTE && pedido.getStatus() != StatusPedido.PAGO) {
             throw new IllegalStateException("Não é possível cancelar um pedido que já está " + pedido.getStatus().name() + ".");
+        }
+
+        if (pedido.getStatus() == StatusPedido.PAGO) {
+            // Reembolsar no Mercado Pago se houver pagamento associado
+            List<Payment> payments = paymentRepository.findByPedidoId(pedido.getId());
+            Optional<Payment> approvedPaymentOpt = payments.stream()
+                    .filter(p -> p.getStatus() == PaymentStatus.APPROVED && p.getMpPaymentId() != null)
+                    .findFirst();
+
+            if (approvedPaymentOpt.isPresent()) {
+                Payment payment = approvedPaymentOpt.get();
+                try {
+                    log.info("Disparando reembolso no Mercado Pago para o pagamento ID: {}", payment.getMpPaymentId());
+                    PaymentRefundClient refundClient = new PaymentRefundClient();
+                    refundClient.refund(Long.parseLong(payment.getMpPaymentId()));
+                    
+                    // Atualiza localmente o pagamento para REFUNDED
+                    payment.setStatus(PaymentStatus.REFUNDED);
+                    paymentRepository.save(payment);
+                    log.info("Reembolso executado e pagamento atualizado localmente para REFUNDED.");
+                } catch (Exception e) {
+                    log.error("Erro ao realizar reembolso automático no Mercado Pago para o pagamento {}: {}", 
+                            payment.getMpPaymentId(), e.getMessage(), e);
+                    throw new RuntimeException("Falha ao processar o estorno do pagamento no Mercado Pago. Detalhes: " + e.getMessage());
+                }
+            } else {
+                log.warn("Pedido #{} está PAGO, mas nenhum pagamento APROVADO foi encontrado para estorno.", pedido.getId());
+            }
         }
 
         pedido.setStatus(StatusPedido.CANCELADO);
