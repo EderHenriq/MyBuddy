@@ -9,6 +9,7 @@ import com.Mybuddy.Myb.Repository.jpa.PedidoRepository;
 import com.Mybuddy.Myb.Repository.jpa.ProdutoRepository;
 import com.Mybuddy.Myb.Repository.mongo.ChatRepository;
 import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
+import com.Mybuddy.Myb.Service.PetshopService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ class PetshopControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private PetshopService petshopService;
 
     @MockitoBean
     private ProdutoRepository produtoRepository;
@@ -84,9 +88,9 @@ class PetshopControllerTest {
     }
 
     @Test
-    void deveRetornar401QuandoBuscarProdutosSemToken() throws Exception {
+    void deveRetornar403QuandoBuscarProdutosSemToken() throws Exception {
         mockMvc.perform(get("/api/petshop/produtos"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
