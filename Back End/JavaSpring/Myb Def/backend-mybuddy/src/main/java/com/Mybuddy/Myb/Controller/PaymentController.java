@@ -12,7 +12,7 @@ import com.Mybuddy.Myb.Util.MercadoPagoWebhookValidator;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.client.preapproval.PreapprovalClient;
-// import com.mercadopago.client.preapproval.PreapprovalRequest;
+import com.mercadopago.client.preapproval.PreapprovalUpdateRequest;
 import com.mercadopago.resources.preapproval.Preapproval;
 import com.Mybuddy.Myb.Repository.jpa.DonationSubscriptionRepository;
 import com.Mybuddy.Myb.Model.DonationSubscription;
@@ -123,6 +123,39 @@ public class PaymentController {
                 "preapprovalId", preapproval.getId(),
                 "initPoint", preapproval.getSandboxInitPoint() != null ? preapproval.getSandboxInitPoint() : preapproval.getInitPoint()
         ));
+    }
+
+    @PostMapping("/subscribe/{id}/cancelar")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> cancelSubscription(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable Long id) throws MPException, MPApiException {
+        
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        
+        DonationSubscription subscription = donationSubscriptionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Assinatura não encontrada: " + id));
+
+        // Validar se a assinatura pertence ao usuário logado
+        if (!subscription.getUsuarioId().equals(usuario.getId())) {
+            throw new org.springframework.security.authorization.AuthorizationDeniedException("Acesso negado para cancelar esta assinatura.");
+        }
+
+        // Cancelar no Mercado Pago
+        PreapprovalClient client = new PreapprovalClient();
+        PreapprovalUpdateRequest request = PreapprovalUpdateRequest.builder()
+                .status("cancelled")
+                .build();
+        
+        client.update(subscription.getMpPreapprovalId(), request);
+
+        // Atualizar banco local
+        subscription.setStatus("cancelled");
+        donationSubscriptionRepository.save(subscription);
+
+        log.info("Assinatura cancelada com sucesso: id={}, mpPreapprovalId={}", subscription.getId(), subscription.getMpPreapprovalId());
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
