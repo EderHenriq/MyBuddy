@@ -191,10 +191,38 @@ class UsuarioControllerTest {
 
     @Test
     void deveDeletarUsuarioQuandoAdmin() throws Exception {
+        Usuario admin = new Usuario();
+        admin.setId(2L);
+        com.Mybuddy.Myb.Security.Role role = new com.Mybuddy.Myb.Security.Role();
+        role.setName(com.Mybuddy.Myb.Security.ERole.ROLE_ADMIN);
+        admin.setRoles(java.util.Set.of(role));
+
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(admin);
         doNothing().when(usuarioService).deletarUsuario(1L);
 
         mockMvc.perform(delete("/api/usuarios/1")
                         .with(jwt().authorities(() -> "ROLE_ADMIN")))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deveDeletarASiMesmoQuandoUsuarioComum() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(usuario); // id = 1
+        doNothing().when(usuarioService).deletarUsuario(1L);
+
+        mockMvc.perform(delete("/api/usuarios/1")
+                        .with(jwt().authorities(() -> "ROLE_USER")))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deveRetornar403AoTentarDeletarOutroUsuarioComoUsuarioComum() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(usuario); // id = 1
+        
+        mockMvc.perform(delete("/api/usuarios/2") // tentando deletar o id = 2
+                        .with(jwt().authorities(() -> "ROLE_USER")))
+                .andExpect(status().isForbidden());
+                
+        verify(usuarioService, never()).deletarUsuario(anyLong());
     }
 }
