@@ -19,7 +19,7 @@ public class MercadoPagoWebhookValidator {
     public boolean isValid(String xSignature, String xRequestId, String dataId) {
         try{
             if(xSignature == null || xSignature.isBlank()) {
-                log.warn("x-signature ausente no Weebhook MP. requestId={}", xRequestId);
+                log.warn("x-signature ausente no Webhook MP. requestId={}", xRequestId);
                 return false;
             }
 
@@ -35,7 +35,7 @@ public class MercadoPagoWebhookValidator {
             }
 
             if (ts == null || v1 == null) {
-                log.warn("x-signature malformada no Weebhook MP. requestId={}", xRequestId);
+                log.warn("x-signature malformada no Webhook MP. requestId={}", xRequestId);
                 return false;
             }
 

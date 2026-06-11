@@ -13,6 +13,7 @@ import com.Mybuddy.Myb.Repository.jpa.ProdutoRepository;
 import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import com.Mybuddy.Myb.Service.PetshopService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/petshop")
+@RequiredArgsConstructor
 @Slf4j
 public class PetshopController {
 
@@ -34,18 +36,6 @@ public class PetshopController {
     private final PedidoRepository pedidoRepository;
     private final ChatRepository chatRepository;
     private final KeycloakUserSyncService keycloakUserSyncService;
-
-    public PetshopController(PetshopService petshopService,
-                             ProdutoRepository produtoRepository, 
-                             PedidoRepository pedidoRepository, 
-                             ChatRepository chatRepository,
-                             KeycloakUserSyncService keycloakUserSyncService) {
-        this.petshopService = petshopService;
-        this.produtoRepository = produtoRepository;
-        this.pedidoRepository = pedidoRepository;
-        this.chatRepository = chatRepository;
-        this.keycloakUserSyncService = keycloakUserSyncService;
-    }
 
     @PostMapping
     @PreAuthorize("hasRole('PETSHOP') or hasRole('ADMIN')")

@@ -53,11 +53,13 @@ public class Produto {
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "produto-fotos")
     @ToString.Exclude
+    @org.hibernate.annotations.BatchSize(size = 20)
     private Set<FotoProduto> fotos = new HashSet<>();
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "produto-avaliacoes")
     @ToString.Exclude
+    @org.hibernate.annotations.BatchSize(size = 20)
     private Set<AvaliacaoProduto> avaliacoes = new HashSet<>();
 
     @CreationTimestamp

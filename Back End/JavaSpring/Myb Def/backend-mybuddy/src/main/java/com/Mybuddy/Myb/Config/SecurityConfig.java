@@ -16,19 +16,17 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import java.util.List;
 
 import com.Mybuddy.Myb.Security.JwtAuthConverter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
         private final JwtAuthConverter jwtAuthConverter;
-
-        public SecurityConfig(JwtAuthConverter jwtAuthConverter) {
-                this.jwtAuthConverter = jwtAuthConverter;
-        }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

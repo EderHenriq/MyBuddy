@@ -37,6 +37,12 @@ public class InteresseAdocao implements Identifiable {
 
     private String mensagem;
 
+    private String cpfAdotante;
+
+    private Integer idadeAdotante;
+
+    private String motivoAdocao;
+
     @CreatedDate
     private LocalDateTime criadoEm;
 

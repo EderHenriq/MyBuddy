@@ -40,6 +40,7 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     @ToString.Exclude
+    @org.hibernate.annotations.BatchSize(size = 20)
     private List<ItemPedido> itens = new ArrayList<>();
 
     @Column(nullable = false, precision = 10, scale = 2)

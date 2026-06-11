@@ -11,6 +11,7 @@ import com.Mybuddy.Myb.Service.PetService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -28,6 +29,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pets")
+@RequiredArgsConstructor
 public class PetController {
 
     private static final Logger log = LoggerFactory.getLogger(PetController.class);
@@ -35,12 +37,6 @@ public class PetController {
     private final PetService petService;
     private final FotoPetService fotoPetService;
     private final KeycloakUserSyncService keycloakUserSyncService;
-
-    public PetController(PetService petService, FotoPetService fotoPetService, KeycloakUserSyncService keycloakUserSyncService) {
-        this.petService = petService;
-        this.fotoPetService = fotoPetService;
-        this.keycloakUserSyncService = keycloakUserSyncService;
-    }
 
     @PostMapping
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")

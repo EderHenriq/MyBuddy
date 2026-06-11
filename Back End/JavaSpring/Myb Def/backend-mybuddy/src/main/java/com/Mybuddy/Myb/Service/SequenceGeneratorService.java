@@ -1,6 +1,7 @@
 package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Model.DatabaseSequence;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -12,13 +13,10 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
+@RequiredArgsConstructor
 public class SequenceGeneratorService {
 
     private final MongoOperations mongoOperations;
-
-    public SequenceGeneratorService(MongoOperations mongoOperations) {
-        this.mongoOperations = mongoOperations;
-    }
 
     public long generateSequence(String seqName) {
         DatabaseSequence counter = mongoOperations.findAndModify(

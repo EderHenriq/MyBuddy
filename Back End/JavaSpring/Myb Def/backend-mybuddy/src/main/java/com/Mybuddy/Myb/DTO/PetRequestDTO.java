@@ -68,4 +68,7 @@ public class PetRequestDTO {
 
     @Size(max = 100, message = "O estado deve ter no máximo 100 caracteres.")
     private String estado;
+
+    @Size(max = 1000, message = "A descrição deve ter no máximo 1000 caracteres.")
+    private String descricao;
 }

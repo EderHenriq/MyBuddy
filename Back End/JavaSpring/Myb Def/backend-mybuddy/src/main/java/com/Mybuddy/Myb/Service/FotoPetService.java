@@ -2,6 +2,7 @@ package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Model.Arquivo;
 import com.Mybuddy.Myb.Repository.mongo.ArquivoRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,15 +19,12 @@ import java.util.UUID;
  * Persiste os bytes dos arquivos diretamente no MongoDB para garantir resiliência e alta disponibilidade.
  */
 @Service
+@RequiredArgsConstructor
 public class FotoPetService {
 
     private static final Logger log = LoggerFactory.getLogger(FotoPetService.class);
 
     private final ArquivoRepository arquivoRepository;
-
-    public FotoPetService(ArquivoRepository arquivoRepository) {
-        this.arquivoRepository = arquivoRepository;
-    }
 
     /**
      * Salva um arquivo/foto no MongoDB.

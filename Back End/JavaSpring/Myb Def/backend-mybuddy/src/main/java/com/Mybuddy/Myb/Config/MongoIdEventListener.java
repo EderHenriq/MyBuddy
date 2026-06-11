@@ -2,6 +2,7 @@ package com.Mybuddy.Myb.Config;
 
 import com.Mybuddy.Myb.Model.Identifiable;
 import com.Mybuddy.Myb.Service.SequenceGeneratorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
@@ -14,13 +15,10 @@ import java.lang.reflect.Field;
  * caso o campo 'id' (do tipo Long) esteja nulo.
  */
 @Component
+@RequiredArgsConstructor
 public class MongoIdEventListener extends AbstractMongoEventListener<Object> {
 
     private final SequenceGeneratorService sequenceGenerator;
-
-    public MongoIdEventListener(SequenceGeneratorService sequenceGenerator) {
-        this.sequenceGenerator = sequenceGenerator;
-    }
 
     @Override
     public void onBeforeConvert(BeforeConvertEvent<Object> event) {

@@ -63,6 +63,8 @@ public class Pet implements Identifiable {
 
     private Double peso;
 
+    private String descricao;
+
     @CreatedDate
     private LocalDateTime dataCriacao;
 

@@ -6,6 +6,7 @@ import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrganizacaoService {
 
     private static final Logger log = LoggerFactory.getLogger(OrganizacaoService.class);
 
     private final OrganizacaoRepository organizacaoRepository;
-
-    public OrganizacaoService(OrganizacaoRepository organizacaoRepository) {
-        this.organizacaoRepository = organizacaoRepository;
-    }
 
     @Transactional
     public Organizacao criarOrganizacao(Organizacao organizacao) {

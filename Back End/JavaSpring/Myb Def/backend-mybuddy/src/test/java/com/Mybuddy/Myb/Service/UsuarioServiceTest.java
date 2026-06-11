@@ -1,5 +1,7 @@
 package com.Mybuddy.Myb.Service;
 
+import com.Mybuddy.Myb.Exception.ConflictException;
+import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +60,7 @@ class UsuarioServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> usuarioService.criarUsuario(usuario))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessage("O e-mail informado já está em uso.");
 
         verify(usuarioRepository, never()).save(any());
@@ -129,7 +131,7 @@ class UsuarioServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> usuarioService.atualizarUsuario(99L, usuario))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Usuário com ID 99 não encontrado.");
     }
 
@@ -154,7 +156,7 @@ class UsuarioServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> usuarioService.deletarUsuario(99L))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Usuário com ID 99 não encontrado.");
 
         verify(usuarioRepository, never()).deleteById(any());

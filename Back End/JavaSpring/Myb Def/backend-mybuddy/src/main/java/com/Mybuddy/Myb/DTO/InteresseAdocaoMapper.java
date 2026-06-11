@@ -20,7 +20,10 @@ public final class InteresseAdocaoMapper {
                 i.getStatus(),
                 i.getMensagem(),
                 i.getCriadoEm(),
-                i.getAtualizadoEm()
+                i.getAtualizadoEm(),
+                i.getCpfAdotante(),
+                i.getIdadeAdotante(),
+                i.getMotivoAdocao()
         );
     }
 }
