@@ -53,6 +53,15 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(org.springframework.dao.OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorDetails> handleOptimisticLockingFailureException(org.springframework.dao.OptimisticLockingFailureException ex, WebRequest request) {
+        logger.error("Concorrência de dados detectada: {}", ex.getMessage());
+        return new ResponseEntity<>(
+                new ErrorDetails(LocalDateTime.now(), "O produto selecionado foi atualizado por outro usuário. Por favor, tente novamente.", request.getDescription(false)),
+                HttpStatus.CONFLICT
+        );
+    }
+
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ErrorDetails> handleAuthorizationDeniedException(AuthorizationDeniedException ex, WebRequest request) {
         logger.warn("Acesso negado: {}", ex.getMessage());
