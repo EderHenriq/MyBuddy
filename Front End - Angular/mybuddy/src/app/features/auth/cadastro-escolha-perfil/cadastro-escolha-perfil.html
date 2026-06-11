@@ -24,24 +24,28 @@
 
   <section class="signup-form-side" aria-labelledby="signup-heading">
     <div class="signup-card">
-      <nav class="step-indicator" aria-label="Progresso do cadastro">
-        @for (step of totalSteps(); track step) {
-          <span
-            class="step-dot"
-            [class.active]="currentStep() === step"
-            [class.completed]="isStepCompleted(step)"
-            [attr.aria-label]="'Step ' + step"
-          ></span>
-        }
-      </nav>
+      <div class="step-header-actions">
+        <div class="btn-back">
+          @if (currentStep() !== 'perfil') {
+            <button type="button" class="btn-header-back" (click)="prevStep()" aria-label="Voltar">
+              <span class="material-icons">keyboard_arrow_left</span>
+            </button>
+          }
+        </div>
+
+        <nav class="step-indicator" aria-label="Progresso do cadastro">
+          @for (step of totalSteps(); track step) {
+            <span
+              class="step-dot"
+              [class.active]="currentStep() === step"
+              [class.completed]="isStepCompleted(step)"
+              [attr.aria-label]="'Step ' + step"
+            ></span>
+          }
+        </nav>
+      </div>
 
       <header class="card-header">
-        @if (currentStep() !== 'perfil') {
-          <button type="button" class="btn-header-back" (click)="prevStep()" aria-label="Voltar">
-            <span class="material-icons">keyboard_arrow_left</span>
-          </button>
-        }
-
         <h1 id="signup-heading" class="form-title">
           Cadastre-se no
           <span class="highlight">MyBuddy</span>
@@ -83,7 +87,6 @@
 
                   <div class="option-text">
                     <span class="option-title">{{ option.label }}</span>
-                    <span class="option-helper">{{ option.helper }}</span>
                   </div>
                 </button>
               }
@@ -108,7 +111,6 @@
                   <span class="material-icons option-icon" aria-hidden="true">{{ sub.icon }}</span>
                   <div class="option-text">
                     <span class="option-title">{{ sub.label }}</span>
-                    <span class="option-helper">{{ sub.helper }}</span>
                   </div>
                 </button>
               }
