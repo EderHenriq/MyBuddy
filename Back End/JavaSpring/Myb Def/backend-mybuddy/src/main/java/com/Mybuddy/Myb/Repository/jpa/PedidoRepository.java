@@ -16,4 +16,10 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     List<Pedido> findByPetshopId(Long petshopId);
     List<Pedido> findByClienteId(Long clienteId);
     List<Pedido> findByStatusAndDataCriacaoBefore(StatusPedido status, LocalDateTime limite);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(p) > 0 FROM Pedido p JOIN p.itens i WHERE p.clienteId = :clienteId AND p.status = :status AND i.produto.id = :produtoId")
+    boolean existeCompraConcluida(
+            @org.springframework.data.repository.query.Param("clienteId") Long clienteId,
+            @org.springframework.data.repository.query.Param("status") StatusPedido status,
+            @org.springframework.data.repository.query.Param("produtoId") Long produtoId);
 }
