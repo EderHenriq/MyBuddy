@@ -9,6 +9,7 @@ import com.Mybuddy.Myb.Repository.mongo.RoleRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,22 +18,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final OrganizacaoService organizacaoService;
-
-    public AuthService(UsuarioRepository usuarioRepository,
-                       RoleRepository roleRepository,
-                       PasswordEncoder encoder,
-                       OrganizacaoService organizacaoService) {
-        this.usuarioRepository = usuarioRepository;
-        this.roleRepository = roleRepository;
-        this.encoder = encoder;
-        this.organizacaoService = organizacaoService;
-    }
 
     // TODO MY-110: avaliar migração do cadastro para Keycloak Admin API
     @Transactional

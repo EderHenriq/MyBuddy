@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Service;
 
+import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.CampanhaDoacao;
 import com.Mybuddy.Myb.Repository.mongo.CampanhaDoacaoRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,7 @@ public class CampanhaDoacaoService {
                     campanha.setStatus(dadosNovos.getStatus());
                     return repository.save(campanha);
                 })
-                .orElseThrow(() -> new RuntimeException("Campanha não encontrada: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Campanha não encontrada: " + id));
     }
 
     public void deletar(Long id) {

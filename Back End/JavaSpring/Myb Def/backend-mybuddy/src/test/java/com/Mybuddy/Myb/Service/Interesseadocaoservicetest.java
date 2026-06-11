@@ -1,9 +1,11 @@
 package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.DTO.InteresseResponse;
+import com.Mybuddy.Myb.DTO.RegistrarInteresseRequest;
 import com.Mybuddy.Myb.Model.*;
 import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.PetRepository;
+import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +40,7 @@ class InteresseAdocaoServiceTest {
     private Usuario usuario;
     private Pet pet;
     private InteresseAdocao interesse;
+    private RegistrarInteresseRequest request;
 
     @BeforeEach
     void setUp() {
@@ -56,7 +59,12 @@ class InteresseAdocaoServiceTest {
         interesse.setUsuario(usuario);
         interesse.setPet(pet);
         interesse.setMensagem("Quero adotar!");
+        interesse.setCpfAdotante("12345678901");
+        interesse.setIdadeAdotante(25);
+        interesse.setMotivoAdocao("Quero um companheiro");
         interesse.setStatus(StatusInteresse.PENDENTE);
+
+        request = new RegistrarInteresseRequest(1L, "Quero adotar!", "12345678901", 25, "Quero um companheiro");
     }
 
     // ===================== MANIFESTAR INTERESSE =====================
@@ -68,7 +76,7 @@ class InteresseAdocaoServiceTest {
         when(interesseRepo.existsByUsuarioAndPet(usuario, pet)).thenReturn(false);
         when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
 
-        InteresseResponse result = interesseAdocaoService.manifestarInteresse(1L, 1L, "Quero adotar!");
+        InteresseResponse result = interesseAdocaoService.manifestarInteresse(1L, request);
 
         assertThat(result).isNotNull();
         verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
@@ -78,18 +86,21 @@ class InteresseAdocaoServiceTest {
     void deveLancarExcecaoAoManifestarInteresseComUsuarioInexistente() {
         when(usuarioRepo.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(99L, 1L, "mensagem"))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(99L, request))
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Usuário não encontrado: 99");
     }
 
     @Test
     void deveLancarExcecaoAoManifestarInteresseComPetInexistente() {
+        RegistrarInteresseRequest requestComPetInexistente = new RegistrarInteresseRequest(
+                99L, "mensagem", "12345678901", 25, "Quero um companheiro"
+        );
         when(usuarioRepo.findById(1L)).thenReturn(Optional.of(usuario));
         when(petRepo.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(1L, 99L, "mensagem"))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(1L, requestComPetInexistente))
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Pet não encontrado: 99");
     }
 
@@ -100,7 +111,7 @@ class InteresseAdocaoServiceTest {
         when(usuarioRepo.findById(1L)).thenReturn(Optional.of(usuario));
         when(petRepo.findById(1L)).thenReturn(Optional.of(pet));
 
-        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(1L, 1L, "mensagem"))
+        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(1L, request))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Pet não está disponível para adoção");
     }
@@ -111,7 +122,7 @@ class InteresseAdocaoServiceTest {
         when(petRepo.findById(1L)).thenReturn(Optional.of(pet));
         when(interesseRepo.existsByUsuarioAndPet(usuario, pet)).thenReturn(true);
 
-        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(1L, 1L, "mensagem"))
+        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(1L, request))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Você já manifestou interesse neste pet");
     }
@@ -134,7 +145,7 @@ class InteresseAdocaoServiceTest {
         when(interesseRepo.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> interesseAdocaoService.atualizarStatus(99L, StatusInteresse.APROVADO))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Interesse não encontrado: 99");
     }
 

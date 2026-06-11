@@ -10,7 +10,6 @@ import com.Mybuddy.Myb.DTO.PaymentRequestDTO;
 import com.Mybuddy.Myb.Model.Payment;
 import com.Mybuddy.Myb.Model.PaymentStatus;
 import com.Mybuddy.Myb.Model.Usuario;
-import com.Mybuddy.Myb.Model.CampanhaDoacao;
 import com.Mybuddy.Myb.Model.Pedido;
 import com.Mybuddy.Myb.Model.StatusPedido;
 import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
@@ -32,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class PaymentService {
     
     private final PaymentRepository paymentRepository;

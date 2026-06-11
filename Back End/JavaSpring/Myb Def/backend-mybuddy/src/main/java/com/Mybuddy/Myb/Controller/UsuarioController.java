@@ -4,6 +4,7 @@ import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Service.FotoPetService;
 import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import com.Mybuddy.Myb.Service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,26 +17,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@RequiredArgsConstructor
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final KeycloakUserSyncService keycloakUserSyncService;
     private final FotoPetService fotoPetService;
 
-    public UsuarioController(UsuarioService usuarioService, KeycloakUserSyncService keycloakUserSyncService, FotoPetService fotoPetService) {
-        this.usuarioService = usuarioService;
-        this.keycloakUserSyncService = keycloakUserSyncService;
-        this.fotoPetService = fotoPetService;
-    }
-
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
-        try {
-            return new ResponseEntity<>(usuarioService.criarUsuario(usuario), HttpStatus.CREATED);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-        }
+        return new ResponseEntity<>(usuarioService.criarUsuario(usuario), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -92,21 +84,13 @@ public class UsuarioController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario dadosUsuario) {
-        try {
-            return ResponseEntity.ok(usuarioService.atualizarUsuario(id, dadosUsuario));
-        } catch (IllegalStateException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(usuarioService.atualizarUsuario(id, dadosUsuario));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
-        try {
-            usuarioService.deletarUsuario(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalStateException e) {
-            return ResponseEntity.notFound().build();
-        }
+        usuarioService.deletarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -20,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PetService {
 
     private static final Logger log = LoggerFactory.getLogger(PetService.class);
@@ -38,16 +41,6 @@ public class PetService {
     private final InteresseAdocaoRepository interesseRepo;
     private final OrganizacaoRepository organizacaoRepository;
     private final MongoTemplate mongoTemplate;
-
-    public PetService(PetRepository petRepository,
-                      InteresseAdocaoRepository interesseRepo,
-                      OrganizacaoRepository organizacaoRepository,
-                      MongoTemplate mongoTemplate) {
-        this.petRepository = petRepository;
-        this.interesseRepo = interesseRepo;
-        this.organizacaoRepository = organizacaoRepository;
-        this.mongoTemplate = mongoTemplate;
-    }
 
     @Transactional
     public PetResponse criarPet(PetRequestDTO petRequestDTO) {
@@ -77,6 +70,7 @@ public class PetService {
         pet.setCidade(petRequestDTO.getCidade());
         pet.setEstado(petRequestDTO.getEstado());
         pet.setOrganizacao(organizacao);
+        pet.setDescricao(petRequestDTO.getDescricao());
         pet.setStatusAdocao(
                 petRequestDTO.getStatusAdocao() != null
                         ? petRequestDTO.getStatusAdocao()
@@ -104,7 +98,7 @@ public class PetService {
         log.debug("Iniciando atualização do pet ID: {}", id);
 
         Pet petExistente = petRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Pet com ID " + id + " não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Pet com ID " + id + " não encontrado."));
 
         Optional.ofNullable(petRequestDTO.getNome()).ifPresent(petExistente::setNome);
         Optional.ofNullable(petRequestDTO.getCor()).ifPresent(petExistente::setCor);
@@ -116,6 +110,7 @@ public class PetService {
         Optional.ofNullable(petRequestDTO.getPelagem()).ifPresent(petExistente::setPelagem);
         Optional.ofNullable(petRequestDTO.getCidade()).ifPresent(petExistente::setCidade);
         Optional.ofNullable(petRequestDTO.getEstado()).ifPresent(petExistente::setEstado);
+        Optional.ofNullable(petRequestDTO.getDescricao()).ifPresent(petExistente::setDescricao);
 
         petExistente.setMicrochipado(petRequestDTO.isMicrochipado());
         petExistente.setVacinado(petRequestDTO.isVacinado());
@@ -203,7 +198,7 @@ public class PetService {
         log.debug("Iniciando exclusão de pet ID: {}", id);
 
         Pet pet = petRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Pet com ID " + id + " não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Pet com ID " + id + " não encontrado."));
 
         if (pet.getStatusAdocao() == StatusAdocao.ADOTADO) {
             throw new IllegalStateException(
@@ -324,7 +319,8 @@ public class PetService {
                 p.isVacinado(),
                 p.isCastrado(),
                 p.getCidade(),
-                p.getEstado()
+                p.getEstado(),
+                p.getDescricao()
         );
     }
 

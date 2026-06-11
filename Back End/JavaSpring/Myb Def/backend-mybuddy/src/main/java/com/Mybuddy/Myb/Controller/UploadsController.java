@@ -4,6 +4,7 @@ import com.Mybuddy.Myb.Model.Arquivo;
 import com.Mybuddy.Myb.Repository.mongo.ArquivoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class UploadsController {
 
     private static final Logger log = LoggerFactory.getLogger(UploadsController.class);
 
     private final ArquivoRepository arquivoRepository;
-
-    public UploadsController(ArquivoRepository arquivoRepository) {
-        this.arquivoRepository = arquivoRepository;
-    }
 
     @GetMapping("/uploads/{filename:.+}")
     public ResponseEntity<byte[]> serveFile(@PathVariable String filename) {

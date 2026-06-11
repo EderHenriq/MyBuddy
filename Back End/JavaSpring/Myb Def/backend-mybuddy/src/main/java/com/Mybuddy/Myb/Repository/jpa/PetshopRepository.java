@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface PetshopRepository extends JpaRepository<Petshop, Long> {
 
     Optional<Petshop> findByCnpj(String cnpj);
+    boolean existsByCnpj(String cnpj);
 }

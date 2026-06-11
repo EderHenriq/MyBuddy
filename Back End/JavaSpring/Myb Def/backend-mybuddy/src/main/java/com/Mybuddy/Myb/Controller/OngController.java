@@ -9,6 +9,7 @@ import com.Mybuddy.Myb.Repository.mongo.EventoOngRepository;
 import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,22 +20,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/ong")
+@RequiredArgsConstructor
 public class OngController {
 
     private final InteresseAdocaoRepository interesseAdocaoRepository;
     private final EventoOngRepository eventoOngRepository;
     private final PetRepository petRepository;
     private final KeycloakUserSyncService keycloakUserSyncService;
-
-    public OngController(InteresseAdocaoRepository interesseAdocaoRepository, 
-                         EventoOngRepository eventoOngRepository, 
-                         PetRepository petRepository,
-                         KeycloakUserSyncService keycloakUserSyncService) {
-        this.interesseAdocaoRepository = interesseAdocaoRepository;
-        this.eventoOngRepository = eventoOngRepository;
-        this.petRepository = petRepository;
-        this.keycloakUserSyncService = keycloakUserSyncService;
-    }
 
     @GetMapping("/solicitacoes")
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")

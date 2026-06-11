@@ -1,0 +1,70 @@
+package com.Mybuddy.Myb.Service;
+
+import com.Mybuddy.Myb.DTO.AvaliacaoProdutoRequestDTO;
+import com.Mybuddy.Myb.DTO.AvaliacaoProdutoResponseDTO;
+import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
+import com.Mybuddy.Myb.Model.AvaliacaoProduto;
+import com.Mybuddy.Myb.Model.Produto;
+import com.Mybuddy.Myb.Model.Usuario;
+import com.Mybuddy.Myb.Repository.jpa.AvaliacaoProdutoRepository;
+import com.Mybuddy.Myb.Repository.jpa.ProdutoRepository;
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class AvaliacaoProdutoService {
+
+    private final AvaliacaoProdutoRepository avaliacaoProdutoRepository;
+    private final ProdutoRepository produtoRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    @Transactional
+    public AvaliacaoProdutoResponseDTO criar(Long produtoId, AvaliacaoProdutoRequestDTO request, Usuario usuario) {
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + produtoId));
+
+        AvaliacaoProduto avaliacao = AvaliacaoProduto.builder()
+                .produto(produto)
+                .clienteId(usuario.getId())
+                .nota(request.getNota())
+                .comentario(request.getComentario())
+                .build();
+
+        AvaliacaoProduto salvo = avaliacaoProdutoRepository.save(avaliacao);
+        return toResponseDTO(salvo, usuario.getNome());
+    }
+
+    @Transactional(readOnly = true)
+    public List<AvaliacaoProdutoResponseDTO> listarPorProduto(Long produtoId) {
+        if (!produtoRepository.existsById(produtoId)) {
+            throw new ResourceNotFoundException("Produto não encontrado com ID: " + produtoId);
+        }
+
+        return avaliacaoProdutoRepository.findByProdutoId(produtoId).stream()
+                .map(av -> {
+                    String clienteNome = usuarioRepository.findById(av.getClienteId())
+                            .map(Usuario::getNome)
+                            .orElse("Usuário do MyBuddy");
+                    return toResponseDTO(av, clienteNome);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private AvaliacaoProdutoResponseDTO toResponseDTO(AvaliacaoProduto av, String clienteNome) {
+        return AvaliacaoProdutoResponseDTO.builder()
+                .id(av.getId())
+                .produtoId(av.getProduto().getId())
+                .clienteId(av.getClienteId())
+                .clienteNome(clienteNome)
+                .nota(av.getNota())
+                .comentario(av.getComentario())
+                .dataCriacao(av.getDataCriacao())
+                .build();
+    }
+}

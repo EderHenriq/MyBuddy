@@ -78,7 +78,7 @@ class PetControllerTest {
                 1L, "Rex", "CAO", "Labrador", 2, "GRANDE", "Amarelo",
                 null, "M", List.of(), "Disponível para Adoção",
                 StatusAdocao.DISPONIVEL, "ONG Teste", 1L,
-                false, true, true, null, null
+                false, true, true, null, null, "Rex é um cão amigável"
         );
 
         adminUser = new Usuario();

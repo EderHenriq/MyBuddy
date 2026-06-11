@@ -6,6 +6,7 @@ import com.Mybuddy.Myb.Repository.mongo.*;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Configuration
+@RequiredArgsConstructor
+@SuppressWarnings("null")
 public class DataInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
@@ -32,32 +35,6 @@ public class DataInitializer {
     private final ChatRepository chatRepository;
     private final CategoriaRepository categoriaRepository;
     private final SubCategoriaRepository subCategoriaRepository;
-
-    public DataInitializer(
-            UsuarioRepository usuarioRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder encoder,
-            OrganizacaoRepository organizacaoRepository,
-            PetRepository petRepository,
-            PetshopRepository petshopRepository,
-            ProdutoRepository produtoRepository,
-            EventoOngRepository eventoOngRepository,
-            ChatRepository chatRepository,
-            CategoriaRepository categoriaRepository,
-            SubCategoriaRepository subCategoriaRepository
-    ) {
-        this.usuarioRepository = usuarioRepository;
-        this.roleRepository = roleRepository;
-        this.encoder = encoder;
-        this.organizacaoRepository = organizacaoRepository;
-        this.petRepository = petRepository;
-        this.petshopRepository = petshopRepository;
-        this.produtoRepository = produtoRepository;
-        this.eventoOngRepository = eventoOngRepository;
-        this.chatRepository = chatRepository;
-        this.categoriaRepository = categoriaRepository;
-        this.subCategoriaRepository = subCategoriaRepository;
-    }
 
     @PostConstruct
     public void initData() {
@@ -233,6 +210,7 @@ public class DataInitializer {
             if (petRepository.findByNome("Zeus").isEmpty()) {
                 Pet p1 = new Pet("Zeus", "SRD", 2, Especie.CAO, Porte.MEDIO, "Marrom", "Curta", "Macho", myBuddyOrg, true, true, true, "São Paulo", "SP");
                 p1.setId(1L);
+                p1.setDescricao("Zeus é um cãozinho muito alegre, dócil e companheiro. Adora correr em espaços abertos e se dá muito bem com outros cachorros.");
                 FotoPet f1 = new FotoPet();
                 f1.setUrl("https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600");
                 f1.setPrincipal(true);
@@ -243,6 +221,7 @@ public class DataInitializer {
             if (petRepository.findByNome("Mia").isEmpty()) {
                 Pet p2 = new Pet("Mia", "Persa", 1, Especie.GATO, Porte.PEQUENO, "Branco", "Longa", "Fêmea", myBuddyOrg, true, true, false, "São Paulo", "SP");
                 p2.setId(2L);
+                p2.setDescricao("Mia é uma gatinha calma, carinhosa e muito dorminhoca. Perfeita para apartamentos. Gosta de ser escovada e receber carinho.");
                 FotoPet f2 = new FotoPet();
                 f2.setUrl("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=600");
                 f2.setPrincipal(true);
@@ -253,6 +232,7 @@ public class DataInitializer {
             if (petRepository.findByNome("Thor").isEmpty()) {
                 Pet p3 = new Pet("Thor", "Golden Retriever", 1, Especie.CAO, Porte.GRANDE, "Dourado", "Longa", "Macho", myBuddyOrg, true, true, true, "São Paulo", "SP");
                 p3.setId(3L);
+                p3.setDescricao("Thor é um Golden Retriever brincalhão, inteligente e cheio de energia. Ideal para famílias ativas que adoram passear.");
                 FotoPet f3 = new FotoPet();
                 f3.setUrl("https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=600");
                 f3.setPrincipal(true);

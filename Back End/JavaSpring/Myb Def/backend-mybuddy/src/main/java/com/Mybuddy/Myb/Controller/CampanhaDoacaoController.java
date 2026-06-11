@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Controller;
 
+import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.CampanhaDoacao;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Security.ERole;
@@ -81,7 +82,7 @@ public class CampanhaDoacaoController {
                 throw new IllegalStateException("Usuário do tipo ONG não possui organização associada.");
             }
             CampanhaDoacao existente = service.buscarPorId(id)
-                    .orElseThrow(() -> new RuntimeException("Campanha não encontrada: " + id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Campanha não encontrada: " + id));
             
             if (!usuario.getOrganizacao().getId().equals(existente.getOrganizacaoId())) {
                 throw new org.springframework.security.authorization.AuthorizationDeniedException(

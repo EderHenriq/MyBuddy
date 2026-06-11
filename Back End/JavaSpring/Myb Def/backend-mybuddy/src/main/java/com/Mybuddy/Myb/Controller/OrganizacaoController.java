@@ -8,6 +8,7 @@ import com.Mybuddy.Myb.Service.OrganizacaoService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,17 +21,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/organizacoes")
+@RequiredArgsConstructor
 public class OrganizacaoController {
 
     private static final Logger log = LoggerFactory.getLogger(OrganizacaoController.class);
 
     private final OrganizacaoService organizacaoService;
     private final KeycloakUserSyncService keycloakUserSyncService;
-
-    public OrganizacaoController(OrganizacaoService organizacaoService, KeycloakUserSyncService keycloakUserSyncService) {
-        this.organizacaoService = organizacaoService;
-        this.keycloakUserSyncService = keycloakUserSyncService;
-    }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")

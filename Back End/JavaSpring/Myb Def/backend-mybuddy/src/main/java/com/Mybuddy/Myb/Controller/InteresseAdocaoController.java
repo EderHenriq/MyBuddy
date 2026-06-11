@@ -9,6 +9,7 @@ import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,17 +21,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class InteresseAdocaoController {
 
     private static final Logger logger = LoggerFactory.getLogger(InteresseAdocaoController.class);
 
     private final InteresseAdocaoService service;
     private final KeycloakUserSyncService keycloakUserSyncService;
-
-    public InteresseAdocaoController(InteresseAdocaoService service, KeycloakUserSyncService keycloakUserSyncService) {
-        this.service = service;
-        this.keycloakUserSyncService = keycloakUserSyncService;
-    }
 
     @PostMapping("/interesses")
     @PreAuthorize("isAuthenticated()")
@@ -39,7 +36,7 @@ public class InteresseAdocaoController {
             @AuthenticationPrincipal Jwt jwt) {
         Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
         logger.debug("manifestarInteresse: Usuario ID: {}, Email: {}", usuario.getId(), usuario.getEmail());
-        var resp = service.manifestarInteresse(usuario.getId(), req.petId(), req.mensagem());
+        var resp = service.manifestarInteresse(usuario.getId(), req);
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }
 

@@ -5,6 +5,7 @@ import com.Mybuddy.Myb.Repository.mongo.RoleRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,15 +16,11 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class KeycloakUserSyncService {
 
     private final UsuarioRepository usuarioRepository;
     private final RoleRepository roleRepository;
-
-    public KeycloakUserSyncService(UsuarioRepository usuarioRepository, RoleRepository roleRepository) {
-        this.usuarioRepository = usuarioRepository;
-        this.roleRepository = roleRepository;
-    }
 
     @Transactional
     public Usuario syncUsuario(Jwt jwt) {

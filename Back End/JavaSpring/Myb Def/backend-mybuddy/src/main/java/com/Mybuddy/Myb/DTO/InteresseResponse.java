@@ -10,5 +10,8 @@ public record InteresseResponse(
         StatusInteresse status,
         String mensagem,
         LocalDateTime criadoEm,
-        LocalDateTime atualizadoEm
+        LocalDateTime atualizadoEm,
+        String cpfAdotante,
+        Integer idadeAdotante,
+        String motivoAdocao
 ) {}
