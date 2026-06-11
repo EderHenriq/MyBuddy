@@ -100,7 +100,7 @@
   bottom: 0;
   width: 520px;
   padding: var(--spacing-lg);
-  overflow: hidden
+  overflow: hidden;
 }
 
 .signup-card {
@@ -118,8 +118,8 @@
   overflow-y: auto;
   scrollbar-width: none;
 
-  &::-webkit-scrollbar{
-    display: none
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -141,7 +141,7 @@
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--text-color-black);
-  line-height: 1.2;
+  line-height: 1;
   margin: 0;
 
   .highlight {
@@ -156,7 +156,7 @@
   color: #6f6e6e;
   line-height: 1.4;
   padding: 0 0 0 2px;
-
+  margin: 0 !important;
 }
 
 //Estilização do step indicator
@@ -238,7 +238,7 @@
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
   color: var(--text-color);
-  margin-bottom: var(--spacing-md);
+  padding: 0 0 var(--spacing-md) 0;
 }
 
 .input-group {
@@ -378,11 +378,14 @@
   color: var(--text-color);
   flex-shrink: 0;
   transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
 }
 
 .option-title {
+  font-family: var(--font-family-secondary);
   font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   color: var(--text-color-black);
   line-height: 1;
   transition: color 0.3s ease;
@@ -481,13 +484,6 @@
   }
 }
 
-.card-top {
-  position: relative;
-  @include flex-center;
-  height: 0;
-  margin-bottom: var(--spacing-md);
-}
-
 .btn-back {
   width: 40px;
   height: 40px;
@@ -505,7 +501,10 @@
   color: var(--text-color);
   box-shadow: var(--shadow-md);
   @include flex-center;
-  transform: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
@@ -516,7 +515,6 @@
     background: rgba(255, 123, 0, 0.05);
   }
 }
-
 
 //Estilização do spinner
 .spinner {
@@ -541,7 +539,7 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-regular);
   color: var(--text-color-black);
-  margin: 0;
+  margin-bottom: var(--spacing-md);
 }
 
 .login-link {

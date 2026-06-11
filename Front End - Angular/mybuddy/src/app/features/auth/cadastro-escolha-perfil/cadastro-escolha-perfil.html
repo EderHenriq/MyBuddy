@@ -83,7 +83,11 @@
                   [attr.aria-checked]="selectedPerfil() === option.value"
                   (click)="selectProfile(option.value)"
                 >
-                  <span class="material-icons option-icon" aria-hidden="true">{{ option.icon }}</span>
+                  @if (option.icon.startsWith('fa-')) {
+                    <i [class]="option.icon + ' option-icon'" aria-hidden="true"></i>
+                  } @else {
+                    <span class="material-icons option-icon" aria-hidden="true">{{ option.icon }}</span>
+                  }
 
                   <div class="option-text">
                     <span class="option-title">{{ option.label }}</span>
@@ -108,7 +112,12 @@
                   [attr.aria-checked]="selectedOrgSubtype() === sub.value"
                   (click)="selectOrgSubtype(sub.value)"
                 >
-                  <span class="material-icons option-icon" aria-hidden="true">{{ sub.icon }}</span>
+                  @if (sub.icon.startsWith('fa-')) {
+                    <i [class]="sub.icon + ' option-icon'" aria-hidden="true"></i>
+                  } @else {
+                    <span class="material-icons option-icon" aria-hidden="true">{{ sub.icon }}</span>
+                  }
+
                   <div class="option-text">
                     <span class="option-title">{{ sub.label }}</span>
                   </div>
@@ -120,7 +129,7 @@
 
         @if (currentStep() === 'dados-pessoais') {
           <fieldset class="step-content" aria-labelledby="step2-legend">
-            <legend id="step2-legend" class="step-legend">Seus dados</legend>
+            <legend id="step2-legend" class="step-legend">Informações Pessoais</legend>
 
             <div class="input-group" [class.has-error]="registerForm.get('nome')?.invalid && registerForm.get('nome')?.touched">
               <label class="input-label" for="nome">Nome completo</label>

@@ -65,14 +65,14 @@ export class CadastroEscolhaPerfil {
 
   //Seção de opções de perfis
   readonly profileOptions: { value: TipoPerfil; label: string; helper: string; icon: string }[] = [
-    { value: 'ADOTANTE', label: 'Adotante', helper: 'Quero adotar e cuidar de um pet.', icon: 'pets' },
-    { value: 'ORGANIZACAO', label: 'Organização', helper: 'Represento uma ONG, Veterinário ou um Petshop.', icon: 'store' },
+    { value: 'ADOTANTE', label: 'Adotante', helper: 'Quero adotar e cuidar de um pet.', icon: 'fa-solid fa-dog' },
+    { value: 'ORGANIZACAO', label: 'Organização', helper: 'Represento uma ONG, Veterinário ou um Petshop.', icon: 'fa-solid fa-hand-holding-heart' },
   ];
 
   readonly orgSubtypeOptions: { value: TipoOrg; label: string; helper: string; icon: string }[] = [
-    { value: 'ONG', label: 'Ong', helper: 'Instituição sem fins lucrativos', icon: 'volunteer_activism' },
-    { value: 'PETSHOP', label: 'Petshop', helper: 'Comércio de produtos e serviços para pets', icon: 'storefront' },
-    { value: 'VETERINARIO', label: 'Veterinário', helper: 'Centro médico para animais domésticos', icon: 'medical_services' },
+    { value: 'ONG', label: 'Ong', helper: 'Instituição sem fins lucrativos', icon: 'fa-solid fa-hand-holding-heart' },
+    { value: 'PETSHOP', label: 'Petshop', helper: 'Comércio de produtos e serviços para pets', icon: 'fa-solid fa-shop' },
+    { value: 'VETERINARIO', label: 'Veterinário', helper: 'Centro médico para animais domésticos', icon: 'fa-solid fa-heart-pulse' },
   ];
 
   //Seção de formulário de cadastro
