@@ -11,4 +11,5 @@ public interface CampanhaDoacaoRepository extends MongoRepository<CampanhaDoacao
     List<CampanhaDoacao> findByOrganizacaoId(Long organizacaoId);
     List<CampanhaDoacao> findByStatus(String status);
     List<CampanhaDoacao> findByCategoriaAndStatus(String categoria, String status);
+    List<CampanhaDoacao> findByStatusAndDataExpiracaoBefore(String status, java.time.LocalDateTime limite);
 }
