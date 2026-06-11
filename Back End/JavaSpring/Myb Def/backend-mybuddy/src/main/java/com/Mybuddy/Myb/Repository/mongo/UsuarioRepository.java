@@ -18,4 +18,6 @@ public interface UsuarioRepository extends MongoRepository<Usuario, Long> {
     Optional<Usuario> findByKeycloakId(String keycloakId);
 
     Boolean existsByKeycloakId(String keycloakId);
+
+    java.util.List<Usuario> findByPetshopId(Long petshopId);
 }

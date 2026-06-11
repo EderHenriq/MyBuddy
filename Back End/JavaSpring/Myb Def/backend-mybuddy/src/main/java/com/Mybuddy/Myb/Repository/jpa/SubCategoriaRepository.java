@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface SubCategoriaRepository extends JpaRepository<SubCategoria, Long> {
     Optional<SubCategoria> findByNomeAndCategoriaId(String nome, Long categoriaId);
+    boolean existsByNomeAndCategoriaId(String nome, Long categoriaId);
 }
