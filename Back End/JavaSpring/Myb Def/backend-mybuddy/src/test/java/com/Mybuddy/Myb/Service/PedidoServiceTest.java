@@ -49,6 +49,9 @@ public class PedidoServiceTest {
     @Mock
     private EmailService emailService;
 
+    @Mock
+    private CupomService cupomService;
+
     @InjectMocks
     private PedidoService pedidoService;
 
@@ -235,8 +238,17 @@ public class PedidoServiceTest {
                 .ativo(true)
                 .build();
 
+        CupomResponseDTO cupomDTO = CupomResponseDTO.builder()
+                .id(1L)
+                .codigo("DESCONTO15")
+                .percentualDesconto(new BigDecimal("15.00"))
+                .petshopId(petshop.getId())
+                .ativo(true)
+                .build();
+
         when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
         when(produtoRepository.findById(20L)).thenReturn(Optional.of(produto));
+        when(cupomService.buscarPorCodigoValido("DESCONTO15", 10L, 1L, new BigDecimal("200.00"))).thenReturn(cupomDTO);
         when(cupomRepository.findByCodigoAndAtivoTrue("DESCONTO15")).thenReturn(Optional.of(cupomDesconto));
         when(pedidoRepository.save(any(Pedido.class))).thenAnswer(invocation -> {
             Pedido p = invocation.getArgument(0);
@@ -267,7 +279,8 @@ public class PedidoServiceTest {
 
         when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
         when(produtoRepository.findById(20L)).thenReturn(Optional.of(produto));
-        when(cupomRepository.findByCodigoAndAtivoTrue("OUTROPETSHOP")).thenReturn(Optional.of(cupomIncompativel));
+        when(cupomService.buscarPorCodigoValido("OUTROPETSHOP", 10L, 1L, new BigDecimal("200.00")))
+                .thenThrow(new IllegalArgumentException("Cupom não pertence a este petshop."));
 
         assertThrows(IllegalArgumentException.class, () -> pedidoService.criar(requestDTO, usuario));
         verify(pedidoRepository, never()).save(any(Pedido.class));
@@ -293,5 +306,17 @@ public class PedidoServiceTest {
         assertEquals(BigDecimal.ZERO, response.getValorFrete()); // Cupom FRETEGRATIS zerou o frete
         assertEquals(BigDecimal.ZERO, response.getValorDesconto());
         assertEquals(new BigDecimal("200.00"), response.getValorTotal());
+    }
+
+    @Test
+    void cancelarPedidoExpirado_ComSucesso_DeveAlterarStatusEDevolverEstoque() {
+        int estoqueAntes = produto.getEstoque();
+
+        pedidoService.cancelarPedidoExpirado(pedido);
+
+        assertEquals(StatusPedido.CANCELADO, pedido.getStatus());
+        assertEquals(estoqueAntes + 2, produto.getEstoque());
+        verify(produtoRepository, times(1)).save(produto);
+        verify(pedidoRepository, times(1)).save(pedido);
     }
 }

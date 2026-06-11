@@ -6,7 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
+/**
+ * DTO de resposta de cupom.
+ * Expõe todos os campos relevantes para o cliente, incluindo dados de validade e uso.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,4 +23,9 @@ public class CupomResponseDTO {
     private Long petshopId;
     private String petshopNome;
     private boolean ativo;
+    private LocalDate dataInicio;
+    private LocalDate dataExpiracao;
+    private BigDecimal valorMinimoPedido;
+    private Integer limiteUsoGeral;
+    private int usoAtual;
 }

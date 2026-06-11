@@ -27,6 +27,7 @@ public class PedidoService {
     private final PetshopRepository petshopRepository;
     private final UsuarioRepository usuarioRepository;
     private final CupomRepository cupomRepository;
+    private final CupomService cupomService;
     private final EmailService emailService;
 
     @Transactional
@@ -95,7 +96,9 @@ public class PedidoService {
         BigDecimal frete = calcularFrete(request.getEnderecoEntrega().getCep(), total, petshop);
         pedido.setValorFrete(frete);
 
-        aplicarCupomEDesconto(pedido, request.getCupomDesconto(), total, frete);
+        // Aplica cupom com validação completa anti-abuso (validade, limite, uso único, valor mínimo)
+        Long cupomIdAplicado = aplicarCupomEDesconto(
+                pedido, request.getCupomDesconto(), total, frete, usuario.getId(), petshop.getId());
 
         BigDecimal valorTotalFinal = total.add(pedido.getValorFrete()).subtract(pedido.getValorDesconto());
         if (valorTotalFinal.compareTo(BigDecimal.ZERO) < 0) {
@@ -104,6 +107,11 @@ public class PedidoService {
         pedido.setValorTotal(valorTotalFinal);
 
         Pedido salvo = pedidoRepository.save(pedido);
+
+        // Registra o uso do cupom APÓS o pedido ser persistido com sucesso
+        if (cupomIdAplicado != null) {
+            cupomService.registrarUso(cupomIdAplicado, usuario.getId(), salvo.getId());
+        }
 
         if (usuario.getEmail() != null) {
             emailService.enviarEmail(
@@ -222,6 +230,25 @@ public class PedidoService {
         return toResponseDTO(salvo);
     }
 
+    @Transactional
+    public void cancelarPedidoExpirado(Pedido pedido) {
+        if (pedido.getStatus() != StatusPedido.PENDENTE) {
+            return;
+        }
+        pedido.setStatus(StatusPedido.CANCELADO);
+        devolverEstoque(pedido);
+        pedidoRepository.save(pedido);
+
+        Usuario cliente = usuarioRepository.findById(pedido.getClienteId()).orElse(null);
+        if (cliente != null && cliente.getEmail() != null) {
+            emailService.enviarEmail(
+                cliente.getEmail(),
+                "Cancelamento automático do seu pedido #" + pedido.getId(),
+                "Olá " + cliente.getNome() + ",\n\nO seu pedido #" + pedido.getId() + " foi cancelado automaticamente por falta de pagamento."
+            );
+        }
+    }
+
     private void devolverEstoque(Pedido pedido) {
         for (ItemPedido item : pedido.getItens()) {
             Produto produto = item.getProduto();
@@ -296,28 +323,36 @@ public class PedidoService {
         }
     }
 
-    private void aplicarCupomEDesconto(Pedido pedido, String cupom, BigDecimal subtotal, BigDecimal freteOriginal) {
+    /**
+     * Aplica cupom ao pedido com validação completa anti-abuso via CupomService.
+     * Retorna o ID do cupom da tabela cupons (para registrar o uso após salvar o pedido),
+     * ou null quando não foi aplicado nenhum cupom do banco.
+     */
+    private Long aplicarCupomEDesconto(Pedido pedido, String cupom, BigDecimal subtotal,
+                                        BigDecimal freteOriginal, Long usuarioId, Long petshopId) {
         if (cupom == null || cupom.trim().isEmpty()) {
             pedido.setValorFrete(freteOriginal);
             pedido.setValorDesconto(BigDecimal.ZERO);
-            return;
+            return null;
         }
 
         String cupomFormatado = cupom.trim().toUpperCase();
 
+        // Cupom especial FRETEGRATIS (não requer registro no banco)
         if (cupomFormatado.equals("FRETEGRATIS")) {
             pedido.setCupomDesconto(cupomFormatado);
             pedido.setValorFrete(BigDecimal.ZERO);
             pedido.setValorDesconto(BigDecimal.ZERO);
-            return;
+            return null;
         }
 
+        // Delega a validação completa (validade, limite, uso único, petshop, valor mínimo) ao CupomService
+        CupomResponseDTO cupomDTO = cupomService.buscarPorCodigoValido(
+                cupomFormatado, petshopId, usuarioId, subtotal);
+
+        // Recupera a entidade para calcular o desconto
         Cupom dbCupom = cupomRepository.findByCodigoAndAtivoTrue(cupomFormatado)
                 .orElseThrow(() -> new IllegalArgumentException("Cupom inválido ou inativo."));
-
-        if (dbCupom.getPetshop() != null && !dbCupom.getPetshop().getId().equals(pedido.getPetshop().getId())) {
-            throw new IllegalArgumentException("Este cupom de desconto não é válido para este Petshop.");
-        }
 
         pedido.setCupomDesconto(dbCupom.getCodigo());
         pedido.setValorFrete(freteOriginal);
@@ -326,6 +361,8 @@ public class PedidoService {
         BigDecimal desconto = subtotal.multiply(percentual)
                 .divide(new BigDecimal("100.00"), 2, java.math.RoundingMode.HALF_UP);
         pedido.setValorDesconto(desconto);
+
+        return dbCupom.getId();
     }
 
     private PedidoResponseDTO toResponseDTO(Pedido p) {
