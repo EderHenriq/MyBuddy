@@ -402,4 +402,54 @@ public class PedidoServiceTest {
             verify(pedidoRepository, never()).save(any(Pedido.class));
         }
     }
+
+    @Test
+    void criarPedido_ComSucesso_FretePorGeolocalizacaoMaringa() {
+        // UEM, Maringá
+        petshop.setLatitude(-23.4064);
+        petshop.setLongitude(-51.9431);
+        petshop.setRaioEntregaKm(5.0);
+        petshop.setValorMinimoFreteGratis(new BigDecimal("300.00")); // Evitar frete grátis por subtotal
+
+        // Parque do Ingá, Maringá (Distância de ~2.53 Km)
+        requestDTO.getEnderecoEntrega().setLatitude(-23.4253);
+        requestDTO.getEnderecoEntrega().setLongitude(-51.9288);
+
+        when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
+        when(produtoRepository.findById(20L)).thenReturn(Optional.of(produto));
+        when(pedidoRepository.save(any(Pedido.class))).thenAnswer(invocation -> {
+            Pedido p = invocation.getArgument(0);
+            p.setId(30L);
+            return p;
+        });
+
+        PedidoResponseDTO response = pedidoService.criar(requestDTO, usuario);
+
+        assertNotNull(response);
+        // Distância ~2.53 km * 2.50 = ~6.33. Esperado frete entre 6.30 e 6.40
+        assertTrue(response.getValorFrete().compareTo(new BigDecimal("6.30")) >= 0);
+        assertTrue(response.getValorFrete().compareTo(new BigDecimal("6.40")) <= 0);
+        assertEquals(new BigDecimal("200.00").add(response.getValorFrete()), response.getValorTotal());
+    }
+
+    @Test
+    void criarPedido_ForaDoRaioEntrega_DeveLancarExcecao() {
+        // UEM, Maringá
+        petshop.setLatitude(-23.4064);
+        petshop.setLongitude(-51.9431);
+        petshop.setRaioEntregaKm(1.5); // Raio de 1.5 km é menor que a distância de 2.53 km
+
+        // Parque do Ingá, Maringá (Distância de ~2.53 Km)
+        requestDTO.getEnderecoEntrega().setLatitude(-23.4253);
+        requestDTO.getEnderecoEntrega().setLongitude(-51.9288);
+
+        when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
+        when(produtoRepository.findById(20L)).thenReturn(Optional.of(produto));
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> pedidoService.criar(requestDTO, usuario));
+        assertTrue(ex.getMessage().contains("fora do raio de atendimento"));
+        verify(pedidoRepository, never()).save(any(Pedido.class));
+    }
 }
+
+

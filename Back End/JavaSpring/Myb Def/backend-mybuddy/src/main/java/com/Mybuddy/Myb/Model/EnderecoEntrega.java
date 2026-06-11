@@ -39,4 +39,7 @@ public class EnderecoEntrega {
 
     @Column(nullable = false, length = 50)
     private String estado;
+
+    private Double latitude;
+    private Double longitude;
 }

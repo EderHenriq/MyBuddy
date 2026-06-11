@@ -61,6 +61,8 @@ public class PedidoService {
                 .bairro(request.getEnderecoEntrega().getBairro())
                 .cidade(request.getEnderecoEntrega().getCidade())
                 .estado(request.getEnderecoEntrega().getEstado())
+                .latitude(request.getEnderecoEntrega().getLatitude())
+                .longitude(request.getEnderecoEntrega().getLongitude())
                 .build();
         pedido.setEnderecoEntrega(endereco);
 
@@ -99,7 +101,7 @@ public class PedidoService {
             total = total.add(item.getSubtotal());
         }
 
-        BigDecimal frete = calcularFrete(request.getEnderecoEntrega().getCep(), total, petshop);
+        BigDecimal frete = calcularFrete(endereco, total, petshop);
         pedido.setValorFrete(frete);
 
         // Aplica cupom com validação completa anti-abuso (validade, limite, uso único, valor mínimo)
@@ -325,12 +327,50 @@ public class PedidoService {
         }
     }
 
-    private BigDecimal calcularFrete(String cep, BigDecimal subtotal, Petshop petshop) {
+    private BigDecimal calcularFrete(EnderecoEntrega endereco, BigDecimal subtotal, Petshop petshop) {
+        log.info("calcularFrete: petshopLat={}, petshopLon={}, enderecoLat={}, enderecoLon={}, raio={}",
+                petshop.getLatitude(), petshop.getLongitude(),
+                endereco.getLatitude(), endereco.getLongitude(),
+                petshop.getRaioEntregaKm());
+
+        // Se o petshop e o endereço possuem latitude e longitude, calcula a distância real
+        if (petshop.getLatitude() != null && petshop.getLongitude() != null 
+                && endereco.getLatitude() != null && endereco.getLongitude() != null) {
+            
+            double distancia = com.Mybuddy.Myb.Util.GeolocalizacaoUtil.calcularDistancia(
+                    petshop.getLatitude(), petshop.getLongitude(),
+                    endereco.getLatitude(), endereco.getLongitude()
+            );
+            log.info("calcularFrete: distancia calculada = {}", distancia);
+
+            // Validar raio de entrega antes do frete grátis
+            if (petshop.getRaioEntregaKm() != null && distancia > petshop.getRaioEntregaKm()) {
+                throw new IllegalStateException("O endereço de entrega está fora do raio de atendimento deste Petshop (Distância: " 
+                        + String.format(java.util.Locale.US, "%.2f", distancia) + " km, Raio máximo: " + petshop.getRaioEntregaKm() + " km).");
+            }
+
+            // Se for frete grátis por subtotal
+            if (petshop.getValorMinimoFreteGratis() != null 
+                    && subtotal.compareTo(petshop.getValorMinimoFreteGratis()) >= 0) {
+                return BigDecimal.ZERO;
+            }
+
+            // Calcular frete dinâmico: R$ 2,50 por Km, mínimo de R$ 5,00
+            double valorCalculado = distancia * 2.50;
+            if (valorCalculado < 5.00) {
+                valorCalculado = 5.00;
+            }
+            return BigDecimal.valueOf(valorCalculado).setScale(2, java.math.RoundingMode.HALF_UP);
+        }
+
+        // Se for frete grátis por subtotal (fallback sem coordenadas)
         if (petshop.getValorMinimoFreteGratis() != null 
                 && subtotal.compareTo(petshop.getValorMinimoFreteGratis()) >= 0) {
             return BigDecimal.ZERO;
         }
 
+        // Fallback para CEP se as coordenadas geográficas não estiverem presentes
+        String cep = endereco.getCep();
         if (cep == null || cep.trim().isEmpty()) {
             return new BigDecimal("20.00");
         }
@@ -418,6 +458,8 @@ public class PedidoService {
                 .bairro(p.getEnderecoEntrega().getBairro())
                 .cidade(p.getEnderecoEntrega().getCidade())
                 .estado(p.getEnderecoEntrega().getEstado())
+                .latitude(p.getEnderecoEntrega().getLatitude())
+                .longitude(p.getEnderecoEntrega().getLongitude())
                 .build();
 
         return PedidoResponseDTO.builder()

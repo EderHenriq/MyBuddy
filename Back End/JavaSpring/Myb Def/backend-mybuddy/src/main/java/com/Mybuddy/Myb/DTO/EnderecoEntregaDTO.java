@@ -39,4 +39,18 @@ public class EnderecoEntregaDTO {
     @NotBlank(message = "O estado é obrigatório.")
     @Size(max = 50, message = "O estado deve ter no máximo 50 caracteres.")
     private String estado;
+
+    private Double latitude;
+    private Double longitude;
+
+    // Construtor de compatibilidade com os testes antigos
+    public EnderecoEntregaDTO(String cep, String logradouro, String numero, String complemento, String bairro, String cidade, String estado) {
+        this.cep = cep;
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.estado = estado;
+    }
 }

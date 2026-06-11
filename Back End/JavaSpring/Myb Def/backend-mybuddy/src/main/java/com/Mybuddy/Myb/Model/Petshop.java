@@ -49,6 +49,12 @@ public class Petshop {
     @Column(name = "valor_minimo_frete_gratis", precision = 10, scale = 2)
     private BigDecimal valorMinimoFreteGratis;
 
+    private Double latitude;
+    private Double longitude;
+
+    @Column(name = "raio_entrega_km")
+    private Double raioEntregaKm;
+
     /**
      * Status de aprovação do Petshop na plataforma.
      * Apenas Petshops APROVADOS podem cadastrar produtos e aparecer publicamente.

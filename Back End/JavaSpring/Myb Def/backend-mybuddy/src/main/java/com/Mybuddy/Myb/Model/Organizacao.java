@@ -41,6 +41,9 @@ public class Organizacao implements Identifiable {
 
     private String website;
 
+    private Double latitude;
+    private Double longitude;
+
     /**
      * Status de aprovação da ONG na plataforma.
      * Apenas ONGs APROVADAS podem criar campanhas de doação e listar pets publicamente.
