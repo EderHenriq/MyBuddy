@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -261,5 +262,123 @@ class PaymentServiceTest {
         assertThat(result).isNotNull();
         assertThat(pedido.getStatus()).isEqualTo(StatusPedido.CANCELADO);
         verify(pedidoRepository, times(1)).save(pedido);
+    }
+
+    // ===================== CREATE PAYMENT =====================
+
+    @Test
+    void deveLancarExcecaoAoCriarPagamentoParaCampanhaInexistente() {
+        com.Mybuddy.Myb.Model.Usuario usuario = new com.Mybuddy.Myb.Model.Usuario();
+        usuario.setId(1L);
+
+        com.Mybuddy.Myb.DTO.PaymentRequestDTO request = new com.Mybuddy.Myb.DTO.PaymentRequestDTO(
+                null, 10L, null, new BigDecimal("50.00"), "Doação"
+        );
+
+        when(campanhaDoacaoRepository.findById(10L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> paymentService.createPayment(usuario, request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Campanha de doação não encontrada: 10");
+
+        verifyNoInteractions(paymentRepository);
+    }
+
+    @Test
+    void deveLancarExcecaoAoCriarPagamentoParaCampanhaNaoAtiva() {
+        com.Mybuddy.Myb.Model.Usuario usuario = new com.Mybuddy.Myb.Model.Usuario();
+        usuario.setId(1L);
+
+        com.Mybuddy.Myb.DTO.PaymentRequestDTO request = new com.Mybuddy.Myb.DTO.PaymentRequestDTO(
+                null, 10L, null, new BigDecimal("50.00"), "Doação"
+        );
+
+        CampanhaDoacao campanha = new CampanhaDoacao();
+        campanha.setId(10L);
+        campanha.setStatus("ENCERRADA");
+
+        when(campanhaDoacaoRepository.findById(10L)).thenReturn(Optional.of(campanha));
+
+        assertThatThrownBy(() -> paymentService.createPayment(usuario, request))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("A campanha de doação selecionada não está ativa.");
+
+        verifyNoInteractions(paymentRepository);
+    }
+
+    @Test
+    void deveCriarPagamentoComSucessoQuandoCampanhaAtiva() throws Exception {
+        com.Mybuddy.Myb.Model.Usuario usuario = new com.Mybuddy.Myb.Model.Usuario();
+        usuario.setId(1L);
+
+        com.Mybuddy.Myb.DTO.PaymentRequestDTO request = new com.Mybuddy.Myb.DTO.PaymentRequestDTO(
+                null, 10L, null, new BigDecimal("50.00"), "Doação"
+        );
+
+        CampanhaDoacao campanha = new CampanhaDoacao();
+        campanha.setId(10L);
+        campanha.setStatus("ATIVA");
+
+        when(campanhaDoacaoRepository.findById(10L)).thenReturn(Optional.of(campanha));
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> {
+            Payment p = invocation.getArgument(0);
+            p.setId(100L);
+            return p;
+        });
+
+        com.mercadopago.resources.preference.Preference mockPreference = mock(com.mercadopago.resources.preference.Preference.class);
+        when(mockPreference.getId()).thenReturn("pref-123");
+        when(mockPreference.getInitPoint()).thenReturn("http://initpoint");
+
+        try (org.mockito.MockedConstruction<com.mercadopago.client.preference.PreferenceClient> mocked =
+                     mockConstruction(com.mercadopago.client.preference.PreferenceClient.class, (mock, context) -> {
+                         when(mock.create(any(com.mercadopago.client.preference.PreferenceRequest.class)))
+                                 .thenReturn(mockPreference);
+                     })) {
+
+            com.Mybuddy.Myb.DTO.PaymentCreationResult result = paymentService.createPayment(usuario, request);
+
+            assertThat(result).isNotNull();
+            assertThat(result.payment().getId()).isEqualTo(100L);
+            assertThat(result.payment().getMpPreferenceId()).isEqualTo("pref-123");
+            assertThat(result.initPoint()).isEqualTo("http://initpoint");
+            verify(paymentRepository, times(1)).save(any(Payment.class));
+        }
+    }
+
+    @Test
+    void deveCriarPagamentoComSucessoQuandoNaoForCampanha() throws Exception {
+        com.Mybuddy.Myb.Model.Usuario usuario = new com.Mybuddy.Myb.Model.Usuario();
+        usuario.setId(1L);
+
+        com.Mybuddy.Myb.DTO.PaymentRequestDTO request = new com.Mybuddy.Myb.DTO.PaymentRequestDTO(
+                null, null, null, new BigDecimal("50.00"), "Doação Geral"
+        );
+
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> {
+            Payment p = invocation.getArgument(0);
+            p.setId(200L);
+            return p;
+        });
+
+        com.mercadopago.resources.preference.Preference mockPreference = mock(com.mercadopago.resources.preference.Preference.class);
+        when(mockPreference.getId()).thenReturn("pref-456");
+        when(mockPreference.getInitPoint()).thenReturn("http://initpoint-geral");
+
+        try (org.mockito.MockedConstruction<com.mercadopago.client.preference.PreferenceClient> mocked =
+                     mockConstruction(com.mercadopago.client.preference.PreferenceClient.class, (mock, context) -> {
+                         when(mock.create(any(com.mercadopago.client.preference.PreferenceRequest.class)))
+                                 .thenReturn(mockPreference);
+                     })) {
+
+            com.Mybuddy.Myb.DTO.PaymentCreationResult result = paymentService.createPayment(usuario, request);
+
+            assertThat(result).isNotNull();
+            assertThat(result.payment().getId()).isEqualTo(200L);
+            assertThat(result.payment().getMpPreferenceId()).isEqualTo("pref-456");
+            assertThat(result.initPoint()).isEqualTo("http://initpoint-geral");
+            verify(paymentRepository, times(1)).save(any(Payment.class));
+            verifyNoInteractions(campanhaDoacaoRepository);
+        }
     }
 }

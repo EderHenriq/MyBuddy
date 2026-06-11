@@ -10,6 +10,7 @@ import com.Mybuddy.Myb.DTO.PaymentRequestDTO;
 import com.Mybuddy.Myb.Model.Payment;
 import com.Mybuddy.Myb.Model.PaymentStatus;
 import com.Mybuddy.Myb.Model.Usuario;
+import com.Mybuddy.Myb.Model.CampanhaDoacao;
 import com.Mybuddy.Myb.Model.Pedido;
 import com.Mybuddy.Myb.Model.StatusPedido;
 import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
@@ -47,6 +48,14 @@ public class PaymentService {
                 ? petRepository.findById(request.petId())
                         .orElseThrow(() -> new RuntimeException("Pet não encontrado: " + request.petId()))
                 : null;
+
+        if (request.campanhaId() != null) {
+            CampanhaDoacao campanha = campanhaDoacaoRepository.findById(request.campanhaId())
+                    .orElseThrow(() -> new RuntimeException("Campanha de doação não encontrada: " + request.campanhaId()));
+            if (!"ATIVA".equals(campanha.getStatus())) {
+                throw new IllegalStateException("A campanha de doação selecionada não está ativa.");
+            }
+        }
 
         PreferenceItemRequest item = PreferenceItemRequest.builder()
                 .title(request.description() != null ? request.description()
