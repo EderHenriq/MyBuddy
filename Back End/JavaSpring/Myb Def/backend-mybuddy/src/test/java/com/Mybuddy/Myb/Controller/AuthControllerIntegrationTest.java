@@ -74,7 +74,7 @@ class AuthControllerIntegrationTest {
         mockMvc.perform(post("/api/auth/cadastro")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Erro: O e-mail já está em uso!"));
     }
 

@@ -5,6 +5,7 @@ import com.Mybuddy.Myb.DTO.PetshopResponseDTO;
 import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Petshop;
+import com.Mybuddy.Myb.Model.StatusAprovacao;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Repository.jpa.PetshopRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
@@ -45,7 +46,7 @@ public class PetshopServiceTest {
 
     @BeforeEach
     void setUp() {
-        requestDTO = new PetshopRequestDTO("Petshop do Ed", "ed@petshop.com", "12345678901234", "4499999999", "Av Principal", "Descrição legal", "www.edpet.com");
+        requestDTO = new PetshopRequestDTO("Petshop do Ed", "ed@petshop.com", "12345678901234", "4499999999", "Av Principal", "Descrição legal", "www.edpet.com", null);
         usuario = new Usuario("Eder", "eder@gmail.com", "4499999999", "password");
         usuario.setId(1L);
 
@@ -137,5 +138,98 @@ public class PetshopServiceTest {
         assertNull(usuario.getPetshopId());
         verify(usuarioRepository, times(1)).save(usuario);
         verify(petshopRepository, times(1)).delete(petshop);
+    }
+
+    // ── Testes de Fila de Aprovação ──────────────────────────────────────────────
+
+    @Test
+    void criarPetshop_DeveIniciarComStatusPendente() {
+        Petshop petshopPendente = Petshop.builder()
+                .id(10L)
+                .nomeFantasia(requestDTO.getNomeFantasia())
+                .statusAprovacao(StatusAprovacao.PENDENTE_APROVACAO)
+                .build();
+        when(petshopRepository.existsByCnpj(requestDTO.getCnpj())).thenReturn(false);
+        when(petshopRepository.save(any(Petshop.class))).thenReturn(petshopPendente);
+
+        PetshopResponseDTO response = petshopService.criar(requestDTO, usuario);
+
+        assertNotNull(response);
+        assertEquals(StatusAprovacao.PENDENTE_APROVACAO, response.getStatusAprovacao());
+    }
+
+    @Test
+    void listarAprovados_RetornaApenasAprovados() {
+        Petshop aprovado = Petshop.builder().id(10L).nomeFantasia("Aprovado").statusAprovacao(StatusAprovacao.APROVADO).build();
+        when(petshopRepository.findByStatusAprovacao(StatusAprovacao.APROVADO)).thenReturn(List.of(aprovado));
+
+        List<PetshopResponseDTO> lista = petshopService.listarAprovados();
+
+        assertEquals(1, lista.size());
+        assertEquals(StatusAprovacao.APROVADO, lista.get(0).getStatusAprovacao());
+    }
+
+    @Test
+    void listarPendentes_ComoAdmin_RetornaPendentes() {
+        Role adminRole = new Role();
+        adminRole.setName(ERole.ROLE_ADMIN);
+        usuario.setRoles(Set.of(adminRole));
+
+        Petshop pendente = Petshop.builder().id(20L).nomeFantasia("Pendente").statusAprovacao(StatusAprovacao.PENDENTE_APROVACAO).build();
+        when(petshopRepository.findByStatusAprovacao(StatusAprovacao.PENDENTE_APROVACAO)).thenReturn(List.of(pendente));
+
+        List<PetshopResponseDTO> lista = petshopService.listarPendentes(usuario);
+
+        assertEquals(1, lista.size());
+        assertEquals(StatusAprovacao.PENDENTE_APROVACAO, lista.get(0).getStatusAprovacao());
+    }
+
+    @Test
+    void listarPendentes_SemPermissaoAdmin_DeveLancarExcecao() {
+        Role petshopRole = new Role();
+        petshopRole.setName(ERole.ROLE_PETSHOP);
+        usuario.setRoles(Set.of(petshopRole));
+
+        assertThrows(AuthorizationDeniedException.class, () -> petshopService.listarPendentes(usuario));
+        verify(petshopRepository, never()).findByStatusAprovacao(any());
+    }
+
+    @Test
+    void alterarStatusAprovacao_ComoAdmin_Aprova_ComSucesso() {
+        Role adminRole = new Role();
+        adminRole.setName(ERole.ROLE_ADMIN);
+        usuario.setRoles(Set.of(adminRole));
+
+        Petshop petshopAprovado = Petshop.builder().id(10L).nomeFantasia("Petshop do Ed")
+                .statusAprovacao(StatusAprovacao.APROVADO).build();
+        when(petshopRepository.findById(10L)).thenReturn(Optional.of(petshop));
+        when(petshopRepository.save(any(Petshop.class))).thenReturn(petshopAprovado);
+
+        PetshopResponseDTO response = petshopService.alterarStatusAprovacao(10L, StatusAprovacao.APROVADO, usuario);
+
+        assertEquals(StatusAprovacao.APROVADO, response.getStatusAprovacao());
+        verify(petshopRepository, times(1)).save(petshop);
+    }
+
+    @Test
+    void alterarStatusAprovacao_SemPermissaoAdmin_DeveLancarExcecao() {
+        Role petshopRole = new Role();
+        petshopRole.setName(ERole.ROLE_PETSHOP);
+        usuario.setRoles(Set.of(petshopRole));
+
+        assertThrows(AuthorizationDeniedException.class,
+                () -> petshopService.alterarStatusAprovacao(10L, StatusAprovacao.APROVADO, usuario));
+        verify(petshopRepository, never()).save(any());
+    }
+
+    @Test
+    void alterarStatusAprovacao_TentarVoltarParaPendente_DeveLancarExcecao() {
+        Role adminRole = new Role();
+        adminRole.setName(ERole.ROLE_ADMIN);
+        usuario.setRoles(Set.of(adminRole));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> petshopService.alterarStatusAprovacao(10L, StatusAprovacao.PENDENTE_APROVACAO, usuario));
+        verify(petshopRepository, never()).save(any());
     }
 }

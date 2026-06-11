@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -35,4 +36,6 @@ public class PetshopRequestDTO {
 
     @Size(max = 100, message = "O website deve ter no máximo 100 caracteres.")
     private String website;
+
+    private BigDecimal valorMinimoFreteGratis;
 }

@@ -59,4 +59,14 @@ public class CampanhaDoacaoService {
     public void deletar(Long id) {
         repository.deleteById(id);
     }
+
+    public int expirarCampanhasAtivasExpiradas() {
+        java.time.LocalDateTime agora = java.time.LocalDateTime.now();
+        List<CampanhaDoacao> expiradas = repository.findByStatusAndDataExpiracaoBefore("ATIVA", agora);
+        for (CampanhaDoacao campanha : expiradas) {
+            campanha.setStatus("ENCERRADA");
+            repository.save(campanha);
+        }
+        return expiradas.size();
+    }
 }

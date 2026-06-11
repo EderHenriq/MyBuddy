@@ -23,4 +23,6 @@ public class PedidoRequestDTO {
     @NotEmpty(message = "O pedido deve conter pelo menos um item.")
     @Valid
     private List<ItemPedidoRequestDTO> itens;
+
+    private String cupomDesconto;
 }

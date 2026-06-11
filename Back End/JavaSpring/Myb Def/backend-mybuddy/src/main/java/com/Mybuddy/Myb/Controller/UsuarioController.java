@@ -88,8 +88,18 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deletarUsuario(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Jwt jwt) {
+        Usuario usuarioLogado = keycloakUserSyncService.syncUsuario(jwt);
+        boolean isAdmin = usuarioLogado.getRoles().stream()
+                .anyMatch(r -> r.getName() == com.Mybuddy.Myb.Security.ERole.ROLE_ADMIN);
+
+        if (!isAdmin && !usuarioLogado.getId().equals(id)) {
+            throw new org.springframework.security.authorization.AuthorizationDeniedException("Você não tem permissão para deletar este usuário.");
+        }
+
         usuarioService.deletarUsuario(id);
         return ResponseEntity.noContent().build();
     }

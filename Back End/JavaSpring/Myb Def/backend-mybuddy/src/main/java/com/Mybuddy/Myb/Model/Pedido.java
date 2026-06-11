@@ -46,6 +46,15 @@ public class Pedido {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valorTotal = BigDecimal.ZERO;
 
+    @Column(name = "valor_frete", precision = 10, scale = 2)
+    private BigDecimal valorFrete = BigDecimal.ZERO;
+
+    @Column(name = "cupom_desconto", length = 100)
+    private String cupomDesconto;
+
+    @Column(name = "valor_desconto", precision = 10, scale = 2)
+    private BigDecimal valorDesconto = BigDecimal.ZERO;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private StatusPedido status = StatusPedido.PENDENTE;

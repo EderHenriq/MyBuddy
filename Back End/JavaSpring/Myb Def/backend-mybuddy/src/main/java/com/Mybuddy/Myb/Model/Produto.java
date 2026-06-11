@@ -24,6 +24,9 @@ public class Produto {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Version
+    private Long version;
+
     @Column(length = 150, nullable = false)
     private String nome;
 

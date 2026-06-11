@@ -3,6 +3,7 @@ package com.Mybuddy.Myb.Model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +45,34 @@ public class Petshop {
     private String descricao;
 
     private String website;
+
+    @Column(name = "valor_minimo_frete_gratis", precision = 10, scale = 2)
+    private BigDecimal valorMinimoFreteGratis;
+
+    private Double latitude;
+    private Double longitude;
+
+    @Column(name = "raio_entrega_km")
+    private Double raioEntregaKm;
+
+    /**
+     * Status de aprovação do Petshop na plataforma.
+     * Apenas Petshops APROVADOS podem cadastrar produtos e aparecer publicamente.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_aprovacao", nullable = false, length = 30)
+    @Builder.Default
+    private StatusAprovacao statusAprovacao = StatusAprovacao.PENDENTE_APROVACAO;
+
+    /** Verifica se o petshop está aprovado para operar. */
+    public boolean isAprovado() {
+        return StatusAprovacao.APROVADO == this.statusAprovacao;
+    }
+
+    /** Verifica se o petshop ainda aguarda aprovação. */
+    public boolean isPendente() {
+        return StatusAprovacao.PENDENTE_APROVACAO == this.statusAprovacao;
+    }
 
     @OneToMany(mappedBy = "petshop", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "petshop-produtos")

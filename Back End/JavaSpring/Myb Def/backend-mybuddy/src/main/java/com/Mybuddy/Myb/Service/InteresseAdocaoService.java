@@ -46,6 +46,12 @@ public class InteresseAdocaoService {
         interesse.setCpfAdotante(req.cpfAdotante());
         interesse.setIdadeAdotante(req.idadeAdotante());
         interesse.setMotivoAdocao(req.motivoAdocao());
+        interesse.setTipoResidencia(req.tipoResidencia());
+        interesse.setPossuiTelasProtecao(req.possuiTelasProtecao());
+        interesse.setOutrosAnimais(req.outrosAnimais());
+        interesse.setTempoSozinhoHoras(req.tempoSozinhoHoras());
+        interesse.setTodosCientes(req.todosCientes());
+        interesse.setEspacoAdequado(req.espacoAdequado());
         interesse.setStatus(StatusInteresse.PENDENTE);
         interesse.setCriadoEm(LocalDateTime.now());
 

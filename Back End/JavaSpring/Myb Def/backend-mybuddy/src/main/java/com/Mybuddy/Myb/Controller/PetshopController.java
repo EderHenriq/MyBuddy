@@ -5,6 +5,7 @@ import com.Mybuddy.Myb.DTO.PetshopResponseDTO;
 import com.Mybuddy.Myb.Model.Chat;
 import com.Mybuddy.Myb.Model.Pedido;
 import com.Mybuddy.Myb.Model.Produto;
+import com.Mybuddy.Myb.Model.StatusAprovacao;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Repository.mongo.ChatRepository;
@@ -54,10 +55,50 @@ public class PetshopController {
         return ResponseEntity.ok(petshopService.buscarPorId(id));
     }
 
+    /**
+     * Listagem pública: retorna apenas Petshops APROVADOS.
+     */
     @GetMapping
-    public ResponseEntity<List<PetshopResponseDTO>> listarTodos() {
-        log.info("Buscando lista de todos os petshops.");
-        return ResponseEntity.ok(petshopService.listarTodos());
+    public ResponseEntity<List<PetshopResponseDTO>> listarAprovados() {
+        log.info("Listagem pública de petshops aprovados.");
+        return ResponseEntity.ok(petshopService.listarAprovados());
+    }
+
+    /**
+     * Listagem administrativa: retorna TODOS os Petshops (qualquer status).
+     */
+    @GetMapping("/admin/todos")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PetshopResponseDTO>> listarTodos(@AuthenticationPrincipal Jwt jwt) {
+        log.info("Admin: listando todos os petshops.");
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        return ResponseEntity.ok(petshopService.listarTodos(usuario));
+    }
+
+    /**
+     * Fila de aprovação: retorna Petshops com status PENDENTE_APROVACAO.
+     */
+    @GetMapping("/admin/pendentes")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PetshopResponseDTO>> listarPendentes(@AuthenticationPrincipal Jwt jwt) {
+        log.info("Admin: listando petshops pendentes de aprovação.");
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        return ResponseEntity.ok(petshopService.listarPendentes(usuario));
+    }
+
+    /**
+     * Aprovação/rejeição de Petshop pelo administrador.
+     * PATCH /api/petshop/{id}/aprovacao?status=APROVADO
+     */
+    @PatchMapping("/{id}/aprovacao")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PetshopResponseDTO> alterarStatusAprovacao(
+            @PathVariable Long id,
+            @RequestParam StatusAprovacao status,
+            @AuthenticationPrincipal Jwt jwt) {
+        log.info("Admin: alterando status de aprovação do petshop ID {} para {}", id, status);
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        return ResponseEntity.ok(petshopService.alterarStatusAprovacao(id, status, usuario));
     }
 
     @PutMapping("/{id}")

@@ -42,8 +42,10 @@ public class ProdutoService {
         Specification<Produto> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // Apenas produtos ativos por padrão na busca pública
             predicates.add(cb.equal(root.get("status"), StatusProduto.ATIVO));
+
+            predicates.add(cb.equal(
+                    root.get("petshop").get("statusAprovacao"), StatusAprovacao.APROVADO));
 
             if (busca != null && !busca.isBlank()) {
                 String term = "%" + busca.toLowerCase() + "%";
@@ -100,6 +102,13 @@ public class ProdutoService {
         Petshop petshop = petshopRepository.findById(usuario.getPetshopId())
                 .orElseThrow(() -> new ResourceNotFoundException("Petshop associado ao usuário não encontrado."));
 
+        if (!petshop.isAprovado()) {
+            throw new AuthorizationDeniedException(
+                    "Seu petshop ainda não foi aprovado pela plataforma. Status atual: "
+                            + petshop.getStatusAprovacao().name()
+                            + ". Aguarde a aprovação da equipe MyBuddy para publicar produtos.");
+        }
+
         SubCategoria subCategoria = subCategoriaRepository.findById(request.getSubCategoriaId())
                 .orElseThrow(() -> new ResourceNotFoundException("Subcategoria não encontrada com ID: " + request.getSubCategoriaId()));
 
@@ -146,7 +155,6 @@ public class ProdutoService {
         produto.setEstoque(request.getEstoque());
         produto.setSubCategoria(subCategoria);
 
-        // Atualizar fotos se enviado
         if (request.getImagens() != null) {
             fotoProdutoRepository.deleteByProdutoId(id);
             produto.getFotos().clear();
@@ -203,5 +211,9 @@ public class ProdutoService {
                 .imagens(fotos)
                 .notaMedia(media)
                 .build();
+    }
+
+    public ProdutoResponseDTO mapToResponseDTO(Produto p) {
+        return toResponseDTO(p);
     }
 }
