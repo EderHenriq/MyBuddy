@@ -42,6 +42,7 @@ public class PetshopService {
                 .endereco(request.getEndereco())
                 .descricao(request.getDescricao())
                 .website(request.getWebsite())
+                .valorMinimoFreteGratis(request.getValorMinimoFreteGratis())
                 .build();
 
         Petshop salvo = petshopRepository.save(petshop);
@@ -88,6 +89,7 @@ public class PetshopService {
         petshop.setEndereco(request.getEndereco());
         petshop.setDescricao(request.getDescricao());
         petshop.setWebsite(request.getWebsite());
+        petshop.setValorMinimoFreteGratis(request.getValorMinimoFreteGratis());
 
         return toResponseDTO(petshopRepository.save(petshop));
     }
@@ -117,6 +119,7 @@ public class PetshopService {
                 .endereco(petshop.getEndereco())
                 .descricao(petshop.getDescricao())
                 .website(petshop.getWebsite())
+                .valorMinimoFreteGratis(petshop.getValorMinimoFreteGratis())
                 .build();
     }
 }

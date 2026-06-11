@@ -3,6 +3,7 @@ package com.Mybuddy.Myb.Model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +45,9 @@ public class Petshop {
     private String descricao;
 
     private String website;
+
+    @Column(name = "valor_minimo_frete_gratis", precision = 10, scale = 2)
+    private BigDecimal valorMinimoFreteGratis;
 
     @OneToMany(mappedBy = "petshop", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "petshop-produtos")
