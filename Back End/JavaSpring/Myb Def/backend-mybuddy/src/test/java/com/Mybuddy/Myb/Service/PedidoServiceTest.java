@@ -6,6 +6,8 @@ import com.Mybuddy.Myb.Model.*;
 import com.Mybuddy.Myb.Repository.jpa.PedidoRepository;
 import com.Mybuddy.Myb.Repository.jpa.PetshopRepository;
 import com.Mybuddy.Myb.Repository.jpa.ProdutoRepository;
+import com.Mybuddy.Myb.Repository.jpa.CupomRepository;
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
 import org.junit.jupiter.api.BeforeEach;
