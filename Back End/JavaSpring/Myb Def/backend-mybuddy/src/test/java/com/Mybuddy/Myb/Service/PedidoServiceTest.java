@@ -62,7 +62,7 @@ public class PedidoServiceTest {
     void setUp() {
         EnderecoEntregaDTO enderecoDTO = new EnderecoEntregaDTO("87000-000", "Rua Teste", "123", "Ap 1", "Bairro", "Maringá", "PR");
         ItemPedidoRequestDTO itemDTO = new ItemPedidoRequestDTO(20L, 2);
-        requestDTO = new PedidoRequestDTO(10L, enderecoDTO, List.of(itemDTO));
+        requestDTO = new PedidoRequestDTO(10L, enderecoDTO, List.of(itemDTO), null);
 
         usuario = new Usuario();
         usuario.setId(1L);

@@ -45,7 +45,7 @@ public class PetshopServiceTest {
 
     @BeforeEach
     void setUp() {
-        requestDTO = new PetshopRequestDTO("Petshop do Ed", "ed@petshop.com", "12345678901234", "4499999999", "Av Principal", "Descrição legal", "www.edpet.com");
+        requestDTO = new PetshopRequestDTO("Petshop do Ed", "ed@petshop.com", "12345678901234", "4499999999", "Av Principal", "Descrição legal", "www.edpet.com", null);
         usuario = new Usuario("Eder", "eder@gmail.com", "4499999999", "password");
         usuario.setId(1L);
 
