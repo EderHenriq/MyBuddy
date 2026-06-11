@@ -6,6 +6,8 @@ import com.Mybuddy.Myb.Model.*;
 import com.Mybuddy.Myb.Repository.jpa.PedidoRepository;
 import com.Mybuddy.Myb.Repository.jpa.PetshopRepository;
 import com.Mybuddy.Myb.Repository.jpa.ProdutoRepository;
+import com.Mybuddy.Myb.Repository.jpa.CupomRepository;
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -23,9 +25,18 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final ProdutoRepository produtoRepository;
     private final PetshopRepository petshopRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final CupomRepository cupomRepository;
+    private final EmailService emailService;
 
     @Transactional
     public PedidoResponseDTO criar(PedidoRequestDTO request, Usuario usuario) {
+        boolean isAdotante = usuario.getRoles() != null && usuario.getRoles().stream()
+                .anyMatch(r -> r.getName() == ERole.ROLE_ADOTANTE);
+        if (!isAdotante) {
+            throw new AuthorizationDeniedException("Apenas adotantes podem realizar compras no marketplace.");
+        }
+
         Petshop petshop = petshopRepository.findById(request.getPetshopId())
                 .orElseThrow(() -> new ResourceNotFoundException("Petshop não encontrado com ID: " + request.getPetshopId()));
 
@@ -81,8 +92,26 @@ public class PedidoService {
             total = total.add(item.getSubtotal());
         }
 
-        pedido.setValorTotal(total);
+        BigDecimal frete = calcularFrete(request.getEnderecoEntrega().getCep(), total, petshop);
+        pedido.setValorFrete(frete);
+
+        aplicarCupomEDesconto(pedido, request.getCupomDesconto(), total, frete);
+
+        BigDecimal valorTotalFinal = total.add(pedido.getValorFrete()).subtract(pedido.getValorDesconto());
+        if (valorTotalFinal.compareTo(BigDecimal.ZERO) < 0) {
+            valorTotalFinal = BigDecimal.ZERO;
+        }
+        pedido.setValorTotal(valorTotalFinal);
+
         Pedido salvo = pedidoRepository.save(pedido);
+
+        if (usuario.getEmail() != null) {
+            emailService.enviarEmail(
+                usuario.getEmail(),
+                "Pedido #" + salvo.getId() + " criado com sucesso!",
+                "Olá " + usuario.getNome() + ",\n\nSeu pedido #" + salvo.getId() + " de valor total R$ " + salvo.getValorTotal() + " foi registrado com sucesso."
+            );
+        }
 
         return toResponseDTO(salvo);
     }
@@ -140,7 +169,18 @@ public class PedidoService {
             devolverEstoque(pedido);
         }
 
-        return toResponseDTO(pedidoRepository.save(pedido));
+        Pedido salvo = pedidoRepository.save(pedido);
+
+        Usuario cliente = usuarioRepository.findById(salvo.getClienteId()).orElse(null);
+        if (cliente != null && cliente.getEmail() != null) {
+            emailService.enviarEmail(
+                cliente.getEmail(),
+                "Atualização do seu pedido #" + salvo.getId(),
+                "Olá " + cliente.getNome() + ",\n\nO status do seu pedido #" + salvo.getId() + " foi atualizado para: " + novoStatus.name() + "."
+            );
+        }
+
+        return toResponseDTO(salvo);
     }
 
     @Transactional
@@ -168,7 +208,18 @@ public class PedidoService {
         pedido.setStatus(StatusPedido.CANCELADO);
         devolverEstoque(pedido);
 
-        return toResponseDTO(pedidoRepository.save(pedido));
+        Pedido salvo = pedidoRepository.save(pedido);
+
+        Usuario cliente = usuarioRepository.findById(salvo.getClienteId()).orElse(null);
+        if (cliente != null && cliente.getEmail() != null) {
+            emailService.enviarEmail(
+                cliente.getEmail(),
+                "Cancelamento do seu pedido #" + salvo.getId(),
+                "Olá " + cliente.getNome() + ",\n\nO seu pedido #" + salvo.getId() + " foi cancelado com sucesso."
+            );
+        }
+
+        return toResponseDTO(salvo);
     }
 
     private void devolverEstoque(Pedido pedido) {
@@ -213,6 +264,70 @@ public class PedidoService {
         }
     }
 
+    private BigDecimal calcularFrete(String cep, BigDecimal subtotal, Petshop petshop) {
+        if (petshop.getValorMinimoFreteGratis() != null 
+                && subtotal.compareTo(petshop.getValorMinimoFreteGratis()) >= 0) {
+            return BigDecimal.ZERO;
+        }
+
+        if (cep == null || cep.trim().isEmpty()) {
+            return new BigDecimal("20.00");
+        }
+
+        String cepLimpo = cep.replaceAll("\\D", "");
+        if (cepLimpo.isEmpty()) {
+            return new BigDecimal("20.00");
+        }
+
+        char primeiroDigito = cepLimpo.charAt(0);
+        switch (primeiroDigito) {
+            case '0':
+            case '1':
+                return new BigDecimal("10.00");
+            case '2':
+                return new BigDecimal("15.00");
+            case '3':
+                return new BigDecimal("12.00");
+            case '8':
+            case '9':
+                return new BigDecimal("12.00");
+            default:
+                return new BigDecimal("20.00");
+        }
+    }
+
+    private void aplicarCupomEDesconto(Pedido pedido, String cupom, BigDecimal subtotal, BigDecimal freteOriginal) {
+        if (cupom == null || cupom.trim().isEmpty()) {
+            pedido.setValorFrete(freteOriginal);
+            pedido.setValorDesconto(BigDecimal.ZERO);
+            return;
+        }
+
+        String cupomFormatado = cupom.trim().toUpperCase();
+
+        if (cupomFormatado.equals("FRETEGRATIS")) {
+            pedido.setCupomDesconto(cupomFormatado);
+            pedido.setValorFrete(BigDecimal.ZERO);
+            pedido.setValorDesconto(BigDecimal.ZERO);
+            return;
+        }
+
+        Cupom dbCupom = cupomRepository.findByCodigoAndAtivoTrue(cupomFormatado)
+                .orElseThrow(() -> new IllegalArgumentException("Cupom inválido ou inativo."));
+
+        if (dbCupom.getPetshop() != null && !dbCupom.getPetshop().getId().equals(pedido.getPetshop().getId())) {
+            throw new IllegalArgumentException("Este cupom de desconto não é válido para este Petshop.");
+        }
+
+        pedido.setCupomDesconto(dbCupom.getCodigo());
+        pedido.setValorFrete(freteOriginal);
+
+        BigDecimal percentual = dbCupom.getPercentualDesconto();
+        BigDecimal desconto = subtotal.multiply(percentual)
+                .divide(new BigDecimal("100.00"), 2, java.math.RoundingMode.HALF_UP);
+        pedido.setValorDesconto(desconto);
+    }
+
     private PedidoResponseDTO toResponseDTO(Pedido p) {
         List<ItemPedidoResponseDTO> itens = p.getItens().stream()
                 .map(item -> ItemPedidoResponseDTO.builder()
@@ -243,6 +358,9 @@ public class PedidoService {
                 .enderecoEntrega(endereco)
                 .itens(itens)
                 .valorTotal(p.getValorTotal())
+                .valorFrete(p.getValorFrete())
+                .cupomDesconto(p.getCupomDesconto())
+                .valorDesconto(p.getValorDesconto())
                 .status(p.getStatus().name())
                 .dataCriacao(p.getDataCriacao())
                 .dataAtualizacao(p.getDataAtualizacao())
