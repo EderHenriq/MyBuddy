@@ -150,11 +150,11 @@ git commit -m "chore: atualiza dependências do Angular  [MY-60]"
 
 ```bash
 # Backend
-cd "Back End/JavaSpring/Myb Def/backend-mybuddy"
+cd backend
 ./mvnw test
 
 # Frontend
-cd "Front End - Angular/mybuddy"
+cd frontend
 ng test
 ```
 
