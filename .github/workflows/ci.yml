@@ -40,7 +40,7 @@ jobs:
           distribution: "temurin"
       - name: Rodar testes com Maven
         run: mvn test "-Dsurefire.excludes=**/KeycloakIntegrationTest.java,**/PetRepositoryContainerTest.java,**/AuthControllerIntegrationTest.java"
-        working-directory: "Back End/JavaSpring/Myb Def/backend-mybuddy"
+        working-directory: backend
         env:
           MERCADOPAGO_ACCESS_TOKEN: ${{ secrets.MERCADOPAGO_ACCESS_TOKEN }}
           SPRING_DATA_MONGODB_URI: mongodb://admin:admin@localhost:27017/mybuddy_test?authSource=admin
@@ -49,7 +49,7 @@ jobs:
         if: always()
         with:
           name: jacoco-report
-          path: "Back End/JavaSpring/Myb Def/backend-mybuddy/target/site/jacoco/"
+          path: "backend/target/site/jacoco/"
 
   e2e-frontend:
     runs-on: ubuntu-latest
@@ -62,25 +62,25 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: 'Front End - Angular/mybuddy/package.json'
+          cache-dependency-path: 'frontend/package.json'
 
       - name: Instalar dependências
         run: npm install --legacy-peer-deps
-        working-directory: 'Front End - Angular/mybuddy'
+        working-directory: 'frontend'
 
       - name: Instalar browsers do Playwright
         run: npx playwright install chromium --with-deps
-        working-directory: 'Front End - Angular/mybuddy'
+        working-directory: 'frontend'
 
       - name: Executar testes E2E do Playwright
         run: npm run e2e
-        working-directory: 'Front End - Angular/mybuddy'
+        working-directory: 'frontend'
 
       - name: Upload de relatórios em caso de falha
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report
-          path: 'Front End - Angular/mybuddy/playwright-report/'
+          path: 'frontend/playwright-report/'
           retention-days: 30
 
