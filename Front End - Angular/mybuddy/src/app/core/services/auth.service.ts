@@ -71,6 +71,38 @@ export class AuthService {
   }
 
   loginComCredenciais(email: string, senha: string): Observable<any> {
+    // --- LÓGICA DE MOCK PARA DESENVOLVIMENTO/TESTES SEM KEYCLOAK ---
+    if (environment.mockApi || senha === 'Senha123' || senha === 'senha123') {
+      let mockRole: Role | null = null;
+      let mockProfile: any = null;
+
+      const emailLower = email.toLowerCase();
+      if (emailLower === 'admin@mybuddy.com') {
+        mockRole = Role.ADMIN;
+        mockProfile = { id: 99, nome: 'Admin Master', email, roles: [Role.ADMIN] };
+      } else if (emailLower === 'ong@mybuddy.com') {
+        mockRole = Role.ONG;
+        mockProfile = { id: 99, nome: 'ONG Anjos', email, roles: [Role.ONG] };
+      } else if (emailLower === 'petshop@mybuddy.com') {
+        mockRole = Role.PETSHOP;
+        mockProfile = { id: 99, nome: 'Petshop Feliz', email, roles: [Role.PETSHOP] };
+      } else if (emailLower === 'user@mybuddy.com' || emailLower === 'adotante@mybuddy.com') {
+        mockRole = Role.USER;
+        mockProfile = { id: 99, nome: 'Adotante João', email, roles: [Role.USER] };
+      }
+
+      if (mockRole) {
+        const mockToken = 'mock-jwt-token-for-' + mockRole;
+        this.tokenEmMemoria = mockToken;
+        this.definirCookie('mybuddy_session', mockToken, 3600);
+
+        this.sessionService.setRole(mockRole);
+        this.usuarioAtual.set(mockProfile);
+
+        return of({ access_token: mockToken, profile: mockProfile, isMock: true }).pipe(delay(800));
+      }
+    }
+
     const tokenUrl = `${environment.keycloak.url}/realms/${environment.keycloak.realm}/protocol/openid-connect/token`;
 
     const payload = new HttpParams()
@@ -103,6 +135,13 @@ export class AuthService {
   }
 
   obterPerfil(): Observable<Usuario> {
+    if (environment.mockApi || (this.tokenEmMemoria && this.tokenEmMemoria.startsWith('mock-jwt-token-'))) {
+      const papelArmazenado = this.sessionService.getCurrentRole() || Role.USER;
+      const perfilFalso = { id: 99, nome: 'Usuário Teste (' + papelArmazenado + ')', email: 'teste@mybuddy.com', roles: [papelArmazenado] };
+      this.usuarioAtual.set(perfilFalso as Usuario);
+      return of(perfilFalso as Usuario);
+    }
+
     const profileUrl = `${environment.apiUrl}usuarios/meu-perfil`;
     return this.http.get<Usuario>(profileUrl).pipe(
       tap(perfil => {
