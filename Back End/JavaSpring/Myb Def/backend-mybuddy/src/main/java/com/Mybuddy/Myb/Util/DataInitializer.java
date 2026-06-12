@@ -6,6 +6,7 @@ import com.Mybuddy.Myb.Repository.mongo.*;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Configuration
+@RequiredArgsConstructor
+@SuppressWarnings("null")
 public class DataInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
@@ -30,28 +33,8 @@ public class DataInitializer {
     private final ProdutoRepository produtoRepository;
     private final EventoOngRepository eventoOngRepository;
     private final ChatRepository chatRepository;
-
-    public DataInitializer(
-            UsuarioRepository usuarioRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder encoder,
-            OrganizacaoRepository organizacaoRepository,
-            PetRepository petRepository,
-            PetshopRepository petshopRepository,
-            ProdutoRepository produtoRepository,
-            EventoOngRepository eventoOngRepository,
-            ChatRepository chatRepository
-    ) {
-        this.usuarioRepository = usuarioRepository;
-        this.roleRepository = roleRepository;
-        this.encoder = encoder;
-        this.organizacaoRepository = organizacaoRepository;
-        this.petRepository = petRepository;
-        this.petshopRepository = petshopRepository;
-        this.produtoRepository = produtoRepository;
-        this.eventoOngRepository = eventoOngRepository;
-        this.chatRepository = chatRepository;
-    }
+    private final CategoriaRepository categoriaRepository;
+    private final SubCategoriaRepository subCategoriaRepository;
 
     @PostConstruct
     public void initData() {
@@ -176,21 +159,32 @@ public class DataInitializer {
                     null,
                     roles
             );
-            petshopUser.setPetshop(petshop);
+            petshopUser.setPetshopId(petshop.getId());
             usuarioRepository.save(petshopUser);
             log.info("Usuário Petshop criado!");
         }
 
+        // Inicialização de Categorias e SubCategorias
+        Categoria catAlimentacao = categoriaRepository.findByNome("Alimentação")
+                .orElseGet(() -> categoriaRepository.save(Categoria.builder().nome("Alimentação").build()));
 
+        Categoria catAcessorios = categoriaRepository.findByNome("Acessórios")
+                .orElseGet(() -> categoriaRepository.save(Categoria.builder().nome("Acessórios").build()));
+
+        SubCategoria subRacao = subCategoriaRepository.findByNomeAndCategoriaId("Ração", catAlimentacao.getId())
+                .orElseGet(() -> subCategoriaRepository.save(SubCategoria.builder().nome("Ração").categoria(catAlimentacao).build()));
+
+        SubCategoria subColeira = subCategoriaRepository.findByNomeAndCategoriaId("Coleiras", catAcessorios.getId())
+                .orElseGet(() -> subCategoriaRepository.save(SubCategoria.builder().nome("Coleiras").categoria(catAcessorios).build()));
 
         if (produtoRepository.count() == 0) {
             log.info("Criando Produtos reais...");
             Produto prod1 = new Produto();
             prod1.setNome("Ração Golden Premier 15kg");
-            prod1.setCategoria("Ração");
+            prod1.setSubCategoria(subRacao);
             prod1.setPreco(new BigDecimal("149.90"));
             prod1.setEstoque(15);
-            prod1.setPetshopId(petshop.getId());
+            prod1.setPetshop(petshop);
             prod1.setStatus(StatusProduto.ATIVO);
             FotoProduto f1 = new FotoProduto();
             f1.setUrl("https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=600");
@@ -199,10 +193,10 @@ public class DataInitializer {
 
             Produto prod2 = new Produto();
             prod2.setNome("Coleira Anti-pulgas");
-            prod2.setCategoria("Acessórios");
+            prod2.setSubCategoria(subColeira);
             prod2.setPreco(new BigDecimal("89.90"));
             prod2.setEstoque(0);
-            prod2.setPetshopId(petshop.getId());
+            prod2.setPetshop(petshop);
             prod2.setStatus(StatusProduto.ATIVO);
             FotoProduto f2 = new FotoProduto();
             f2.setUrl("https://images.unsplash.com/photo-1601633519842-83569502ab45?auto=format&fit=crop&q=80&w=600");
@@ -216,6 +210,7 @@ public class DataInitializer {
             if (petRepository.findByNome("Zeus").isEmpty()) {
                 Pet p1 = new Pet("Zeus", "SRD", 2, Especie.CAO, Porte.MEDIO, "Marrom", "Curta", "Macho", myBuddyOrg, true, true, true, "São Paulo", "SP");
                 p1.setId(1L);
+                p1.setDescricao("Zeus é um cãozinho muito alegre, dócil e companheiro. Adora correr em espaços abertos e se dá muito bem com outros cachorros.");
                 FotoPet f1 = new FotoPet();
                 f1.setUrl("https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600");
                 f1.setPrincipal(true);
@@ -226,6 +221,7 @@ public class DataInitializer {
             if (petRepository.findByNome("Mia").isEmpty()) {
                 Pet p2 = new Pet("Mia", "Persa", 1, Especie.GATO, Porte.PEQUENO, "Branco", "Longa", "Fêmea", myBuddyOrg, true, true, false, "São Paulo", "SP");
                 p2.setId(2L);
+                p2.setDescricao("Mia é uma gatinha calma, carinhosa e muito dorminhoca. Perfeita para apartamentos. Gosta de ser escovada e receber carinho.");
                 FotoPet f2 = new FotoPet();
                 f2.setUrl("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=600");
                 f2.setPrincipal(true);
@@ -236,6 +232,7 @@ public class DataInitializer {
             if (petRepository.findByNome("Thor").isEmpty()) {
                 Pet p3 = new Pet("Thor", "Golden Retriever", 1, Especie.CAO, Porte.GRANDE, "Dourado", "Longa", "Macho", myBuddyOrg, true, true, true, "São Paulo", "SP");
                 p3.setId(3L);
+                p3.setDescricao("Thor é um Golden Retriever brincalhão, inteligente e cheio de energia. Ideal para famílias ativas que adoram passear.");
                 FotoPet f3 = new FotoPet();
                 f3.setUrl("https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=600");
                 f3.setPrincipal(true);

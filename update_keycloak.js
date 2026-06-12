@@ -7,6 +7,21 @@ const frontendClient = data.clients.find(c => c.clientId === 'mybuddy-frontend')
 if (frontendClient) {
     frontendClient.directAccessGrantsEnabled = true;
     frontendClient.publicClient = true; // Angular é public
+    
+    // Garantir redirecionamentos corretos para localhost:4200 (dev) e localhost:80 (docker)
+    const requiredUris = [
+        "http://localhost:4200/*",
+        "http://localhost/*",
+        "http://localhost:80/*"
+    ];
+    if (!frontendClient.redirectUris) {
+        frontendClient.redirectUris = [];
+    }
+    requiredUris.forEach(uri => {
+        if (!frontendClient.redirectUris.includes(uri)) {
+            frontendClient.redirectUris.push(uri);
+        }
+    });
 }
 
 // Restaurar a política original caso ela exista (estamos não sobrescrevendo mais)

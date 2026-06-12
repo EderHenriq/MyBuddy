@@ -7,6 +7,7 @@ import com.Mybuddy.Myb.Model.Pet;
 import com.Mybuddy.Myb.Model.StatusAdocao;
 import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
+import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -189,7 +190,7 @@ class PetServiceTest {
         when(petRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> petService.atualizarPet(99L, petRequestDTO))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Pet com ID 99 não encontrado");
     }
 
@@ -237,7 +238,7 @@ class PetServiceTest {
         when(petRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> petService.deletarPet(99L))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Pet com ID 99 não encontrado");
     }
 

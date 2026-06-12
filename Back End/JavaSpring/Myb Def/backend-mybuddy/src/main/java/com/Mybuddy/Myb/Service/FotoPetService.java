@@ -2,6 +2,7 @@ package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Model.Arquivo;
 import com.Mybuddy.Myb.Repository.mongo.ArquivoRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,20 +19,28 @@ import java.util.UUID;
  * Persiste os bytes dos arquivos diretamente no MongoDB para garantir resiliência e alta disponibilidade.
  */
 @Service
+@RequiredArgsConstructor
 public class FotoPetService {
 
     private static final Logger log = LoggerFactory.getLogger(FotoPetService.class);
 
     private final ArquivoRepository arquivoRepository;
 
-    public FotoPetService(ArquivoRepository arquivoRepository) {
-        this.arquivoRepository = arquivoRepository;
-    }
-
     /**
      * Salva um arquivo/foto no MongoDB.
      */
     public String storeFile(MultipartFile file) throws IOException {
+        // Validar tipo de conteúdo (apenas imagens permitidas)
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("Apenas arquivos de imagem são permitidos.");
+        }
+
+        // Validar tamanho (máximo 5MB)
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new IllegalArgumentException("O tamanho máximo permitido para o arquivo é 5MB.");
+        }
+
         String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
         String fileExtension = "";
         int dotIndex = originalFileName.lastIndexOf('.');

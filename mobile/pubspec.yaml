@@ -1,0 +1,51 @@
+name: mybuddy_app
+description: MyBuddy - Plataforma de adoção e serviços pet
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '^3.11.0'
+  flutter: '>=3.41.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # HTTP
+  dio: ^5.7.0
+
+  # State management
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
+
+  # Dependency injection
+  get_it: ^8.0.3
+
+  # Navigation
+  go_router: ^15.1.2
+
+  # Storage
+  flutter_secure_storage: ^9.2.4
+
+  # Functional programming
+  dartz: ^0.10.1
+
+  # Code generation
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # UI
+  cupertino_icons: ^1.0.8
+  google_fonts: ^8.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.15
+  freezed: ^2.5.7
+  json_serializable: ^6.9.2
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true

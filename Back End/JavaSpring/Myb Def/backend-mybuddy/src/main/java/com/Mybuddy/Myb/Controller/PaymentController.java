@@ -11,6 +11,12 @@ import com.Mybuddy.Myb.Service.PaymentService;
 import com.Mybuddy.Myb.Util.MercadoPagoWebhookValidator;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
+import com.mercadopago.client.preapproval.PreapprovalClient;
+import com.mercadopago.client.preapproval.PreapprovalUpdateRequest;
+import com.mercadopago.resources.preapproval.Preapproval;
+import com.Mybuddy.Myb.Repository.jpa.DonationSubscriptionRepository;
+import com.Mybuddy.Myb.Model.DonationSubscription;
+import com.Mybuddy.Myb.Model.PaymentStatus;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +28,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import java.util.Map;
 
@@ -35,6 +44,7 @@ public class PaymentController {
     private final KeycloakUserSyncService keycloakUserSyncService;
     private final ApplicationEventPublisher eventPublisher;
     private final MercadoPagoWebhookValidator webhookValidator;
+    private final DonationSubscriptionRepository donationSubscriptionRepository;
 
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
@@ -52,12 +62,100 @@ public class PaymentController {
                 saved.getMpPaymentId(),
                 saved.getUsuarioId(),
                 saved.getPetId(),
+                saved.getCampanhaId(),
+                saved.getOrganizacaoId(),
                 saved.getAmount(),
                 saved.getStatus(),
                 result.initPoint(),
                 saved.getCreatedAt(),
                 saved.getUpdatedAt()
         ));
+    }
+
+    @PostMapping("/subscribe")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, String>> createSubscription(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody Map<String, Object> payload) throws MPException, MPApiException {
+        
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        BigDecimal amount = new BigDecimal(payload.get("amount").toString());
+        String frequency = (String) payload.get("frequency"); // monthly ou weekly
+        Long orgId = payload.get("organizacaoId") != null ? Long.valueOf(payload.get("organizacaoId").toString()) : null;
+
+        PreapprovalClient client = new PreapprovalClient();
+        
+        // Define as datas da recorrência
+        java.time.OffsetDateTime now = java.time.OffsetDateTime.now();
+        java.time.OffsetDateTime end = now.plusYears(1); // Assinatura com validade de 1 ano
+
+        com.mercadopago.client.preapproval.PreapprovalCreateRequest preapprovalRequest = 
+                com.mercadopago.client.preapproval.PreapprovalCreateRequest.builder()
+                .backUrl("http://localhost/checkout/confirmacao")
+                .reason(frequency.equalsIgnoreCase("monthly") ? "Assinatura Mensal - MyBuddy" : "Assinatura Semanal - MyBuddy")
+                .payerEmail(usuario.getEmail())
+                .autoRecurring(
+                        com.mercadopago.client.preapproval.PreApprovalAutoRecurringCreateRequest.builder()
+                                .frequency(1)
+                                .frequencyType(frequency.equalsIgnoreCase("monthly") ? "months" : "weeks")
+                                .transactionAmount(amount)
+                                .currencyId("BRL")
+                                .startDate(now)
+                                .endDate(end)
+                                .build()
+                )
+                .build();
+
+        Preapproval preapproval = client.create(preapprovalRequest);
+
+        // Salvar a assinatura pendente localmente
+        DonationSubscription sub = DonationSubscription.builder()
+                .mpPreapprovalId(preapproval.getId())
+                .usuarioId(usuario.getId())
+                .organizacaoId(orgId)
+                .amount(amount)
+                .frequency(frequency)
+                .status("pending")
+                .build();
+        donationSubscriptionRepository.save(sub);
+
+        return ResponseEntity.ok(Map.of(
+                "preapprovalId", preapproval.getId(),
+                "initPoint", preapproval.getSandboxInitPoint() != null ? preapproval.getSandboxInitPoint() : preapproval.getInitPoint()
+        ));
+    }
+
+    @PostMapping("/subscribe/{id}/cancelar")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> cancelSubscription(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable Long id) throws MPException, MPApiException {
+        
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        
+        DonationSubscription subscription = donationSubscriptionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Assinatura não encontrada: " + id));
+
+        // Validar se a assinatura pertence ao usuário logado
+        if (!subscription.getUsuarioId().equals(usuario.getId())) {
+            throw new org.springframework.security.authorization.AuthorizationDeniedException("Acesso negado para cancelar esta assinatura.");
+        }
+
+        // Cancelar no Mercado Pago
+        PreapprovalClient client = new PreapprovalClient();
+        PreapprovalUpdateRequest request = PreapprovalUpdateRequest.builder()
+                .status("cancelled")
+                .build();
+        
+        client.update(subscription.getMpPreapprovalId(), request);
+
+        // Atualizar banco local
+        subscription.setStatus("cancelled");
+        donationSubscriptionRepository.save(subscription);
+
+        log.info("Assinatura cancelada com sucesso: id={}, mpPreapprovalId={}", subscription.getId(), subscription.getMpPreapprovalId());
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
@@ -74,6 +172,8 @@ public class PaymentController {
                 payment.getMpPaymentId(),
                 payment.getUsuarioId(),
                 payment.getPetId(),
+                payment.getCampanhaId(),
+                payment.getOrganizacaoId(),
                 payment.getAmount(),
                 payment.getStatus(),
                 null,
@@ -127,10 +227,83 @@ public class PaymentController {
                 payment.getMpPaymentId(),
                 payment.getUsuarioId(),
                 payment.getPetId(),
+                payment.getCampanhaId(),
+                payment.getOrganizacaoId(),
                 payment.getAmount(),
                 payment.getStatus(),
                 null,
                 payment.getCreatedAt(),
                 payment.getUpdatedAt()));
+    }
+
+    @PostMapping("/sync-redirection")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<PaymentResponseDTO> syncRedirection(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(required = false) String paymentId,
+            @RequestParam(required = false) String preferenceId) throws MPException, MPApiException {
+        
+        log.info("Requisição de sincronização recebida: paymentId={}, preferenceId={}", paymentId, preferenceId);
+        
+        if (paymentId == null && preferenceId == null) {
+            throw new IllegalArgumentException("paymentId ou preferenceId é obrigatório para sincronização.");
+        }
+
+        java.util.Optional<Payment> paymentOpt = java.util.Optional.empty();
+        if (paymentId != null) {
+            paymentOpt = paymentService.findByMpPaymentId(paymentId);
+        }
+        if (paymentOpt.isEmpty() && preferenceId != null) {
+            paymentOpt = paymentService.findByMpPreferenceId(preferenceId);
+        }
+
+        if (paymentOpt.isEmpty()) {
+            throw new RuntimeException("Pagamento local correspondente não encontrado.");
+        }
+
+        Payment payment = paymentOpt.get();
+
+        if (payment.getStatus() == PaymentStatus.PENDING) {
+            if (paymentId != null) {
+                try {
+                    com.mercadopago.client.payment.PaymentClient client = new com.mercadopago.client.payment.PaymentClient();
+                    com.mercadopago.resources.payment.Payment mpPayment = client.get(Long.parseLong(paymentId));
+                    String mpStatus = mpPayment.getStatus();
+                    
+                    if (payment.getMpPaymentId() == null) {
+                        payment.setMpPaymentId(paymentId);
+                    }
+
+                    PaymentStatus newStatus = switch (mpStatus) {
+                        case "approved" -> PaymentStatus.APPROVED;
+                        case "rejected" -> PaymentStatus.REJECTED;
+                        case "cancelled" -> PaymentStatus.CANCELLED;
+                        case "refunded" -> PaymentStatus.REFUNDED;
+                        default -> PaymentStatus.PENDING;
+                    };
+                    
+                    if (newStatus != payment.getStatus()) {
+                        paymentService.updateStatus(payment, newStatus);
+                    }
+                } catch (Exception e) {
+                    log.error("Erro ao sincronizar com Mercado Pago para paymentId {}: {}", paymentId, e.getMessage());
+                }
+            }
+        }
+
+        return ResponseEntity.ok(new PaymentResponseDTO(
+                payment.getId(),
+                payment.getMpPreferenceId(),
+                payment.getMpPaymentId(),
+                payment.getUsuarioId(),
+                payment.getPetId(),
+                payment.getCampanhaId(),
+                payment.getOrganizacaoId(),
+                payment.getAmount(),
+                payment.getStatus(),
+                null,
+                payment.getCreatedAt(),
+                payment.getUpdatedAt()
+        ));
     }
 }

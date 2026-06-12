@@ -22,5 +22,6 @@ public record PetResponse(
         boolean vacinado,
         boolean castrado,
         String cidade,
-        String estado
+        String estado,
+        String descricao
 ) {}

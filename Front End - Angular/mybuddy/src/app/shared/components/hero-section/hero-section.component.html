@@ -1,10 +1,17 @@
-<section class="hero-container">
+<section class="hero-container" [style.backgroundImage]="'url(' + backgroundImageUrl + ')'">
+  <div class="hero-overlay"></div>
   <div class="hero-content">
-    <p class="hero-greeting">Seja bem vindo, {{ userName }}</p>
+    @if (kicker) {
+      <p class="hero-kicker">{{ kicker }}</p>
+    }
     <h1 class="hero-headline">
-      Conectar, cuidar e
-      <span class="highlight">comemorar.</span>
+      {{ title }}
+      @if (highlightedText) {
+        <span class="highlight">{{ highlightedText }}</span>
+      }
     </h1>
-    <p class="hero-subtitle">Tudo isso em um só lugar</p>
+    @if (subtitle) {
+      <p class="hero-subtitle">{{ subtitle }}</p>
+    }
   </div>
 </section>

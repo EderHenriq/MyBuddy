@@ -27,16 +27,33 @@ public class Pedido {
     @Column(name = "cliente_id", nullable = false)
     private Long clienteId;
 
-    @Column(name = "petshop_id", nullable = false)
-    private Long petshopId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "petshop_id", nullable = false)
+    @JsonBackReference(value = "petshop-pedidos")
+    @ToString.Exclude
+    private Petshop petshop;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "endereco_entrega_id")
+    private EnderecoEntrega enderecoEntrega;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     @ToString.Exclude
+    @org.hibernate.annotations.BatchSize(size = 20)
     private List<ItemPedido> itens = new ArrayList<>();
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valorTotal = BigDecimal.ZERO;
+
+    @Column(name = "valor_frete", precision = 10, scale = 2)
+    private BigDecimal valorFrete = BigDecimal.ZERO;
+
+    @Column(name = "cupom_desconto", length = 100)
+    private String cupomDesconto;
+
+    @Column(name = "valor_desconto", precision = 10, scale = 2)
+    private BigDecimal valorDesconto = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)

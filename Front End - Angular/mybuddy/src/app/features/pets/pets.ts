@@ -7,6 +7,7 @@ import { Footer } from '@shared/components/footer/footer';
 import { InfiniteScrollDirective } from '@shared/directives/infinite-scroll.directive';
 import { DebounceDirective } from '@shared/directives/debounce.directive';
 import { PetService } from '@core/services/pet.service';
+import { HeroSectionComponent } from '@shared/components/hero-section/hero-section.component';
 
 interface ItemListaPet {
   nome: string;
@@ -30,7 +31,7 @@ interface GrupoFiltro {
 @Component({
   selector: 'app-pets',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CardPetComponent, Footer, InfiniteScrollDirective, DebounceDirective],
+  imports: [CommonModule, ReactiveFormsModule, CardPetComponent, Footer, InfiniteScrollDirective, DebounceDirective, HeroSectionComponent],
   templateUrl: './pets.html',
   styleUrl: './pets.scss',
 })

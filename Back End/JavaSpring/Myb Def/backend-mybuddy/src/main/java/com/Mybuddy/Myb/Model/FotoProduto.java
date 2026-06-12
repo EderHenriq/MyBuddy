@@ -23,7 +23,7 @@ public class FotoProduto {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference(value = "produto-fotos")
     @ToString.Exclude
     private Produto produto;
 }

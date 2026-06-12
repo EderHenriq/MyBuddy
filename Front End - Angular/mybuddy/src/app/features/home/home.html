@@ -1,15 +1,11 @@
 <main class="home-page">
-  <section class="home-hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <p class="hero-kicker">Seja bem vindo, {{ authService.usuarioAtual()?.nome || 'Usuário' }}</p>
-      <h1>
-        Conectar, cuidar e
-        <span>comemorar.</span>
-      </h1>
-      <p class="hero-subtitle">Tudo isso em um só lugar</p>
-    </div>
-  </section>
+  <app-hero-section
+    [kicker]="'Seja bem vindo, ' + (authService.usuarioAtual()?.nome || 'Usuário')"
+    [title]="'Conectar, cuidar e'"
+    [highlightedText]="'comemorar.'"
+    [subtitle]="'Tudo isso em um só lugar'"
+    [backgroundImageUrl]="'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=1800'"
+  ></app-hero-section>
 
   <section class="home-shell">
     <div class="search-panel">

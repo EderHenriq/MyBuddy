@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class InteresseAdocao {
+public class InteresseAdocao implements Identifiable {
 
     @Id
     @EqualsAndHashCode.Include
@@ -36,6 +36,24 @@ public class InteresseAdocao {
     private StatusInteresse status;
 
     private String mensagem;
+
+    private String cpfAdotante;
+
+    private Integer idadeAdotante;
+
+    private String motivoAdocao;
+
+    private String tipoResidencia;
+
+    private Boolean possuiTelasProtecao;
+
+    private String outrosAnimais;
+
+    private Integer tempoSozinhoHoras;
+
+    private Boolean todosCientes;
+
+    private Boolean espacoAdequado;
 
     @CreatedDate
     private LocalDateTime criadoEm;

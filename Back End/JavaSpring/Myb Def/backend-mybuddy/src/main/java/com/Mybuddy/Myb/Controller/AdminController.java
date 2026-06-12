@@ -4,6 +4,7 @@ import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,15 +13,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
+@RequiredArgsConstructor
 public class AdminController {
 
     private final OrganizacaoRepository organizacaoRepository;
     private final UsuarioRepository usuarioRepository;
-
-    public AdminController(OrganizacaoRepository organizacaoRepository, UsuarioRepository usuarioRepository) {
-        this.organizacaoRepository = organizacaoRepository;
-        this.usuarioRepository = usuarioRepository;
-    }
 
     @GetMapping("/ongs")
     public ResponseEntity<List<Organizacao>> getOngs() {

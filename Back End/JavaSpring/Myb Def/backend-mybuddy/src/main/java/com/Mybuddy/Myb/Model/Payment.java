@@ -32,6 +32,12 @@ public class Payment {
     @Column(name = "pet_id", nullable = true)
     private Long petId;
 
+    @Column(name = "campanha_id", nullable = true)
+    private Long campanhaId;
+
+    @Column(name = "organizacao_id", nullable = true)
+    private Long organizacaoId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id", nullable = true)
     private Pedido pedido;

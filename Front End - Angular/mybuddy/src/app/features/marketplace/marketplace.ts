@@ -6,6 +6,7 @@ import { CardLojaComponent } from '@shared/components/card-loja/card-loja.compon
 import { CategoryCarouselComponent, CategoriaVisual } from '@shared/components/category-carousel/category-carousel.component';
 import { CartDrawerComponent } from '@shared/components/cart-drawer/cart-drawer.component';
 import { CartService } from '@core/services/cart.service';
+import { HeroSectionComponent } from '@shared/components/hero-section/hero-section.component';
 
 interface Loja {
   id: number;
@@ -30,7 +31,7 @@ interface Produto {
 @Component({
   selector: 'app-marketplace',
   standalone: true,
-  imports: [CommonModule, Footer, CardProdutoComponent, CardLojaComponent, CategoryCarouselComponent, CartDrawerComponent],
+  imports: [CommonModule, Footer, CardProdutoComponent, CardLojaComponent, CategoryCarouselComponent, CartDrawerComponent, HeroSectionComponent],
   templateUrl: './marketplace.html',
   styleUrl: './marketplace.scss',
 })

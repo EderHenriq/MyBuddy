@@ -4,9 +4,14 @@
 }
 
 .adoption-page {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.adoption-shell {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 2.7rem 3rem 4rem;
+  padding: 0 3rem 4rem;
 }
 
 .search-panel {
@@ -15,11 +20,13 @@
   align-items: center;
   gap: 1.35rem;
   min-height: 72px;
-  margin: 0 auto 2.5rem;
+  margin: -34px auto 2.5rem;
   padding: 0.9rem 1.05rem;
   border-radius: 24px;
   background: #ffffff;
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.14);
+  position: relative;
+  z-index: 5;
 }
 
 .search-field {
@@ -309,7 +316,7 @@ hr {
 }
 
 @media (max-width: 760px) {
-  .adoption-page {
+  .adoption-shell {
     padding: 1.5rem 1rem 3rem;
   }
 

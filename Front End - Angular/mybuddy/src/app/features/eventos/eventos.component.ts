@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { CardEventoComponent } from '@shared/components/card-evento/card-evento.component';
 import { Footer } from '@shared/components/footer/footer';
+import { HeroSectionComponent } from '@shared/components/hero-section/hero-section.component';
 
 interface Evento {
   id: number;
@@ -19,7 +20,7 @@ interface Evento {
 @Component({
   selector: 'app-eventos',
   standalone: true,
-  imports: [CommonModule, CardEventoComponent, Footer],
+  imports: [CommonModule, CardEventoComponent, Footer, HeroSectionComponent],
   templateUrl: './eventos.component.html',
   styleUrl: './eventos.component.scss',
 })

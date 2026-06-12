@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Pet {
+public class Pet implements Identifiable {
 
     @Id
     @EqualsAndHashCode.Include
@@ -62,6 +62,8 @@ public class Pet {
     private String estado;
 
     private Double peso;
+
+    private String descricao;
 
     @CreatedDate
     private LocalDateTime dataCriacao;
