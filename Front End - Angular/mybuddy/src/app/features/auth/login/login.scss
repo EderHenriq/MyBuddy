@@ -146,6 +146,33 @@
   margin: 0;
 }
 
+//Estilização dos alertas
+.alert {
+  @include flex-start;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-sm);
+
+  .material-icons {
+    font-size: 20px;
+  }
+
+  &-error {
+    background: rgba(229, 57, 53, 0.08);
+    color: #e53935;
+    border: 1px solid rgba(229, 57, 53, 0.2);
+  }
+
+  &-success {
+    background: rgba(76, 175, 80, 0.08);
+    color: var(--secondary-color);
+    border: 1px solid rgba(93, 131, 28, 0.2);
+  }
+}
+
 //Estilização do formulário
 .login-form {
   @include flex-column;

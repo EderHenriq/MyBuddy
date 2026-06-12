@@ -34,6 +34,13 @@
         <p class="form-subtitle">Faça login para continuar e encontrar seu parceiro.</p>
       </header>
 
+      @if (errorMessage()) {
+        <div class="alert alert-error" role="alert" aria-live="polite">
+          <span class="material-icons" aria-hidden="true">error_outline</span>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
         <div class="input-group" [class.has-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
           <label class="input-label" for="email">Email</label>
