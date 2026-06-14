@@ -1,3 +1,6 @@
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 enum Flavor { dev, prod }
 
 class AppConfig {
@@ -11,8 +14,9 @@ class AppConfig {
 
     switch (flavor) {
       case Flavor.dev:
-        apiBaseUrl = 'http://localhost/api/';
-        keycloakUrl = 'http://localhost:8080';
+        final host = (!kIsWeb && Platform.isAndroid) ? '10.0.2.2' : 'localhost';
+        apiBaseUrl = 'http://$host/api/';
+        keycloakUrl = 'http://$host:8080';
         showLogs = true;
       case Flavor.prod:
         apiBaseUrl = 'https://api.mybuddy.com.br/api/';
@@ -24,3 +28,4 @@ class AppConfig {
   static bool get isDev => flavor == Flavor.dev;
   static bool get isProd => flavor == Flavor.prod;
 }
+

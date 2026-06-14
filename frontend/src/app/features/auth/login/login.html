@@ -1,0 +1,142 @@
+<main class="login-container">
+  <section class="login-hero" aria-label="Destaque MyBuddy">
+    <div class="brand-header">
+      <img src="/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="brand-logo" />
+      <span class="brand-name">MyBuddy</span>
+    </div>
+
+    <div class="hero-content">
+      <h2 class="hero-title">Cuidar começa com conexão.</h2>
+      <p class="hero-subtitle">
+        Encontre tutores, veterinários e serviços para o seu pet.
+        <br />
+        Tudo em um lugar.
+      </p>
+
+      <div class="hero-pills" role="list" aria-label="Recursos da Plataforma">
+        <span class="pill" role="listitem">Adoção</span>
+        <span class="pill" role="listitem">Veterinários</span>
+        <span class="pill" role="listitem">Serviços para seu pet</span>
+        <span class="pill" role="listitem">Comunidades</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="login-form-side" aria-labelledby="login-heading">
+    <div class="login-card">
+      <header class="card-header">
+        <img src="/assets/logo/logo-provisoria.png" alt="Logo MyBuddy" class="card-icon" aria-hidden="true" />
+        <h1 id="login-heading" class="form-title">
+          Faça login no
+          <span class="highlight">MyBuddy</span>
+        </h1>
+
+        <p class="form-subtitle">Faça login para continuar e encontrar seu parceiro.</p>
+      </header>
+
+      @if (errorMessage()) {
+        <div class="alert alert-error" role="alert" aria-live="polite">
+          <span class="material-icons" aria-hidden="true">error_outline</span>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="input-group" [class.has-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <label class="input-label" for="email">Email</label>
+
+          <div class="input-field-wrapper">
+            <p-autocomplete
+              inputId="email"
+              formControlName="email"
+              [suggestions]="emailSuggestions()"
+              (completeMethod)="onEmailInput($event)"
+              placeholder="Digite seu email"
+              [dropdown]="false"
+              autocomplete="off"
+              [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+            />
+
+            <datalist id="email-domains">
+              <option value="@gmail.com"></option>
+              <option value="@icloud.com"></option>
+              <option value="@hotmail.com"></option>
+              <option value="@outlook.com"></option>
+              <option value="@yahoo.com"></option>
+            </datalist>
+          </div>
+
+          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+            <span class="error-message" aria-live="polite">Insira um e-mail válido</span>
+          }
+        </div>
+
+        <div class="input-group" [class.has-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <label class="input-label" for="password">Senha</label>
+
+          <div class="input-field-wrapper">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Digite sua senha"
+              autocomplete="current-password"
+              [attr.aria-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword() ? 'Esconder senha' : 'Mostrar senha'"
+            >
+              <span class="material-icons" aria-hidden="true">
+                {{ showPassword() ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
+          </div>
+
+          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+            <span class="error-message" aria-live="polite">A senha deve ter no mínimo 8 caracteres</span>
+          }
+        </div>
+
+        <div class="form-helpers">
+          <a routerLink="/auth/recuperar-senha" class="forgot-password-link">Esqueceu a senha</a>
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="isLoading() || loginForm.invalid">
+          @if (isLoading()) {
+            <span class="btn-spinner" aria-hidden="true"></span>
+            <span>Entrando...</span>
+          } @else {
+            <span>Login</span>
+          }
+        </button>
+
+        <div class="form-divider" aria-hidden="true">
+          <span class="divider-line"></span>
+          <span class="divider-text">ou</span>
+          <span class="divider-line"></span>
+        </div>
+
+        <div class="social-auth-group">
+          <button type="button" class="btn-social-auth" aria-label="Continuar com Apple">
+            <img src="/assets/logo/logo-btn-login/apple-logo.svg" alt="" aria-hidden="true" />
+            <span>Continuar com Apple</span>
+          </button>
+
+          <button type="button" class="btn-social-auth" aria-label="Continuar com Google">
+            <img src="/assets/logo/logo-btn-login/google-logo.svg" alt="" aria-hidden="true" />
+            <span>Continuar com Google</span>
+          </button>
+        </div>
+
+        <p class="register-caption">
+          Não tem uma conta?
+          <a routerLink="/auth/cadastro" class="register-link">Cadastre-se</a>
+        </p>
+      </form>
+    </div>
+  </section>
+</main>

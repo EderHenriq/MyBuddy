@@ -10,6 +10,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       : _authRepository = authRepository,
         super(AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
+    on<LoginWithKeycloakRequested>(_onLoginWithKeycloakRequested);
     on<LogoutRequested>(_onLogoutRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
   }
@@ -21,6 +22,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
 
     final result = await _authRepository.login(event.email, event.password);
+
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(AuthAuthenticated(user)),
+    );
+  }
+
+  Future<void> _onLoginWithKeycloakRequested(
+    LoginWithKeycloakRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+
+    final result = await _authRepository.loginWithKeycloak();
 
     result.fold(
       (failure) => emit(AuthError(failure.message)),

@@ -1,0 +1,17 @@
+<section class="hero-container" [style.backgroundImage]="'url(' + backgroundImageUrl + ')'">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    @if (kicker) {
+      <p class="hero-kicker">{{ kicker }}</p>
+    }
+    <h1 class="hero-headline">
+      {{ title }}
+      @if (highlightedText) {
+        <span class="highlight">{{ highlightedText }}</span>
+      }
+    </h1>
+    @if (subtitle) {
+      <p class="hero-subtitle">{{ subtitle }}</p>
+    }
+  </div>
+</section>

@@ -137,12 +137,16 @@ docker compose down -v
 
 ```
 MyBuddy/
-├── Back End/                 # Java 21 + Spring Boot 3 + Keycloak + Maven
-├── Web HTML/                 # Frontend legado HTML/CSS/JS
-├── new Frontend - Angular/   # Migração para Angular (em andamento)
-├── Banco de dados/           # Scripts SQL e migrations
-├── Documentação/             # Documentação acadêmica e técnica
-└── new Documentação/         # Documentação atualizada e roadmap
+├── backend/                 # Java 21 + Spring Boot 3 + Keycloak + Maven
+├── frontend/                # Angular 21 (SSR)
+├── mobile/                  # Flutter 3.41+
+├── legacy-web/              # Frontend legado HTML/CSS/JS
+├── docs/
+│   ├── academico/           # Documentação acadêmica
+│   └── tecnico/             # Documentação técnica e roadmap
+├── docker/                  # Configurações Docker
+├── .github/                 # CI/CD, templates
+└── docker-compose.yml       # Ambiente completo
 ```
 
 ---

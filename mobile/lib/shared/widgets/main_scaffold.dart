@@ -8,8 +8,10 @@ class MainScaffold extends StatelessWidget {
 
   int _currentIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith('/marketplace')) return 1;
-    if (location.startsWith('/adocao')) return 2;
+    if (location.startsWith('/pets')) return 1;
+    if (location.startsWith('/marketplace')) return 2;
+    if (location.startsWith('/eventos')) return 3;
+    if (location.startsWith('/perfil')) return 4;
     return 0;
   }
 
@@ -19,33 +21,51 @@ class MainScaffold extends StatelessWidget {
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex(context),
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed, // Permite 5 itens sem mudar cor de fundo ou distorcer
         onTap: (index) {
           switch (index) {
             case 0:
-              context.go('/pets');
+              context.go('/home');
             case 1:
-              context.go('/marketplace');
+              context.go('/pets');
             case 2:
-              context.go('/adocao');
+              context.go('/marketplace');
+            case 3:
+              context.go('/eventos');
+            case 4:
+              context.go('/perfil');
           }
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.pets),
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home_rounded),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.pets_outlined),
+            activeIcon: Icon(Icons.pets_rounded),
             label: 'Pets',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.store),
+            icon: Icon(Icons.storefront_outlined),
+            activeIcon: Icon(Icons.storefront_rounded),
             label: 'Marketplace',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Adoção',
+            icon: Icon(Icons.event_note_outlined),
+            activeIcon: Icon(Icons.event_note_rounded),
+            label: 'Eventos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline_rounded),
+            activeIcon: Icon(Icons.person_rounded),
+            label: 'Perfil',
           ),
         ],
       ),
     );
   }
 }
+
+

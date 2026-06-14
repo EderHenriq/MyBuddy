@@ -4,10 +4,13 @@ class Pet {
   final String especie;
   final String raca;
   final int idade;
+  final String sexo;
   final String porte;
   final String cor;
   final String? pelagem;
-  final String sexo;
+  final String? cidade;
+  final String? estado;
+  final String imagemUrl;
   final List<String> fotosUrls;
   final String statusAdocao;
   final String? nomeOrganizacao;
@@ -15,8 +18,6 @@ class Pet {
   final bool microchipado;
   final bool vacinado;
   final bool castrado;
-  final String? cidade;
-  final String? estado;
 
   const Pet({
     required this.id,
@@ -24,19 +25,20 @@ class Pet {
     required this.especie,
     required this.raca,
     required this.idade,
+    required this.sexo,
     required this.porte,
     required this.cor,
     this.pelagem,
-    required this.sexo,
-    required this.fotosUrls,
+    this.cidade,
+    this.estado,
+    required this.imagemUrl,
+    this.fotosUrls = const [],
     required this.statusAdocao,
     this.nomeOrganizacao,
     this.organizacaoId,
-    required this.microchipado,
-    required this.vacinado,
-    required this.castrado,
-    this.cidade,
-    this.estado,
+    this.microchipado = false,
+    this.vacinado = false,
+    this.castrado = false,
   });
 
   bool get disponivel => statusAdocao == 'DISPONIVEL';
