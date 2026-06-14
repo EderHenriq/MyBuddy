@@ -29,11 +29,11 @@ cp .env.example .env
 docker compose up -d postgres mongodb keycloak
 
 # 4. Rode o backend
-cd "Back End/JavaSpring/Myb Def/backend-mybuddy"
+cd backend
 ./mvnw spring-boot:run
 
 # 5. Rode o frontend
-cd "Front End - Angular/mybuddy"
+cd frontend
 npm install
 ng serve
 ```
@@ -150,11 +150,11 @@ git commit -m "chore: atualiza dependências do Angular  [MY-60]"
 
 ```bash
 # Backend
-cd "Back End/JavaSpring/Myb Def/backend-mybuddy"
+cd backend
 ./mvnw test
 
 # Frontend
-cd "Front End - Angular/mybuddy"
+cd frontend
 ng test
 ```
 
@@ -166,18 +166,16 @@ O CI roda automaticamente em todo push para `Developer`, `main` e branches `feat
 
 ```
 MyBuddy/
-├── Back End/                          # Java 21 + Spring Boot 3
-├── Front End - Angular/mybuddy/       # Angular 21
-├── docker-compose.yml                 # Ambiente completo
-├── .env.example                       # Variáveis de ambiente
-├── docker/
-│   ├── init-db.sql                    # Criação do banco keycloak
-│   └── keycloak/realm-export.json     # Realm mybuddy pré-configurado
-└── .github/
-    ├── workflows/ci.yml               # Pipeline de testes
-    ├── PULL_REQUEST_TEMPLATE.md       # Template de PR
-    ├── COMMIT_CONVENTION.md           # Guia de commits
-    └── ISSUE_TEMPLATE/                # Templates de issue
+├── backend/                 # Java 21 + Spring Boot 3 + Keycloak + Maven
+├── frontend/                # Angular 21 (SSR)
+├── mobile/                  # Flutter 3.41+
+├── legacy-web/              # Frontend legado HTML/CSS/JS
+├── docs/
+│   ├── academico/           # Documentação acadêmica
+│   └── tecnico/             # Documentação técnica e roadmap
+├── docker/                  # Configurações Docker
+├── .github/                 # CI/CD, templates
+└── docker-compose.yml       # Ambiente completo
 ```
 
 ---

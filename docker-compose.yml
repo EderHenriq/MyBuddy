@@ -125,7 +125,7 @@ services:
   # ── MY-234: Backend Spring Boot ───────────────────────────
   backend:
     build:
-      context: ./Back End/JavaSpring/Myb Def/backend-mybuddy
+      context: ./backend
       dockerfile: Dockerfile
     container_name: mybuddy-backend
     restart: unless-stopped
@@ -172,7 +172,7 @@ services:
   # ── MY-236: Frontend Angular ──────────────────────────────
   frontend:
     build:
-      context: ./Front End - Angular/mybuddy
+      context: ./frontend
       dockerfile: dockerfile
     container_name: mybuddy-frontend
     restart: unless-stopped
