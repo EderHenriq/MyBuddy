@@ -20,6 +20,10 @@ Future<void> init() async {
 void _registerCore() {
   // Dio
   sl.registerLazySingleton<Dio>(() => DioClient.create());
+
+  sl.registerLazySingleton<TokenRefreshServiceImpl>(
+        () => TokenRefreshServiceImpl(),
+  );
 }
 
 void _registerAuth() {
