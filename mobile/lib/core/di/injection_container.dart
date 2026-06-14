@@ -19,11 +19,16 @@ import 'package:mybuddy_app/features/marketplace/domain/repositories/products_re
 import 'package:mybuddy_app/features/marketplace/data/repositories/products_repository_mock.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
 import 'package:mybuddy_app/shared/theme/theme_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mybuddy_app/core/cache/cache_service.dart';
 >>>>>>> fa45dcc3bdfdf6ea45f4e56cb4b983410870dfcf
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  final prefs = await SharedPreferences.getInstance();
+  sl.registerLazySingleton<CacheService>(() => CacheService(prefs));
+
   _registerCore();
   _registerAuth();
   _registerPets();
