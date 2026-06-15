@@ -58,6 +58,9 @@ ios/Flutter/Flutter.podspec
 macos/Pods/
 macos/.symlinks/
 
+# Linux
+linux/
+
 # Environment
 .env
 .env.local
