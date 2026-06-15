@@ -14,6 +14,8 @@ import 'package:mybuddy_app/shared/theme/theme_cubit.dart';
 class MyBuddyApp extends StatefulWidget {
   const MyBuddyApp({super.key});
 
+  static final navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   State<MyBuddyApp> createState() => _MyBuddyAppState();
 }

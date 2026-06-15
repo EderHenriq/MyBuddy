@@ -6,9 +6,16 @@ class Pet {
   final int idade;
   final String sexo;
   final String porte;
-  final String cidade;
-  final String estado;
+  final String cor;
+  final String? pelagem;
+  final String? cidade;
+  final String? estado;
   final String imagemUrl;
+  final List<String> fotosUrls;
+  final String statusAdocao;
+  final String? nomeOrganizacao;
+  final String? organizacaoId;
+  final bool microchipado;
   final bool vacinado;
   final bool castrado;
 
@@ -20,10 +27,19 @@ class Pet {
     required this.idade,
     required this.sexo,
     required this.porte,
-    required this.cidade,
-    required this.estado,
+    required this.cor,
+    this.pelagem,
+    this.cidade,
+    this.estado,
     required this.imagemUrl,
+    this.fotosUrls = const [],
+    required this.statusAdocao,
+    this.nomeOrganizacao,
+    this.organizacaoId,
+    this.microchipado = false,
     this.vacinado = false,
     this.castrado = false,
   });
+
+  bool get disponivel => statusAdocao == 'DISPONIVEL';
 }
