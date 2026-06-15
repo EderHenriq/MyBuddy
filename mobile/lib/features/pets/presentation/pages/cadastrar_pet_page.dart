@@ -9,6 +9,11 @@ import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
 import 'package:mybuddy_app/shared/widgets/app_button.dart';
 import 'package:mybuddy_app/shared/widgets/app_input.dart';
+import 'dart:io';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mybuddy_app/core/di/injection_container.dart';
+import 'package:mybuddy_app/features/pets/presentation/bloc/image_picker_cubit.dart';
+import 'package:mybuddy_app/shared/widgets/image_picker_widget.dart';
 
 class CadastrarPetPage extends StatefulWidget {
   const CadastrarPetPage({super.key});
@@ -25,6 +30,7 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
   final _cidadeController = TextEditingController();
   final _estadoController = TextEditingController();
   final _imagemUrlController = TextEditingController();
+  File? _selectedImageFile;
 
   String _especie = 'Cachorro';
   String _sexo = 'Macho';
@@ -40,7 +46,7 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
     _idadeController.dispose();
     _cidadeController.dispose();
     _estadoController.dispose();
-    _imagemUrlController.dispose();
+    _selectedImageFile = null;
     super.dispose();
   }
 
@@ -58,7 +64,7 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
         porte: _porte,
         cidade: _cidadeController.text.trim(),
         estado: _estadoController.text.trim().toUpperCase(),
-        imagemUrl: _imagemUrlController.text.trim(),
+        imagemUrl: _selectedImageFile?.path ?? '',
         vacinado: _vacinado,
         castrado: _castrado,
       );
@@ -259,12 +265,16 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
               const SizedBox(height: 16),
 
               // Imagem URL
-              AppInput(
-                controller: _imagemUrlController,
-                labelText: 'URL da Imagem (opcional)',
-                prefixIcon: Icons.image_outlined,
-                hintText: 'Link da foto na internet...',
+              BlocProvider(
+                create: (context) => sl<ImagePickerCubit>(),
+                child: ImagePickerWidget(
+                  label: 'Foto do Pet',
+                  onImageSelected:(file) {
+                    setState(() => _selectedImageFile = file);
+                  },
+                ),
               ),
+
               const SizedBox(height: 24),
 
               // Checkboxes de Vacinado e Castrado

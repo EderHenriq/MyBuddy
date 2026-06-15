@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mybuddy_app/core/network/dio_client.dart';
+import 'package:mybuddy_app/core/services/image_picker_service.dart';
 import 'package:mybuddy_app/features/auth/data/repositories/auth_repository_mock.dart';
 import 'package:mybuddy_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mybuddy_app/features/pets/domain/repositories/pets_repository.dart';
 import 'package:mybuddy_app/features/pets/data/repositories/pets_repository_mock.dart';
+import 'package:mybuddy_app/features/pets/presentation/bloc/image_picker_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
 import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart';
@@ -29,6 +31,8 @@ void _registerCore() {
 
   // Theme
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
+
+  sl.registerLazySingleton<ImagePickerService>(() => ImagePickerService());
 }
 
 void _registerAuth() {
@@ -58,6 +62,11 @@ void _registerPets() {
   );
   sl.registerLazySingleton<AdocaoCubit>(
     () => AdocaoCubit(),
+  );
+
+  //image picker
+  sl.registerFactory<ImagePickerCubit>(
+    () => ImagePickerCubit(service: sl()),
   );
 }
 
