@@ -26,6 +26,7 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
   final _formKey = GlobalKey<FormState>();
   final _nomeController = TextEditingController();
   final _racaController = TextEditingController();
+  final _corController = TextEditingController();
   final _idadeController = TextEditingController();
   final _cidadeController = TextEditingController();
   final _estadoController = TextEditingController();
@@ -43,6 +44,7 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
   void dispose() {
     _nomeController.dispose();
     _racaController.dispose();
+    _corController.dispose();
     _idadeController.dispose();
     _cidadeController.dispose();
     _estadoController.dispose();
@@ -59,6 +61,8 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
         nome: _nomeController.text.trim(),
         especie: _especie,
         raca: _racaController.text.trim(),
+        cor: _corController.text.trim(),
+        statusAdocao: 'DISPONIVEL',
         idade: int.parse(_idadeController.text.trim()),
         sexo: _sexo,
         porte: _porte,
@@ -175,6 +179,18 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
                 prefixIcon: Icons.info_outline,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) return 'Informe a raça (ou escreva Vira-lata)';
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // Cor
+              AppInput(
+                controller: _corController,
+                labelText: 'Cor',
+                prefixIcon: Icons.color_lens_outlined,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) return 'Informe a cor do pet';
                   return null;
                 },
               ),

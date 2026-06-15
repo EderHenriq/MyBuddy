@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mybuddy_app/app.dart';
 import 'package:mybuddy_app/core/constants/app_config.dart';
 import 'package:mybuddy_app/core/di/injection_container.dart' as di;
 
 void main() {
   setUpAll(() async {
+    // Inicializa o mock de SharedPreferences para evitar erros em ambiente de teste
+    SharedPreferences.setMockInitialValues({});
     // Inicializa a injeção de dependência e flavors para os testes
     AppConfig.initialize(flavorType: Flavor.dev);
     await di.init();
