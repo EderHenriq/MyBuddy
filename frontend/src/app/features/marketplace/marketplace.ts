@@ -68,6 +68,7 @@ export class Marketplace implements OnInit, OnDestroy {
   searchFocused = false;
   filteredProdutos: Produto[] = [];
   favoritosExibir: Produto[] = [];
+  limiteProdutosTodos = 12;
 
   // Banner autoplay
   activeBannerIndex = 0;
@@ -593,6 +594,10 @@ export class Marketplace implements OnInit, OnDestroy {
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  }
+
+  carregarMaisProdutos() {
+    this.limiteProdutosTodos += 12;
   }
 
   rolarCarrossel(trackElement: HTMLElement, direcao: "left" | "right") {

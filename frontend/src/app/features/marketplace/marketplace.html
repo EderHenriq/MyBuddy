@@ -258,23 +258,27 @@
           <h2>Ofertas Especiais</h2>
           <app-btn-outline variant="outline" size="sm" (clicked)="isSearching = true; activeSort = 'desconto'; filtrarProdutos()">Ver mais</app-btn-outline>
         </div>
-        <div class="produtos-grid">
-          @for (produto of produtosOferta; track produto.id; let i = $index) {
-            <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
-              <app-card-produto
-                [urlImagem]="produto.urlImagem"
-                [titulo]="produto.titulo"
-                [preco]="produto.preco"
-                [precoAntigo]="produto.precoAntigo"
-                [nomeLoja]="produto.nomeLoja"
-                [badgeDesconto]="produto.badgeDesconto"
-                [favorito]="produto.favorito || false"
-                (cliqueCard)="verProduto(produto)"
-                (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
-                (cliqueFavorito)="alternarFavorito(produto)"
-              ></app-card-produto>
-            </div>
-          }
+        <div class="carousel-wrapper">
+          <button class="scroll-arrow left" (click)="rolarCarrossel(ofertasTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+          <div class="produtos-track" #ofertasTrack>
+            @for (produto of produtosOferta; track produto.id; let i = $index) {
+              <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
+                <app-card-produto
+                  [urlImagem]="produto.urlImagem"
+                  [titulo]="produto.titulo"
+                  [preco]="produto.preco"
+                  [precoAntigo]="produto.precoAntigo"
+                  [nomeLoja]="produto.nomeLoja"
+                  [badgeDesconto]="produto.badgeDesconto"
+                  [favorito]="produto.favorito || false"
+                  (cliqueCard)="verProduto(produto)"
+                  (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                  (cliqueFavorito)="alternarFavorito(produto)"
+                ></app-card-produto>
+              </div>
+            }
+          </div>
+          <button class="scroll-arrow right" (click)="rolarCarrossel(ofertasTrack, 'right')"><span class="material-icons">chevron_right</span></button>
         </div>
       </section>
 
@@ -296,23 +300,27 @@
           <h2>Mais Vendidos</h2>
           <app-btn-outline variant="outline" size="sm" (clicked)="isSearching = true; filtrarProdutos()">Ver mais</app-btn-outline>
         </div>
-        <div class="produtos-grid">
-          @for (produto of maisVendidos; track produto.id; let i = $index) {
-            <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
-              <app-card-produto
-                [urlImagem]="produto.urlImagem"
-                [titulo]="produto.titulo"
-                [preco]="produto.preco"
-                [precoAntigo]="produto.precoAntigo"
-                [nomeLoja]="produto.nomeLoja"
-                [badgeDesconto]="produto.badgeDesconto"
-                [favorito]="produto.favorito || false"
-                (cliqueCard)="verProduto(produto)"
-                (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
-                (cliqueFavorito)="alternarFavorito(produto)"
-              ></app-card-produto>
-            </div>
-          }
+        <div class="carousel-wrapper">
+          <button class="scroll-arrow left" (click)="rolarCarrossel(vendidosTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+          <div class="produtos-track" #vendidosTrack>
+            @for (produto of maisVendidos; track produto.id; let i = $index) {
+              <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
+                <app-card-produto
+                  [urlImagem]="produto.urlImagem"
+                  [titulo]="produto.titulo"
+                  [preco]="produto.preco"
+                  [precoAntigo]="produto.precoAntigo"
+                  [nomeLoja]="produto.nomeLoja"
+                  [badgeDesconto]="produto.badgeDesconto"
+                  [favorito]="produto.favorito || false"
+                  (cliqueCard)="verProduto(produto)"
+                  (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                  (cliqueFavorito)="alternarFavorito(produto)"
+                ></app-card-produto>
+              </div>
+            }
+          </div>
+          <button class="scroll-arrow right" (click)="rolarCarrossel(vendidosTrack, 'right')"><span class="material-icons">chevron_right</span></button>
         </div>
       </section>
 
@@ -321,8 +329,36 @@
           <h2>Para Você</h2>
           <span class="section-subtitle">Baseado nas suas buscas recentes</span>
         </div>
+        <div class="carousel-wrapper">
+          <button class="scroll-arrow left" (click)="rolarCarrossel(paraVoceTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+          <div class="produtos-track" #paraVoceTrack>
+            @for (produto of todosProdutos.slice(0, 6); track produto.id; let i = $index) {
+              <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
+                <app-card-produto
+                  [urlImagem]="produto.urlImagem"
+                  [titulo]="produto.titulo"
+                  [preco]="produto.preco"
+                  [precoAntigo]="produto.precoAntigo"
+                  [nomeLoja]="produto.nomeLoja"
+                  [badgeDesconto]="produto.badgeDesconto"
+                  [favorito]="produto.favorito || false"
+                  (cliqueCard)="verProduto(produto)"
+                  (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                  (cliqueFavorito)="alternarFavorito(produto)"
+                ></app-card-produto>
+              </div>
+            }
+          </div>
+          <button class="scroll-arrow right" (click)="rolarCarrossel(paraVoceTrack, 'right')"><span class="material-icons">chevron_right</span></button>
+        </div>
+      </section>
+
+      <section class="produtos-section">
+        <div class="section-header">
+          <h2>Todos os Produtos</h2>
+        </div>
         <div class="produtos-grid">
-          @for (produto of todosProdutos; track produto.id; let i = $index) {
+          @for (produto of todosProdutos.slice(0, limiteProdutosTodos); track produto.id; let i = $index) {
             <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
               <app-card-produto
                 [urlImagem]="produto.urlImagem"
@@ -338,6 +374,39 @@
               ></app-card-produto>
             </div>
           }
+        </div>
+        @if (limiteProdutosTodos < todosProdutos.length) {
+          <div class="ver-mais-produtos-wrapper animate-fade-up">
+            <app-btn-outline variant="solid" size="lg" (clicked)="carregarMaisProdutos()">
+              Carregar mais produtos
+            </app-btn-outline>
+          </div>
+        }
+      </section>
+
+      <section class="faq-section animate-fade-up">
+        <h2 class="faq-title">Perguntas Frequentes — MyBuddy Marketplace</h2>
+        <div class="faq-grid">
+          <details class="faq-item">
+            <summary>Como funciona a entrega do marketplace MyBuddy?</summary>
+            <p>O MyBuddy conecta você aos melhores pet shops da sua região. As entregas são realizadas pelos próprios estabelecimentos ou por parceiros logísticos em poucos minutos ou no mesmo dia.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Quais são as formas de pagamento aceitas?</summary>
+            <p>Aceitamos Pix, cartões de crédito (Visa, Mastercard, Elo, etc.) e cartões de débito. Toda a transação é feita de forma segura dentro da nossa plataforma.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Posso agendar a entrega dos produtos?</summary>
+            <p>Sim! Muitos dos nossos pet shops parceiros oferecem a opção de entrega agendada. Você pode escolher o melhor horário para receber a ração, medicamentos ou brinquedos do seu pet no checkout.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Como faço para devolver um produto ou solicitar reembolso?</summary>
+            <p>Caso precise devolver algum produto por arrependimento ou defeito, você pode entrar em contato com o suporte do MyBuddy em até 7 dias após o recebimento para iniciar o processo de devolução.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Os produtos vendidos são originais?</summary>
+            <p>Sim, todos os produtos anunciados em nosso marketplace vêm de distribuidores oficiais e pet shops credenciados, garantindo a procedência de rações, antipulgas e acessórios.</p>
+          </details>
         </div>
       </section>
     }
