@@ -546,8 +546,15 @@ export class Marketplace implements OnInit, OnDestroy {
     }
 
     this.filteredProdutos = resultado;
-    this.isSearching =
+    const novoEstadoBusca =
       !!this.searchQuery || !!this.selectedCategoryName || !!this.activeSort;
+
+    // Scroll to top ao entrar no modo busca (clique em marca, loja, categoria, etc.)
+    if (novoEstadoBusca && !this.isSearching) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    this.isSearching = novoEstadoBusca;
   }
 
   onSearchInput(event: Event) {
