@@ -1,0 +1,214 @@
+<main class="home-page">
+  <app-hero-section
+    [kicker]="'Seja bem vindo, ' + (authService.usuarioAtual()?.nome || 'Usuário')"
+    [title]="'Conectar, cuidar e'"
+    [highlightedText]="'comemorar.'"
+    [subtitle]="'Tudo isso em um só lugar'"
+    [backgroundImageUrl]="'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=1800'"
+  ></app-hero-section>
+
+  <section class="home-shell">
+    <div class="search-panel">
+      <label class="search-box" for="home-search">
+        <input id="home-search" type="search" placeholder="O que você procura?" />
+        <span class="material-icons">search</span>
+      </label>
+
+      <div class="panel-divider"></div>
+
+      <nav class="quick-actions-bar" aria-label="Ações Rápidas">
+        <a [routerLink]="['/perfil']" [queryParams]="{ tab: 'pets' }" class="quick-action">
+          <span>Meus Pets</span>
+          <span class="material-icons">pets</span>
+        </a>
+        <a [routerLink]="['/perfil']" [queryParams]="{ tab: 'favoritos' }" class="quick-action">
+          <span>Favoritos</span>
+          <span class="material-icons">favorite</span>
+        </a>
+        <a [routerLink]="['/perfil']" [queryParams]="{ tab: 'mensagens' }" class="quick-action">
+          <span>Mensagens</span>
+          <span class="material-icons">chat_bubble_outline</span>
+        </a>
+        <a [routerLink]="['/perfil']" [queryParams]="{ tab: 'solicitacoes' }" class="quick-action">
+          <span>Solicitações</span>
+          <span class="material-icons">assignment</span>
+        </a>
+      </nav>
+    </div>
+
+    <section class="section-block">
+      <h2 class="section-title">Encontre tudo para o seu melhor amigo</h2>
+      <div class="category-grid">
+        @for (categoria of categorias; track categoria.rotulo) {
+          <a class="category-card" [routerLink]="categoria.rota" [style.background-image]="'url(' + categoria.urlImagem + ')'">
+            <span>{{ categoria.rotulo }}</span>
+          </a>
+        }
+      </div>
+    </section>
+
+    <section class="reminders-grid" aria-label="Lembretes">
+      @for (lembrete of lembretes; track lembrete.titulo) {
+        <article class="reminder-card">
+          <img [src]="lembrete.urlIcone" [alt]="lembrete.titulo" />
+          <div>
+            <h3>{{ lembrete.titulo }}</h3>
+            <p>{{ lembrete.texto }}</p>
+          </div>
+          <button type="button">Agendar</button>
+        </article>
+      }
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading-row">
+        <h2 class="section-title">Novos buddys esperando por um lar</h2>
+        <a routerLink="/pets" class="text-link">
+          Veja mais pets disponíveis
+          <span class="material-icons">arrow_forward</span>
+        </a>
+      </div>
+
+      @if (carregandoPets()) {
+        <div
+          class="loading-state"
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-secondary, #666);
+            width: 100%;
+          "
+        >
+          <i class="fas fa-circle-notch fa-spin fa-2x" style="margin-bottom: 1rem; color: var(--primary-color, #ff6b6b)"></i>
+          <p>Carregando novos buddies...</p>
+        </div>
+      } @else {
+        <div class="pets-grid">
+          @for (pet of pets(); track pet.nome) {
+            <app-card-pet
+              [urlImagem]="
+                pet.fotosUrls && pet.fotosUrls.length > 0
+                  ? pet.fotosUrls[0].startsWith('http')
+                    ? pet.fotosUrls[0]
+                    : 'http://localhost:8081/uploads/' + pet.fotosUrls[0]
+                  : '/assets/logo/logo-provisoria.png'
+              "
+              [nome]="pet.nome || 'Sem Nome'"
+              [idade]="pet.idade || 0"
+              [raca]="pet.raca || 'Não informada'"
+              [sexo]="pet.sexo || 'Não informado'"
+              [vacinado]="pet.vacinado"
+              [castrado]="pet.castrado"
+              [porte]="pet.porte"
+              [cor]="pet.cor"
+              [pelagem]="pet.pelagem"
+            ></app-card-pet>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="donation-banner">
+      <div>
+        <h2>Possui um pet para doação?</h2>
+        <p>Cadastre e se conecte com famílias que buscam por novos companheiros</p>
+      </div>
+      <a routerLink="/ong/pets">
+        Cadastrar Pet
+        <span class="material-icons">open_in_new</span>
+      </a>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading-row">
+        <h2 class="section-title">Próximos eventos de Pets</h2>
+        <a routerLink="/public/eventos" class="text-link">
+          Explore mais eventos
+          <span class="material-icons">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="events-grid">
+        @for (evento of eventos; track evento.titulo) {
+          <article class="event-card">
+            <time>
+              <strong>{{ evento.dia }}</strong>
+              <span>{{ evento.mes }}</span>
+            </time>
+            <div>
+              <h3>{{ evento.titulo }}</h3>
+              <p>{{ evento.local }}</p>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="services-map-grid">
+      <article class="nearby-vets-card">
+        <h2>Veterinários próximos</h2>
+        <div class="title-line"></div>
+        <div class="vet-list">
+          @for (vet of veterinarios; track vet.nome) {
+            <div class="vet-item">
+              <img [src]="vet.urlAvatar" [alt]="vet.nome" />
+              <div class="vet-info">
+                <h3>{{ vet.nome }}</h3>
+                <p>{{ vet.distancia }} - {{ vet.status }}</p>
+              </div>
+              <span class="vet-rating">
+                <span class="material-icons">star_outline</span>
+                {{ vet.avaliacao }}
+              </span>
+            </div>
+          }
+        </div>
+      </article>
+
+      <article class="map-card">
+        <div class="map-frame">
+          <iframe
+            title="Mapa de feiras de adoção"
+            [src]="urlMapa"
+            width="100%"
+            height="100%"
+            style="border: 0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+        <div class="map-card-body">
+          <h2>Feiras de adoção próximas a você</h2>
+          <p>
+            Milhares de Buddies estão esperando por um novo capítulo. Descubra quem combina mais com a sua rotina e comece uma história de amizade
+            hoje.
+          </p>
+          <a routerLink="/public/eventos">Ver no mapa</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="products-section">
+      <div class="products-heading">
+        <h2>Conheça nossos produtos</h2>
+        <p>Tudo o que seu pet precisa para uma vida cheia de alegria, saúde e muito amor.</p>
+      </div>
+
+      <div class="products-grid">
+        @for (produto of produtos; track produto.rotulo) {
+          <a routerLink="/marketplace" class="product-card">
+            <img [src]="produto.urlImagem" [alt]="produto.rotulo" />
+            <span>{{ produto.rotulo }}</span>
+          </a>
+        }
+      </div>
+
+      <a routerLink="/marketplace" class="products-button">Veja mais produtos</a>
+    </section>
+  </section>
+
+  <app-footer></app-footer>
+</main>

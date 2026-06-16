@@ -1,17 +1,19 @@
-<section class="hero-container" [style.backgroundImage]="'url(' + backgroundImageUrl + ')'">
-  <div class="hero-overlay"></div>
+<section class="hero" [style.backgroundImage]="backgroundImageSafe()">
   <div class="hero-content">
-    @if (kicker) {
-      <p class="hero-kicker">{{ kicker }}</p>
+    @if (kicker()) {
+      <span class="hero-kicker">{{ kicker() }}</span>
     }
-    <h1 class="hero-headline">
-      {{ title }}
-      @if (highlightedText) {
-        <span class="highlight">{{ highlightedText }}</span>
+
+    <h1 class="hero-title">
+      {{ title() }}
+
+      @if (highlightedText()) {
+        <span class="hero-highlight">{{ highlightedText() }}</span>
       }
     </h1>
-    @if (subtitle) {
-      <p class="hero-subtitle">{{ subtitle }}</p>
+
+    @if (subtitle()) {
+      <p class="hero-subtitle">{{ subtitle() }}</p>
     }
   </div>
 </section>
