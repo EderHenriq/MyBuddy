@@ -1,14 +1,17 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { PaymentService, PaymentRequest } from '../../../core/services/PaymentService';
-import { MercadoPagoService } from '../../../core/services/mercadopago.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from "@angular/common";
+import { Component, inject, OnInit, signal } from "@angular/core";
+import {
+  PaymentService,
+  PaymentRequest,
+} from "../../../core/services/PaymentService";
+import { MercadoPagoService } from "../../../core/services/mercadopago.service";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
-  selector: 'app-pagamento',
+  selector: "app-pagamento",
   imports: [CommonModule],
-  templateUrl: './pagamento.html',
-  styleUrl: './pagamento.scss',
+  templateUrl: "./pagamento.html",
+  styleUrl: "./pagamento.scss",
 })
 export class Pagamento implements OnInit {
   private paymentService = inject(PaymentService);
@@ -17,7 +20,7 @@ export class Pagamento implements OnInit {
   private router = inject(Router);
 
   petId = signal<number | null>(null);
-  petNome = signal<string>('');
+  petNome = signal<string>("");
   amount = signal<number>(50);
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
@@ -26,9 +29,9 @@ export class Pagamento implements OnInit {
   brickLoading = signal<boolean>(false);
 
   ngOnInit(): void {
-    const petIdParam = this.route.snapshot.queryParamMap.get('petId');
-    const petNomeParam = this.route.snapshot.queryParamMap.get('petNome');
-    const amountParam = this.route.snapshot.queryParamMap.get('amount');
+    const petIdParam = this.route.snapshot.queryParamMap.get("petId");
+    const petNomeParam = this.route.snapshot.queryParamMap.get("petNome");
+    const amountParam = this.route.snapshot.queryParamMap.get("amount");
 
     if (petIdParam) this.petId.set(Number(petIdParam));
     if (petNomeParam) this.petNome.set(petNomeParam);
@@ -42,17 +45,19 @@ export class Pagamento implements OnInit {
     const request: PaymentRequest = {
       petId: this.petId() ?? undefined,
       amount: this.amount(),
-      description: this.petNome() ? `Adoção - ${this.petNome()}` : 'Doação MyBuddy',
+      description: this.petNome()
+        ? `Adoção - ${this.petNome()}`
+        : "Doação MyBuddy",
     };
 
     this.paymentService.createPayment(request).subscribe({
-      next: response => {
+      next: (response) => {
         window.location.href = response.initPoint;
       },
-      error: err => {
-        this.error.set('Ocorreu um erro ao processar o pagamento.');
+      error: (err) => {
+        this.error.set("Ocorreu um erro ao processar o pagamento.");
         this.loading.set(false);
-        console.error('Payment error:', err);
+        console.error("Payment error:", err);
       },
     });
   }
@@ -70,18 +75,20 @@ export class Pagamento implements OnInit {
     const request: PaymentRequest = {
       petId: this.petId() ?? undefined,
       amount: this.amount(),
-      description: this.petNome() ? `Adoção - ${this.petNome()}` : 'Doação MyBuddy',
+      description: this.petNome()
+        ? `Adoção - ${this.petNome()}`
+        : "Doação MyBuddy",
     };
 
     this.paymentService.createPayment(request).subscribe({
-      next: async response => {
+      next: async (response) => {
         this.preferenceId.set(response.mpPreferenceId);
         this.showBrick.set(true);
         await this.renderBrick(response.mpPreferenceId);
         this.brickLoading.set(false);
       },
-      error: err => {
-        this.error.set('Erro ao inicializar o formulário de pagamento.');
+      error: (err) => {
+        this.error.set("Erro ao inicializar o formulário de pagamento.");
         this.brickLoading.set(false);
         console.error(err);
       },
@@ -94,15 +101,15 @@ export class Pagamento implements OnInit {
     if (!mp) return;
 
     const bricksBuilder = mp.bricks();
-    await bricksBuilder.create('wallet', 'wallet-brick', {
+    await bricksBuilder.create("wallet", "wallet-brick", {
       initialization: { preferenceId },
       customization: {
-        texts: { valueProp: 'smart_option' },
+        texts: { valueProp: "smart_option" },
       },
     });
   }
 
   voltar(): void {
-    this.router.navigate(['/pets']);
+    this.router.navigate(["/pets"]);
   }
 }

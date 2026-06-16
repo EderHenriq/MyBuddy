@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-historico',
+  selector: "app-historico",
   imports: [],
-  templateUrl: './historico.html',
-  styleUrl: './historico.scss',
+  templateUrl: "./historico.html",
+  styleUrl: "./historico.scss",
 })
 export class Historico {}

@@ -1,16 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AdminService } from '../../../core/services/admin.service';
-import { Parceria } from '../../../core/models/admin.model';
-import { DebounceDirective } from '../../../shared/directives/debounce.directive';
-import { PaginatorComponent } from '../../../shared/components/paginator/paginator.component';
+import { Component, OnInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { AdminService } from "../../../core/services/admin.service";
+import { Parceria } from "../../../core/models/admin.model";
+import { DebounceDirective } from "../../../shared/directives/debounce.directive";
+import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 
 @Component({
-  selector: 'app-ongs',
+  selector: "app-ongs",
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
-  templateUrl: './ongs.html',
-  styleUrl: './ongs.scss',
+  templateUrl: "./ongs.html",
+  styleUrl: "./ongs.scss",
 })
 export class Ongs implements OnInit {
   parcerias: Parceria[] = [];
@@ -20,7 +20,7 @@ export class Ongs implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.adminService.buscarOngs().subscribe(data => {
+    this.adminService.buscarOngs().subscribe((data) => {
       this.parcerias = data;
     });
   }

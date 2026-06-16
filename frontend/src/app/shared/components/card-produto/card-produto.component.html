@@ -4,8 +4,17 @@
     @if (badgeDesconto) {
       <span class="discount-badge">{{ badgeDesconto }}</span>
     }
-    <button class="favorite-btn" [class.active]="favorito" (click)="aoClicarFavorito($event)" aria-label="Favoritar produto">
-      <i class="fa-heart" [class.fa-solid]="favorito" [class.fa-regular]="!favorito"></i>
+    <button
+      class="favorite-btn"
+      [class.active]="favorito"
+      (click)="aoClicarFavorito($event)"
+      aria-label="Favoritar produto"
+    >
+      <i
+        class="fa-heart"
+        [class.fa-solid]="favorito"
+        [class.fa-regular]="!favorito"
+      ></i>
     </button>
   </div>
 
@@ -15,22 +24,34 @@
 
     <div class="price-container">
       @if (precoAntigo) {
-        <span class="old-price">{{ precoAntigo | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+        <span class="old-price">{{
+          precoAntigo | currency: "BRL" : "symbol" : "1.2-2"
+        }}</span>
       }
-      <span class="current-price">{{ preco | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+      <span class="current-price">{{
+        preco | currency: "BRL" : "symbol" : "1.2-2"
+      }}</span>
     </div>
   </div>
 
   <div class="card-actions">
     @if (quantidade === 0) {
-      <button class="add-btn" (click)="aoClicarAdicionar($event)" aria-label="Adicionar ao carrinho">
+      <button
+        class="add-btn"
+        (click)="aoClicarAdicionar($event)"
+        aria-label="Adicionar ao carrinho"
+      >
         <i class="fas fa-plus"></i>
       </button>
     } @else {
       <div class="quantity-selector">
-        <button class="qty-btn" (click)="aoDiminuir($event)"><i class="fas fa-minus"></i></button>
+        <button class="qty-btn" (click)="aoDiminuir($event)">
+          <i class="fas fa-minus"></i>
+        </button>
         <span class="qty-value">{{ quantidade }}</span>
-        <button class="qty-btn" (click)="aoClicarAdicionar($event)"><i class="fas fa-plus"></i></button>
+        <button class="qty-btn" (click)="aoClicarAdicionar($event)">
+          <i class="fas fa-plus"></i>
+        </button>
       </div>
     }
   </div>

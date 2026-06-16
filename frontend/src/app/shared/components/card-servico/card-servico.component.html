@@ -37,8 +37,14 @@
     <p class="servico-description">{{ description }}</p>
 
     <div class="servico-actions">
-      <button class="btn-details" (click)="detailsClick.emit()">Ver Serviços</button>
-      <button class="btn-favorite" [class.active]="isFavorite" (click)="favoriteClick.emit()">
+      <button class="btn-details" (click)="detailsClick.emit()">
+        Ver Serviços
+      </button>
+      <button
+        class="btn-favorite"
+        [class.active]="isFavorite"
+        (click)="favoriteClick.emit()"
+      >
         <i class="fa-heart" [ngClass]="isFavorite ? 'fas' : 'far'"></i>
       </button>
     </div>

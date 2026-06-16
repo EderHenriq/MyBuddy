@@ -1,16 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { InteresseAdocao } from '../../../core/models/interesse-adocao.model';
-import { OngService } from '../../../core/services/ong.service';
-import { DebounceDirective } from '../../../shared/directives/debounce.directive';
-import { PaginatorComponent } from '../../../shared/components/paginator/paginator.component';
+import { Component, OnInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { InteresseAdocao } from "../../../core/models/interesse-adocao.model";
+import { OngService } from "../../../core/services/ong.service";
+import { DebounceDirective } from "../../../shared/directives/debounce.directive";
+import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 
 @Component({
-  selector: 'app-solicitacoes',
+  selector: "app-solicitacoes",
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
-  templateUrl: './solicitacoes.html',
-  styleUrl: './solicitacoes.scss',
+  templateUrl: "./solicitacoes.html",
+  styleUrl: "./solicitacoes.scss",
 })
 export class Solicitacoes implements OnInit {
   pedidos: InteresseAdocao[] = [];
@@ -20,7 +20,7 @@ export class Solicitacoes implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.ongService.buscarSolicitacoes().subscribe(data => {
+    this.ongService.buscarSolicitacoes().subscribe((data) => {
       this.pedidos = data;
     });
   }

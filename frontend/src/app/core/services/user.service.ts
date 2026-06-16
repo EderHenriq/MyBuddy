@@ -1,14 +1,14 @@
-import { Injectable, inject } from '@angular/core';
-import { ApiService } from './api.service';
-import { Usuario } from '../models/user.model';
-import { Observable } from 'rxjs';
+import { Injectable, inject } from "@angular/core";
+import { ApiService } from "./api.service";
+import { Usuario } from "../models/user.model";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class UserService {
   private api = inject(ApiService);
-  private readonly endpoint = 'usuarios';
+  private readonly endpoint = "usuarios";
 
   buscarTodos(): Observable<Usuario[]> {
     return this.api.get<Usuario[]>(this.endpoint);

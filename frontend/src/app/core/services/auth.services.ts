@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
-import Keycloak from 'keycloak-js';
+import { inject, Injectable } from "@angular/core";
+import Keycloak from "keycloak-js";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthService {
   private keycloak = inject(Keycloak);

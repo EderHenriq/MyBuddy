@@ -1,16 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { OngService } from '../../../core/services/ong.service';
-import { EventoOng } from '../../../core/models/ong.model';
-import { DebounceDirective } from '../../../shared/directives/debounce.directive';
-import { PaginatorComponent } from '../../../shared/components/paginator/paginator.component';
+import { Component, OnInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { OngService } from "../../../core/services/ong.service";
+import { EventoOng } from "../../../core/models/ong.model";
+import { DebounceDirective } from "../../../shared/directives/debounce.directive";
+import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 
 @Component({
-  selector: 'app-eventos-ong',
+  selector: "app-eventos-ong",
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
-  templateUrl: './eventos-ong.html',
-  styleUrl: './eventos-ong.scss',
+  templateUrl: "./eventos-ong.html",
+  styleUrl: "./eventos-ong.scss",
 })
 export class EventosOng implements OnInit {
   eventos: EventoOng[] = [];
@@ -20,7 +20,7 @@ export class EventosOng implements OnInit {
   totalPages = 13;
 
   ngOnInit() {
-    this.ongService.buscarEventos().subscribe(data => {
+    this.ongService.buscarEventos().subscribe((data) => {
       this.eventos = data;
     });
   }

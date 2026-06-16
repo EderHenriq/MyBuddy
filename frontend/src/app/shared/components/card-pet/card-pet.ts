@@ -1,1 +1,1 @@
-export * from './card-pet.component';
+export * from "./card-pet.component";

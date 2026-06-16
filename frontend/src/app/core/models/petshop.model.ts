@@ -1,4 +1,4 @@
-import { Usuario } from './user.model';
+import { Usuario } from "./user.model";
 
 export interface Petshop {
   id: number;
@@ -54,5 +54,5 @@ export interface ChatPetshop {
   cliente: string;
   ultimaMensagem: string;
   horario: string;
-  status: 'Não Lido' | 'Lido';
+  status: "Não Lido" | "Lido";
 }

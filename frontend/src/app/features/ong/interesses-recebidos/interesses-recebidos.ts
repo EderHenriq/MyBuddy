@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-interesses-recebidos',
+  selector: "app-interesses-recebidos",
   imports: [],
-  templateUrl: './interesses-recebidos.html',
-  styleUrl: './interesses-recebidos.scss',
+  templateUrl: "./interesses-recebidos.html",
+  styleUrl: "./interesses-recebidos.scss",
 })
 export class InteressesRecebidos {}

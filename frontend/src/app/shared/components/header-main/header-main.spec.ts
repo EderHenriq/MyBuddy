@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { HeaderMain } from './header-main';
+import { HeaderMain } from "./header-main";
 
-describe('HeaderMain', () => {
+describe("HeaderMain", () => {
   let component: HeaderMain;
   let fixture: ComponentFixture<HeaderMain>;
 
@@ -16,7 +16,7 @@ describe('HeaderMain', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

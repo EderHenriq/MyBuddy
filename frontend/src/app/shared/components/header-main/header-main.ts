@@ -9,21 +9,21 @@ import {
   inject,
   PLATFORM_ID,
   ChangeDetectorRef,
-} from '@angular/core';
-import { Router, NavigationEnd, RouterModule } from '@angular/router';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { filter, Subscription } from 'rxjs';
-import { SessionService } from '../../../core/services/session.service';
-import { Role } from '../../../core/models/role.model';
-import { NotificationService } from '../../../core/services/notification.service';
-import { NotificacaoApp } from '../../../core/models/notification.model';
+} from "@angular/core";
+import { Router, NavigationEnd, RouterModule } from "@angular/router";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
+import { filter, Subscription } from "rxjs";
+import { SessionService } from "../../../core/services/session.service";
+import { Role } from "../../../core/models/role.model";
+import { NotificationService } from "../../../core/services/notification.service";
+import { NotificacaoApp } from "../../../core/models/notification.model";
 
 @Component({
-  selector: 'app-header-main',
+  selector: "app-header-main",
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './header-main.html',
-  styleUrl: './header-main.scss',
+  templateUrl: "./header-main.html",
+  styleUrl: "./header-main.scss",
 })
 export class HeaderMain implements AfterViewInit, OnDestroy {
   private router = inject(Router);
@@ -31,26 +31,26 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private sessionService = inject(SessionService);
   private notificationService = inject(NotificationService);
-  @ViewChildren('navLink') navLinks!: QueryList<ElementRef>;
+  @ViewChildren("navLink") navLinks!: QueryList<ElementRef>;
 
-  estiloPill: { left: string; width: string } = { left: '0px', width: '0px' };
+  estiloPill: { left: string; width: string } = { left: "0px", width: "0px" };
   pillVisivel = false;
   mostrarHeader = true;
   indiceHover = -1;
   papelUsuario: Role | null = null;
-  rotaPainel = '';
+  rotaPainel = "";
 
   notificacoes: NotificacaoApp[] = [];
   contadorNaoLidas = 0;
   notificacoesAbertas = false;
 
   readonly links = [
-    { caminho: '/home', rotulo: 'Home' },
-    { caminho: '/pets', rotulo: 'Adotar' },
-    { caminho: '/eventos', rotulo: 'Eventos' },
-    { caminho: '/produtos', rotulo: 'Produtos' },
-    { caminho: '/servicos', rotulo: 'Serviços' },
-    { caminho: '/doacoes', rotulo: 'Doações' },
+    { caminho: "/home", rotulo: "Home" },
+    { caminho: "/pets", rotulo: "Adotar" },
+    { caminho: "/eventos", rotulo: "Eventos" },
+    { caminho: "/produtos", rotulo: "Produtos" },
+    { caminho: "/servicos", rotulo: "Serviços" },
+    { caminho: "/doacoes", rotulo: "Doações" },
   ];
 
   private routerSubscription!: Subscription;
@@ -59,23 +59,30 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
     const isBrowser = isPlatformBrowser(this.platform);
     if (isBrowser) {
       this.verificarRota(this.router.url);
-      this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe(event => {
-        this.verificarRota(event.urlAfterRedirects || event.url);
-      });
+      this.router.events
+        .pipe(
+          filter(
+            (event): event is NavigationEnd => event instanceof NavigationEnd,
+          ),
+        )
+        .subscribe((event) => {
+          this.verificarRota(event.urlAfterRedirects || event.url);
+        });
     }
 
-    this.sessionService.userRole$.subscribe(role => {
+    this.sessionService.userRole$.subscribe((role) => {
       this.papelUsuario = role;
-      if (role === Role.ADMIN) this.rotaPainel = '/admin/dashboard';
-      else if (role === Role.ONG) this.rotaPainel = '/ong-panel/dashboard';
-      else if (role === Role.PETSHOP) this.rotaPainel = '/petshop-panel/dashboard';
+      if (role === Role.ADMIN) this.rotaPainel = "/admin/dashboard";
+      else if (role === Role.ONG) this.rotaPainel = "/ong-panel/dashboard";
+      else if (role === Role.PETSHOP)
+        this.rotaPainel = "/petshop-panel/dashboard";
     });
 
-    this.notificationService.notificacoes$.subscribe(notifs => {
+    this.notificationService.notificacoes$.subscribe((notifs) => {
       this.notificacoes = notifs;
     });
 
-    this.notificationService.buscarContagemNaoLidas().subscribe(count => {
+    this.notificationService.buscarContagemNaoLidas().subscribe((count) => {
       this.contadorNaoLidas = count;
     });
   }
@@ -94,18 +101,21 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
     this.notificationService.marcarTodasComoLidas();
   }
 
-  @HostListener('document:click', ['$event'])
+  @HostListener("document:click", ["$event"])
   aoClicarFora(event: Event): void {
     const targetElement = event.target as HTMLElement;
-    if (this.notificacoesAbertas && !targetElement.closest('.notifications-btn')) {
+    if (
+      this.notificacoesAbertas &&
+      !targetElement.closest(".notifications-btn")
+    ) {
       this.notificacoesAbertas = false;
     }
   }
 
   verificarRota(url: string): void {
-    const publicPaths = ['/auth', '/styleguide', '/institucional'];
-    const isRoot = url === '/' || url === '';
-    const isPublic = publicPaths.some(path => url.startsWith(path));
+    const publicPaths = ["/auth", "/styleguide", "/institucional"];
+    const isRoot = url === "/" || url === "";
+    const isPublic = publicPaths.some((path) => url.startsWith(path));
     this.mostrarHeader = !isRoot && !isPublic;
   }
 
@@ -117,19 +127,21 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
     this.atualizarPosicaoPill();
     this.cdr.detectChanges();
 
-    this.routerSubscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-      setTimeout(() => {
-        this.atualizarPosicaoPill();
-        this.cdr.detectChanges();
-      }, 0);
-    });
+    this.routerSubscription = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        setTimeout(() => {
+          this.atualizarPosicaoPill();
+          this.cdr.detectChanges();
+        }, 0);
+      });
   }
 
   ngOnDestroy(): void {
     this.routerSubscription?.unsubscribe();
   }
 
-  @HostListener('window:resize')
+  @HostListener("window:resize")
   aoRedimensionar(): void {
     if (!isPlatformBrowser(this.platform)) {
       return;
@@ -160,7 +172,9 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
       }
     }
 
-    const activeElement = this.navLinks.find(link => link.nativeElement.classList.contains('active'));
+    const activeElement = this.navLinks.find((link) =>
+      link.nativeElement.classList.contains("active"),
+    );
 
     if (!activeElement) {
       this.pillVisivel = false;
@@ -177,7 +191,7 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
 
   private moverPill(element: HTMLElement): void {
     if (!isPlatformBrowser(this.platform)) return;
-    const nav = element.closest('ul') as HTMLElement;
+    const nav = element.closest("ul") as HTMLElement;
     if (!nav) return;
     const navRect = nav.getBoundingClientRect();
     const linkRect = element.getBoundingClientRect();

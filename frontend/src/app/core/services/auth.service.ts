@@ -1,16 +1,16 @@
-import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import Keycloak from 'keycloak-js';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { Observable, tap, catchError, throwError, of, delay } from 'rxjs';
-import { Router } from '@angular/router';
-import { SessionService } from './session.service';
-import { Role } from '../models/role.model';
-import { Usuario } from '../models/user.model';
+import { inject, Injectable, PLATFORM_ID, signal } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import Keycloak from "keycloak-js";
+import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
+import { environment } from "../../../environments/environment";
+import { Observable, tap, catchError, throwError, of, delay } from "rxjs";
+import { Router } from "@angular/router";
+import { SessionService } from "./session.service";
+import { Role } from "../models/role.model";
+import { Usuario } from "../models/user.model";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthService {
   private platformId = inject(PLATFORM_ID);
@@ -30,21 +30,26 @@ export class AuthService {
   }
 
   private restaurarSessao() {
-    const token = this.obterCookie('mybuddy_session');
+    const token = this.obterCookie("mybuddy_session");
     if (token) {
       this.tokenEmMemoria = token;
 
-      if (token.startsWith('mock-jwt-token-')) {
+      if (token.startsWith("mock-jwt-token-")) {
         const papelArmazenado = this.sessionService.getCurrentRole();
         if (papelArmazenado) {
-          const perfilFalso = { id: '99', nome: 'Usuário Teste (' + papelArmazenado + ')', email: 'teste@mybuddy.com', roles: [papelArmazenado] };
+          const perfilFalso = {
+            id: "99",
+            nome: "Usuário Teste (" + papelArmazenado + ")",
+            email: "teste@mybuddy.com",
+            roles: [papelArmazenado],
+          };
           this.usuarioAtual.set(perfilFalso);
           return;
         }
       }
 
       this.obterPerfil().subscribe({
-        next: perfil => {
+        next: (perfil) => {
           this.usuarioAtual.set(perfil);
         },
         error: () => {
@@ -61,7 +66,7 @@ export class AuthService {
   obterPapeisUsuario(): string[] {
     if (this.usuarioAtual()) {
       const papeis = this.usuarioAtual().roles ?? [];
-      return papeis.map((r: any) => (typeof r === 'string' ? r : r.name));
+      return papeis.map((r: any) => (typeof r === "string" ? r : r.name));
     }
     return this.keycloak?.realmAccess?.roles ?? [];
   }
@@ -72,58 +77,80 @@ export class AuthService {
 
   loginComCredenciais(email: string, senha: string): Observable<any> {
     // --- LÓGICA DE MOCK PARA DESENVOLVIMENTO/TESTES SEM KEYCLOAK ---
-    if (environment.mockApi || senha === 'Senha123' || senha === 'senha123') {
+    if (environment.mockApi || senha === "Senha123" || senha === "senha123") {
       let mockRole: Role | null = null;
       let mockProfile: any = null;
 
       const emailLower = email.toLowerCase();
-      if (emailLower === 'admin@mybuddy.com') {
+      if (emailLower === "admin@mybuddy.com") {
         mockRole = Role.ADMIN;
-        mockProfile = { id: 99, nome: 'Admin Master', email, roles: [Role.ADMIN] };
-      } else if (emailLower === 'ong@mybuddy.com') {
+        mockProfile = {
+          id: 99,
+          nome: "Admin Master",
+          email,
+          roles: [Role.ADMIN],
+        };
+      } else if (emailLower === "ong@mybuddy.com") {
         mockRole = Role.ONG;
-        mockProfile = { id: 99, nome: 'ONG Anjos', email, roles: [Role.ONG] };
-      } else if (emailLower === 'petshop@mybuddy.com') {
+        mockProfile = { id: 99, nome: "ONG Anjos", email, roles: [Role.ONG] };
+      } else if (emailLower === "petshop@mybuddy.com") {
         mockRole = Role.PETSHOP;
-        mockProfile = { id: 99, nome: 'Petshop Feliz', email, roles: [Role.PETSHOP] };
-      } else if (emailLower === 'user@mybuddy.com' || emailLower === 'adotante@mybuddy.com') {
+        mockProfile = {
+          id: 99,
+          nome: "Petshop Feliz",
+          email,
+          roles: [Role.PETSHOP],
+        };
+      } else if (
+        emailLower === "user@mybuddy.com" ||
+        emailLower === "adotante@mybuddy.com"
+      ) {
         mockRole = Role.USER;
-        mockProfile = { id: 99, nome: 'Adotante João', email, roles: [Role.USER] };
+        mockProfile = {
+          id: 99,
+          nome: "Adotante João",
+          email,
+          roles: [Role.USER],
+        };
       }
 
       if (mockRole) {
-        const mockToken = 'mock-jwt-token-for-' + mockRole;
+        const mockToken = "mock-jwt-token-for-" + mockRole;
         this.tokenEmMemoria = mockToken;
-        this.definirCookie('mybuddy_session', mockToken, 3600);
+        this.definirCookie("mybuddy_session", mockToken, 3600);
 
         this.sessionService.setRole(mockRole);
         this.usuarioAtual.set(mockProfile);
 
-        return of({ access_token: mockToken, profile: mockProfile, isMock: true }).pipe(delay(800));
+        return of({
+          access_token: mockToken,
+          profile: mockProfile,
+          isMock: true,
+        }).pipe(delay(800));
       }
     }
 
     const tokenUrl = `${environment.keycloak.url}/realms/${environment.keycloak.realm}/protocol/openid-connect/token`;
 
     const payload = new HttpParams()
-      .set('client_id', environment.keycloak.clientId)
-      .set('grant_type', 'password')
-      .set('username', email)
-      .set('password', senha)
-      .set('scope', 'openid');
+      .set("client_id", environment.keycloak.clientId)
+      .set("grant_type", "password")
+      .set("username", email)
+      .set("password", senha)
+      .set("scope", "openid");
 
     const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     });
 
     return this.http.post<any>(tokenUrl, payload.toString(), { headers }).pipe(
-      tap(resposta => {
+      tap((resposta) => {
         const token = resposta.access_token;
         this.tokenEmMemoria = token;
-        this.definirCookie('mybuddy_session', token, 3600);
+        this.definirCookie("mybuddy_session", token, 3600);
       }),
-      catchError(erro => {
-        console.error('Erro na autenticação:', erro);
+      catchError((erro) => {
+        console.error("Erro na autenticação:", erro);
         return throwError(() => erro);
       }),
     );
@@ -135,16 +162,24 @@ export class AuthService {
   }
 
   obterPerfil(): Observable<Usuario> {
-    if (environment.mockApi || (this.tokenEmMemoria && this.tokenEmMemoria.startsWith('mock-jwt-token-'))) {
+    if (
+      environment.mockApi ||
+      (this.tokenEmMemoria && this.tokenEmMemoria.startsWith("mock-jwt-token-"))
+    ) {
       const papelArmazenado = this.sessionService.getCurrentRole() || Role.USER;
-      const perfilFalso = { id: 99, nome: 'Usuário Teste (' + papelArmazenado + ')', email: 'teste@mybuddy.com', roles: [papelArmazenado] };
+      const perfilFalso = {
+        id: 99,
+        nome: "Usuário Teste (" + papelArmazenado + ")",
+        email: "teste@mybuddy.com",
+        roles: [papelArmazenado],
+      };
       this.usuarioAtual.set(perfilFalso as Usuario);
       return of(perfilFalso as Usuario);
     }
 
     const profileUrl = `${environment.apiUrl}usuarios/meu-perfil`;
     return this.http.get<Usuario>(profileUrl).pipe(
-      tap(perfil => {
+      tap((perfil) => {
         this.usuarioAtual.set(perfil);
         const roles = this.getUserRoles();
         const role = roles.length > 0 ? (roles[0] as Role) : null;
@@ -156,7 +191,7 @@ export class AuthService {
   atualizarPerfil(payload: any): Observable<any> {
     const profileUrl = `${environment.apiUrl}usuarios/meu-perfil`;
     return this.http.put<any>(profileUrl, payload).pipe(
-      tap(perfil => {
+      tap((perfil) => {
         this.usuarioAtual.set(perfil);
         const roles = this.getUserRoles();
         const role = roles.length > 0 ? (roles[0] as Role) : null;
@@ -167,7 +202,7 @@ export class AuthService {
 
   sair() {
     this.tokenEmMemoria = null;
-    this.removerCookie('mybuddy_session');
+    this.removerCookie("mybuddy_session");
     this.usuarioAtual.set(null);
     this.sessionService.setRole(null);
 
@@ -178,24 +213,30 @@ export class AuthService {
         });
       }
     } else {
-      this.router.navigate(['/home']);
+      this.router.navigate(["/home"]);
     }
   }
 
   getUserRoles(): string[] {
     const roles = this.usuarioAtual()?.roles || [];
-    return roles.map((r: any) => (typeof r === 'string' ? r : r.name || ''));
+    return roles.map((r: any) => (typeof r === "string" ? r : r.name || ""));
   }
 
   private definirCookie(nome: string, valor: string, maxAgeSeconds: number) {
     if (!isPlatformBrowser(this.platformId)) return;
-    const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+    const secureFlag = window.location.protocol === "https:" ? "; Secure" : "";
     document.cookie = `${nome}=${encodeURIComponent(valor)}; path=/; max-age=${maxAgeSeconds}; SameSite=Strict${secureFlag}`;
   }
 
   private obterCookie(nome: string): string | null {
     if (!isPlatformBrowser(this.platformId)) return null;
-    const regexMatch = document.cookie.match(new RegExp('(?:^|; )' + nome.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
+    const regexMatch = document.cookie.match(
+      new RegExp(
+        "(?:^|; )" +
+          nome.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+          "=([^;]*)",
+      ),
+    );
     return regexMatch ? decodeURIComponent(regexMatch[1]) : null;
   }
 

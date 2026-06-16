@@ -1,16 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PetshopService } from '../../../core/services/petshop.service';
-import { ChatPetshop } from '../../../core/models/petshop.model';
-import { DebounceDirective } from '../../../shared/directives/debounce.directive';
-import { PaginatorComponent } from '../../../shared/components/paginator/paginator.component';
+import { Component, OnInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { PetshopService } from "../../../core/services/petshop.service";
+import { ChatPetshop } from "../../../core/models/petshop.model";
+import { DebounceDirective } from "../../../shared/directives/debounce.directive";
+import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 
 @Component({
-  selector: 'app-chat-clientes',
+  selector: "app-chat-clientes",
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
-  templateUrl: './chat-clientes.html',
-  styleUrl: './chat-clientes.scss',
+  templateUrl: "./chat-clientes.html",
+  styleUrl: "./chat-clientes.scss",
 })
 export class ChatClientes implements OnInit {
   chats: ChatPetshop[] = [];
@@ -20,7 +20,7 @@ export class ChatClientes implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.petshopService.buscarChats().subscribe(data => {
+    this.petshopService.buscarChats().subscribe((data) => {
       this.chats = data;
     });
   }

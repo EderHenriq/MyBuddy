@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { provideRouter } from "@angular/router";
 
-import { Footer } from './footer';
+import { Footer } from "./footer";
 
-describe('Footer', () => {
+describe("Footer", () => {
   let component: Footer;
   let fixture: ComponentFixture<Footer>;
 
@@ -18,7 +18,7 @@ describe('Footer', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,13 +1,13 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CartService } from '@core/services/cart.service';
+import { Component, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { CartService } from "@core/services/cart.service";
 
 @Component({
-  selector: 'app-cart-drawer',
+  selector: "app-cart-drawer",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './cart-drawer.component.html',
-  styleUrl: './cart-drawer.component.scss',
+  templateUrl: "./cart-drawer.component.html",
+  styleUrl: "./cart-drawer.component.scss",
 })
 export class CartDrawerComponent {
   carrinhoService = inject(CartService);

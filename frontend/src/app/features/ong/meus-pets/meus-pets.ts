@@ -1,16 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { OngService } from '../../../core/services/ong.service';
-import { MeuPetOng } from '../../../core/models/ong.model';
-import { DebounceDirective } from '../../../shared/directives/debounce.directive';
-import { PaginatorComponent } from '../../../shared/components/paginator/paginator.component';
+import { Component, OnInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { OngService } from "../../../core/services/ong.service";
+import { MeuPetOng } from "../../../core/models/ong.model";
+import { DebounceDirective } from "../../../shared/directives/debounce.directive";
+import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 
 @Component({
-  selector: 'app-meus-pets',
+  selector: "app-meus-pets",
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
-  templateUrl: './meus-pets.html',
-  styleUrl: './meus-pets.scss',
+  templateUrl: "./meus-pets.html",
+  styleUrl: "./meus-pets.scss",
 })
 export class MeusPets implements OnInit {
   pets: MeuPetOng[] = [];
@@ -20,7 +20,7 @@ export class MeusPets implements OnInit {
   totalPages = 5;
 
   ngOnInit() {
-    this.ongService.buscarMeusPets().subscribe(data => {
+    this.ongService.buscarMeusPets().subscribe((data) => {
       this.pets = data;
     });
   }

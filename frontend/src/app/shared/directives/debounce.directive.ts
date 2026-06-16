@@ -1,9 +1,17 @@
-import { Directive, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {
+  Directive,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from "@angular/core";
+import { Subject, Subscription } from "rxjs";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
 @Directive({
-  selector: '[appDebounce]',
+  selector: "[appDebounce]",
   standalone: true,
 })
 export class DebounceDirective implements OnInit, OnDestroy {
@@ -14,12 +22,14 @@ export class DebounceDirective implements OnInit, OnDestroy {
   private subscription!: Subscription;
 
   ngOnInit() {
-    this.subscription = this.subject.pipe(debounceTime(this.debounceTime), distinctUntilChanged()).subscribe(value => {
-      this.debounceOutput.emit(value);
-    });
+    this.subscription = this.subject
+      .pipe(debounceTime(this.debounceTime), distinctUntilChanged())
+      .subscribe((value) => {
+        this.debounceOutput.emit(value);
+      });
   }
 
-  @HostListener('input', ['$event'])
+  @HostListener("input", ["$event"])
   onInput(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target) {

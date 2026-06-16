@@ -1,4 +1,4 @@
-import { Organizacao } from './organizacao.model';
+import { Organizacao } from "./organizacao.model";
 
 export interface FotoPet {
   id?: number;

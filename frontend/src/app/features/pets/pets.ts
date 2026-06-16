@@ -1,13 +1,12 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
-import { Footer } from '@shared/components/footer/footer';
-import { InfiniteScrollDirective } from '@shared/directives/infinite-scroll.directive';
-import { DebounceDirective } from '@shared/directives/debounce.directive';
-import { PetService } from '@core/services/pet.service';
-import { HeroSectionComponent } from '@shared/components/hero-section/hero-section.component';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, inject, signal } from "@angular/core";
+import { FormBuilder, ReactiveFormsModule, FormGroup } from "@angular/forms";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { CardPetComponent } from "@shared/components/card-pet/card-pet.component";
+import { Footer } from "@shared/components/footer/footer";
+import { InfiniteScrollDirective } from "@shared/directives/infinite-scroll.directive";
+import { PetService } from "@core/services/pet.service";
+import { HeroSectionComponent } from "@shared/components/hero-section/hero-section.component";
 
 interface ItemListaPet {
   nome: string;
@@ -29,11 +28,18 @@ interface GrupoFiltro {
 }
 
 @Component({
-  selector: 'app-pets',
+  selector: "app-pets",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CardPetComponent, Footer, InfiniteScrollDirective, DebounceDirective, HeroSectionComponent],
-  templateUrl: './pets.html',
-  styleUrl: './pets.scss',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CardPetComponent,
+    Footer,
+    InfiniteScrollDirective,
+    HeroSectionComponent,
+  ],
+  templateUrl: "./pets.html",
+  styleUrl: "./pets.scss",
 })
 export class Pets implements OnInit {
   private readonly petService = inject(PetService);
@@ -44,34 +50,39 @@ export class Pets implements OnInit {
 
   readonly gruposFiltro: GrupoFiltro[] = [
     {
-      titulo: 'Espécie',
-      opcoes: ['Cachorro', 'Coelho', 'Gato', 'Pássaro'],
+      titulo: "Espécie",
+      opcoes: ["Cachorro", "Coelho", "Gato", "Pássaro"],
     },
     {
-      titulo: 'Sexo',
-      opcoes: ['Fêmea', 'Macho'],
+      titulo: "Sexo",
+      opcoes: ["Fêmea", "Macho"],
     },
     {
-      titulo: 'Idade',
-      opcoes: ['Filhote (0-1 ano)', 'Jovem (1-3 anos)', 'Adulto (3-7 anos)', 'Idoso (+8 anos)'],
+      titulo: "Idade",
+      opcoes: [
+        "Filhote (0-1 ano)",
+        "Jovem (1-3 anos)",
+        "Adulto (3-7 anos)",
+        "Idoso (+8 anos)",
+      ],
     },
     {
-      titulo: 'Porte',
-      opcoes: ['Pequeno', 'Médio', 'Grande'],
+      titulo: "Porte",
+      opcoes: ["Pequeno", "Médio", "Grande"],
     },
     {
-      titulo: 'Características',
-      opcoes: ['Vacinado', 'Castrado', 'Vive com outros pets'],
+      titulo: "Características",
+      opcoes: ["Vacinado", "Castrado", "Vive com outros pets"],
     },
   ];
 
   formularioFiltro: FormGroup = this.fb.group({
-    pesquisa: [''],
+    pesquisa: [""],
   });
 
   constructor() {
-    this.gruposFiltro.forEach(grupo => {
-      grupo.opcoes.forEach(opcao => {
+    this.gruposFiltro.forEach((grupo) => {
+      grupo.opcoes.forEach((opcao) => {
         this.formularioFiltro.addControl(opcao, this.fb.control(false));
       });
     });
@@ -80,13 +91,18 @@ export class Pets implements OnInit {
   ngOnInit(): void {
     this.carregarAnimais();
 
-    this.formularioFiltro.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe(valores => {
-      console.log('[Página de Pets] Filtros alterados. Refazendo busca...', valores);
-      this.carregando.set(true);
-      setTimeout(() => {
-        this.carregando.set(false);
-      }, 800);
-    });
+    this.formularioFiltro.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((valores) => {
+        console.log(
+          "[Página de Pets] Filtros alterados. Refazendo busca...",
+          valores,
+        );
+        this.carregando.set(true);
+        setTimeout(() => {
+          this.carregando.set(false);
+        }, 800);
+      });
   }
 
   private carregarAnimais(): void {
@@ -96,8 +112,8 @@ export class Pets implements OnInit {
         this.animais.set(dados.content || []);
         this.carregando.set(false);
       },
-      error: erro => {
-        console.error('Erro ao buscar pets:', erro);
+      error: (erro) => {
+        console.error("Erro ao buscar pets:", erro);
         this.carregando.set(false);
       },
     });
@@ -108,6 +124,8 @@ export class Pets implements OnInit {
   }
 
   aoCarregarMais(): void {
-    console.log(`[Página de Pets] Chegou ao fim da tela! Carregando mais pets...`);
+    console.log(
+      `[Página de Pets] Chegou ao fim da tela! Carregando mais pets...`,
+    );
   }
 }

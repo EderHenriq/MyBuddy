@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-carrinho',
+  selector: "app-carrinho",
   imports: [],
-  templateUrl: './carrinho.html',
-  styleUrl: './carrinho.scss',
+  templateUrl: "./carrinho.html",
+  styleUrl: "./carrinho.scss",
 })
 export class Carrinho {}

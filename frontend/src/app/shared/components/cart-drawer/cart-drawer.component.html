@@ -16,7 +16,9 @@
         </div>
         <h3>Seu carrinho está vazio</h3>
         <p>Adicione produtos para continuar.</p>
-        <button class="continue-btn" (click)="fechar()">Continuar Comprando</button>
+        <button class="continue-btn" (click)="fechar()">
+          Continuar Comprando
+        </button>
       </div>
     } @else {
       <ul class="cart-items">
@@ -28,15 +30,29 @@
               @if (item.lojaNome) {
                 <span class="store-name">Vendido por: {{ item.lojaNome }}</span>
               }
-              <div class="item-price">{{ item.preco | currency: 'BRL' }}</div>
+              <div class="item-price">{{ item.preco | currency: "BRL" }}</div>
 
               <div class="quantity-controls">
-                <button (click)="atualizarQuantidade(item.id, item.quantidade - 1)" aria-label="Diminuir">-</button>
+                <button
+                  (click)="atualizarQuantidade(item.id, item.quantidade - 1)"
+                  aria-label="Diminuir"
+                >
+                  -
+                </button>
                 <span>{{ item.quantidade }}</span>
-                <button (click)="atualizarQuantidade(item.id, item.quantidade + 1)" aria-label="Aumentar">+</button>
+                <button
+                  (click)="atualizarQuantidade(item.id, item.quantidade + 1)"
+                  aria-label="Aumentar"
+                >
+                  +
+                </button>
               </div>
             </div>
-            <button class="remove-btn" (click)="removerItem(item.id)" aria-label="Remover item">
+            <button
+              class="remove-btn"
+              (click)="removerItem(item.id)"
+              aria-label="Remover item"
+            >
               <i class="fas fa-trash-alt"></i>
             </button>
           </li>
@@ -49,7 +65,7 @@
     <div class="cart-footer">
       <div class="cart-total">
         <span>Total:</span>
-        <strong>{{ precoTotal | currency: 'BRL' }}</strong>
+        <strong>{{ precoTotal | currency: "BRL" }}</strong>
       </div>
       <button class="checkout-btn">Finalizar Compra</button>
     </div>

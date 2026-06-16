@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-paginator',
+  selector: "app-paginator",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './paginator.component.html',
-  styleUrl: './paginator.component.scss',
+  templateUrl: "./paginator.component.html",
+  styleUrl: "./paginator.component.scss",
 })
 export class PaginatorComponent {
   @Input() currentPage = 1;
@@ -23,11 +23,26 @@ export class PaginatorComponent {
       }
     } else {
       if (this.currentPage <= 3) {
-        pages.push(1, 2, 3, 4, '...', this.totalPages);
+        pages.push(1, 2, 3, 4, "...", this.totalPages);
       } else if (this.currentPage >= this.totalPages - 2) {
-        pages.push(1, '...', this.totalPages - 3, this.totalPages - 2, this.totalPages - 1, this.totalPages);
+        pages.push(
+          1,
+          "...",
+          this.totalPages - 3,
+          this.totalPages - 2,
+          this.totalPages - 1,
+          this.totalPages,
+        );
       } else {
-        pages.push(1, '...', this.currentPage - 1, this.currentPage, this.currentPage + 1, '...', this.totalPages);
+        pages.push(
+          1,
+          "...",
+          this.currentPage - 1,
+          this.currentPage,
+          this.currentPage + 1,
+          "...",
+          this.totalPages,
+        );
       }
     }
 
@@ -35,7 +50,12 @@ export class PaginatorComponent {
   }
 
   goToPage(page: number | string) {
-    if (typeof page === 'number' && page !== this.currentPage && page >= 1 && page <= this.totalPages) {
+    if (
+      typeof page === "number" &&
+      page !== this.currentPage &&
+      page >= 1 &&
+      page <= this.totalPages
+    ) {
       this.pageChange.emit(page);
     }
   }

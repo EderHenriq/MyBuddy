@@ -1,14 +1,14 @@
-import { Injectable, inject } from '@angular/core';
-import { ApiService } from './api.service';
-import { Pet } from '../models/pet.model';
-import { Observable, of, delay } from 'rxjs';
+import { Injectable, inject } from "@angular/core";
+import { ApiService } from "./api.service";
+import { Pet } from "../models/pet.model";
+import { Observable, of, delay } from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class PetService {
   private api = inject(ApiService);
-  private readonly endpoint = 'pets';
+  private readonly endpoint = "pets";
 
   buscarTodos(): Observable<Pet[]> {
     return this.api.get<Pet[]>(this.endpoint);

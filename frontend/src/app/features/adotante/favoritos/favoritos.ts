@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-favoritos',
+  selector: "app-favoritos",
   imports: [],
-  templateUrl: './favoritos.html',
-  styleUrl: './favoritos.scss',
+  templateUrl: "./favoritos.html",
+  styleUrl: "./favoritos.scss",
 })
 export class Favoritos {}

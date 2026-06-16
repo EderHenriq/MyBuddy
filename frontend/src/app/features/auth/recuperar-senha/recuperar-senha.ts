@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-recuperar-senha',
+  selector: "app-recuperar-senha",
   imports: [],
-  templateUrl: './recuperar-senha.html',
-  styleUrl: './recuperar-senha.scss',
+  templateUrl: "./recuperar-senha.html",
+  styleUrl: "./recuperar-senha.scss",
 })
 export class RecuperarSenha {}

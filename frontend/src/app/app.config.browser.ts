@@ -1,9 +1,16 @@
-import { ApplicationConfig, mergeApplicationConfig } from '@angular/core';
-import { environment } from '../environments/environment';
-import { appConfig } from './app.config';
-import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { provideKeycloak, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG } from 'keycloak-angular';
+import { ApplicationConfig, mergeApplicationConfig } from "@angular/core";
+import { environment } from "../environments/environment";
+import { appConfig } from "./app.config";
+import { authInterceptor } from "./core/interceptors/auth.interceptor";
+import {
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from "@angular/common/http";
+import {
+  provideKeycloak,
+  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+} from "keycloak-angular";
 
 const browserConfig: ApplicationConfig = {
   providers: [
@@ -13,7 +20,7 @@ const browserConfig: ApplicationConfig = {
       useValue: [
         {
           urlPattern: /^(http:\/\/localhost:8081)(\/.*)?$/,
-          bearerPrefix: 'Bearer ',
+          bearerPrefix: "Bearer ",
         },
       ],
     },
@@ -24,8 +31,9 @@ const browserConfig: ApplicationConfig = {
         clientId: environment.keycloak.clientId,
       },
       initOptions: {
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: environment.keycloak.silentCheckSsoRedirectUri,
+        onLoad: "check-sso",
+        silentCheckSsoRedirectUri:
+          environment.keycloak.silentCheckSsoRedirectUri,
         checkLoginIframe: false,
       },
     }),

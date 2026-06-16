@@ -5,7 +5,7 @@
     <div class="loja-stats">
       <span class="rating">
         <i class="fas fa-star"></i>
-        {{ avaliacao | number: '1.1-1' }}
+        {{ avaliacao | number: "1.1-1" }}
       </span>
       <span class="dot">•</span>
       <span class="delivery-time">{{ tempoEntrega }}</span>
@@ -15,7 +15,7 @@
           @if (taxaEntrega === 0) {
             Grátis
           } @else {
-            {{ taxaEntrega | currency: 'BRL' : 'symbol' : '1.2-2' }}
+            {{ taxaEntrega | currency: "BRL" : "symbol" : "1.2-2" }}
           }
         </span>
       }
