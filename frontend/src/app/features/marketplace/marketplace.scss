@@ -213,22 +213,37 @@
   }
 
   .see-all {
+    background: transparent;
+    border: 1.5px solid var(--primary-color, #ff7900);
     color: var(--primary-color, #ff7900);
-    font-weight: 700;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: opacity 0.2s;
+    padding: 6px 18px;
+    border-radius: 999px;
+    font-weight: 750;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 
     &:hover {
-      opacity: 0.8;
-      text-decoration: none;
+      background-color: var(--primary-color, #ff7900);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 121, 0, 0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 }
 
 .lojas-track {
   display: flex;
-  gap: 2rem;
+  gap: 2.5rem; /* Unificado com o gap das marcas para ficarem alinhados */
   overflow-x: auto;
   padding: 0.5rem 0.2rem;
   justify-content: center;
@@ -404,6 +419,14 @@
   scrollbar-width: none;
 }
 
+.marca-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 160px; /* Mesma largura mínima do card de loja para alinhar verticalmente */
+  max-width: 190px;
+}
+
 .marca-item {
   width: 110px;
   height: 110px;
@@ -487,6 +510,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 
   .scroll-arrow {
     position: absolute;

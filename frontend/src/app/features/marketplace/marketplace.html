@@ -198,8 +198,10 @@
         </div>
         <div class="marcas-grid">
           @for (marca of marcasDestaque; track marca.id) {
-            <div class="marca-item" (click)="searchQuery = marca.nome; filtrarProdutos()" style="cursor: pointer;">
-              <img [src]="marca.urlLogo" [alt]="marca.nome" />
+            <div class="marca-wrapper">
+              <div class="marca-item" (click)="searchQuery = marca.nome; filtrarProdutos()" style="cursor: pointer;">
+                <img [src]="marca.urlLogo" [alt]="marca.nome" />
+              </div>
             </div>
           }
         </div>
