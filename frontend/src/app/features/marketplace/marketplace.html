@@ -168,6 +168,30 @@
         </div>
       </section>
 
+      @if (favoritosExibir.length > 0) {
+        <section class="produtos-section" style="animation: fadeIn 0.3s ease-in-out;">
+          <div class="section-header">
+            <h2>Meus Favoritos</h2>
+          </div>
+          <div class="produtos-grid">
+            @for (produto of favoritosExibir; track produto.id) {
+              <app-card-produto
+                [urlImagem]="produto.urlImagem"
+                [titulo]="produto.titulo"
+                [preco]="produto.preco"
+                [precoAntigo]="produto.precoAntigo"
+                [nomeLoja]="produto.nomeLoja"
+                [badgeDesconto]="produto.badgeDesconto"
+                [favorito]="true"
+                (cliqueCard)="verProduto(produto)"
+                (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                (cliqueFavorito)="alternarFavorito(produto)"
+              ></app-card-produto>
+            }
+          </div>
+        </section>
+      }
+
       <section class="marcas-section">
         <div class="section-header">
           <h2>Marcas em Destaque</h2>

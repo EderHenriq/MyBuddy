@@ -33,6 +33,7 @@ interface Produto {
   badgeDesconto?: string;
   favorito?: boolean;
   categoria: string;
+  petshopId?: number;
 }
 
 @Component({
@@ -63,6 +64,7 @@ export class Marketplace implements OnInit {
   activeSort = "";
   isSearching = false;
   filteredProdutos: Produto[] = [];
+  favoritosExibir: Produto[] = [];
 
   ngOnInit() {
     this.carregarProdutos();
@@ -80,15 +82,43 @@ export class Marketplace implements OnInit {
           nomeLoja: p.petshopNome || "PetLovers Shop",
           badgeDesconto: p.estoque === 0 ? "Esgotado" : p.preco < 100 ? "10% OFF" : "Frete Grátis",
           favorito: false,
-          categoria: p.categoriaNome || p.subCategoriaNome || "Geral"
+          categoria: p.categoriaNome || p.subCategoriaNome || "Geral",
+          petshopId: p.petshopId || 1
         }));
         this.todosProdutos = mapeados;
         this.produtosOferta = mapeados.slice(0, 4);
         this.maisVendidos = mapeados.slice().reverse().slice(0, 4);
+        this.carregarFavoritosVisual();
         this.filtrarProdutos();
       },
       error: (err) => console.error(err)
     });
+  }
+
+  obterFavoritosSalvos(): any[] {
+    const data = localStorage.getItem("mybuddy_favoritos");
+    return data ? JSON.parse(data) : [];
+  }
+
+  salvarFavoritos(favs: any[]): void {
+    localStorage.setItem("mybuddy_favoritos", JSON.stringify(favs));
+  }
+
+  carregarFavoritosVisual(): void {
+    const favs = this.obterFavoritosSalvos();
+    this.todosProdutos.forEach(p => {
+      p.favorito = favs.some(f => f.id === p.id);
+    });
+    this.filteredProdutos.forEach(p => {
+      p.favorito = favs.some(f => f.id === p.id);
+    });
+    this.produtosOferta.forEach(p => {
+      p.favorito = favs.some(f => f.id === p.id);
+    });
+    this.maisVendidos.forEach(p => {
+      p.favorito = favs.some(f => f.id === p.id);
+    });
+    this.favoritosExibir = favs;
   }
 
   categorias: CategoriaVisual[] = [
@@ -459,6 +489,7 @@ export class Marketplace implements OnInit {
       preco: produto.preco,
       urlImagem: produto.urlImagem,
       lojaNome: produto.nomeLoja,
+      petshopId: produto.petshopId || 1,
     });
   }
 
@@ -477,6 +508,16 @@ export class Marketplace implements OnInit {
 
   alternarFavorito(produto: Produto) {
     produto.favorito = !produto.favorito;
+    let favs = this.obterFavoritosSalvos();
+    if (produto.favorito) {
+      if (!favs.find((f: any) => f.id === produto.id)) {
+        favs.push(produto);
+      }
+    } else {
+      favs = favs.filter((f: any) => f.id !== produto.id);
+    }
+    this.salvarFavoritos(favs);
+    this.carregarFavoritosVisual();
   }
 
   abrirLoja(loja: Loja) {
