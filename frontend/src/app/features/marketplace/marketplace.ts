@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit, OnDestroy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import { Footer } from "@shared/components/footer/footer";
@@ -13,6 +13,7 @@ import { CartDrawerComponent } from "@shared/components/cart-drawer/cart-drawer.
 import { CartService } from "@core/services/cart.service";
 import { HeroSectionComponent } from "@shared/components/hero-section/hero-section.component";
 import { ProdutoService } from "@core/services/produto.service";
+import { BtnOutlineComponent } from "@shared/components/btn-outline/btn-outline.component";
 
 interface Loja {
   id: number;
@@ -47,13 +48,14 @@ interface Produto {
     CategoryCarouselComponent,
     CartDrawerComponent,
     HeroSectionComponent,
+    BtnOutlineComponent,
     FormsModule,
     RouterModule,
   ],
   templateUrl: "./marketplace.html",
   styleUrl: "./marketplace.scss",
 })
-export class Marketplace implements OnInit {
+export class Marketplace implements OnInit, OnDestroy {
   carrinhoService = inject(CartService);
   private router = inject(Router);
   private produtoService = inject(ProdutoService);
@@ -63,13 +65,90 @@ export class Marketplace implements OnInit {
   selectedCategoryName = "";
   activeSort = "";
   isSearching = false;
+  searchFocused = false;
   filteredProdutos: Produto[] = [];
   favoritosExibir: Produto[] = [];
 
+  // Banner autoplay
+  activeBannerIndex = 0;
+  bannerDots = [0, 1, 2, 3];
+  private bannerInterval: ReturnType<typeof setInterval> | null = null;
+
+  // Toast de feedback
+  toastVisivel = false;
+  toastMensagem = "";
+  private toastTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  // FAB bounce
+  cartBounce = false;
+
   ngOnInit() {
     this.carregarProdutos();
+    this.iniciarAutoplayBanner();
   }
 
+  ngOnDestroy() {
+    this.pararAutoplayBanner();
+    if (this.toastTimeout) clearTimeout(this.toastTimeout);
+  }
+
+  // === Banner Autoplay ===
+  iniciarAutoplayBanner() {
+    this.bannerInterval = setInterval(() => {
+      this.activeBannerIndex = (this.activeBannerIndex + 1) % this.bannerDots.length;
+      const track = document.querySelector('.banner-track') as HTMLElement;
+      if (track) {
+        track.scrollTo({
+          left: track.clientWidth * this.activeBannerIndex,
+          behavior: 'smooth'
+        });
+      }
+    }, 5000);
+  }
+
+  pararAutoplayBanner() {
+    if (this.bannerInterval) {
+      clearInterval(this.bannerInterval);
+      this.bannerInterval = null;
+    }
+  }
+
+  onBannerScroll(track: HTMLElement) {
+    if (track.clientWidth > 0) {
+      this.activeBannerIndex = Math.round(track.scrollLeft / track.clientWidth);
+    }
+  }
+
+  irParaBanner(track: HTMLElement, index: number) {
+    this.activeBannerIndex = index;
+    track.scrollTo({
+      left: track.clientWidth * index,
+      behavior: 'smooth'
+    });
+    // Reiniciar autoplay ao navegar manualmente
+    this.pararAutoplayBanner();
+    this.iniciarAutoplayBanner();
+  }
+
+  // === Toast de Feedback ===
+  mostrarToast(mensagem: string) {
+    if (this.toastTimeout) clearTimeout(this.toastTimeout);
+    this.toastMensagem = mensagem;
+    this.toastVisivel = true;
+    this.toastTimeout = setTimeout(() => {
+      this.toastVisivel = false;
+    }, 2500);
+  }
+
+  // === FAB Bounce ===
+  dispararBounce() {
+    this.cartBounce = true;
+    setTimeout(() => {
+      this.cartBounce = false;
+    }, 400);
+  }
+
+  // === Carregar Produtos ===
   carregarProdutos() {
     this.produtoService.buscarComFiltros().subscribe({
       next: (dados) => {
@@ -80,7 +159,7 @@ export class Marketplace implements OnInit {
           preco: p.preco,
           precoAntigo: p.preco * 1.2,
           nomeLoja: p.petshopNome || "PetLovers Shop",
-          badgeDesconto: p.estoque === 0 ? "Esgotado" : p.preco < 100 ? "10% OFF" : "Frete Grátis",
+          badgeDesconto: this.gerarBadge(p),
           favorito: false,
           categoria: p.categoriaNome || p.subCategoriaNome || "Geral",
           petshopId: p.petshopId || 1
@@ -93,6 +172,14 @@ export class Marketplace implements OnInit {
       },
       error: (err) => console.error(err)
     });
+  }
+
+  // Gera badge semântica por tipo
+  gerarBadge(p: any): string {
+    if (p.estoque === 0) return 'Esgotado';
+    if (p.preco < 50) return '10% OFF';
+    if (p.preco >= 100) return 'Frete Grátis';
+    return '';
   }
 
   obterFavoritosSalvos(): any[] {
@@ -350,7 +437,7 @@ export class Marketplace implements OnInit {
       precoAntigo: 159.9,
       nomeLoja: "Cobasi",
       urlImagem:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&q=80&w=400",
       badgeDesconto: "12% OFF",
       favorito: false,
       categoria: "Rações",
@@ -361,7 +448,7 @@ export class Marketplace implements OnInit {
       preco: 45.9,
       nomeLoja: "Petz",
       urlImagem:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&q=80&w=400",
       favorito: true,
       categoria: "Higiene",
     },
@@ -371,7 +458,7 @@ export class Marketplace implements OnInit {
       preco: 22.9,
       nomeLoja: "Cobasi",
       urlImagem:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1535930749574-1399327ce78f?auto=format&fit=crop&q=80&w=400",
       favorito: false,
       categoria: "Brinquedos",
     },
@@ -382,7 +469,7 @@ export class Marketplace implements OnInit {
       precoAntigo: 249.9,
       nomeLoja: "Petz",
       urlImagem:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&q=80&w=400",
       badgeDesconto: "Frete Grátis",
       favorito: true,
       categoria: "Rações",
@@ -393,7 +480,7 @@ export class Marketplace implements OnInit {
       preco: 49.9,
       nomeLoja: "Pet Love",
       urlImagem:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?auto=format&fit=crop&q=80&w=400",
       favorito: false,
       categoria: "Higiene",
     },
@@ -403,7 +490,7 @@ export class Marketplace implements OnInit {
       preco: 110.0,
       nomeLoja: "Cobasi",
       urlImagem:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&q=80&w=400",
       favorito: false,
       categoria: "Camas",
     },
@@ -413,7 +500,7 @@ export class Marketplace implements OnInit {
       preco: 6.5,
       nomeLoja: "Petz",
       urlImagem:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=400",
       favorito: false,
       categoria: "Petiscos",
     },
@@ -423,7 +510,7 @@ export class Marketplace implements OnInit {
       preco: 34.9,
       nomeLoja: "Boutique Animal",
       urlImagem:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1583511655826-05700d52f4d9?auto=format&fit=crop&q=80&w=400",
       favorito: false,
       categoria: "Higiene",
     },
@@ -491,6 +578,8 @@ export class Marketplace implements OnInit {
       lojaNome: produto.nomeLoja,
       petshopId: produto.petshopId || 1,
     });
+    this.mostrarToast(`${produto.titulo.substring(0, 30)}... adicionado ao carrinho`);
+    this.dispararBounce();
   }
 
   verProduto(produto: Produto) {
@@ -536,4 +625,3 @@ export class Marketplace implements OnInit {
     }
   }
 }
-
