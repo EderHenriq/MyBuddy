@@ -1,0 +1,196 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Cupons de Desconto</h1>
+    <p>Crie e gerencie os cupons de desconto para os clientes do seu petshop.</p>
+  </div>
+
+  @if (isSimulationActive) {
+    <div class="simulation-badge">
+      <span class="material-icons">info</span>
+      <span><strong>Modo de Simulação Ativo:</strong> As alterações serão salvas localmente no navegador se a API do servidor estiver inacessível.</span>
+    </div>
+  }
+
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Cupons Cadastrados</h2>
+      <div class="panel-actions">
+        <button
+          class="view-all-btn"
+          style="background-color: var(--primary-color, #ff7900); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700;"
+          (click)="abrirModalNovo()"
+        >
+          + Novo Cupom
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Desconto</th>
+            <th>Mínimo do Pedido</th>
+            <th>Uso Atual</th>
+            <th>Validade</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cupom of cupons; track cupom.id) {
+            <tr>
+              <td class="bold-text">{{ cupom.codigo }}</td>
+              <td>{{ cupom.percentualDesconto }}%</td>
+              <td>{{ cupom.valorMinimoPedido ? (cupom.valorMinimoPedido | currency: 'BRL') : 'Sem valor mínimo' }}</td>
+              <td>
+                {{ cupom.usoAtual !== undefined ? cupom.usoAtual : 0 }} 
+                @if (cupom.limiteUsoGeral) {
+                  / {{ cupom.limiteUsoGeral }}
+                }
+              </td>
+              <td>
+                @if (cupom.dataExpiracao) {
+                  Até {{ cupom.dataExpiracao | date: 'dd/MM/yyyy' }}
+                } @else {
+                  Sem data limite
+                }
+              </td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.active]="cupom.ativo"
+                  [class.blocked]="!cupom.ativo"
+                >
+                  {{ cupom.ativo ? 'ATIVO' : 'INATIVO' }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button 
+                  class="action-btn status-toggle-btn"
+                  [title]="cupom.ativo ? 'Desativar Cupom' : 'Ativar Cupom'"
+                  (click)="toggleStatus(cupom)"
+                >
+                  <span class="material-icons">
+                    {{ cupom.ativo ? 'toggle_on' : 'toggle_off' }}
+                  </span>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 2rem; color: #888;">
+                Nenhum cupom cadastrado. Clique em "+ Novo Cupom" para criar o primeiro.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Modal de Adicionar Cupom -->
+  @if (isModalAberto) {
+    <div class="modal-overlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>Criar Novo Cupom</h2>
+          <button type="button" class="close-btn" (click)="fecharModal()">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        
+        <form (ngSubmit)="salvarCupom()" #cupomForm="ngForm" class="modal-form">
+          <div class="form-group">
+            <label for="codigo">Código do Cupom *</label>
+            <input 
+              type="text" 
+              id="codigo" 
+              name="codigo" 
+              [(ngModel)]="formCupom.codigo" 
+              required 
+              placeholder="Ex: CUPOMPET15" 
+              style="text-transform: uppercase;"
+            />
+          </div>
+
+          <div class="form-row-grid">
+            <div class="form-group">
+              <label for="percentualDesconto">Desconto (%) *</label>
+              <input 
+                type="number" 
+                id="percentualDesconto" 
+                name="percentualDesconto" 
+                [(ngModel)]="formCupom.percentualDesconto" 
+                required 
+                min="1" 
+                max="100" 
+                placeholder="15" 
+              />
+            </div>
+            <div class="form-group">
+              <label for="valorMinimoPedido">Valor Mínimo (R$)</label>
+              <input 
+                type="number" 
+                id="valorMinimoPedido" 
+                name="valorMinimoPedido" 
+                [(ngModel)]="formCupom.valorMinimoPedido" 
+                min="0" 
+                step="0.01" 
+                placeholder="Ex: 50.00" 
+              />
+            </div>
+          </div>
+
+          <div class="form-row-grid">
+            <div class="form-group">
+              <label for="limiteUsoGeral">Limite de Uso Geral</label>
+              <input 
+                type="number" 
+                id="limiteUsoGeral" 
+                name="limiteUsoGeral" 
+                [(ngModel)]="formCupom.limiteUsoGeral" 
+                min="1" 
+                placeholder="Ex: 100" 
+              />
+            </div>
+            <div class="form-group">
+              <label for="ativo">Status Inicial</label>
+              <select id="ativo" name="ativo" [(ngModel)]="formCupom.ativo">
+                <option [ngValue]="true">Ativo</option>
+                <option [ngValue]="false">Inativo</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-grid">
+            <div class="form-group">
+              <label for="dataInicio">Data de Início</label>
+              <input 
+                type="date" 
+                id="dataInicio" 
+                name="dataInicio" 
+                [(ngModel)]="formCupom.dataInicio" 
+              />
+            </div>
+            <div class="form-group">
+              <label for="dataExpiracao">Data de Expiração</label>
+              <input 
+                type="date" 
+                id="dataExpiracao" 
+                name="dataExpiracao" 
+                [(ngModel)]="formCupom.dataExpiracao" 
+              />
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancelar" (click)="fecharModal()">Cancelar</button>
+            <button type="submit" class="btn-salvar" [disabled]="!cupomForm.form.valid">Criar Cupom</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

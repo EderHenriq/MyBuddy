@@ -269,6 +269,18 @@ export const routes: Routes = [
             (m) => m.ChatClientes,
           ),
       },
+      {
+        path: "cupons",
+        loadComponent: () =>
+          import("./features/petshop/cupons/cupons").then((m) => m.Cupons),
+      },
+      {
+        path: "relatorios",
+        loadComponent: () =>
+          import("./features/petshop/relatorios-vendas/relatorios-vendas").then(
+            (m) => m.RelatoriosVendas,
+          ),
+      },
     ],
   },
   {
