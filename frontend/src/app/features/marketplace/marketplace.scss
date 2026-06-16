@@ -927,12 +927,11 @@
    FAQ SECTION (SEO ACCORDION)
    ============================================ */
 .faq-section {
-  background: var(--surface-card);
-  border-radius: var(--radius-xl);
-  padding: 3rem 2.5rem;
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border-color);
-  margin-top: 1.5rem;
+  background: transparent;
+  padding: 2rem 0;
+  box-shadow: none;
+  border: none;
+  margin-top: 2rem;
 
   .faq-title {
     font-size: var(--font-size-xl);
@@ -964,7 +963,7 @@
   }
 
   .faq-item {
-    background: var(--surface-ground);
+    background: var(--surface-card);
     border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
@@ -1025,7 +1024,7 @@
       font-size: var(--font-size-sm);
       line-height: 1.6;
       color: #666;
-      background: var(--surface-card);
+      background: var(--surface-ground);
       animation: fadeUp 0.3s ease-in-out;
     }
   }
