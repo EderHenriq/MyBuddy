@@ -28,29 +28,43 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of pedidos; track item.id) {
-            <tr>
-              <td>{{ item.id }}</td>
-              <td class="bold-text">{{ item.cliente?.nome || 'Cliente Padrão' }}</td>
-              <td>{{ item.valorTotal | currency: 'BRL' }}</td>
-              <td>{{ item.dataCriacao || '21 Mai, 2026' }}</td>
-              <td>
-                <span
-                  class="status-badge"
-                  [class.pending]="item.status === 'APROVADO'"
-                  [class.active]="item.status === 'ENTREGUE'"
-                  [class.blocked]="item.status === 'ENVIADO'"
-                >
-                  {{ item.status }}
-                </span>
-              </td>
-              <td class="actions-cell">
-                <button class="action-btn" title="Ver Detalhes">
-                  <span class="material-icons">visibility</span>
-                </button>
-              </td>
-            </tr>
-          }
+            @for (item of pedidos; track item.id) {
+              <tr>
+                <td>#{{ item.id }}</td>
+                <td class="bold-text">{{ item.cliente?.nome || 'Adotante MyBuddy' }}</td>
+                <td>{{ item.valorTotal | currency: 'BRL' }}</td>
+                <td>{{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.pending]="item.status === 'PROCESSANDO' || item.status === 'PENDENTE'"
+                    [class.active]="item.status === 'ENTREGUE'"
+                    [class.blocked]="item.status === 'EM_TRANSITO' || item.status === 'A_CAMINHO'"
+                    [class.cancelled]="item.status === 'CANCELADO'"
+                  >
+                    {{ item.status === 'PROCESSANDO' ? 'Processando' : item.status === 'PENDENTE' ? 'Pendente' : item.status === 'EM_TRANSITO' || item.status === 'A_CAMINHO' ? 'A Caminho' : item.status === 'ENTREGUE' ? 'Entregue' : 'Cancelado' }}
+                  </span>
+                </td>
+                <td class="actions-cell">
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    @if (item.status === 'PROCESSANDO' || item.status === 'PENDENTE') {
+                      <button class="action-btn" (click)="alterarStatus(item.id, 'EM_TRANSITO')" title="Enviar Pedido" style="color: #ff7900; background: none; border: none; cursor: pointer;">
+                        <span class="material-icons">local_shipping</span>
+                      </button>
+                      <button class="action-btn" (click)="alterarStatus(item.id, 'CANCELADO')" title="Cancelar Pedido" style="color: #c62828; background: none; border: none; cursor: pointer;">
+                        <span class="material-icons">cancel</span>
+                      </button>
+                    } @else if (item.status === 'EM_TRANSITO' || item.status === 'A_CAMINHO') {
+                      <button class="action-btn" (click)="alterarStatus(item.id, 'ENTREGUE')" title="Marcar como Entregue" style="color: #2e7d32; background: none; border: none; cursor: pointer;">
+                        <span class="material-icons">done_all</span>
+                      </button>
+                    } @else {
+                      <span style="font-size: 0.8rem; color: #777; font-weight: 700;">Finalizado</span>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
         </tbody>
       </table>
     </div>

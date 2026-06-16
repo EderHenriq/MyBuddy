@@ -1,1 +1,211 @@
 @import '../../admin/dashboard/dashboard.scss';
+
+/* --- Custom Weekly Chart (CSS Only) --- */
+.chart-container-custom {
+  display: flex;
+  height: 240px;
+  gap: 1.5rem;
+  padding: 1rem 0;
+
+  .chart-y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 0.8rem;
+    color: #777777;
+    font-weight: 700;
+    width: 60px;
+    padding-bottom: 24px; /* Align with x-axis labels */
+  }
+
+  .chart-bars-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-left: 2px solid #eef2f5;
+    border-bottom: 2px solid #eef2f5;
+    padding-left: 1rem;
+    padding-bottom: 4px;
+  }
+
+  .chart-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    gap: 8px;
+    max-width: 50px;
+  }
+
+  .chart-bar-fill-box {
+    width: 100%;
+    height: calc(100% - 24px); /* subtract room for label */
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .chart-bar-fill {
+    width: 28px;
+    background: linear-gradient(180deg, var(--primary-color, #ff7900) 0%, #ff9800 100%);
+    border-radius: 6px 6px 0 0;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 10px rgba(255, 121, 0, 0.15);
+
+    &:hover {
+      filter: brightness(1.08);
+      box-shadow: 0 6px 14px rgba(255, 121, 0, 0.3);
+
+      .tooltip-val {
+        opacity: 1;
+        transform: translate(-50%, -8px);
+      }
+    }
+  }
+
+  .tooltip-val {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: #1a1a1a;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+
+  .chart-day-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #555555;
+  }
+}
+
+/* --- Ultimos Pedidos Panel --- */
+.ultimos-pedidos-panel {
+  flex: 1.2 !important;
+
+  .view-all-btn {
+    background: transparent;
+    border: 1px solid var(--primary-color, #ff7900);
+    color: var(--primary-color, #ff7900);
+    font-weight: 750;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--primary-color, #ff7900);
+      color: #ffffff;
+    }
+  }
+}
+
+.ultimos-pedidos-list {
+  display: flex;
+  flex-direction: column;
+  height: 240px;
+  justify-content: center;
+}
+
+.no-orders-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #999;
+  font-weight: 600;
+
+  .material-icons {
+    font-size: 3rem;
+  }
+}
+
+.mini-table-container {
+  width: 100%;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+
+    th {
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #777;
+      text-transform: uppercase;
+      border-bottom: 2px solid #eef2f5;
+    }
+
+    td {
+      padding: 12px 10px;
+      font-size: 0.88rem;
+      border-bottom: 1px solid #f0f0f0;
+      color: #444;
+
+      &.bold-text {
+        font-weight: 750;
+        color: #1a1a1a;
+      }
+      
+      &.text-ellipsis {
+        max-width: 180px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+/* Status badge mini */
+.status-badge-mini {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+
+  &.active {
+    background-color: #e8f5e9;
+    color: #388e3c;
+  }
+
+  &.pending {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+
+  &.shipping {
+    background-color: #fff3e0;
+    color: #f57c00;
+  }
+
+  &.cancelled {
+    background-color: #ffebee;
+    color: #d32f2f;
+  }
+}
+
