@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router, RouterModule } from "@angular/router";
 import { Footer } from "@shared/components/footer/footer";
@@ -12,6 +12,7 @@ import {
 import { CartDrawerComponent } from "@shared/components/cart-drawer/cart-drawer.component";
 import { CartService } from "@core/services/cart.service";
 import { HeroSectionComponent } from "@shared/components/hero-section/hero-section.component";
+import { ProdutoService } from "@core/services/produto.service";
 
 interface Loja {
   id: number;
@@ -51,9 +52,10 @@ interface Produto {
   templateUrl: "./marketplace.html",
   styleUrl: "./marketplace.scss",
 })
-export class Marketplace {
+export class Marketplace implements OnInit {
   carrinhoService = inject(CartService);
   private router = inject(Router);
+  private produtoService = inject(ProdutoService);
   enderecoAtual = "Rua das Flores, 123 - Centro";
 
   searchQuery = "";
@@ -61,6 +63,33 @@ export class Marketplace {
   activeSort = "";
   isSearching = false;
   filteredProdutos: Produto[] = [];
+
+  ngOnInit() {
+    this.carregarProdutos();
+  }
+
+  carregarProdutos() {
+    this.produtoService.buscarComFiltros().subscribe({
+      next: (dados) => {
+        const mapeados = dados.map((p: any) => ({
+          id: p.id,
+          urlImagem: p.imagens && p.imagens.length > 0 ? p.imagens[0] : "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=300",
+          titulo: p.nome,
+          preco: p.preco,
+          precoAntigo: p.preco * 1.2,
+          nomeLoja: p.petshopNome || "PetLovers Shop",
+          badgeDesconto: p.estoque === 0 ? "Esgotado" : p.preco < 100 ? "10% OFF" : "Frete Grátis",
+          favorito: false,
+          categoria: p.categoriaNome || p.subCategoriaNome || "Geral"
+        }));
+        this.todosProdutos = mapeados;
+        this.produtosOferta = mapeados.slice(0, 4);
+        this.maisVendidos = mapeados.slice().reverse().slice(0, 4);
+        this.filtrarProdutos();
+      },
+      error: (err) => console.error(err)
+    });
+  }
 
   categorias: CategoriaVisual[] = [
     {

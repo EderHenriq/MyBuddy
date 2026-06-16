@@ -14,7 +14,8 @@
         </div>
         <button
           class="view-all-btn"
-          style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer"
+          style="background-color: var(--primary-color, #ff7900); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700;"
+          (click)="abrirModalNovo()"
         >
           + Novo Produto
         </button>
@@ -34,10 +35,10 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of produtos; track item.nome) {
+          @for (item of produtos; track item.id) {
             <tr>
               <td class="bold-text">{{ item.nome }}</td>
-              <td>{{ item.categoria }}</td>
+              <td>{{ item.categoriaNome || item.subCategoriaNome || 'Geral' }}</td>
               <td>{{ item.preco | currency: 'BRL' }}</td>
               <td>
                 <span [style.color]="item.estoque === 0 ? '#c62828' : 'inherit'" [style.fontWeight]="item.estoque === 0 ? '700' : 'normal'">
@@ -54,9 +55,12 @@
                   {{ item.status }}
                 </span>
               </td>
-              <td class="actions-cell">
-                <button class="action-btn" title="Editar Produto">
+              <td class="actions-cell" style="display: flex; gap: 8px;">
+                <button class="action-btn" title="Editar Produto" (click)="abrirModalEditar(item)">
                   <span class="material-icons">edit</span>
+                </button>
+                <button class="action-btn delete-btn" title="Excluir Produto" (click)="deletarProduto(item.id)">
+                  <span class="material-icons">delete</span>
                 </button>
               </td>
             </tr>
@@ -68,4 +72,67 @@
     <!-- Paginação -->
     <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
   </section>
+
+  <!-- Modal de Adicionar/Editar Produto -->
+  @if (isModalAberto) {
+    <div class="modal-overlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>{{ modoEdicao ? 'Editar Produto' : 'Cadastrar Novo Produto' }}</h2>
+          <button type="button" class="close-btn" (click)="fecharModal()">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        
+        <form (ngSubmit)="salvarProduto()" #prodForm="ngForm" class="modal-form">
+          <div class="form-group">
+            <label for="nome">Nome do Produto *</label>
+            <input type="text" id="nome" name="nome" [(ngModel)]="formProduto.nome" required placeholder="Ex: Ração Premier 15kg" />
+          </div>
+
+          <div class="form-row-grid">
+            <div class="form-group">
+              <label for="preco">Preço (R$) *</label>
+              <input type="number" id="preco" name="preco" [(ngModel)]="formProduto.preco" required min="0.01" step="0.01" placeholder="149.90" />
+            </div>
+            <div class="form-group">
+              <label for="estoque">Estoque (unidades) *</label>
+              <input type="number" id="estoque" name="estoque" [(ngModel)]="formProduto.estoque" required min="0" placeholder="10" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subCategoriaId">Subcategoria *</label>
+            <select id="subCategoriaId" name="subCategoriaId" [(ngModel)]="formProduto.subCategoriaId" required>
+              <option value="" disabled selected>Selecione uma subcategoria</option>
+              @for (cat of categorias; track cat.id) {
+                <optgroup [label]="cat.nome">
+                  @for (sub of cat.subcategorias; track sub.id) {
+                    <option [value]="sub.id">{{ sub.nome }}</option>
+                  }
+                </optgroup>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" name="descricao" [(ngModel)]="formProduto.descricao" rows="3" placeholder="Detalhes sobre o produto..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="imagemUrl">URL da Imagem</label>
+            <input type="url" id="imagemUrl" name="imagemUrl" [(ngModel)]="imagemUrlInput" placeholder="https://images.unsplash.com/... (ou em branco para padrão)" />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancelar" (click)="fecharModal()">Cancelar</button>
+            <button type="submit" class="btn-salvar" [disabled]="!prodForm.valid">
+              {{ modoEdicao ? 'Salvar Alterações' : 'Cadastrar Produto' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
 </div>
