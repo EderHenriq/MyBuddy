@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
+  <defs>
+    <linearGradient id="higGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a2d2ff"/>
+      <stop offset="100%" stop-color="#ffafcc"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="40" cy="40" r="38" fill="#fcf0f5" />
+  <!-- Soap Bubbles -->
+  <circle cx="28" cy="28" r="8" fill="#d8f3dc" opacity="0.7" />
+  <circle cx="52" cy="34" r="10" fill="#e8f5e9" opacity="0.6" />
+  <!-- Bath bottle -->
+  <rect x="32" y="24" width="20" height="32" rx="6" fill="url(#higGrad)" />
+  <path d="M 38,24 L 38,20 L 46,20 L 46,24 Z" fill="#bde0fe" />
+  <!-- Soap bubble in front -->
+  <circle cx="28" cy="48" r="10" fill="#bde0fe" opacity="0.8" />
+  <circle cx="25" cy="45" r="3" fill="#fff" opacity="0.9" />
+  <circle cx="44" cy="40" r="5" fill="#fff" opacity="0.5" />
+</svg>

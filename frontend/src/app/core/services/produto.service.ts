@@ -186,7 +186,7 @@ export class ProdutoService {
       petshopNome: "PetLovers Shop",
       imagens: request.imagens && request.imagens.length > 0 
         ? request.imagens 
-        : ["https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=600"],
+        : ["/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg"],
       notaMedia: 4.8,
     };
 
@@ -223,7 +223,8 @@ export class ProdutoService {
 
   private inicializarProdutosLocais(): void {
     const prods = this.obterProdutosLocais();
-    if (prods.length === 0) {
+    const contemUnsplash = prods.some((p: any) => p.imagens && p.imagens.some((img: string) => img.includes("unsplash.com")));
+    if (prods.length === 0 || contemUnsplash) {
       const mockInicial = [
         {
           id: 1,
@@ -238,7 +239,7 @@ export class ProdutoService {
           categoriaNome: "Alimentação",
           petshopId: 1,
           petshopNome: "Petz",
-          imagens: ["https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=600"],
+          imagens: ["/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg"],
           notaMedia: 4.8
         },
         {
@@ -254,7 +255,7 @@ export class ProdutoService {
           categoriaNome: "Acessórios",
           petshopId: 2,
           petshopNome: "Cobasi",
-          imagens: ["https://images.unsplash.com/photo-1581888227599-779811939961?auto=format&fit=crop&q=80&w=600"],
+          imagens: ["/assets/placeholders/pets/Border Collie 01.webp"],
           notaMedia: 4.9
         },
         {
@@ -270,7 +271,7 @@ export class ProdutoService {
           categoriaNome: "Alimentação",
           petshopId: 1,
           petshopNome: "Petz",
-          imagens: ["https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=600"],
+          imagens: ["/assets/placeholders/pets/adocao-coelho.jpg"],
           notaMedia: 4.5
         },
         {
@@ -286,7 +287,7 @@ export class ProdutoService {
           categoriaNome: "Acessórios",
           petshopId: 1,
           petshopNome: "PetLovers Shop",
-          imagens: ["https://images.unsplash.com/photo-1537151608804-ea6f23b7b6c5?auto=format&fit=crop&q=80&w=600"],
+          imagens: ["/assets/placeholders/pets/Paçoca.jpg"],
           notaMedia: 4.7
         },
         {
@@ -302,7 +303,55 @@ export class ProdutoService {
           categoriaNome: "Acessórios",
           petshopId: 2,
           petshopNome: "Cobasi",
-          imagens: ["https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=600"],
+          imagens: ["/assets/placeholders/pets/Armindo.png"],
+          notaMedia: 4.6
+        },
+        {
+          id: 6,
+          nome: "Ração Golden Gatos Adultos Frango 10kg",
+          descricao: "Formulação balanceada para atender as necessidades nutricionais de gatos adultos.",
+          preco: 139.9,
+          estoque: 12,
+          status: "ATIVO",
+          subCategoriaId: 1,
+          subCategoriaNome: "Ração",
+          categoriaId: 1,
+          categoriaNome: "Alimentação",
+          petshopId: 3,
+          petshopNome: "Petlove",
+          imagens: ["/assets/placeholders/pets/kitty-with-monochrome-wall-her.jpg"],
+          notaMedia: 4.8
+        },
+        {
+          id: 7,
+          nome: "Coleira Antipulgas Seresto Cães Até 8kg",
+          descricao: "Proteção contínua contra pulgas e carrapatos por até 8 meses.",
+          preco: 249.9,
+          estoque: 8,
+          status: "ATIVO",
+          subCategoriaId: 2,
+          subCategoriaNome: "Coleiras",
+          categoriaId: 2,
+          categoriaNome: "Acessórios",
+          petshopId: 1,
+          petshopNome: "Petz",
+          imagens: ["/assets/placeholders/pets/Kira.jpg"],
+          notaMedia: 4.7
+        },
+        {
+          id: 8,
+          nome: "Arranhador de Papelão Rampa Gatos",
+          descricao: "Diversão e cuidado com as unhas do seu felino em um design prático e resistente.",
+          preco: 35.0,
+          estoque: 20,
+          status: "ATIVO",
+          subCategoriaId: 1,
+          subCategoriaNome: "Ração",
+          categoriaId: 1,
+          categoriaNome: "Alimentação",
+          petshopId: 5,
+          petshopNome: "Casa do Criador",
+          imagens: ["/assets/placeholders/pets/gato-laranja-e1748043537291.webp"],
           notaMedia: 4.6
         }
       ];

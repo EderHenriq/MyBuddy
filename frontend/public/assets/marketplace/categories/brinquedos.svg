@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
+  <defs>
+    <linearGradient id="ballGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ea8de"/>
+      <stop offset="100%" stop-color="#0077b6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="40" cy="40" r="38" fill="#eef8ff" />
+  <!-- Tennis/Toy Ball -->
+  <circle cx="40" cy="40" r="20" fill="url(#ballGrad)" />
+  <!-- Ball seams -->
+  <path d="M25.8 25.8 C31 31, 31 49, 25.8 54.2" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none" />
+  <path d="M54.2 25.8 C49 31, 49 49, 54.2 54.2" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none" />
+  <!-- Small secondary toy -->
+  <circle cx="58" cy="22" r="6" fill="#ff7b00" />
+  <circle cx="58" cy="22" r="3" fill="#fff" />
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
+  <defs>
+    <linearGradient id="bedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b5838d"/>
+      <stop offset="100%" stop-color="#6d597a"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="40" cy="40" r="38" fill="#f4eff6" />
+  <!-- Pet Bed -->
+  <ellipse cx="40" cy="48" rx="22" ry="12" fill="url(#bedGrad)" />
+  <ellipse cx="40" cy="46" rx="18" ry="9" fill="#e5989b" />
+  <!-- Pillow -->
+  <path d="M28 44 C26 44, 24 40, 28 38 C32 36, 48 36, 52 38 C56 40, 54 44, 52 44 Z" fill="#ffb703" opacity="0.9" />
+  <!-- Sleeping paw print detail -->
+  <circle cx="40" cy="45" r="2" fill="#fff" />
+  <circle cx="37" cy="42" r="1" fill="#fff" />
+  <circle cx="40" cy="41" r="1.2" fill="#fff" />
+  <circle cx="43" cy="42" r="1" fill="#fff" />
+</svg>
