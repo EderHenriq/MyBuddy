@@ -1,1 +1,172 @@
-<p>meus-pedidos works!</p>;
+<main class="meus-pedidos-page">
+  <div class="pedidos-container">
+    <div class="page-header">
+      <h1>Meus Pedidos</h1>
+      <p>Acompanhe o status e histórico de suas compras no marketplace.</p>
+    </div>
+
+    @if (loading() && pedidos().length === 0) {
+      <div class="loading-state">
+        <span class="material-icons spin-loader">autorenew</span>
+        <p>Buscando histórico de pedidos...</p>
+      </div>
+    } @else if (pedidos().length === 0) {
+      <div class="empty-state-pedidos">
+        <span class="material-icons empty-icon">shopping_bag</span>
+        <h3>Nenhum pedido encontrado</h3>
+        <p>Você ainda não realizou nenhuma compra no marketplace do MyBuddy.</p>
+        <a routerLink="/produtos" class="btn-comprar">Ir para a Loja</a>
+      </div>
+    } @else {
+      <div class="pedidos-grid">
+        <!-- Lista de Pedidos (Esquerda) -->
+        <div class="pedidos-list">
+          @for (pedido of pedidos(); track pedido.id) {
+            <div 
+              class="pedido-card" 
+              [class.active]="pedidoSelecionado()?.id === pedido.id" 
+              (click)="selecionarPedido(pedido)"
+            >
+              <div class="card-top">
+                <span class="pedido-id">Pedido #{{ pedido.id }}</span>
+                <span class="pedido-data">{{ pedido.dataCriacao | date: 'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <div class="card-mid">
+                <div class="loja-info">
+                  <span class="material-icons">storefront</span>
+                  <span>{{ pedido.petshop?.nomeFantasia || 'Petshop Parceiro' }}</span>
+                </div>
+                <div class="total-info">
+                  <span>Total:</span>
+                  <strong>{{ pedido.valorTotal | currency: 'BRL' }}</strong>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <span 
+                  class="status-badge"
+                  [class.processando]="pedido.status === 'PROCESSANDO' || pedido.status === 'PENDENTE'"
+                  [class.transito]="pedido.status === 'EM_TRANSITO' || pedido.status === 'A_CAMINHO'"
+                  [class.entregue]="pedido.status === 'ENTREGUE'"
+                  [class.cancelado]="pedido.status === 'CANCELADO'"
+                >
+                  {{ pedido.status === 'PROCESSANDO' ? 'Processando' : pedido.status === 'PENDENTE' ? 'Pendente' : pedido.status === 'EM_TRANSITO' || pedido.status === 'A_CAMINHO' ? 'A Caminho' : pedido.status === 'ENTREGUE' ? 'Entregue' : 'Cancelado' }}
+                </span>
+                
+                @if (pedido.status === 'PROCESSANDO' || pedido.status === 'PENDENTE') {
+                  <button type="button" class="btn-cancelar-pedido" (click)="cancelarPedido(pedido.id, $event)">
+                    Cancelar
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Detalhes do Pedido Selecionado (Direita) -->
+        <div class="pedido-detalhes-painel">
+          @if (pedidoSelecionado()) {
+            <div class="detalhes-card">
+              <div class="detalhes-header">
+                <h2>Detalhes do Pedido #{{ pedidoSelecionado()!.id }}</h2>
+                <button type="button" class="btn-fechar" (click)="fecharDetalhes()">
+                  <span class="material-icons">close</span>
+                </button>
+              </div>
+
+              <!-- Status Rastreamento (Timeline) -->
+              @if (pedidoSelecionado()!.status !== 'CANCELADO') {
+                <div class="timeline-container">
+                  <h3>Acompanhar Entrega</h3>
+                  <div class="timeline">
+                    <div class="timeline-progress-bar">
+                      <div class="progress-fill" [style.width.%]="obterEtapaTimeline(pedidoSelecionado()!.status) * 33.3"></div>
+                    </div>
+                    <div class="timeline-step" [class.completed]="obterEtapaTimeline(pedidoSelecionado()!.status) >= 0">
+                      <div class="step-circle"><span class="material-icons">receipt</span></div>
+                      <span>Confirmado</span>
+                    </div>
+                    <div class="timeline-step" [class.completed]="obterEtapaTimeline(pedidoSelecionado()!.status) >= 1">
+                      <div class="step-circle"><span class="material-icons">inventory_2</span></div>
+                      <span>Preparando</span>
+                    </div>
+                    <div class="timeline-step" [class.completed]="obterEtapaTimeline(pedidoSelecionado()!.status) >= 2">
+                      <div class="step-circle"><span class="material-icons">local_shipping</span></div>
+                      <span>A Caminho</span>
+                    </div>
+                    <div class="timeline-step" [class.completed]="obterEtapaTimeline(pedidoSelecionado()!.status) >= 3">
+                      <div class="step-circle"><span class="material-icons">done_all</span></div>
+                      <span>Entregue</span>
+                    </div>
+                  </div>
+                </div>
+              } @else {
+                <div class="pedido-cancelado-banner">
+                  <span class="material-icons">cancel</span>
+                  <div>
+                    <strong>Pedido Cancelado</strong>
+                    <p>Este pedido foi cancelado e não prosseguirá com a entrega.</p>
+                  </div>
+                </div>
+              }
+
+              <!-- Lista de Itens do Pedido -->
+              <div class="detalhes-section">
+                <h3>Itens Comprados</h3>
+                <div class="itens-comprados-list">
+                  @for (item of pedidoSelecionado()!.itens; track item.id) {
+                    <div class="compra-item-row">
+                      <img [src]="item.produto?.urlImagem" [alt]="item.produto?.nome" class="item-img" />
+                      <div class="item-info">
+                        <h4>{{ item.produto?.nome }}</h4>
+                        <span class="item-qty-price">{{ item.quantidade }}x {{ item.precoUnitario | currency: 'BRL' }}</span>
+                      </div>
+                      <div class="item-total-preco">
+                        {{ (item.precoUnitario * item.quantidade) | currency: 'BRL' }}
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Endereço de Entrega -->
+              <div class="detalhes-section">
+                <h3>Endereço de Entrega</h3>
+                <div class="endereco-box">
+                  <span class="material-icons">place</span>
+                  <p>
+                    {{ pedidoSelecionado()!.enderecoEntrega?.rua || 'Endereço Simulado' }}, Bairro {{ pedidoSelecionado()!.enderecoEntrega?.bairro || 'Centro' }} - {{ pedidoSelecionado()!.enderecoEntrega?.cidade || 'Cidade' }}/{{ pedidoSelecionado()!.enderecoEntrega?.uf || 'UF' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Totais -->
+              <div class="detalhes-section totais-detalhes">
+                <div class="total-row">
+                  <span>Subtotal:</span>
+                  <span>{{ (pedidoSelecionado()!.valorTotal - 15.0) | currency: 'BRL' }}</span>
+                </div>
+                <div class="total-row">
+                  <span>Taxa de Entrega:</span>
+                  <span class="frete-valor">R$ 15,00</span>
+                </div>
+                <hr class="detalhes-divisor" />
+                <div class="total-row grand-total">
+                  <span>Total Geral:</span>
+                  <strong>{{ pedidoSelecionado()!.valorTotal | currency: 'BRL' }}</strong>
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="no-selection-placeholder">
+              <span class="material-icons">info</span>
+              <h3>Nenhum pedido selecionado</h3>
+              <p>Selecione um pedido na lista ao lado para ver o progresso detalhado de entrega e itens comprados.</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</main>
+
+<app-footer></app-footer>

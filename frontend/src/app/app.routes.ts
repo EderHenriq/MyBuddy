@@ -82,6 +82,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "meus-pedidos",
+    loadComponent: () =>
+      import("./features/marketplace/meus-pedidos/meus-pedidos").then(
+        (m) => m.MeusPedidos,
+      ),
+  },
+  {
     path: "doacoes",
     loadComponent: () =>
       import("./features/doacoes/pagina-institucional/pagina-institucional").then(
