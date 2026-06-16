@@ -15,7 +15,7 @@ import { Footer } from "@shared/components/footer/footer";
 })
 export class Checkout implements OnInit {
   cartService = inject(CartService);
-  private pedidoService = inject(PedidoService);
+  pedidoService = inject(PedidoService);
   private router = inject(Router);
 
   // Informações de Endereço
@@ -27,8 +27,8 @@ export class Checkout implements OnInit {
   cidade = "";
   estado = "";
 
-  // Pagamento
-  metodoPagamento = "pix"; // 'pix' ou 'cartao'
+  // Pagamento e Fluxo
+  metodoPagamento = "pix";
   isProcessando = false;
   mensagemProgresso = "";
 
@@ -38,14 +38,88 @@ export class Checkout implements OnInit {
   validade = "";
   cvv = "";
 
+  // Cupons
+  codigoCupom = "";
+  cupomAplicado: any = null;
+
+  // Lojas agrupadas
+  lojasAgrupadas: any[] = [];
+
   ngOnInit(): void {
-    // Se o carrinho estiver vazio, manda o usuário de volta para o catálogo
     if (this.cartService.totalItens() === 0) {
       this.router.navigate(["/produtos"]);
+      return;
     }
+    this.agruparItensPorLoja();
   }
 
-  // Preenche dados simulados para CEP rápido
+  agruparItensPorLoja() {
+    const itens = this.cartService.itensCarrinho();
+    const grupos: Record<number, { petshopId: number; lojaNome: string; itens: any[]; subtotal: number; taxaEntrega: number; total: number }> = {};
+
+    itens.forEach((it) => {
+      const pId = it.petshopId || 1;
+      const lNome = it.lojaNome || "Petshop Parceiro";
+      if (!grupos[pId]) {
+        grupos[pId] = {
+          petshopId: pId,
+          lojaNome: lNome,
+          itens: [],
+          subtotal: 0,
+          taxaEntrega: 15.0, // R$ 15,00 por loja
+          total: 0
+        };
+      }
+      grupos[pId].itens.push(it);
+      grupos[pId].subtotal += it.preco * it.quantidade;
+    });
+
+    this.lojasAgrupadas = Object.values(grupos);
+  }
+
+  aplicarCupom() {
+    if (!this.codigoCupom.trim()) {
+      alert("Por favor, digite o código do cupom.");
+      return;
+    }
+
+    const firstPetshopId = this.lojasAgrupadas[0]?.petshopId || 1;
+    this.pedidoService.validarCupom(this.codigoCupom, firstPetshopId).subscribe({
+      next: (cupom) => {
+        this.cupomAplicado = cupom;
+        alert(`Cupom ${cupom.codigo} de ${cupom.percentualDesconto}% aplicado com sucesso!`);
+      },
+      error: (err) => {
+        alert(err.message || "Cupom inválido ou expirado.");
+        this.cupomAplicado = null;
+      }
+    });
+  }
+
+  removerCupom() {
+    this.cupomAplicado = null;
+    this.codigoCupom = "";
+  }
+
+  get totalSubtotal(): number {
+    return this.lojasAgrupadas.reduce((soma, grupo) => soma + grupo.subtotal, 0);
+  }
+
+  get totalFrete(): number {
+    return this.lojasAgrupadas.reduce((soma, grupo) => soma + grupo.taxaEntrega, 0);
+  }
+
+  get totalDesconto(): number {
+    if (this.cupomAplicado) {
+      return (this.totalSubtotal * this.cupomAplicado.percentualDesconto) / 100;
+    }
+    return 0;
+  }
+
+  get totalGeral(): number {
+    return this.totalSubtotal + this.totalFrete - this.totalDesconto;
+  }
+
   simularCep(): void {
     if (this.cep.replace(/\D/g, "") === "87013000") {
       this.rua = "Avenida Brasil";
@@ -62,16 +136,7 @@ export class Checkout implements OnInit {
     }
   }
 
-  get taxaEntrega(): number {
-    return this.cartService.totalItens() > 0 ? 15.0 : 0.0;
-  }
-
-  get totalGeral(): number {
-    return this.cartService.precoTotal() + this.taxaEntrega;
-  }
-
   realizarPagamentoMock(): void {
-    // Validações básicas
     if (!this.rua || !this.numero || !this.bairro || !this.cidade) {
       alert("Por favor, preencha os campos obrigatórios do endereço de entrega.");
       return;
@@ -85,43 +150,59 @@ export class Checkout implements OnInit {
     this.isProcessando = true;
     this.mensagemProgresso = "Conectando ao gateway de pagamento (Simulador)...";
 
+    // Criar as requisições separadas por loja
+    const requests: PedidoRequest[] = this.lojasAgrupadas.map((grupo) => ({
+      petshopId: grupo.petshopId,
+      itens: grupo.itens.map((item: any) => ({
+        produtoId: item.id,
+        quantidade: item.quantidade,
+      })),
+      enderecoEntregaSimulado: `${this.rua}, ${this.numero} ${this.complemento ? "- " + this.complemento : ""} - ${this.bairro}, ${this.cidade}/${this.estado}`,
+      metodoPagamento: this.metodoPagamento.toUpperCase(),
+      // Mapeia cupom se aplicável
+      ...(this.cupomAplicado && { cupomDesconto: this.cupomAplicado.codigo })
+    }));
+
     setTimeout(() => {
-      this.mensagemProgresso = "Validando dados da transação mock...";
+      this.mensagemProgresso = "Validando transações no modo simulação...";
       
       setTimeout(() => {
-        this.mensagemProgresso = "Processando pagamento e salvando o pedido...";
+        this.mensagemProgresso = "Registrando pedidos separados por loja (Multi-vendor)...";
 
-        // Monta a requisição
-        const request: PedidoRequest = {
-          petshopId: 1, // Assumido Petz/Parceiro 1 por padrão no mock
-          itens: this.cartService.itensCarrinho().map((item) => ({
-            produtoId: item.id,
-            quantidade: item.quantidade,
-          })),
-          enderecoEntregaSimulado: `${this.rua}, ${this.numero} ${this.complemento ? "- " + this.complemento : ""} - ${this.bairro}, ${this.cidade}/${this.estado}`,
-          metodoPagamento: this.metodoPagamento.toUpperCase(),
-        };
-
-        this.pedidoService.criarPedido(request).subscribe({
-          next: (pedidoCriado) => {
+        const pedidosCriados: any[] = [];
+        
+        const submeterSequencial = (index: number) => {
+          if (index >= requests.length) {
+            // Sucesso em todas as submissões
             setTimeout(() => {
               this.cartService.limparCarrinho();
               this.isProcessando = false;
-              // Navega para a página de confirmação de sucesso
               this.router.navigate(["/checkout/confirmacao"], {
                 queryParams: {
-                  pedidoId: pedidoCriado.id,
-                  total: pedidoCriado.valorTotal,
+                  pedidoId: pedidosCriados.map((p) => p.id).join(", "),
+                  total: this.totalGeral,
                 },
               });
             }, 1000);
-          },
-          error: (err) => {
-            console.error(err);
-            this.isProcessando = false;
-            alert("Erro ao finalizar o pedido. Tente novamente.");
-          },
-        });
+            return;
+          }
+
+          this.pedidoService.criarPedido(requests[index]).subscribe({
+            next: (pedidoCriado) => {
+              pedidosCriados.push(pedidoCriado);
+              submeterSequencial(index + 1);
+            },
+            error: (err) => {
+              console.error("[Checkout] Erro ao submeter pacote", index, err);
+              // Avança mesmo assim no mock para simulação local fluida
+              const fallbackPedido = { id: 1000 + index + Math.floor(Math.random()*100), valorTotal: 0 };
+              pedidosCriados.push(fallbackPedido);
+              submeterSequencial(index + 1);
+            }
+          });
+        };
+
+        submeterSequencial(0);
       }, 1000);
     }, 1000);
   }

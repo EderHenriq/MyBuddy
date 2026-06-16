@@ -7,6 +7,7 @@ export interface ItemCarrinho {
   urlImagem: string;
   quantidade: number;
   lojaNome?: string;
+  petshopId?: number;
 }
 
 @Injectable({
