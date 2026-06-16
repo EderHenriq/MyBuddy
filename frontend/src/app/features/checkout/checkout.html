@@ -1,1 +1,194 @@
-<p>checkout works!</p>;
+<main class="checkout-page">
+  <div class="checkout-container">
+    <div class="checkout-header">
+      <h1>Finalizar Compra</h1>
+      <p>Preencha os dados de entrega e finalize seu pedido no marketplace.</p>
+    </div>
+
+    <div class="checkout-grid">
+      <!-- Coluna Principal (Esquerda): Endereço e Métodos -->
+      <div class="col-main">
+        <!-- Card 1: Endereço de Entrega -->
+        <section class="checkout-card card-endereco">
+          <div class="card-header">
+            <span class="material-icons card-icon">local_shipping</span>
+            <h2>Endereço de Entrega</h2>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group col-4">
+              <label for="cep">CEP</label>
+              <div class="cep-input-group">
+                <input type="text" id="cep" [(ngModel)]="cep" placeholder="87013-000" maxlength="9" />
+                <button type="button" class="btn-cep-busca" (click)="simularCep()">Buscar</button>
+              </div>
+            </div>
+            <div class="form-group col-8">
+              <label for="rua">Rua/Avenida *</label>
+              <input type="text" id="rua" [(ngModel)]="rua" placeholder="Rua das Flores" required />
+            </div>
+            <div class="form-group col-4">
+              <label for="numero">Número *</label>
+              <input type="text" id="numero" [(ngModel)]="numero" placeholder="123" required />
+            </div>
+            <div class="form-group col-8">
+              <label for="complemento">Complemento</label>
+              <input type="text" id="complemento" [(ngModel)]="complemento" placeholder="Apto 42, Bloco B" />
+            </div>
+            <div class="form-group col-4">
+              <label for="bairro">Bairro *</label>
+              <input type="text" id="bairro" [(ngModel)]="bairro" placeholder="Centro" required />
+            </div>
+            <div class="form-group col-5">
+              <label for="cidade">Cidade *</label>
+              <input type="text" id="cidade" [(ngModel)]="cidade" placeholder="Maringá" required />
+            </div>
+            <div class="form-group col-3">
+              <label for="estado">Estado *</label>
+              <input type="text" id="estado" [(ngModel)]="estado" placeholder="PR" required />
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 2: Método de Pagamento -->
+        <section class="checkout-card card-pagamento">
+          <div class="card-header">
+            <span class="material-icons card-icon">payment</span>
+            <h2>Forma de Pagamento</h2>
+          </div>
+
+          <div class="payment-selector-tabs">
+            <button 
+              type="button" 
+              class="tab-btn" 
+              [class.active]="metodoPagamento === 'pix'" 
+              (click)="metodoPagamento = 'pix'"
+            >
+              <span class="material-icons">qr_code_2</span>
+              Pix (Instântaneo)
+            </button>
+            <button 
+              type="button" 
+              class="tab-btn" 
+              [class.active]="metodoPagamento === 'cartao'" 
+              (click)="metodoPagamento = 'cartao'"
+            >
+              <span class="material-icons">credit_card</span>
+              Cartão de Crédito
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Coluna Lateral (Direita): Resumo e Confirmação -->
+      <div class="col-side">
+        <!-- Card 3: Resumo do Pedido -->
+        <section class="checkout-card card-resumo">
+          <div class="card-header">
+            <h2>Resumo da Compra</h2>
+          </div>
+
+          <div class="resumo-itens-list">
+            @for (item of cartService.itensCarrinho(); track item.id) {
+              <div class="resumo-item">
+                <img [src]="item.urlImagem" [alt]="item.nome" class="resumo-img" />
+                <div class="resumo-info">
+                  <h4>{{ item.nome }}</h4>
+                  <span class="resumo-qty-price">{{ item.quantidade }}x {{ item.preco | currency: 'BRL' }}</span>
+                </div>
+                <div class="resumo-total-item">
+                  {{ (item.preco * item.quantidade) | currency: 'BRL' }}
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="resumo-valores">
+            <div class="valores-row">
+              <span>Subtotal:</span>
+              <span>{{ cartService.precoTotal() | currency: 'BRL' }}</span>
+            </div>
+            <div class="valores-row">
+              <span>Taxa de Entrega:</span>
+              <span class="frete-valor">{{ taxaEntrega | currency: 'BRL' }}</span>
+            </div>
+            <hr class="resumo-divisor" />
+            <div class="valores-row total-row">
+              <span>Total Geral:</span>
+              <strong class="total-valor-geral">{{ totalGeral | currency: 'BRL' }}</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 4: Detalhes do Pagamento / Simulador (Mock) -->
+        <section class="checkout-card card-pagamento-box">
+          <div class="mock-alert-banner">
+            <span class="material-icons">warning</span>
+            <div>
+              <strong>MODO MOCK ATIVO</strong>
+              <p>Simulador de pagamento ativo para testes locais.</p>
+            </div>
+          </div>
+
+          <div class="pagamento-opcao-conteudo">
+            @if (metodoPagamento === 'pix') {
+              <div class="pix-simulacao-box">
+                <div class="qr-code-placeholder">
+                  <span class="material-icons qr-icon">qr_code</span>
+                  <p>QR Code Simulado</p>
+                </div>
+                <p class="pix-instrucoes">Escaneie o QR Code acima ou use a chave Copia e Cola para realizar o pagamento mock.</p>
+                <div class="pix-copia-cola">
+                  <input type="text" value="00020126580014BR.GOV.BCB.PIX0136mybuddy-mock-payment-key" readonly />
+                  <button type="button" class="btn-copy">Copiar</button>
+                </div>
+                <button type="button" class="btn-pagar-principal" (click)="realizarPagamentoMock()">
+                  Confirmar Pagamento Simulado (Pix)
+                </button>
+              </div>
+            }
+
+            @if (metodoPagamento === 'cartao') {
+              <div class="cartao-simulacao-box">
+                <div class="form-group">
+                  <label for="card-num">Número do Cartão *</label>
+                  <input type="text" id="card-num" [(ngModel)]="numeroCartao" placeholder="4562 8794 1234 5678" maxlength="19" required />
+                </div>
+                <div class="form-group">
+                  <label for="card-name">Nome do Titular *</label>
+                  <input type="text" id="card-name" [(ngModel)]="nomeTitular" placeholder="JOÃO S SILVA" required />
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="card-exp">Validade *</label>
+                    <input type="text" id="card-exp" [(ngModel)]="validade" placeholder="12/29" maxlength="5" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="card-cvv">CVV *</label>
+                    <input type="password" id="card-cvv" [(ngModel)]="cvv" placeholder="123" maxlength="3" required />
+                  </div>
+                </div>
+                <button type="button" class="btn-pagar-principal" (click)="realizarPagamentoMock()">
+                  Confirmar Pagamento Simulado (Cartão)
+                </button>
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Processamento/Spinner -->
+  @if (isProcessando) {
+    <div class="processing-overlay">
+      <div class="processing-box">
+        <span class="material-icons spin-loader">autorenew</span>
+        <h3>Processando Pedido</h3>
+        <p>{{ mensagemProgresso }}</p>
+      </div>
+    </div>
+  }
+</main>
+
+<app-footer></app-footer>

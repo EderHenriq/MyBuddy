@@ -11,6 +11,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "checkout",
+    loadComponent: () =>
+      import("./features/checkout/checkout").then((m) => m.Checkout),
+  },
+  {
     path: "checkout/pagamento",
     loadComponent: () =>
       import("./features/checkout/pagamento/pagamento").then(
