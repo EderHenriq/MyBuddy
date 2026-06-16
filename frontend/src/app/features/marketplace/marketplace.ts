@@ -1,5 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { Router, RouterModule } from "@angular/router";
 import { Footer } from "@shared/components/footer/footer";
 import { CardProdutoComponent } from "@shared/components/card-produto/card-produto.component";
 import { CardLojaComponent } from "@shared/components/card-loja/card-loja.component";
@@ -29,6 +31,7 @@ interface Produto {
   nomeLoja: string;
   badgeDesconto?: string;
   favorito?: boolean;
+  categoria: string;
 }
 
 @Component({
@@ -42,13 +45,22 @@ interface Produto {
     CategoryCarouselComponent,
     CartDrawerComponent,
     HeroSectionComponent,
+    FormsModule,
+    RouterModule,
   ],
   templateUrl: "./marketplace.html",
   styleUrl: "./marketplace.scss",
 })
 export class Marketplace {
   carrinhoService = inject(CartService);
+  private router = inject(Router);
   enderecoAtual = "Rua das Flores, 123 - Centro";
+
+  searchQuery = "";
+  selectedCategoryName = "";
+  activeSort = "";
+  isSearching = false;
+  filteredProdutos: Produto[] = [];
 
   categorias: CategoriaVisual[] = [
     {
@@ -187,6 +199,7 @@ export class Marketplace {
       nomeLoja: "Petlove",
       badgeDesconto: "17% OFF",
       favorito: false,
+      categoria: "Rações",
     },
     {
       id: 2,
@@ -197,6 +210,7 @@ export class Marketplace {
       nomeLoja: "Cobasi",
       badgeDesconto: "Frete Grátis",
       favorito: true,
+      categoria: "Farmácia",
     },
     {
       id: 3,
@@ -208,6 +222,7 @@ export class Marketplace {
       nomeLoja: "Petz",
       badgeDesconto: "24% OFF",
       favorito: false,
+      categoria: "Higiene",
     },
     {
       id: 4,
@@ -217,6 +232,7 @@ export class Marketplace {
       preco: 15.9,
       nomeLoja: "Bicho Chic",
       favorito: false,
+      categoria: "Brinquedos",
     },
   ];
 
@@ -229,6 +245,7 @@ export class Marketplace {
       preco: 22.9,
       nomeLoja: "Cobasi",
       favorito: false,
+      categoria: "Higiene",
     },
     {
       id: 6,
@@ -238,6 +255,7 @@ export class Marketplace {
       preco: 139.9,
       nomeLoja: "Petlove",
       favorito: true,
+      categoria: "Rações",
     },
     {
       id: 7,
@@ -247,6 +265,7 @@ export class Marketplace {
       preco: 249.9,
       nomeLoja: "Petz",
       favorito: false,
+      categoria: "Farmácia",
     },
     {
       id: 8,
@@ -258,6 +277,7 @@ export class Marketplace {
       nomeLoja: "Casa do Criador",
       badgeDesconto: "22% OFF",
       favorito: false,
+      categoria: "Brinquedos",
     },
   ];
 
@@ -274,6 +294,7 @@ export class Marketplace {
         "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
       badgeDesconto: "12% OFF",
       favorito: false,
+      categoria: "Rações",
     },
     {
       id: 10,
@@ -283,6 +304,7 @@ export class Marketplace {
       urlImagem:
         "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
       favorito: true,
+      categoria: "Higiene",
     },
     {
       id: 11,
@@ -292,6 +314,7 @@ export class Marketplace {
       urlImagem:
         "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
       favorito: false,
+      categoria: "Brinquedos",
     },
     {
       id: 12,
@@ -303,6 +326,7 @@ export class Marketplace {
         "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
       badgeDesconto: "Frete Grátis",
       favorito: true,
+      categoria: "Rações",
     },
     {
       id: 13,
@@ -312,6 +336,7 @@ export class Marketplace {
       urlImagem:
         "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
       favorito: false,
+      categoria: "Higiene",
     },
     {
       id: 14,
@@ -321,6 +346,7 @@ export class Marketplace {
       urlImagem:
         "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
       favorito: false,
+      categoria: "Camas",
     },
     {
       id: 15,
@@ -330,6 +356,7 @@ export class Marketplace {
       urlImagem:
         "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
       favorito: false,
+      categoria: "Petiscos",
     },
     {
       id: 16,
@@ -339,8 +366,62 @@ export class Marketplace {
       urlImagem:
         "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=400",
       favorito: false,
+      categoria: "Higiene",
     },
   ];
+
+  filtrarProdutos() {
+    let resultado = [...this.todosProdutos];
+
+    // Filtro por Categoria
+    if (this.selectedCategoryName) {
+      resultado = resultado.filter(
+        (p) => p.categoria === this.selectedCategoryName
+      );
+    }
+
+    // Filtro por termo de busca
+    if (this.searchQuery) {
+      const termo = this.searchQuery.toLowerCase().trim();
+      resultado = resultado.filter(
+        (p) =>
+          p.titulo.toLowerCase().includes(termo) ||
+          p.nomeLoja.toLowerCase().includes(termo)
+      );
+    }
+
+    // Ordenação
+    if (this.activeSort === "menor_preco") {
+      resultado.sort((a, b) => a.preco - b.preco);
+    } else if (this.activeSort === "maior_preco") {
+      resultado.sort((a, b) => b.preco - a.preco);
+    } else if (this.activeSort === "avaliacao") {
+      resultado.sort((a, b) => (b.preco % 5) - (a.preco % 5));
+    }
+
+    this.filteredProdutos = resultado;
+    this.isSearching =
+      !!this.searchQuery || !!this.selectedCategoryName || !!this.activeSort;
+  }
+
+  onSearchInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery = input.value;
+    this.filtrarProdutos();
+  }
+
+  limparFiltros() {
+    this.searchQuery = "";
+    this.selectedCategoryName = "";
+    this.activeSort = "";
+    this.isSearching = false;
+    this.filteredProdutos = [];
+  }
+
+  setOrdenacao(opcao: string) {
+    this.activeSort = opcao;
+    this.filtrarProdutos();
+  }
 
   adicionarAoCarrinho(produto: Produto, quantidade = 1) {
     this.carrinhoService.adicionarAoCarrinho({
@@ -353,11 +434,16 @@ export class Marketplace {
   }
 
   verProduto(produto: Produto) {
-    console.log(`Ver detalhes do produto ${produto.titulo}`);
+    this.router.navigate(["/produtos", produto.id]);
   }
 
   abrirCategoria(categoria: CategoriaVisual) {
-    console.log(`Categoria selecionada: ${categoria.nome}`);
+    if (this.selectedCategoryName === categoria.nome) {
+      this.selectedCategoryName = "";
+    } else {
+      this.selectedCategoryName = categoria.nome;
+    }
+    this.filtrarProdutos();
   }
 
   alternarFavorito(produto: Produto) {
@@ -365,15 +451,19 @@ export class Marketplace {
   }
 
   abrirLoja(loja: Loja) {
-    console.log("Abrir loja:", loja.nome);
+    this.searchQuery = loja.nome;
+    this.filtrarProdutos();
   }
 
   rolarCarrossel(trackElement: HTMLElement, direcao: "left" | "right") {
     const qtdeRolagem = 300;
-    if (direcao === "left") {
-      trackElement.scrollBy({ left: -qtdeRolagem, behavior: "smooth" });
-    } else {
-      trackElement.scrollBy({ left: qtdeRolagem, behavior: "smooth" });
+    if (trackElement) {
+      if (direcao === "left") {
+        trackElement.scrollBy({ left: -qtdeRolagem, behavior: "smooth" });
+      } else {
+        trackElement.scrollBy({ left: qtdeRolagem, behavior: "smooth" });
+      }
     }
   }
 }
+
