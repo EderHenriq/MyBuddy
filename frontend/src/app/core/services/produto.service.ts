@@ -148,11 +148,24 @@ export class ProdutoService {
     let prods = this.obterProdutosLocais();
 
     if (filtros.busca) {
-      const buscaLower = filtros.busca.toLowerCase();
+      const termosBusca = this.normalizarTexto(filtros.busca)
+        .split(/\s+/)
+        .filter((termo) => termo.length > 1);
+
       prods = prods.filter(
-        (p) =>
-          p.nome.toLowerCase().includes(buscaLower) ||
-          (p.descricao && p.descricao.toLowerCase().includes(buscaLower))
+        (p) => {
+          const textoProduto = this.normalizarTexto([
+            p.nome,
+            p.descricao,
+            p.categoriaNome,
+            p.subCategoriaNome,
+            p.petshopNome,
+            p.marca,
+            p.status,
+          ].filter(Boolean).join(" "));
+
+          return termosBusca.every((termo) => textoProduto.includes(termo));
+        }
       );
     }
 
@@ -164,7 +177,27 @@ export class ProdutoService {
       prods = prods.filter((p) => p.subCategoriaId === Number(filtros.subCategoriaId));
     }
 
+    if (filtros.petshopId) {
+      prods = prods.filter((p) => p.petshopId === Number(filtros.petshopId));
+    }
+
+    if (filtros.precoMin) {
+      prods = prods.filter((p) => p.preco >= Number(filtros.precoMin));
+    }
+
+    if (filtros.precoMax) {
+      prods = prods.filter((p) => p.preco <= Number(filtros.precoMax));
+    }
+
     return prods;
+  }
+
+  private normalizarTexto(valor: string | number | undefined | null): string {
+    return String(valor ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
   }
 
   private criarMockLocal(request: ProdutoRequest): any {
@@ -179,9 +212,9 @@ export class ProdutoService {
       estoque: request.estoque,
       status: request.estoque > 0 ? "ATIVO" : "ESGOTADO",
       subCategoriaId: request.subCategoriaId,
-      subCategoriaNome: request.subCategoriaId === 1 ? "Ração" : "Coleiras",
-      categoriaId: request.subCategoriaId === 1 ? 1 : 2,
-      categoriaNome: request.subCategoriaId === 1 ? "Alimentação" : "Acessórios",
+      subCategoriaNome: this.obterNomeCategoriaLocal(request.subCategoriaId),
+      categoriaId: request.subCategoriaId,
+      categoriaNome: this.obterNomeCategoriaLocal(request.subCategoriaId),
       petshopId: 1,
       petshopNome: "PetLovers Shop",
       imagens: request.imagens && request.imagens.length > 0 
@@ -193,6 +226,19 @@ export class ProdutoService {
     prods.unshift(novo);
     this.salvarProdutosLocais(prods);
     return novo;
+  }
+
+  private obterNomeCategoriaLocal(id: number): string {
+    const categorias: Record<number, string> = {
+      1: "Rações",
+      2: "Petiscos",
+      3: "Brinquedos",
+      4: "Farmácia",
+      5: "Higiene",
+      6: "Camas",
+    };
+
+    return categorias[id] || "Geral";
   }
 
   private atualizarMockLocal(id: number, request: ProdutoRequest): any {
@@ -224,7 +270,8 @@ export class ProdutoService {
   private inicializarProdutosLocais(): void {
     const prods = this.obterProdutosLocais();
     const contemUnsplash = prods.some((p: any) => p.imagens && p.imagens.some((img: string) => img.includes("unsplash.com")));
-    if (prods.length < 16 || contemUnsplash) {
+    const faltaMarca = prods.length > 0 && !prods[0].hasOwnProperty('marca');
+    if (prods.length < 16 || contemUnsplash || faltaMarca) {
       const mockInicial = [
         {
           id: 1,
@@ -240,7 +287,8 @@ export class ProdutoService {
           petshopId: 1,
           petshopNome: "Petz",
           imagens: ["/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg"],
-          notaMedia: 4.8
+          notaMedia: 4.8,
+          marca: "Premier"
         },
         {
           id: 2,
@@ -256,7 +304,8 @@ export class ProdutoService {
           petshopId: 2,
           petshopNome: "Cobasi",
           imagens: ["/assets/placeholders/pets/Border Collie 01.webp"],
-          notaMedia: 4.9
+          notaMedia: 4.9,
+          marca: "Bravecto"
         },
         {
           id: 3,
@@ -272,7 +321,8 @@ export class ProdutoService {
           petshopId: 1,
           petshopNome: "Petz",
           imagens: ["/assets/placeholders/pets/adocao-coelho.jpg"],
-          notaMedia: 4.5
+          notaMedia: 4.5,
+          marca: "Petz"
         },
         {
           id: 4,
@@ -288,7 +338,8 @@ export class ProdutoService {
           petshopId: 4,
           petshopNome: "Bicho Chic",
           imagens: ["/assets/placeholders/pets/Paçoca.jpg"],
-          notaMedia: 4.7
+          notaMedia: 4.7,
+          marca: "Chalesco"
         },
         {
           id: 5,
@@ -304,7 +355,8 @@ export class ProdutoService {
           petshopId: 2,
           petshopNome: "Cobasi",
           imagens: ["/assets/placeholders/pets/gato-laranja-e1748043537291.webp"],
-          notaMedia: 4.6
+          notaMedia: 4.6,
+          marca: "Pipicat"
         },
         {
           id: 6,
@@ -320,7 +372,8 @@ export class ProdutoService {
           petshopId: 3,
           petshopNome: "Petlove",
           imagens: ["/assets/placeholders/pets/kitty-with-monochrome-wall-her.jpg"],
-          notaMedia: 4.8
+          notaMedia: 4.8,
+          marca: "Golden"
         },
         {
           id: 7,
@@ -336,7 +389,8 @@ export class ProdutoService {
           petshopId: 1,
           petshopNome: "Petz",
           imagens: ["/assets/placeholders/pets/Kira.jpg"],
-          notaMedia: 4.7
+          notaMedia: 4.7,
+          marca: "Seresto"
         },
         {
           id: 8,
@@ -352,7 +406,8 @@ export class ProdutoService {
           petshopId: 5,
           petshopNome: "Casa do Criador",
           imagens: ["/assets/placeholders/pets/gato-laranja-e1748043537291.webp"],
-          notaMedia: 4.6
+          notaMedia: 4.6,
+          marca: "Zee.Dog"
         },
         {
           id: 9,
@@ -368,7 +423,8 @@ export class ProdutoService {
           petshopId: 2,
           petshopNome: "Cobasi",
           imagens: ["/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg"],
-          notaMedia: 4.5
+          notaMedia: 4.5,
+          marca: "Golden"
         },
         {
           id: 10,
@@ -384,7 +440,8 @@ export class ProdutoService {
           petshopId: 1,
           petshopNome: "Petz",
           imagens: ["/assets/placeholders/pets/Border Collie 01.webp"],
-          notaMedia: 4.8
+          notaMedia: 4.8,
+          marca: "Petz"
         },
         {
           id: 11,
@@ -400,7 +457,8 @@ export class ProdutoService {
           petshopId: 2,
           petshopNome: "Cobasi",
           imagens: ["/assets/placeholders/pets/Paçoca.jpg"],
-          notaMedia: 4.4
+          notaMedia: 4.4,
+          marca: "Zee.Dog"
         },
         {
           id: 12,
@@ -416,7 +474,8 @@ export class ProdutoService {
           petshopId: 1,
           petshopNome: "Petz",
           imagens: ["/assets/placeholders/pets/kitty-with-monochrome-wall-her.jpg"],
-          notaMedia: 4.9
+          notaMedia: 4.9,
+          marca: "Royal Canin"
         },
         {
           id: 13,
@@ -432,7 +491,8 @@ export class ProdutoService {
           petshopId: 3,
           petshopNome: "Petlove",
           imagens: ["/assets/placeholders/pets/gato-laranja-e1748043537291.webp"],
-          notaMedia: 4.8
+          notaMedia: 4.8,
+          marca: "Viva Verde!"
         },
         {
           id: 14,
@@ -448,7 +508,8 @@ export class ProdutoService {
           petshopId: 2,
           petshopNome: "Cobasi",
           imagens: ["/assets/placeholders/pets/Armindo.png"],
-          notaMedia: 4.7
+          notaMedia: 4.7,
+          marca: "Zee.Dog"
         },
         {
           id: 15,
@@ -464,7 +525,8 @@ export class ProdutoService {
           petshopId: 1,
           petshopNome: "Petz",
           imagens: ["/assets/placeholders/pets/gato-laranja-e1748043537291.webp"],
-          notaMedia: 4.8
+          notaMedia: 4.8,
+          marca: "Dreamies"
         },
         {
           id: 16,
@@ -480,7 +542,8 @@ export class ProdutoService {
           petshopId: 4,
           petshopNome: "Bicho Chic",
           imagens: ["/assets/placeholders/pets/Border Collie 01.webp"],
-          notaMedia: 4.5
+          notaMedia: 4.5,
+          marca: "Bicho Chic"
         }
       ];
       this.salvarProdutosLocais(mockInicial);

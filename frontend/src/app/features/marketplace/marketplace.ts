@@ -28,14 +28,23 @@ interface Produto {
   id: number;
   urlImagem: string;
   titulo: string;
+  descricao?: string;
   preco: number;
   precoAntigo?: number;
   nomeLoja: string;
   badgeDesconto?: string;
   favorito?: boolean;
   categoria: string;
+  subCategoria?: string;
   petshopId?: number;
+  marca?: string;
+  avaliacaoMedia?: number;
+  estoque?: number;
+  status?: string;
+  tags?: string[];
 }
+
+type OrdenacaoMarketplace = "" | "menor_preco" | "maior_preco" | "avaliacao" | "desconto";
 
 @Component({
   selector: "app-marketplace",
@@ -63,12 +72,13 @@ export class Marketplace implements OnInit, OnDestroy {
 
   searchQuery = "";
   selectedCategoryName = "";
-  activeSort = "";
+  activeSort: OrdenacaoMarketplace = "";
   isSearching = false;
   searchFocused = false;
   filteredProdutos: Produto[] = [];
   favoritosExibir: Produto[] = [];
   limiteProdutosTodos = 12;
+  catalogoAberto = false;
 
   // Banner autoplay
   activeBannerIndex = 0;
@@ -82,6 +92,15 @@ export class Marketplace implements OnInit, OnDestroy {
 
   // FAB bounce
   cartBounce = false;
+
+  private readonly categoriaAliases: Record<string, string[]> = {
+    "Rações": ["racoes", "racao", "alimentacao", "alimento", "comida"],
+    "Petiscos": ["petiscos", "petisco", "snack", "biscoito", "agrados"],
+    "Brinquedos": ["brinquedos", "brinquedo", "bolas", "pelucias", "mordedor", "arranhador"],
+    "Farmácia": ["farmacia", "medicamento", "medicamentos", "antipulgas", "carrapatos", "vermifugo", "saude"],
+    "Higiene": ["higiene", "banho", "tapete", "areia", "sanitaria", "shampoo", "limpeza"],
+    "Camas": ["camas", "cama", "casinha", "conforto", "descanso"],
+  };
 
   ngOnInit() {
     this.carregarProdutos();
@@ -157,13 +176,20 @@ export class Marketplace implements OnInit, OnDestroy {
           id: p.id,
           urlImagem: p.imagens && p.imagens.length > 0 ? p.imagens[0] : "/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg",
           titulo: p.nome,
+          descricao: p.descricao || "",
           preco: p.preco,
           precoAntigo: p.preco * 1.2,
           nomeLoja: p.petshopNome || "PetLovers Shop",
           badgeDesconto: this.gerarBadge(p),
           favorito: false,
           categoria: p.categoriaNome || p.subCategoriaNome || "Geral",
-          petshopId: p.petshopId || 1
+          subCategoria: p.subCategoriaNome || p.categoriaNome || "Geral",
+          petshopId: p.petshopId || 1,
+          marca: p.marca || "",
+          avaliacaoMedia: p.notaMedia || 0,
+          estoque: p.estoque ?? 0,
+          status: p.status || "",
+          tags: this.gerarTagsProduto(p),
         }));
         this.todosProdutos = mapeados;
         this.produtosOferta = mapeados.slice(0, 4);
@@ -487,37 +513,36 @@ export class Marketplace implements OnInit, OnDestroy {
   filtrarProdutos() {
     let resultado = [...this.todosProdutos];
 
-    // Filtro por Categoria
     if (this.selectedCategoryName) {
       resultado = resultado.filter(
-        (p) => p.categoria === this.selectedCategoryName
+        (p) => this.produtoPertenceCategoria(p, this.selectedCategoryName)
       );
     }
 
-    // Filtro por termo de busca
     if (this.searchQuery) {
-      const termo = this.searchQuery.toLowerCase().trim();
-      resultado = resultado.filter(
-        (p) =>
-          p.titulo.toLowerCase().includes(termo) ||
-          p.nomeLoja.toLowerCase().includes(termo)
-      );
+      const termos = this.obterTermosBusca(this.searchQuery);
+      resultado = resultado.filter((p) => this.produtoCombinaBusca(p, termos));
     }
 
-    // Ordenação
     if (this.activeSort === "menor_preco") {
       resultado.sort((a, b) => a.preco - b.preco);
     } else if (this.activeSort === "maior_preco") {
       resultado.sort((a, b) => b.preco - a.preco);
     } else if (this.activeSort === "avaliacao") {
-      resultado.sort((a, b) => (b.preco % 5) - (a.preco % 5));
+      resultado.sort((a, b) => (b.avaliacaoMedia || 0) - (a.avaliacaoMedia || 0));
+    } else if (this.activeSort === "desconto") {
+      resultado = resultado.filter((p) => this.produtoTemOferta(p));
+      resultado.sort((a, b) => {
+        const descA = this.calcularPercentualDesconto(a);
+        const descB = this.calcularPercentualDesconto(b);
+        return descB - descA;
+      });
     }
 
     this.filteredProdutos = resultado;
     const novoEstadoBusca =
-      !!this.searchQuery || !!this.selectedCategoryName || !!this.activeSort;
+      this.catalogoAberto || !!this.searchQuery.trim() || !!this.selectedCategoryName || !!this.activeSort;
 
-    // Scroll to top ao entrar no modo busca (clique em marca, loja, categoria, etc.)
     if (novoEstadoBusca && !this.isSearching) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -535,12 +560,14 @@ export class Marketplace implements OnInit, OnDestroy {
     this.searchQuery = "";
     this.selectedCategoryName = "";
     this.activeSort = "";
+    this.catalogoAberto = false;
     this.isSearching = false;
     this.filteredProdutos = [];
   }
 
-  setOrdenacao(opcao: string) {
+  setOrdenacao(opcao: OrdenacaoMarketplace) {
     this.activeSort = opcao;
+    this.catalogoAberto = true;
     this.filtrarProdutos();
   }
 
@@ -567,6 +594,7 @@ export class Marketplace implements OnInit, OnDestroy {
     } else {
       this.selectedCategoryName = categoria.nome;
     }
+    this.catalogoAberto = true;
     this.filtrarProdutos();
   }
 
@@ -586,6 +614,24 @@ export class Marketplace implements OnInit, OnDestroy {
 
   abrirLoja(loja: Loja) {
     this.searchQuery = loja.nome;
+    this.catalogoAberto = true;
+    this.filtrarProdutos();
+  }
+
+  buscarPorTermo(termo: string) {
+    this.searchQuery = termo;
+    this.catalogoAberto = true;
+    this.filtrarProdutos();
+  }
+
+  mostrarCatalogoCompleto() {
+    this.catalogoAberto = true;
+    this.filtrarProdutos();
+  }
+
+  aplicarFiltroCategoria(nomeCategoria: string) {
+    this.selectedCategoryName = nomeCategoria;
+    this.catalogoAberto = true;
     this.filtrarProdutos();
   }
 
@@ -609,5 +655,90 @@ export class Marketplace implements OnInit, OnDestroy {
         trackElement.scrollBy({ left: qtdeRolagem, behavior: "smooth" });
       }
     }
+  }
+
+  private gerarTagsProduto(p: any): string[] {
+    return [
+      p.nome,
+      p.descricao,
+      p.categoriaNome,
+      p.subCategoriaNome,
+      p.petshopNome,
+      p.marca,
+      p.status,
+    ].filter(Boolean);
+  }
+
+  private normalizarTexto(valor: string | number | undefined | null): string {
+    return String(valor ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
+  private obterTermosBusca(busca: string): string[] {
+    return this.normalizarTexto(busca)
+      .split(/\s+/)
+      .filter((termo) => termo.length > 1);
+  }
+
+  private produtoCombinaBusca(produto: Produto, termos: string[]): boolean {
+    if (termos.length === 0) {
+      return true;
+    }
+
+    const textoProduto = this.normalizarTexto([
+      produto.titulo,
+      produto.descricao,
+      produto.nomeLoja,
+      produto.marca,
+      produto.categoria,
+      produto.subCategoria,
+      produto.badgeDesconto,
+      produto.status,
+      ...(produto.tags || []),
+    ].join(" "));
+
+    return termos.every((termo) => {
+      if (textoProduto.includes(termo)) {
+        return true;
+      }
+
+      return Object.values(this.categoriaAliases).some((aliases) => {
+        const aliasesNormalizados = aliases.map((alias) => this.normalizarTexto(alias));
+        return aliasesNormalizados.includes(termo) && aliasesNormalizados.some((alias) => textoProduto.includes(alias));
+      });
+    });
+  }
+
+  private produtoPertenceCategoria(produto: Produto, categoria: string): boolean {
+    const categoriaNormalizada = this.normalizarTexto(categoria);
+    const aliases = [
+      categoriaNormalizada,
+      ...(this.categoriaAliases[categoria] || []).map((alias) => this.normalizarTexto(alias)),
+    ];
+
+    const camposProduto = [
+      produto.categoria,
+      produto.subCategoria,
+      produto.titulo,
+      produto.descricao,
+      ...(produto.tags || []),
+    ].map((campo) => this.normalizarTexto(campo));
+
+    return aliases.some((alias) => camposProduto.some((campo) => campo.includes(alias)));
+  }
+
+  private produtoTemOferta(produto: Produto): boolean {
+    return this.calcularPercentualDesconto(produto) > 0 || this.normalizarTexto(produto.badgeDesconto).includes("frete gratis");
+  }
+
+  private calcularPercentualDesconto(produto: Produto): number {
+    if (!produto.precoAntigo || produto.precoAntigo <= produto.preco) {
+      return 0;
+    }
+
+    return (produto.precoAntigo - produto.preco) / produto.precoAntigo;
   }
 }

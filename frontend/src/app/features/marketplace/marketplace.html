@@ -49,6 +49,7 @@
             <button (click)="setOrdenacao('menor_preco')" [class.selected]="activeSort === 'menor_preco'">Menor Preço</button>
             <button (click)="setOrdenacao('maior_preco')" [class.selected]="activeSort === 'maior_preco'">Maior Preço</button>
             <button (click)="setOrdenacao('avaliacao')" [class.selected]="activeSort === 'avaliacao'">Avaliação</button>
+            <button (click)="setOrdenacao('desconto')" [class.selected]="activeSort === 'desconto'">Melhores Ofertas</button>
           </div>
         </div>
 
@@ -94,7 +95,7 @@
           }
           @if (activeSort) {
             <span class="filter-tag">
-              Ordenação: {{ activeSort === 'menor_preco' ? 'Menor Preço' : activeSort === 'maior_preco' ? 'Maior Preço' : 'Avaliação' }}
+              Ordenação: {{ activeSort === 'menor_preco' ? 'Menor Preço' : activeSort === 'maior_preco' ? 'Maior Preço' : activeSort === 'desconto' ? 'Ofertas Especiais' : 'Avaliação' }}
               <button class="remove-filter-btn" (click)="activeSort = ''; filtrarProdutos()"><span class="material-icons">close</span></button>
             </span>
           }
@@ -144,7 +145,7 @@
                 <span class="banner-tag">Promoção</span>
                 <h3>Frete Grátis</h3>
                 <p>Nas compras acima de R$150</p>
-                <app-btn-outline variant="solid" size="sm" (clicked)="searchQuery = 'Frete'; filtrarProdutos()">Aproveitar</app-btn-outline>
+                <app-btn-outline variant="solid" size="sm" (clicked)="buscarPorTermo('Frete Grátis')">Aproveitar</app-btn-outline>
               </div>
               <img src="/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg" alt="Cães felizes" />
             </div>
@@ -153,7 +154,7 @@
                 <span class="banner-tag">Oferta do Mês</span>
                 <h3>Mês do Cachorro Louco</h3>
                 <p>Até 30% OFF em rações</p>
-                <app-btn-outline variant="solid" size="sm" (clicked)="selectedCategoryName = 'Rações'; filtrarProdutos()">Ver Rações</app-btn-outline>
+                <app-btn-outline variant="solid" size="sm" (clicked)="aplicarFiltroCategoria('Rações')">Ver Rações</app-btn-outline>
               </div>
               <img src="/assets/placeholders/pets/Border Collie 01.webp" alt="Cachorro" />
             </div>
@@ -162,7 +163,7 @@
                 <span class="banner-tag">Novidade</span>
                 <h3>Primeira Compra</h3>
                 <p>15% OFF usando o cupom MYBUDDY15</p>
-                <app-btn-outline variant="solid" size="sm" (clicked)="isSearching = true; filtrarProdutos()">Comprar Agora</app-btn-outline>
+                <app-btn-outline variant="solid" size="sm" (clicked)="mostrarCatalogoCompleto()">Comprar Agora</app-btn-outline>
               </div>
               <img src="/assets/placeholders/pets/Armindo.png" alt="Cachorro fofo" />
             </div>
@@ -171,7 +172,7 @@
                 <span class="banner-tag">Especial</span>
                 <h3>Tudo para Gatos</h3>
                 <p>As melhores marcas com até 40% OFF</p>
-                <app-btn-outline variant="solid" size="sm" (clicked)="searchQuery = 'Gato'; filtrarProdutos()">Conferir</app-btn-outline>
+                <app-btn-outline variant="solid" size="sm" (clicked)="buscarPorTermo('Gato')">Conferir</app-btn-outline>
               </div>
               <img src="/assets/placeholders/pets/gato-laranja-e1748043537291.webp" alt="Gato" />
             </div>
@@ -188,7 +189,7 @@
       <section class="lojas-section">
         <div class="section-header">
           <h2>Lojas Próximas</h2>
-          <app-btn-outline variant="outline" size="sm" (clicked)="isSearching = true; filtrarProdutos()">Ver todas</app-btn-outline>
+          <app-btn-outline variant="outline" size="sm" (clicked)="mostrarCatalogoCompleto()">Ver todas</app-btn-outline>
         </div>
 
         <div class="carousel-wrapper">
@@ -244,7 +245,7 @@
         <div class="marcas-grid">
           @for (marca of marcasDestaque; track marca.id; let i = $index) {
             <div class="marca-wrapper animate-stagger" [style.animation-delay]="(i * 0.06) + 's'">
-              <div class="marca-item" (click)="searchQuery = marca.nome; filtrarProdutos()" style="cursor: pointer;">
+              <div class="marca-item" (click)="buscarPorTermo(marca.nome)" style="cursor: pointer;">
                 <img [src]="marca.urlLogo" [alt]="marca.nome" />
               </div>
               <span class="marca-nome">{{ marca.nome }}</span>
@@ -256,7 +257,7 @@
       <section class="produtos-section" id="ofertas-especiais">
         <div class="section-header">
           <h2>Ofertas Especiais</h2>
-          <app-btn-outline variant="outline" size="sm" (clicked)="isSearching = true; activeSort = 'desconto'; filtrarProdutos()">Ver mais</app-btn-outline>
+          <app-btn-outline variant="outline" size="sm" (clicked)="setOrdenacao('desconto')">Ver mais</app-btn-outline>
         </div>
         <div class="carousel-wrapper">
           <button class="scroll-arrow left" (click)="rolarCarrossel(ofertasTrack, 'left')"><span class="material-icons">chevron_left</span></button>
@@ -290,7 +291,7 @@
           <div class="overlay">
             <h2>Tudo para o seu Gato</h2>
             <p>As melhores marcas com até 40% de desconto</p>
-            <app-btn-outline variant="solid" size="lg" icon="pets" (clicked)="searchQuery = 'Gato'; filtrarProdutos()">Aproveitar</app-btn-outline>
+            <app-btn-outline variant="solid" size="lg" icon="pets" (clicked)="buscarPorTermo('Gato')">Aproveitar</app-btn-outline>
           </div>
         </div>
       </section>
@@ -298,7 +299,7 @@
       <section class="produtos-section">
         <div class="section-header">
           <h2>Mais Vendidos</h2>
-          <app-btn-outline variant="outline" size="sm" (clicked)="isSearching = true; filtrarProdutos()">Ver mais</app-btn-outline>
+          <app-btn-outline variant="outline" size="sm" (clicked)="mostrarCatalogoCompleto()">Ver mais</app-btn-outline>
         </div>
         <div class="carousel-wrapper">
           <button class="scroll-arrow left" (click)="rolarCarrossel(vendidosTrack, 'left')"><span class="material-icons">chevron_left</span></button>
