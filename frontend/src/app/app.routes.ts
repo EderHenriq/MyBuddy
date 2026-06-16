@@ -70,6 +70,13 @@ export const routes: Routes = [
       import("./features/marketplace/marketplace").then((m) => m.Marketplace),
   },
   {
+    path: "produtos/:id",
+    loadComponent: () =>
+      import("./features/marketplace/detalhes-produto/detalhes-produto").then(
+        (m) => m.DetalhesProduto,
+      ),
+  },
+  {
     path: "doacoes",
     loadComponent: () =>
       import("./features/doacoes/pagina-institucional/pagina-institucional").then(
