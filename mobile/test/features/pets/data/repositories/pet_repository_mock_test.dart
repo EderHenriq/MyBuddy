@@ -1,4 +1,3 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mybuddy_app/core/errors/failures.dart';
 import 'package:mybuddy_app/features/pets/data/repositories/pet_repository_mock.dart';

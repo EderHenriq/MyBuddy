@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mybuddy_app/core/constants/app_config.dart';
 import 'package:mybuddy_app/core/network/auth_interceptor.dart';
 import 'package:mybuddy_app/core/network/error_interceptor.dart';
@@ -28,7 +29,7 @@ class DioClient {
           requestBody: true,
           responseBody: true,
           error: true,
-          logPrint: (o) => print(o),
+          logPrint: (o) => debugPrint(o.toString()),
         ),
       );
     }

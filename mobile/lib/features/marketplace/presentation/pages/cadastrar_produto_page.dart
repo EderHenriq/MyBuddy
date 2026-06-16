@@ -124,7 +124,7 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
 
               // Categoria (Dropdown)
               DropdownButtonFormField<String>(
-                value: _categoria,
+                initialValue: _categoria,
                 decoration: InputDecoration(
                   labelText: 'Categoria',
                   prefixIcon: const Icon(Icons.tag_rounded, color: AppColors.primary),

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:mybuddy_app/features/pets/domain/entities/pet.dart';
-import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
 import 'package:mybuddy_app/shared/widgets/app_card.dart';
 

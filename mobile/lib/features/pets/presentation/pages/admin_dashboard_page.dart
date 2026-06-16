@@ -102,7 +102,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         ),
                         Switch(
                           value: ativo,
-                          activeColor: AppColors.primary,
+                          activeThumbColor: AppColors.primary,
                           onChanged: (_) => _toggleUsuarioAtivo(index),
                         ),
                       ],

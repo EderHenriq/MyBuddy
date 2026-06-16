@@ -5,7 +5,6 @@ import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:mybuddy_app/features/marketplace/domain/entities/produto.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
-import 'package:mybuddy_app/shared/widgets/app_button.dart';
 import 'package:mybuddy_app/shared/widgets/app_card.dart';
 
 class MarketplacePage extends StatefulWidget {
@@ -270,7 +269,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.secondary.withOpacity(0.9),
+                        color: AppColors.secondary.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
