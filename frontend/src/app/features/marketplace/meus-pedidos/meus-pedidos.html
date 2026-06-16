@@ -114,14 +114,22 @@
                 <h3>Itens Comprados</h3>
                 <div class="itens-comprados-list">
                   @for (item of pedidoSelecionado()!.itens; track item.id) {
-                    <div class="compra-item-row">
-                      <img [src]="item.produto?.urlImagem" [alt]="item.produto?.nome" class="item-img" />
-                      <div class="item-info">
-                        <h4>{{ item.produto?.nome }}</h4>
-                        <span class="item-qty-price">{{ item.quantidade }}x {{ item.precoUnitario | currency: 'BRL' }}</span>
+                    <div class="compra-item-row" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f9f9f9; padding: 12px 0;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <img [src]="item.produto?.urlImagem || item.produto?.imagens?.[0]" [alt]="item.produto?.nome" class="item-img" style="width: 48px; height: 48px; border-radius: 8px; object-fit: contain; background: #fafafa; border: 1px solid #eee;" />
+                        <div class="item-info">
+                          <h4 style="margin: 0; font-size: 0.9rem; font-weight: 700; color: #333;">{{ item.produto?.nome }}</h4>
+                          <span class="item-qty-price" style="font-size: 0.8rem; color: #777;">{{ item.quantidade }}x {{ item.precoUnitario | currency: 'BRL' }}</span>
+                        </div>
                       </div>
-                      <div class="item-total-preco">
-                        {{ (item.precoUnitario * item.quantidade) | currency: 'BRL' }}
+                      <div class="item-total-preco" style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                        <span style="font-weight: 700; color: #333; font-size: 0.9rem;">{{ (item.precoUnitario * item.quantidade) | currency: 'BRL' }}</span>
+                        @if (pedidoSelecionado()!.status === 'ENTREGUE') {
+                          <button type="button" class="btn-avaliar-item" (click)="abrirModalAvaliacao(item.produto)" style="background-color: var(--primary-color, #ff7900); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: background-color 0.2s;">
+                            <span class="material-icons" style="font-size: 14px;">star</span>
+                            Avaliar
+                          </button>
+                        }
                       </div>
                     </div>
                   }
@@ -167,6 +175,48 @@
       </div>
     }
   </div>
+
+  <!-- Modal de Avaliação de Produto -->
+  @if (isModalAvaliacaoAberto) {
+    <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center;">
+      <div class="modal-container" style="background: white; border-radius: 20px; width: 90%; max-width: 450px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 1.25rem;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 0.75rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0; color: #1a1a1a;">Avaliar Produto</h2>
+          <button type="button" (click)="fecharModalAvaliacao()" style="background: transparent; border: none; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%;"><span class="material-icons">close</span></button>
+        </div>
+
+        <div class="product-mini-info" style="display: flex; align-items: center; gap: 12px; background: #f8f9fa; padding: 10px; border-radius: 10px; border: 1px solid #eef2f5;">
+          <img [src]="produtoParaAvaliar?.urlImagem || produtoParaAvaliar?.imagens?.[0]" [alt]="produtoParaAvaliar?.nome" style="width: 48px; height: 48px; border-radius: 6px; object-fit: contain; background: white; border: 1px solid #eee;" />
+          <h4 style="font-size: 0.9rem; font-weight: 700; margin: 0; color: #333; line-height: 1.3;">{{ produtoParaAvaliar?.nome }}</h4>
+        </div>
+
+        <!-- Seletor de Estrelas -->
+        <div class="star-rating-selector" style="display: flex; justify-content: center; gap: 8px; margin: 0.5rem 0;">
+          @for (star of [1,2,3,4,5]; track star) {
+            <span 
+              class="material-icons" 
+              (click)="notaAvaliacao = star" 
+              style="font-size: 38px; cursor: pointer; transition: color 0.15s; user-select: none;"
+              [style.color]="notaAvaliacao >= star ? '#ffc107' : '#e0e0e0'"
+            >
+              star
+            </span>
+          }
+        </div>
+
+        <!-- Comentário -->
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-weight: 700; font-size: 0.88rem; color: #48484f;">Seu comentário</label>
+          <textarea [(ngModel)]="comentarioAvaliacao" rows="3" placeholder="O que achou deste produto? (Qualidade, entrega, etc.)" style="padding: 12px; border-radius: 10px; border: 2px solid #eef2f5; font: inherit; outline: none; resize: vertical; font-size: 0.9rem; color: #333;"></textarea>
+        </div>
+
+        <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1.25rem;">
+          <button type="button" (click)="fecharModalAvaliacao()" style="background: #f4f6f8; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; color: #555; font-size: 0.9rem;">Cancelar</button>
+          <button type="button" (click)="enviarAvaliacao()" [disabled]="notaAvaliacao === 0" style="background-color: var(--primary-color, #ff7900); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(255, 121, 0, 0.2);" [style.opacity]="notaAvaliacao === 0 ? 0.6 : 1">Enviar Avaliação</button>
+        </div>
+      </div>
+    </div>
+  }
 </main>
 
 <app-footer></app-footer>

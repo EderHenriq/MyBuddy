@@ -107,6 +107,33 @@ export class ProdutoService {
     );
   }
 
+  avaliarProduto(produtoId: number, request: { nota: number; comentario: string }): Observable<any> {
+    return this.api.post<any>(`produtos/${produtoId}/avaliacoes`, request).pipe(
+      catchError((err) => {
+        console.warn(`[ProdutoService] Falha ao enviar avaliacao para produto #${produtoId}. Usando mock local.`, err);
+        const prods = this.obterProdutosLocais();
+        const idx = prods.findIndex((p) => p.id === produtoId);
+        if (idx !== -1) {
+          if (!prods[idx].avaliacoes) {
+            prods[idx].avaliacoes = [];
+          }
+          prods[idx].avaliacoes.push({
+            autor: "Cliente Buddy",
+            nota: request.nota,
+            data: new Date().toLocaleDateString("pt-BR"),
+            texto: request.comentario
+          });
+          const notas = prods[idx].avaliacoes.map((av: any) => av.nota);
+          prods[idx].notaMedia = notas.reduce((a: number, b: number) => a + b, 0) / notas.length;
+          prods[idx].totalAvaliacoes = prods[idx].avaliacoes.length;
+          this.salvarProdutosLocais(prods);
+          return of(prods[idx]);
+        }
+        return throwError(() => new Error("Produto não encontrado no mock local."));
+      })
+    );
+  }
+
   // MOCK HELPERS
   private obterProdutosLocais(): any[] {
     const data = localStorage.getItem(this.localProdutosKey);
