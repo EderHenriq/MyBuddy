@@ -132,7 +132,7 @@ export class Marketplace implements OnInit {
       id: 2,
       nome: "Petiscos",
       urlImagem:
-        "https://images.unsplash.com/photo-1537151608804-ea6f23b7b6c5?auto=format&fit=crop&q=80&w=150",
+        "https://images.unsplash.com/photo-1608454509000-19aa87be5696?auto=format&fit=crop&q=80&w=150",
     },
     {
       id: 3,
@@ -144,19 +144,19 @@ export class Marketplace implements OnInit {
       id: 4,
       nome: "Farmácia",
       urlImagem:
-        "https://images.unsplash.com/photo-1581888227599-779811939961?auto=format&fit=crop&q=80&w=150",
+        "https://images.unsplash.com/photo-1607619056574-7b8f304b3c93?auto=format&fit=crop&q=80&w=150",
     },
     {
       id: 5,
       nome: "Higiene",
       urlImagem:
-        "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=150",
+        "https://images.unsplash.com/photo-1516715094727-ec48be335d79?auto=format&fit=crop&q=80&w=150",
     },
     {
       id: 6,
       nome: "Camas",
       urlImagem:
-        "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=150",
+        "https://images.unsplash.com/photo-1591584563745-0ad51f7a53d6?auto=format&fit=crop&q=80&w=150",
     },
   ];
 
@@ -173,7 +173,7 @@ export class Marketplace implements OnInit {
     {
       id: 2,
       urlLogo:
-        "https://images.unsplash.com/photo-1560707854-fb9a10efa532?auto=format&fit=crop&q=80&w=150",
+        "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=150",
       nome: "Cobasi",
       avaliacao: 4.9,
       tempoEntrega: "20-30 min",
@@ -182,7 +182,7 @@ export class Marketplace implements OnInit {
     {
       id: 3,
       urlLogo:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=150",
+        "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=150",
       nome: "Petlove",
       avaliacao: 4.7,
       tempoEntrega: "15-25 min",
@@ -213,37 +213,37 @@ export class Marketplace implements OnInit {
       id: 1,
       nome: "Royal Canin",
       urlLogo:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=100&q=80",
+        "https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=100&q=80",
     },
     {
       id: 2,
       nome: "Premier",
       urlLogo:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=100&q=80",
+        "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=100&q=80",
     },
     {
       id: 3,
       nome: "Zee.Dog",
       urlLogo:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=100&q=80",
+        "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=100&q=80",
     },
     {
       id: 4,
       nome: "Bravecto",
       urlLogo:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=100&q=80",
+        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=100&q=80",
     },
     {
       id: 5,
       nome: "Golden",
       urlLogo:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=100&q=80",
+        "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=100&q=80",
     },
     {
       id: 6,
       nome: "Pedigree",
       urlLogo:
-        "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=100&q=80",
+        "https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=100&q=80",
     },
   ];
 

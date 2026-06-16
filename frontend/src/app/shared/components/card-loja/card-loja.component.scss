@@ -3,27 +3,31 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  padding: 1.2rem 0.5rem;
+  padding: 1.2rem 0.8rem;
   min-width: 160px;
   max-width: 190px;
   border-radius: 16px;
+  background-color: #ffffff;
+  border: 1px solid #f0f2f5;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    transform: scale(1.02);
-    background-color: #ffffff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
+    border-color: var(--primary-color, #ff7900);
+    box-shadow: 0 8px 24px rgba(255, 121, 0, 0.08);
   }
 }
 
 .loja-logo {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 2px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  border: 3px solid #ffffff;
+  transition: transform 0.25s ease;
 }
 
 .loja-info {
