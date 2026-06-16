@@ -9,7 +9,7 @@
 
   <!-- CTA flutuante sobre o hero -->
   <div class="hero-cta-wrapper animate-fade-up">
-    <app-btn-outline variant="solid" size="lg" icon="storefront" (clicked)="isSearching = true; filtrarProdutos()">
+    <app-btn-outline variant="solid" size="lg" icon="storefront" (clicked)="rolarParaOfertas()">
       Explorar Ofertas
     </app-btn-outline>
   </div>
@@ -214,7 +214,7 @@
       @if (favoritosExibir.length > 0) {
         <section class="produtos-section animate-fade-up">
           <div class="section-header">
-            <h2><span class="material-icons section-icon">favorite</span> Meus Favoritos</h2>
+            <h2>Meus Favoritos</h2>
           </div>
           <div class="produtos-grid">
             @for (produto of favoritosExibir; track produto.id; let i = $index) {
@@ -253,9 +253,9 @@
         </div>
       </section>
 
-      <section class="produtos-section">
+      <section class="produtos-section" id="ofertas-especiais">
         <div class="section-header">
-          <h2><span class="material-icons section-icon">local_offer</span> Ofertas Especiais</h2>
+          <h2>Ofertas Especiais</h2>
           <app-btn-outline variant="outline" size="sm" (clicked)="isSearching = true; activeSort = 'desconto'; filtrarProdutos()">Ver mais</app-btn-outline>
         </div>
         <div class="produtos-grid">
@@ -293,7 +293,7 @@
 
       <section class="produtos-section">
         <div class="section-header">
-          <h2><span class="material-icons section-icon">trending_up</span> Mais Vendidos</h2>
+          <h2>Mais Vendidos</h2>
           <app-btn-outline variant="outline" size="sm" (clicked)="isSearching = true; filtrarProdutos()">Ver mais</app-btn-outline>
         </div>
         <div class="produtos-grid">
@@ -318,7 +318,7 @@
 
       <section class="produtos-section secao-para-voce">
         <div class="section-header">
-          <h2><span class="material-icons section-icon">auto_awesome</span> Para Você</h2>
+          <h2>Para Você</h2>
           <span class="section-subtitle">Baseado nas suas buscas recentes</span>
         </div>
         <div class="produtos-grid">

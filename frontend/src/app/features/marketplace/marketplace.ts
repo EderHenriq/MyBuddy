@@ -588,6 +588,13 @@ export class Marketplace implements OnInit, OnDestroy {
     this.filtrarProdutos();
   }
 
+  rolarParaOfertas() {
+    const el = document.getElementById('ofertas-especiais');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   rolarCarrossel(trackElement: HTMLElement, direcao: "left" | "right") {
     const qtdeRolagem = 300;
     if (trackElement) {
