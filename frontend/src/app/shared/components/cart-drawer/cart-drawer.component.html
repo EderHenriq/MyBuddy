@@ -67,7 +67,7 @@
         <span>Total:</span>
         <strong>{{ precoTotal | currency: "BRL" }}</strong>
       </div>
-      <button class="checkout-btn">Finalizar Compra</button>
+      <button class="checkout-btn" (click)="finalizarCompra()">Finalizar Compra</button>
     </div>
   }
 </aside>
