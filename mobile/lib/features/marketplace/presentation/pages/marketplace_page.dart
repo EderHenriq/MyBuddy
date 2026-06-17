@@ -69,12 +69,50 @@ class _MarketplacePageState extends State<MarketplacePage> {
               builder: (context, state) {
                 if (state.items.isEmpty) {
                   return Container(
+                    height: 250,
                     decoration: BoxDecoration(
                       color: isDark ? AppColors.darkSurface : Colors.white,
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                     ),
                     padding: const EdgeInsets.all(24),
-                    child: const Center(child: Text('Carrinho vazio.')),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.shopping_cart_rounded, color: AppColors.primary),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Seu Carrinho',
+                                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.close_rounded),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        const Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.remove_shopping_cart_outlined, size: 48, color: Colors.grey),
+                              SizedBox(height: 12),
+                              Text(
+                                'Seu carrinho está vazio.',
+                                style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 }
 
@@ -386,7 +424,9 @@ class _MarketplacePageState extends State<MarketplacePage> {
                               itemCount: filteredProducts.length,
                               itemBuilder: (context, index) {
                                 final produto = filteredProducts[index];
-                                return _buildProductCard(context, produto, loggedUser, isDark);
+                                final cartItemIndex = cartState.items.indexWhere((item) => item.produto.id == produto.id);
+                                final quantityInCart = cartItemIndex != -1 ? cartState.items[cartItemIndex].quantidade : 0;
+                                return _buildProductCard(context, produto, loggedUser, isDark, quantityInCart);
                               },
                             );
                           }
@@ -902,6 +942,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
     Produto produto,
     dynamic loggedUser,
     bool isDark,
+    int quantityInCart,
   ) {
     final theme = Theme.of(context);
     final hasDiscount = produto.precoAntigo != null && produto.precoAntigo! > produto.preco;
@@ -1077,30 +1118,74 @@ class _MarketplacePageState extends State<MarketplacePage> {
                       ),
                     ),
                     
-                    GestureDetector(
-                      onTap: () {
-                        context.read<CartCubit>().addToCart(produto, quantidade: 1);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${produto.nome} adicionado ao carrinho!'),
-                            duration: const Duration(seconds: 1),
-                            backgroundColor: AppColors.success,
+                    if (quantityInCart > 0)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              context.read<CartCubit>().updateQuantity(produto.id, quantityInCart - 1);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withValues(alpha: 0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.remove_rounded,
+                                color: AppColors.primary,
+                                size: 16,
+                              ),
+                            ),
                           ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.add_rounded,
-                          color: AppColors.primary,
-                          size: 20,
+                          const SizedBox(width: 8),
+                          Text(
+                            '$quantityInCart',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () {
+                              context.read<CartCubit>().updateQuantity(produto.id, quantityInCart + 1);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.add_rounded,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      GestureDetector(
+                        onTap: () {
+                          context.read<CartCubit>().addToCart(produto, quantidade: 1);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.add_rounded,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ],

@@ -405,19 +405,6 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                               text: 'Adicionar ao Carrinho',
                               onPressed: () {
                                 context.read<CartCubit>().addToCart(produto, quantidade: _quantidade);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('$_quantidade x ${produto.nome} adicionado ao carrinho!'),
-                                    backgroundColor: AppColors.success,
-                                    action: SnackBarAction(
-                                      label: 'Ver Carrinho',
-                                      textColor: Colors.white,
-                                      onPressed: () {
-                                        Navigator.pop(context); // Volta ao marketplace
-                                      },
-                                    ),
-                                  ),
-                                );
                               },
                             ),
                           ),
