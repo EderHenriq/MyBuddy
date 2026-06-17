@@ -232,6 +232,7 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
     return BlocBuilder<CartCubit, CartState>(
       builder: (context, cartState) {
         return Scaffold(
+          floatingActionButtonLocation: const _CustomFloatingActionButtonLocation(),
           floatingActionButton: cartState.items.isEmpty
               ? null
               : FloatingActionButton.extended(
@@ -662,5 +663,21 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
         ],
       ),
     );
+  }
+}
+
+class _CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
+  const _CustomFloatingActionButtonLocation();
+
+  @override
+  Offset getOffset(ScaffoldPrelayoutGeometry geometry) {
+    double x = geometry.scaffoldSize.width - geometry.floatingActionButtonSize.width - 16;
+    if (geometry.scaffoldSize.width > 650) {
+      final double centerOffset = (geometry.scaffoldSize.width - 650) / 2;
+      x = geometry.scaffoldSize.width - centerOffset - geometry.floatingActionButtonSize.width - 16;
+    }
+    final double bottomBarHeight = 85.0 + geometry.minInsets.bottom;
+    final double y = geometry.scaffoldSize.height - geometry.floatingActionButtonSize.height - bottomBarHeight - 16;
+    return Offset(x, y);
   }
 }
