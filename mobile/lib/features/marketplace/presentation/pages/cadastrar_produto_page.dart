@@ -21,7 +21,7 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
   final _descricaoController = TextEditingController();
   final _imagemUrlController = TextEditingController();
 
-  String _categoria = 'Alimentação';
+  String _categoria = 'Rações';
   bool _isLoading = false;
 
   @override
@@ -131,10 +131,12 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'Alimentação', child: Text('Alimentação')),
-                  DropdownMenuItem(value: 'Acessórios', child: Text('Acessórios')),
-                  DropdownMenuItem(value: 'Higiene', child: Text('Higiene')),
+                  DropdownMenuItem(value: 'Rações', child: Text('Rações')),
+                  DropdownMenuItem(value: 'Petiscos', child: Text('Petiscos')),
                   DropdownMenuItem(value: 'Brinquedos', child: Text('Brinquedos')),
+                  DropdownMenuItem(value: 'Farmácia', child: Text('Farmácia')),
+                  DropdownMenuItem(value: 'Higiene', child: Text('Higiene')),
+                  DropdownMenuItem(value: 'Camas', child: Text('Camas')),
                 ],
                 onChanged: (val) {
                   if (val != null) setState(() => _categoria = val);
