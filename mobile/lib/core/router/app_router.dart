@@ -21,6 +21,9 @@ import 'package:mybuddy_app/features/marketplace/presentation/pages/marketplace_
 import 'package:mybuddy_app/features/marketplace/presentation/pages/cadastrar_produto_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/meus_produtos_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/pedidos_petshop_page.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/pages/produto_detalhe_page.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/pages/checkout_page.dart';
+import 'package:mybuddy_app/features/marketplace/domain/entities/produto.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/admin_dashboard_page.dart';
 import 'package:mybuddy_app/features/adocao/presentation/pages/eventos_page.dart';
 import 'package:mybuddy_app/shared/widgets/main_scaffold.dart';
@@ -168,7 +171,23 @@ class AppRouter {
         GoRoute(
           path: '/cadastrar-produto',
           name: 'cadastrar-produto',
-          pageBuilder: (context, state) => _slideRoute(state, const CadastrarProdutoPage()),
+          pageBuilder: (context, state) {
+            final product = state.extra as Produto?;
+            return _slideRoute(state, CadastrarProdutoPage(produtoToEdit: product));
+          },
+        ),
+        GoRoute(
+          path: '/produto-detalhe/:id',
+          name: 'produto-detalhe',
+          pageBuilder: (context, state) {
+            final id = state.pathParameters['id'] ?? '1';
+            return _slideRoute(state, ProdutoDetalhePage(productId: id));
+          },
+        ),
+        GoRoute(
+          path: '/checkout',
+          name: 'checkout',
+          pageBuilder: (context, state) => _slideRoute(state, const CheckoutPage()),
         ),
         GoRoute(
           path: '/meus-produtos',

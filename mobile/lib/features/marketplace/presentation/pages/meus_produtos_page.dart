@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
 import 'package:mybuddy_app/shared/widgets/app_card.dart';
@@ -99,20 +100,11 @@ class MeusProdutosPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withAlpha(20),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'Ativo',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                        IconButton(
+                          icon: const Icon(Icons.edit_rounded, color: AppColors.primary),
+                          onPressed: () {
+                            context.push('/cadastrar-produto', extra: produto);
+                          },
                         ),
                       ],
                     ),

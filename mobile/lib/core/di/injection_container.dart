@@ -21,6 +21,7 @@ import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart'
 import 'package:mybuddy_app/features/marketplace/domain/repositories/products_repository.dart';
 import 'package:mybuddy_app/features/marketplace/data/repositories/products_repository_mock.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/bloc/cart_cubit.dart';
 import 'package:mybuddy_app/shared/theme/theme_cubit.dart';
 
 final sl = GetIt.instance;
@@ -105,5 +106,9 @@ void _registerMarketplace() {
   // Cubits
   sl.registerLazySingleton<ProductsCubit>(
     () => ProductsCubit(productsRepository: sl()),
+  );
+
+  sl.registerLazySingleton<CartCubit>(
+    () => CartCubit(),
   );
 }

@@ -8,6 +8,7 @@ import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
 import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/bloc/cart_cubit.dart';
 import 'package:mybuddy_app/shared/theme/app_theme.dart';
 import 'package:mybuddy_app/shared/theme/theme_cubit.dart';
 
@@ -49,6 +50,9 @@ class _MyBuddyAppState extends State<MyBuddyApp> {
         ),
         BlocProvider<AdocaoCubit>(
           create: (context) => di.sl<AdocaoCubit>()..loadSolicitacoes(),
+        ),
+        BlocProvider<CartCubit>(
+          create: (context) => di.sl<CartCubit>(),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(

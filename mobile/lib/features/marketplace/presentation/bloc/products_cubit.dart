@@ -58,6 +58,17 @@ class ProductsCubit extends Cubit<ProductsState> {
     );
   }
 
+  Future<bool> atualizarProduto(Produto produto) async {
+    final result = await productsRepository.atualizarProduto(produto);
+    return result.fold(
+      (failure) => false,
+      (updatedProduct) {
+        loadProducts();
+        return true;
+      },
+    );
+  }
+
   Future<bool> comprarProduto(String clienteNome, String produtoNome, double preco) async {
     final now = DateTime.now();
     final dataStr = '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';

@@ -8,7 +8,8 @@ import 'package:mybuddy_app/shared/widgets/app_button.dart';
 import 'package:mybuddy_app/shared/widgets/app_input.dart';
 
 class CadastrarProdutoPage extends StatefulWidget {
-  const CadastrarProdutoPage({super.key});
+  final Produto? produtoToEdit;
+  const CadastrarProdutoPage({super.key, this.produtoToEdit});
 
   @override
   State<CadastrarProdutoPage> createState() => _CadastrarProdutoPageState();
@@ -25,6 +26,19 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.produtoToEdit != null) {
+      final p = widget.produtoToEdit!;
+      _nomeController.text = p.nome;
+      _precoController.text = p.preco.toStringAsFixed(2).replaceAll('.', ',');
+      _descricaoController.text = p.descricao;
+      _imagemUrlController.text = p.imagemUrl;
+      _categoria = p.categoria;
+    }
+  }
+
+  @override
   void dispose() {
     _nomeController.dispose();
     _precoController.dispose();
@@ -37,8 +51,10 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() => _isLoading = true);
 
+      final isEdit = widget.produtoToEdit != null;
+
       final produto = Produto(
-        id: '',
+        id: isEdit ? widget.produtoToEdit!.id : '',
         nome: _nomeController.text.trim(),
         preco: double.parse(_precoController.text.trim().replaceAll(',', '.')),
         descricao: _descricaoController.text.trim(),
@@ -46,23 +62,27 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
         categoria: _categoria,
       );
 
-      final success = await context.read<ProductsCubit>().cadastrarProduto(produto);
+      final productsCubit = context.read<ProductsCubit>();
+
+      final success = isEdit
+          ? await productsCubit.atualizarProduto(produto)
+          : await productsCubit.cadastrarProduto(produto);
 
       setState(() => _isLoading = false);
 
       if (mounted) {
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Produto cadastrado com sucesso!'),
+            SnackBar(
+              content: Text(isEdit ? 'Produto atualizado com sucesso!' : 'Produto cadastrado com sucesso!'),
               backgroundColor: AppColors.success,
             ),
           );
           context.pop();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Erro ao cadastrar produto. Tente novamente.'),
+            SnackBar(
+              content: Text(isEdit ? 'Erro ao atualizar produto. Tente novamente.' : 'Erro ao cadastrar produto. Tente novamente.'),
               backgroundColor: Colors.red,
             ),
           );
@@ -75,10 +95,11 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isEdit = widget.produtoToEdit != null;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cadastrar Produto'),
+        title: Text(isEdit ? 'Editar Produto' : 'Cadastrar Produto'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -88,7 +109,7 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Cadastre itens para vender no Marketplace',
+                isEdit ? 'Atualize as informações do seu item' : 'Cadastre itens para vender no Marketplace',
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: isDark ? AppColors.darkTextSecondary : AppColors.textLight,
                 ),
@@ -168,7 +189,7 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
 
               // Botão Salvar
               AppButton(
-                text: _isLoading ? 'Salvando...' : 'Cadastrar Produto',
+                text: _isLoading ? 'Salvando...' : (isEdit ? 'Salvar Alterações' : 'Cadastrar Produto'),
                 onPressed: _isLoading ? () {} : _salvarProduto,
               ),
             ],
