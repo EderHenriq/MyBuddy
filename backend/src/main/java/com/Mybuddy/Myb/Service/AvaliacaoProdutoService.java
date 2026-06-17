@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class AvaliacaoProdutoService {
 
     private final AvaliacaoProdutoRepository avaliacaoProdutoRepository;

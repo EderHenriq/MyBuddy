@@ -164,6 +164,7 @@
 .quick-filter-list {
   display: flex;
   gap: 0.75rem;
+  min-width: 0;
 }
 
 .quick-filter {
@@ -187,6 +188,10 @@
 
   .address-text {
     color: var(--primary-color);
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .filter-dot {
@@ -625,7 +630,8 @@
     }
   }
 
-  &:hover .dropdown-content {
+  &:hover .dropdown-content,
+  &.open .dropdown-content {
     display: block;
   }
 }
@@ -853,6 +859,21 @@
     justify-content: flex-start;
     flex-wrap: nowrap;
     padding: 0.5rem 0.5rem;
+  }
+
+  .quick-filter-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .quick-filter .address-text {
+    max-width: 150px;
   }
 }
 

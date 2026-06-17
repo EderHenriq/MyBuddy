@@ -33,7 +33,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of eventos; track item.nome) {
+          @for (item of eventosPaginados; track item.nome) {
             <tr>
               <td class="bold-text">{{ item.nome }}</td>
               <td>{{ item.local }}</td>

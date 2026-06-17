@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api/produtos/{produtoId}/avaliacoes")
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("null")
 public class AvaliacaoProdutoController {
 
     private final AvaliacaoProdutoService avaliacaoProdutoService;

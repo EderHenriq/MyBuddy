@@ -31,14 +31,20 @@
       <span class="panel-divider" aria-hidden="true"></span>
 
       <div class="quick-filter-list">
-        <button type="button" class="quick-filter delivery-location-btn">
+        <button type="button" class="quick-filter delivery-location-btn" (click)="informarEnderecoEmBreve()">
           <span>Entregar em:</span>
           <span class="address-text">{{ enderecoAtual }}</span>
           <span class="material-icons">keyboard_arrow_down</span>
         </button>
 
-        <div class="dropdown-filter">
-          <button type="button" class="quick-filter" [class.active]="!!activeSort">
+        <div class="dropdown-filter" [class.open]="filtroAberto === 'ordenacao'">
+          <button
+            type="button"
+            class="quick-filter"
+            [class.active]="!!activeSort"
+            [attr.aria-expanded]="filtroAberto === 'ordenacao'"
+            (click)="alternarDropdown('ordenacao')"
+          >
             <span>Ordenar</span>
             <span class="material-icons">sort</span>
             @if (activeSort) {
@@ -53,8 +59,14 @@
           </div>
         </div>
 
-        <div class="dropdown-filter">
-          <button type="button" class="quick-filter" [class.active]="!!selectedCategoryName">
+        <div class="dropdown-filter" [class.open]="filtroAberto === 'categoria'">
+          <button
+            type="button"
+            class="quick-filter"
+            [class.active]="!!selectedCategoryName"
+            [attr.aria-expanded]="filtroAberto === 'categoria'"
+            (click)="alternarDropdown('categoria')"
+          >
             <span>Categorias</span>
             <span class="material-icons">tune</span>
             @if (selectedCategoryName) {
@@ -77,7 +89,7 @@
           <app-btn-outline variant="ghost" icon="arrow_back" (clicked)="limparFiltros()">
             Voltar para Destaques
           </app-btn-outline>
-          <h2>Resultado da Busca ({{ filteredProdutos.length }})</h2>
+          <h2>{{ tituloCatalogo }} ({{ filteredProdutos.length }})</h2>
         </div>
 
         <div class="active-filters">
@@ -123,8 +135,9 @@
                   [nomeLoja]="produto.nomeLoja"
                   [badgeDesconto]="produto.badgeDesconto"
                   [favorito]="produto.favorito || false"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
                   (cliqueCard)="verProduto(produto)"
-                  (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
                   (cliqueFavorito)="alternarFavorito(produto)"
                 ></app-card-produto>
               </div>
@@ -189,7 +202,7 @@
       <section class="lojas-section">
         <div class="section-header">
           <h2>Lojas Próximas</h2>
-          <app-btn-outline variant="outline" size="sm" (clicked)="mostrarCatalogoCompleto()">Ver todas</app-btn-outline>
+          <app-btn-outline variant="outline" size="sm" (clicked)="mostrarCatalogoCompleto()">Ver produtos</app-btn-outline>
         </div>
 
         <div class="carousel-wrapper">
@@ -228,8 +241,9 @@
                   [nomeLoja]="produto.nomeLoja"
                   [badgeDesconto]="produto.badgeDesconto"
                   [favorito]="true"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
                   (cliqueCard)="verProduto(produto)"
-                  (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
                   (cliqueFavorito)="alternarFavorito(produto)"
                 ></app-card-produto>
               </div>
@@ -272,8 +286,9 @@
                   [nomeLoja]="produto.nomeLoja"
                   [badgeDesconto]="produto.badgeDesconto"
                   [favorito]="produto.favorito || false"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
                   (cliqueCard)="verProduto(produto)"
-                  (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
                   (cliqueFavorito)="alternarFavorito(produto)"
                 ></app-card-produto>
               </div>
@@ -299,7 +314,7 @@
       <section class="produtos-section">
         <div class="section-header">
           <h2>Mais Vendidos</h2>
-          <app-btn-outline variant="outline" size="sm" (clicked)="mostrarCatalogoCompleto()">Ver mais</app-btn-outline>
+          <app-btn-outline variant="outline" size="sm" (clicked)="setOrdenacao('avaliacao')">Ver mais</app-btn-outline>
         </div>
         <div class="carousel-wrapper">
           <button class="scroll-arrow left" (click)="rolarCarrossel(vendidosTrack, 'left')"><span class="material-icons">chevron_left</span></button>
@@ -314,8 +329,9 @@
                   [nomeLoja]="produto.nomeLoja"
                   [badgeDesconto]="produto.badgeDesconto"
                   [favorito]="produto.favorito || false"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
                   (cliqueCard)="verProduto(produto)"
-                  (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
                   (cliqueFavorito)="alternarFavorito(produto)"
                 ></app-card-produto>
               </div>
@@ -327,8 +343,8 @@
 
       <section class="produtos-section secao-para-voce">
         <div class="section-header">
-          <h2>Para Você</h2>
-          <span class="section-subtitle">Baseado nas suas buscas recentes</span>
+          <h2>Seleção Rápida</h2>
+          <span class="section-subtitle">Produtos em destaque no marketplace</span>
         </div>
         <div class="carousel-wrapper">
           <button class="scroll-arrow left" (click)="rolarCarrossel(paraVoceTrack, 'left')"><span class="material-icons">chevron_left</span></button>
@@ -343,8 +359,9 @@
                   [nomeLoja]="produto.nomeLoja"
                   [badgeDesconto]="produto.badgeDesconto"
                   [favorito]="produto.favorito || false"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
                   (cliqueCard)="verProduto(produto)"
-                  (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
                   (cliqueFavorito)="alternarFavorito(produto)"
                 ></app-card-produto>
               </div>
@@ -369,8 +386,9 @@
                 [nomeLoja]="produto.nomeLoja"
                 [badgeDesconto]="produto.badgeDesconto"
                 [favorito]="produto.favorito || false"
+                [quantidade]="obterQuantidadeCarrinho(produto.id)"
                 (cliqueCard)="verProduto(produto)"
-                (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
+                (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
                 (cliqueFavorito)="alternarFavorito(produto)"
               ></app-card-produto>
             </div>

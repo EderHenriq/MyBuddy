@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { ProdutoService } from "../../../core/services/produto.service";
 import { DebounceDirective } from "../../../shared/directives/debounce.directive";
 import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
+import { UploadService } from "../../../core/services/upload.service";
 
 @Component({
   selector: "app-meus-produtos",
@@ -16,6 +17,7 @@ export class MeusProdutos implements OnInit {
   produtos: any[] = [];
   categorias: any[] = [];
   private produtoService = inject(ProdutoService);
+  private uploadService = inject(UploadService);
 
   currentPage = 1;
   totalPages = 1;
@@ -26,6 +28,7 @@ export class MeusProdutos implements OnInit {
   modoEdicao = false;
   produtoIdEdicao: number | null = null;
   imagemUrlInput = "";
+  isDragging = false;
 
   formProduto = {
     nome: "",
@@ -33,6 +36,11 @@ export class MeusProdutos implements OnInit {
     preco: 0,
     estoque: 0,
     subCategoriaId: 1,
+    marca: "",
+    origem: "",
+    porteRaca: "",
+    peso: "",
+    idade: "",
   };
 
   ngOnInit() {
@@ -45,6 +53,11 @@ export class MeusProdutos implements OnInit {
       this.produtos = data;
       this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get produtosPaginados() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.produtos.slice(startIndex, startIndex + 10);
   }
 
   carregarCategorias() {
@@ -72,6 +85,11 @@ export class MeusProdutos implements OnInit {
       preco: 0,
       estoque: 0,
       subCategoriaId: 1,
+      marca: "",
+      origem: "",
+      porteRaca: "",
+      peso: "",
+      idade: "",
     };
     this.isModalAberto = true;
   }
@@ -86,6 +104,11 @@ export class MeusProdutos implements OnInit {
       preco: item.preco,
       estoque: item.estoque,
       subCategoriaId: item.subCategoriaId || 1,
+      marca: item.marca || "",
+      origem: item.origem || "",
+      porteRaca: item.porteRaca || "",
+      peso: item.peso || "",
+      idade: item.idade || "",
     };
     this.isModalAberto = true;
   }
@@ -102,6 +125,11 @@ export class MeusProdutos implements OnInit {
       estoque: this.formProduto.estoque,
       subCategoriaId: Number(this.formProduto.subCategoriaId),
       imagens: this.imagemUrlInput ? [this.imagemUrlInput] : [],
+      marca: this.formProduto.marca,
+      origem: this.formProduto.origem,
+      porteRaca: this.formProduto.porteRaca,
+      peso: this.formProduto.peso,
+      idade: this.formProduto.idade,
     };
 
     if (this.modoEdicao && this.produtoIdEdicao !== null) {
@@ -130,6 +158,47 @@ export class MeusProdutos implements OnInit {
           this.carregarProdutos();
         },
         error: (err) => console.error(err),
+      });
+    }
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.uploadService.uploadImage(file).subscribe({
+        next: (fileName) => {
+          this.imagemUrlInput = fileName;
+        },
+        error: (err) => console.error("Erro no upload da imagem do produto:", err),
+      });
+    }
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      this.uploadService.uploadImage(file).subscribe({
+        next: (fileName) => {
+          this.imagemUrlInput = fileName;
+        },
+        error: (err) => console.error("Erro no upload da imagem do produto:", err),
       });
     }
   }

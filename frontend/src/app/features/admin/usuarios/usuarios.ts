@@ -17,12 +17,18 @@ export class Usuarios implements OnInit {
   private adminService = inject(AdminService);
 
   currentPage = 1;
-  totalPages = 5;
+  totalPages = 1;
 
   ngOnInit() {
     this.adminService.buscarUsuarios().subscribe((data) => {
       this.usuarios = data;
+      this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get usuariosPaginados() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.usuarios.slice(startIndex, startIndex + 10);
   }
 
   onSearch(term: string) {

@@ -26,4 +26,10 @@ public class ProdutoResponseDTO {
     private String petshopNome;
     private List<String> imagens;
     private Double notaMedia;
+
+    private String marca;
+    private String origem;
+    private String porteRaca;
+    private String peso;
+    private String idade;
 }

@@ -17,12 +17,18 @@ export class MeusPets implements OnInit {
   private ongService = inject(OngService);
 
   currentPage = 1;
-  totalPages = 5;
+  totalPages = 1;
 
   ngOnInit() {
     this.ongService.buscarMeusPets().subscribe((data) => {
       this.pets = data;
+      this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get petsPaginados() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.pets.slice(startIndex, startIndex + 10);
   }
 
   onSearch(term: string) {

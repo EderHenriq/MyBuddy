@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -16,13 +17,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@SuppressWarnings({"null", "unchecked"})
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
     
     private final JwtGrantedAuthoritiesConverter  jwtGrantedAuthoritiesConverter = 
             new JwtGrantedAuthoritiesConverter();
 
     @Override
-    public AbstractAuthenticationToken convert(Jwt jwt) {
+    public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         Collection<GrantedAuthority> authorities = Stream.concat(
             jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
             extractRealmRoles(jwt).stream()

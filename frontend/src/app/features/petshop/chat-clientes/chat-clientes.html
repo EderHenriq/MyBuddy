@@ -27,7 +27,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of chats; track item.cliente) {
+          @for (item of chatsPaginados; track item.cliente) {
             <tr>
               <td class="bold-text">{{ item.cliente }}</td>
               <td>{{ item.ultimaMensagem }}</td>

@@ -17,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class InteresseAdocaoService {
 
     private final InteresseAdocaoRepository interesseRepo;

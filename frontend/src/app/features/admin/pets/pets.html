@@ -29,7 +29,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of denuncias; track item.id) {
+          @for (item of denunciasPaginadas; track item.id) {
             <tr>
               <td>#{{ item.id }}</td>
               <td class="bold-text">{{ item.nomePet }}</td>

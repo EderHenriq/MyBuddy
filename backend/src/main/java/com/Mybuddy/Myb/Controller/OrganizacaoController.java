@@ -22,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/organizacoes")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class OrganizacaoController {
 
     private static final Logger log = LoggerFactory.getLogger(OrganizacaoController.class);

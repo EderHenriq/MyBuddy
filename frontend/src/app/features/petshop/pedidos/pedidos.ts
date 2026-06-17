@@ -28,7 +28,13 @@ export class Pedidos implements OnInit {
   carregarPedidos() {
     this.petshopService.buscarPedidos().subscribe((data) => {
       this.pedidos = data;
+      this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get pedidosPaginados() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.pedidos.slice(startIndex, startIndex + 10);
   }
 
   alterarStatus(id: number, novoStatus: string) {

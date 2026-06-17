@@ -45,6 +45,7 @@ interface Produto {
 }
 
 type OrdenacaoMarketplace = "" | "menor_preco" | "maior_preco" | "avaliacao" | "desconto";
+type DropdownMarketplace = "ordenacao" | "categoria";
 
 @Component({
   selector: "app-marketplace",
@@ -79,6 +80,7 @@ export class Marketplace implements OnInit, OnDestroy {
   favoritosExibir: Produto[] = [];
   limiteProdutosTodos = 12;
   catalogoAberto = false;
+  filtroAberto: DropdownMarketplace | null = null;
 
   // Banner autoplay
   activeBannerIndex = 0;
@@ -110,6 +112,26 @@ export class Marketplace implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.pararAutoplayBanner();
     if (this.toastTimeout) clearTimeout(this.toastTimeout);
+  }
+
+  get tituloCatalogo(): string {
+    if (this.searchQuery.trim()) {
+      return "Resultado da Busca";
+    }
+
+    if (this.selectedCategoryName) {
+      return `Produtos em ${this.selectedCategoryName}`;
+    }
+
+    if (this.activeSort === "desconto") {
+      return "Melhores Ofertas";
+    }
+
+    if (this.activeSort === "avaliacao") {
+      return "Mais Bem Avaliados";
+    }
+
+    return "Catálogo de Produtos";
   }
 
   // === Banner Autoplay ===
@@ -174,11 +196,11 @@ export class Marketplace implements OnInit, OnDestroy {
       next: (dados) => {
         const mapeados = dados.map((p: any) => ({
           id: p.id,
-          urlImagem: p.imagens && p.imagens.length > 0 ? p.imagens[0] : "/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg",
+          urlImagem: p.imagens && p.imagens.length > 0 ? (p.imagens[0].startsWith('http') || p.imagens[0].startsWith('/assets') ? p.imagens[0] : "http://localhost:8081/uploads/" + p.imagens[0]) : "/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg",
           titulo: p.nome,
           descricao: p.descricao || "",
           preco: p.preco,
-          precoAntigo: p.preco * 1.2,
+          precoAntigo: p.precoAntigo || p.precoOriginal || undefined,
           nomeLoja: p.petshopNome || "PetLovers Shop",
           badgeDesconto: this.gerarBadge(p),
           favorito: false,
@@ -192,8 +214,8 @@ export class Marketplace implements OnInit, OnDestroy {
           tags: this.gerarTagsProduto(p),
         }));
         this.todosProdutos = mapeados;
-        this.produtosOferta = mapeados.slice(0, 4);
-        this.maisVendidos = mapeados.slice().reverse().slice(0, 4);
+        this.produtosOferta = this.obterProdutosEmOferta(mapeados).slice(0, 6);
+        this.maisVendidos = this.obterMaisVendidos(mapeados).slice(0, 6);
         this.carregarFavoritosVisual();
         this.filtrarProdutos();
       },
@@ -204,8 +226,12 @@ export class Marketplace implements OnInit, OnDestroy {
   // Gera badge semântica por tipo
   gerarBadge(p: any): string {
     if (p.estoque === 0) return 'Esgotado';
-    if (p.preco < 50) return '10% OFF';
-    if (p.preco >= 100) return 'Frete Grátis';
+    const precoAntigo = p.precoAntigo || p.precoOriginal;
+    if (precoAntigo && precoAntigo > p.preco) {
+      const percentual = Math.round(((precoAntigo - p.preco) / precoAntigo) * 100);
+      return `${percentual}% OFF`;
+    }
+    if (p.preco >= 150) return 'Frete Grátis';
     return '';
   }
 
@@ -232,7 +258,7 @@ export class Marketplace implements OnInit, OnDestroy {
     this.maisVendidos.forEach(p => {
       p.favorito = favs.some(f => f.id === p.id);
     });
-    this.favoritosExibir = favs;
+    this.favoritosExibir = this.todosProdutos.filter(p => favs.some(f => f.id === p.id));
   }
 
   categorias: CategoriaVisual[] = [
@@ -568,20 +594,41 @@ export class Marketplace implements OnInit, OnDestroy {
   setOrdenacao(opcao: OrdenacaoMarketplace) {
     this.activeSort = opcao;
     this.catalogoAberto = true;
+    this.filtroAberto = null;
     this.filtrarProdutos();
   }
 
-  adicionarAoCarrinho(produto: Produto, quantidade = 1) {
-    this.carrinhoService.adicionarAoCarrinho({
+  obterQuantidadeCarrinho(produtoId: number): number {
+    return this.carrinhoService.itensCarrinho().find((item) => item.id === produtoId)?.quantidade || 0;
+  }
+
+  atualizarQuantidadeCarrinho(produto: Produto, quantidade: number) {
+    const quantidadeAnterior = this.obterQuantidadeCarrinho(produto.id);
+
+    if (quantidade <= 0) {
+      this.carrinhoService.removerDoCarrinho(produto.id);
+      return;
+    }
+
+    const itemCarrinho = {
       id: produto.id,
       nome: produto.titulo,
       preco: produto.preco,
       urlImagem: produto.urlImagem,
       lojaNome: produto.nomeLoja,
       petshopId: produto.petshopId || 1,
-    });
-    this.mostrarToast(`${produto.titulo.substring(0, 30)}... adicionado ao carrinho`);
-    this.dispararBounce();
+    };
+
+    if (quantidadeAnterior === 0) {
+      this.carrinhoService.adicionarAoCarrinho(itemCarrinho);
+    } else {
+      this.carrinhoService.atualizarQuantidade(produto.id, quantidade);
+    }
+
+    if (quantidade > quantidadeAnterior) {
+      this.mostrarToast(`${produto.titulo.substring(0, 30)}... adicionado ao carrinho`);
+      this.dispararBounce();
+    }
   }
 
   verProduto(produto: Produto) {
@@ -595,7 +642,12 @@ export class Marketplace implements OnInit, OnDestroy {
       this.selectedCategoryName = categoria.nome;
     }
     this.catalogoAberto = true;
+    this.filtroAberto = null;
     this.filtrarProdutos();
+  }
+
+  alternarDropdown(filtro: DropdownMarketplace) {
+    this.filtroAberto = this.filtroAberto === filtro ? null : filtro;
   }
 
   alternarFavorito(produto: Produto) {
@@ -632,7 +684,12 @@ export class Marketplace implements OnInit, OnDestroy {
   aplicarFiltroCategoria(nomeCategoria: string) {
     this.selectedCategoryName = nomeCategoria;
     this.catalogoAberto = true;
+    this.filtroAberto = null;
     this.filtrarProdutos();
+  }
+
+  informarEnderecoEmBreve() {
+    this.mostrarToast("Seleção de endereço em breve");
   }
 
   rolarParaOfertas() {
@@ -732,6 +789,24 @@ export class Marketplace implements OnInit, OnDestroy {
 
   private produtoTemOferta(produto: Produto): boolean {
     return this.calcularPercentualDesconto(produto) > 0 || this.normalizarTexto(produto.badgeDesconto).includes("frete gratis");
+  }
+
+  private obterProdutosEmOferta(produtos: Produto[]): Produto[] {
+    return produtos
+      .filter((produto) => this.produtoTemOferta(produto))
+      .sort((a, b) => this.calcularPercentualDesconto(b) - this.calcularPercentualDesconto(a));
+  }
+
+  private obterMaisVendidos(produtos: Produto[]): Produto[] {
+    return [...produtos].sort((a, b) => {
+      const avaliacaoDiff = (b.avaliacaoMedia || 0) - (a.avaliacaoMedia || 0);
+
+      if (avaliacaoDiff !== 0) {
+        return avaliacaoDiff;
+      }
+
+      return (b.estoque || 0) - (a.estoque || 0);
+    });
   }
 
   private calcularPercentualDesconto(produto: Produto): number {

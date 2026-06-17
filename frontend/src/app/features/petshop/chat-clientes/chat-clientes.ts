@@ -17,12 +17,18 @@ export class ChatClientes implements OnInit {
   private petshopService = inject(PetshopService);
 
   currentPage = 1;
-  totalPages = 5;
+  totalPages = 1;
 
   ngOnInit() {
     this.petshopService.buscarChats().subscribe((data) => {
       this.chats = data;
+      this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get chatsPaginados() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.chats.slice(startIndex, startIndex + 10);
   }
 
   onSearch(term: string) {

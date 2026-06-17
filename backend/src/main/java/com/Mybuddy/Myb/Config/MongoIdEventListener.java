@@ -5,6 +5,7 @@ import com.Mybuddy.Myb.Service.SequenceGeneratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -21,7 +22,7 @@ public class MongoIdEventListener extends AbstractMongoEventListener<Object> {
     private final SequenceGeneratorService sequenceGenerator;
 
     @Override
-    public void onBeforeConvert(BeforeConvertEvent<Object> event) {
+    public void onBeforeConvert(@NonNull BeforeConvertEvent<Object> event) {
         Object source = event.getSource();
         if (source != null) {
             if (source instanceof Identifiable identifiable) {

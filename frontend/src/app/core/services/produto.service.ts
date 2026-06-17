@@ -10,6 +10,11 @@ export interface ProdutoRequest {
   estoque: number;
   subCategoriaId: number;
   imagens: string[];
+  marca?: string;
+  origem?: string;
+  porteRaca?: string;
+  peso?: string;
+  idade?: string;
 }
 
 @Injectable({
@@ -221,6 +226,11 @@ export class ProdutoService {
         ? request.imagens 
         : ["/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg"],
       notaMedia: 4.8,
+      marca: request.marca || "",
+      origem: request.origem || "",
+      porteRaca: request.porteRaca || "",
+      peso: request.peso || "",
+      idade: request.idade || "",
     };
 
     prods.unshift(novo);
@@ -254,6 +264,11 @@ export class ProdutoService {
         status: request.estoque > 0 ? "ATIVO" : "ESGOTADO",
         subCategoriaId: request.subCategoriaId,
         imagens: request.imagens && request.imagens.length > 0 ? request.imagens : prods[idx].imagens,
+        marca: request.marca,
+        origem: request.origem,
+        porteRaca: request.porteRaca,
+        peso: request.peso,
+        idade: request.idade,
       };
       this.salvarProdutosLocais(prods);
       return prods[idx];
@@ -271,13 +286,15 @@ export class ProdutoService {
     const prods = this.obterProdutosLocais();
     const contemUnsplash = prods.some((p: any) => p.imagens && p.imagens.some((img: string) => img.includes("unsplash.com")));
     const faltaMarca = prods.length > 0 && !prods[0].hasOwnProperty('marca');
-    if (prods.length < 16 || contemUnsplash || faltaMarca) {
+    const faltaPrecoAntigo = prods.length > 0 && !prods.some((p: any) => p.precoAntigo);
+    if (prods.length < 16 || contemUnsplash || faltaMarca || faltaPrecoAntigo) {
       const mockInicial = [
         {
           id: 1,
           nome: "Ração Premier Formula Cães Adultos Frango",
           descricao: "Alimento completo de alta qualidade para cães adultos de porte médio e grande.",
           preco: 189.9,
+          precoAntigo: 229.9,
           estoque: 24,
           status: "ATIVO",
           subCategoriaId: 1,
@@ -312,6 +329,7 @@ export class ProdutoService {
           nome: "Tapete Higiênico Super Seco 30 unidades",
           descricao: "Tapete de alta absorção com atrativo canino para educar o cão a fazer as necessidades no local certo.",
           preco: 49.9,
+          precoAntigo: 65.9,
           estoque: 0,
           status: "ESGOTADO",
           subCategoriaId: 5,
@@ -397,6 +415,7 @@ export class ProdutoService {
           nome: "Arranhador de Papelão Rampa Gatos",
           descricao: "Diversão e cuidado com as unhas do seu felino em um design prático e resistente.",
           preco: 35.0,
+          precoAntigo: 45.0,
           estoque: 20,
           status: "ATIVO",
           subCategoriaId: 3,
@@ -414,6 +433,7 @@ export class ProdutoService {
           nome: "Ração Golden Special Cães Adultos",
           descricao: "Formulada com ingredientes de excelente digestibilidade e sabor inigualável.",
           preco: 139.9,
+          precoAntigo: 159.9,
           estoque: 40,
           status: "ATIVO",
           subCategoriaId: 1,
@@ -465,6 +485,7 @@ export class ProdutoService {
           nome: "Ração Royal Canin Gatos Castrados",
           descricao: "Alimento completo para gatos adultos castrados dos 1 aos 7 anos de idade.",
           preco: 219.9,
+          precoAntigo: 249.9,
           estoque: 14,
           status: "ATIVO",
           subCategoriaId: 1,

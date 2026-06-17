@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class CampanhaDoacaoService {
 
     private final CampanhaDoacaoRepository repository;

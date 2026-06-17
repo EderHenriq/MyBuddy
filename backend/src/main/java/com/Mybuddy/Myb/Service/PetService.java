@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class PetService {
 
     private static final Logger log = LoggerFactory.getLogger(PetService.class);

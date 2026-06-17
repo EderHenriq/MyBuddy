@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
@@ -120,6 +121,11 @@ public class ProdutoService {
         produto.setSubCategoria(subCategoria);
         produto.setPetshop(petshop);
         produto.setStatus(StatusProduto.ATIVO);
+        produto.setMarca(request.getMarca());
+        produto.setOrigem(request.getOrigem());
+        produto.setPorteRaca(request.getPorteRaca());
+        produto.setPeso(request.getPeso());
+        produto.setIdade(request.getIdade());
 
         Produto salvo = produtoRepository.save(produto);
 
@@ -154,6 +160,11 @@ public class ProdutoService {
         produto.setPreco(request.getPreco());
         produto.setEstoque(request.getEstoque());
         produto.setSubCategoria(subCategoria);
+        produto.setMarca(request.getMarca());
+        produto.setOrigem(request.getOrigem());
+        produto.setPorteRaca(request.getPorteRaca());
+        produto.setPeso(request.getPeso());
+        produto.setIdade(request.getIdade());
 
         if (request.getImagens() != null) {
             fotoProdutoRepository.deleteByProdutoId(id);
@@ -210,6 +221,11 @@ public class ProdutoService {
                 .petshopNome(p.getPetshop().getNomeFantasia())
                 .imagens(fotos)
                 .notaMedia(media)
+                .marca(p.getMarca())
+                .origem(p.getOrigem())
+                .porteRaca(p.getPorteRaca())
+                .peso(p.getPeso())
+                .idade(p.getIdade())
                 .build();
     }
 

@@ -57,7 +57,7 @@
                 <td colspan="6" class="empty-state">Tudo em dia! Não há aprovações pendentes.</td>
               </tr>
             }
-            @for (item of pendingApprovals; track item.id) {
+            @for (item of pendingApprovalsPaginados; track item.id) {
               <tr>
                 <td>#{{ item.id }}</td>
                 <td class="bold-text">{{ item.name }}</td>

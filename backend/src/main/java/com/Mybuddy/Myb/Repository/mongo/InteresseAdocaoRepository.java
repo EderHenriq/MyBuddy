@@ -5,11 +5,9 @@ import com.Mybuddy.Myb.Model.Pet;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Model.StatusInteresse;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface InteresseAdocaoRepository extends MongoRepository<InteresseAdocao, Long> {
 
     List<InteresseAdocao> findByUsuarioId(Long usuarioId);

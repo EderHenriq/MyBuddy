@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/categorias")
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("null")
 public class CategoriaController {
 
     private final CategoriaService categoriaService;

@@ -1,17 +1,16 @@
 package com.Mybuddy.Myb.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import lombok.*;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.time.LocalDateTime;
+
 
 @Document(collection = "pets")
 @Getter

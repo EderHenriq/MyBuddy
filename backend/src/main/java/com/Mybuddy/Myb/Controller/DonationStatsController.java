@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/api/donations/stats")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class DonationStatsController {
 
     private final PetRepository petRepository;

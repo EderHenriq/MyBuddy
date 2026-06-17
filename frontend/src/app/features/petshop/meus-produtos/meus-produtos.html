@@ -35,7 +35,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of produtos; track item.id) {
+          @for (item of produtosPaginados; track item.id) {
             <tr>
               <td class="bold-text">{{ item.nome }}</td>
               <td>{{ item.categoriaNome || item.subCategoriaNome || 'Geral' }}</td>
@@ -90,7 +90,7 @@
             <input type="text" id="nome" name="nome" [(ngModel)]="formProduto.nome" required placeholder="Ex: Ração Premier 15kg" />
           </div>
 
-          <div class="form-row-grid">
+          <div class="form-row-grid grid-2">
             <div class="form-group">
               <label for="preco">Preço (R$) *</label>
               <input type="number" id="preco" name="preco" [(ngModel)]="formProduto.preco" required min="0.01" step="0.01" placeholder="149.90" />
@@ -120,9 +120,80 @@
             <textarea id="descricao" name="descricao" [(ngModel)]="formProduto.descricao" rows="3" placeholder="Detalhes sobre o produto..."></textarea>
           </div>
 
-          <div class="form-group">
-            <label for="imagemUrl">URL da Imagem</label>
-            <input type="url" id="imagemUrl" name="imagemUrl" [(ngModel)]="imagemUrlInput" placeholder="https://images.unsplash.com/... (ou em branco para padrão)" />
+          <!-- Ficha Técnica -->
+          <div class="ficha-tecnica-section">
+            <h3>Ficha Técnica</h3>
+            
+            <div class="form-row-grid grid-2">
+              <div class="form-group">
+                <label for="marca">Marca</label>
+                <input type="text" id="marca" name="marca" [(ngModel)]="formProduto.marca" placeholder="Ex: Premier, Zee.Dog" />
+              </div>
+              <div class="form-group">
+                <label for="origem">Origem</label>
+                <input type="text" id="origem" name="origem" [(ngModel)]="formProduto.origem" placeholder="Ex: Nacional, Importado" />
+              </div>
+            </div>
+
+            <div class="form-row-grid grid-3">
+              <div class="form-group">
+                <label for="porteRaca">Porte de Raça</label>
+                <input type="text" id="porteRaca" name="porteRaca" [(ngModel)]="formProduto.porteRaca" placeholder="Ex: Médio e Grande" />
+              </div>
+              <div class="form-group">
+                <label for="peso">Peso</label>
+                <input type="text" id="peso" name="peso" [(ngModel)]="formProduto.peso" placeholder="Ex: 15kg, 500g" />
+              </div>
+              <div class="form-group">
+                <label for="idade">Idade Recomendada</label>
+                <input type="text" id="idade" name="idade" [(ngModel)]="formProduto.idade" placeholder="Ex: Adultos, Filhotes" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload de Imagem -->
+          <div class="form-group photo-upload-group">
+            <label>Imagem do Produto</label>
+            
+            <div 
+              class="upload-area" 
+              [class.dragging]="isDragging"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event)"
+              (click)="fileInput.click()"
+            >
+              @if (imagemUrlInput) {
+                <div class="image-preview-wrapper" (click)="$event.stopPropagation()">
+                  <img [src]="imagemUrlInput.startsWith('http') ? imagemUrlInput : 'http://localhost:8081/uploads/' + imagemUrlInput" alt="Preview" />
+                  <button type="button" class="remove-btn" (click)="imagemUrlInput = ''" title="Remover Imagem">
+                    <span class="material-icons">close</span>
+                  </button>
+                </div>
+              } @else {
+                <span class="material-icons upload-icon">cloud_upload</span>
+                <p class="upload-title">Arraste uma imagem aqui ou clique para escolher</p>
+                <p class="upload-subtitle">Formatos suportados: PNG, JPG, JPEG, WEBP</p>
+              }
+              <input #fileInput type="file" id="imagemFile" (change)="onFileSelected($event)" accept="image/*" style="display: none;" />
+            </div>
+
+            <div class="divider-or">
+              <span>ou insira uma URL externa</span>
+            </div>
+
+            <div class="url-input-container">
+              <div class="input-with-icon">
+                <span class="material-icons field-icon">link</span>
+                <input 
+                  type="url" 
+                  id="imagemUrl" 
+                  name="imagemUrl" 
+                  [(ngModel)]="imagemUrlInput" 
+                  placeholder="https://exemplo.com/imagem.jpg" 
+                />
+              </div>
+            </div>
           </div>
 
           <div class="modal-actions">

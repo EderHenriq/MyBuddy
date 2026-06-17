@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class RecomendacaoService {
 
     private final InteresseAdocaoRepository interesseRepo;

@@ -85,14 +85,16 @@ export class DetalhesProduto implements OnInit {
           categoria: p.categoriaNome || p.subCategoriaNome || "Geral",
           avaliacaoMedia: p.notaMedia || 4.5,
           totalAvaliacoes: p.totalAvaliacoes || 15,
-          fotos: p.imagens && p.imagens.length > 0 ? p.imagens : [
+          fotos: p.imagens && p.imagens.length > 0 ? p.imagens.map((img: string) => img.startsWith('http') || img.startsWith('/assets') ? img : 'http://localhost:8081/uploads/' + img) : [
             "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=800"
           ],
           descricao: p.descricao || "Este é um produto premium selecionado pelo time do MyBuddy para o bem-estar e diversão do seu pet. Feito com materiais atóxicos e altamente duráveis.",
           especificacoes: p.especificacoes || [
-            { chave: "Origem", valor: "Nacional" },
-            { chave: "Porte de Raça", valor: "Médio e Grande" },
-            { chave: "Marca", valor: p.petshopNome || "Buddy Brand" },
+            { chave: "Origem", valor: p.origem || "Nacional" },
+            { chave: "Porte de Raça", valor: p.porteRaca || "Médio e Grande" },
+            { chave: "Marca", valor: p.marca || p.petshopNome || "Buddy Brand" },
+            { chave: "Peso", valor: p.peso || "Não especificado" },
+            { chave: "Idade", valor: p.idade || "Todas as idades" },
           ],
           avaliacoes: p.avaliacoes || [
             { autor: "Marcos Souza", nota: 5, data: "12/05/2026", texto: "Excelente produto, cumpre o que promete. Meu pet adorou!" },

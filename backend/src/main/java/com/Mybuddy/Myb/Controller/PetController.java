@@ -30,6 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/pets")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class PetController {
 
     private static final Logger log = LoggerFactory.getLogger(PetController.class);
@@ -61,7 +62,7 @@ public class PetController {
     }
 
     @PostMapping("/upload-image")
-    @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ONG') or hasRole('PETSHOP') or hasRole('ADMIN')")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         log.info("Recebida requisição de upload de imagem: {}", file.getOriginalFilename());
         if (file.isEmpty()) {
@@ -77,7 +78,7 @@ public class PetController {
     }
 
     @PostMapping("/upload-images")
-    @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ONG') or hasRole('PETSHOP') or hasRole('ADMIN')")
     public ResponseEntity<?> uploadImages(@RequestParam("files") List<MultipartFile> files) {
         log.info("Recebida requisição de upload múltiplo: {} arquivos", files.size());
         if (files.isEmpty()) {

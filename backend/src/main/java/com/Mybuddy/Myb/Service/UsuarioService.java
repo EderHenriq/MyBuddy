@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class UsuarioService {
 
     public static final String KeycloakUserSyncService = null;

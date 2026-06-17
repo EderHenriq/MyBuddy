@@ -52,7 +52,7 @@ public class ProdutoServiceTest {
 
     @BeforeEach
     void setUp() {
-        requestDTO = new ProdutoRequestDTO("Ração Premier", "Ração super premium", new BigDecimal("150.00"), 10, 1L, List.of("url1", "url2"));
+        requestDTO = new ProdutoRequestDTO("Ração Premier", "Ração super premium", new BigDecimal("150.00"), 10, 1L, List.of("url1", "url2"), null, null, null, null, null);
         
         usuario = new Usuario();
         usuario.setId(1L);
