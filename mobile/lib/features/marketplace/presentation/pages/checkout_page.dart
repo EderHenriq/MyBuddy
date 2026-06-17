@@ -55,12 +55,21 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Checkout', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Finalizar Compra', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: BlocBuilder<CartCubit, CartState>(
         builder: (context, cartState) {
           if (cartState.items.isEmpty) {
-            return const Center(child: Text('Nenhum item no carrinho.'));
+            return Center(
+              child: Text(
+                'Nenhum item no carrinho.',
+                style: TextStyle(
+                  color: isDark ? Colors.white70 : Colors.black87,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            );
           }
 
           final subtotal = cartState.totalPrice;

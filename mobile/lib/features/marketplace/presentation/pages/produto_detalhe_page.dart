@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mybuddy_app/features/marketplace/domain/entities/produto.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/cart_cubit.dart';
@@ -32,17 +33,224 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
     }
   }
 
+  void _showCartBottomSheet(BuildContext context, CartState cartState) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return BlocBuilder<CartCubit, CartState>(
+              builder: (context, state) {
+                if (state.items.isEmpty) {
+                  return Container(
+                    height: 250,
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.darkSurface : Colors.white,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                    ),
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.shopping_cart_rounded, color: AppColors.primary),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Seu Carrinho',
+                                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.close_rounded),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        const Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.remove_shopping_cart_outlined, size: 48, color: Colors.grey),
+                              SizedBox(height: 12),
+                              Text(
+                                'Seu carrinho está vazio.',
+                                style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.65,
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.darkSurface : Colors.white,
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.shopping_cart_rounded, color: AppColors.primary),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Seu Carrinho',
+                                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.close_rounded),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      ),
+                      const Divider(),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: state.items.length,
+                          itemBuilder: (context, index) {
+                            final item = state.items[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10.0),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      item.produto.imagemUrl,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) => Container(
+                                        width: 50,
+                                        height: 50,
+                                        color: Colors.grey[200],
+                                        child: const Icon(Icons.shopping_bag_outlined),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.produto.nome,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'R\$ ${item.produto.preco.toStringAsFixed(2).replaceAll('.', ',')}',
+                                          style: const TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.remove_circle_outline_rounded, color: Colors.grey, size: 20),
+                                        onPressed: () {
+                                          context.read<CartCubit>().updateQuantity(item.produto.id, item.quantidade - 1);
+                                        },
+                                      ),
+                                      Text(
+                                        '${item.quantidade}',
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.primary, size: 20),
+                                        onPressed: () {
+                                          context.read<CartCubit>().updateQuantity(item.produto.id, item.quantidade + 1);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Total:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          Text(
+                            'R\$ ${state.totalPrice.toStringAsFixed(2).replaceAll('.', ',')}',
+                            style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w900, fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      AppButton(
+                        text: 'Finalizar Compra',
+                        onPressed: () {
+                          Navigator.pop(context);
+                          context.push('/checkout');
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      body: BlocBuilder<ProductsCubit, ProductsState>(
-        builder: (context, state) {
-          if (state is ProductsLoading) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.primary));
-          }
+    return BlocBuilder<CartCubit, CartState>(
+      builder: (context, cartState) {
+        return Scaffold(
+          floatingActionButton: cartState.items.isEmpty
+              ? null
+              : FloatingActionButton.extended(
+                  onPressed: () => _showCartBottomSheet(context, cartState),
+                  backgroundColor: AppColors.primary,
+                  icon: Badge(
+                    label: Text('${cartState.totalItems}'),
+                    child: const Icon(Icons.shopping_cart_rounded, color: Colors.white),
+                  ),
+                  label: Text(
+                    'R\$ ${cartState.totalPrice.toStringAsFixed(2).replaceAll('.', ',')}',
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+          body: BlocBuilder<ProductsCubit, ProductsState>(
+            builder: (context, state) {
+              if (state is ProductsLoading) {
+                return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+              }
 
           if (state is ProductsLoaded) {
             final produto = state.produtos.firstWhere(
@@ -85,11 +293,11 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                           children: [
                             Image.network(
                               produto.imagemUrl,
-                              height: MediaQuery.of(context).size.height * 0.4,
+                              height: MediaQuery.of(context).size.height * 0.4 > 350 ? 350.0 : MediaQuery.of(context).size.height * 0.4,
                               width: double.infinity,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) => Container(
-                                height: MediaQuery.of(context).size.height * 0.4,
+                                height: MediaQuery.of(context).size.height * 0.4 > 350 ? 350.0 : MediaQuery.of(context).size.height * 0.4,
                                 color: isDark ? AppColors.darkBorder : AppColors.background,
                                 child: const Icon(Icons.shopping_bag_outlined, size: 80, color: AppColors.primary),
                               ),
@@ -426,6 +634,8 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
         },
       ),
     );
+  },
+);
   }
 
   Widget _buildSpecRow(String label, String value, bool isDark) {

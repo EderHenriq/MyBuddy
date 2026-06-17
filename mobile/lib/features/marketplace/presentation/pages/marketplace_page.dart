@@ -228,7 +228,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                       ),
                       const SizedBox(height: 16),
                       AppButton(
-                        text: 'Ir para o Checkout',
+                        text: 'Finalizar Compra',
                         onPressed: () {
                           Navigator.pop(context);
                           context.push('/checkout');
@@ -574,72 +574,75 @@ class _MarketplacePageState extends State<MarketplacePage> {
   Widget _buildCircularCategories(bool isDark) {
     return SizedBox(
       height: 95,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        itemCount: _categories.length,
-        itemBuilder: (context, index) {
-          final category = _categories[index];
-          final isSelected = _selectedCategory == category;
-          final icon = _categoryIcons[category] ?? Icons.shopping_bag_rounded;
+      child: Center(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: _categories.map((category) {
+              final isSelected = _selectedCategory == category;
+              final icon = _categoryIcons[category] ?? Icons.shopping_bag_rounded;
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _selectedCategory = category;
-                });
-              },
-              child: Column(
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                       shape: BoxShape.circle,
-                       color: isSelected
-                           ? AppColors.primary
-                           : (isDark ? AppColors.darkSurface : Colors.white),
-                       border: Border.all(
-                         color: isSelected
-                             ? Colors.transparent
-                             : (isDark ? AppColors.darkBorder : AppColors.border),
-                         width: 1.2,
-                       ),
-                       boxShadow: [
-                         BoxShadow(
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedCategory = category;
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                           shape: BoxShape.circle,
                            color: isSelected
-                               ? AppColors.primary.withValues(alpha: 0.3)
-                               : Colors.transparent,
-                           blurRadius: 6,
-                           offset: const Offset(0, 3),
-                         ),
-                       ],
-                    ),
-                    child: Icon(
-                      icon,
-                      color: isSelected ? Colors.white : AppColors.primary,
-                      size: 24,
-                    ),
+                               ? AppColors.primary
+                               : (isDark ? AppColors.darkSurface : Colors.white),
+                           border: Border.all(
+                             color: isSelected
+                                 ? Colors.transparent
+                                 : (isDark ? AppColors.darkBorder : AppColors.border),
+                             width: 1.2,
+                           ),
+                           boxShadow: [
+                             BoxShadow(
+                               color: isSelected
+                                   ? AppColors.primary.withValues(alpha: 0.3)
+                                   : Colors.transparent,
+                               blurRadius: 6,
+                               offset: const Offset(0, 3),
+                             ),
+                           ],
+                        ),
+                        child: Icon(
+                          icon,
+                          color: isSelected ? Colors.white : AppColors.primary,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        category,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                          color: isSelected
+                              ? AppColors.primary
+                              : (isDark ? AppColors.darkTextPrimary : AppColors.textPrimary),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    category,
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                      color: isSelected
-                          ? AppColors.primary
-                          : (isDark ? AppColors.darkTextPrimary : AppColors.textPrimary),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+                ),
+              );
+            }).toList(),
+          ),
+        ),
       ),
     );
   }
@@ -672,103 +675,106 @@ class _MarketplacePageState extends State<MarketplacePage> {
 
     return SizedBox(
       height: 120,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        itemCount: banners.length,
-        itemBuilder: (context, index) {
-          final b = banners[index];
-          return Container(
-            width: MediaQuery.of(context).size.width >= 600 ? 400 : MediaQuery.of(context).size.width * 0.78,
-            margin: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: LinearGradient(
-                colors: b['colors'] as List<Color>,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: (b['colors'] as List<Color>)[1].withValues(alpha: 0.3),
-                   blurRadius: 6,
-                   offset: const Offset(0, 3),
+      child: Center(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: banners.map((b) {
+              return Container(
+                width: MediaQuery.of(context).size.width >= 600 ? 400 : MediaQuery.of(context).size.width * 0.78,
+                margin: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    colors: b['colors'] as List<Color>,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: (b['colors'] as List<Color>)[1].withValues(alpha: 0.3),
+                       blurRadius: 6,
+                       offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          b['tag'] as String,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.white24,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              b['tag'] as String,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            b['title'] as String,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            b['subtitle'] as String,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      right: 12,
+                      bottom: 12,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: (b['colors'] as List<Color>)[1],
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        b['title'] as String,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                        onPressed: () {
+                          if (b['category'] != null) {
+                            setState(() {
+                              _selectedCategory = b['category'] as String;
+                            });
+                          }
+                        },
+                        child: Text(
+                          b['actionText'] as String,
+                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      Text(
-                        b['subtitle'] as String,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  right: 12,
-                  bottom: 12,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: (b['colors'] as List<Color>)[1],
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
                     ),
-                    onPressed: () {
-                      if (b['category'] != null) {
-                        setState(() {
-                          _selectedCategory = b['category'] as String;
-                        });
-                      }
-                    },
-                    child: Text(
-                      b['actionText'] as String,
-                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        },
+              );
+            }).toList(),
+          ),
+        ),
       ),
     );
   }
