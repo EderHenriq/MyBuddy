@@ -68,9 +68,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
           final discountValue = subtotal * _cupomDiscount;
           final total = (subtotal + deliveryFee) - discountValue;
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 650),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Endereço de Entrega (iFood-like)
@@ -243,7 +246,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 const SizedBox(height: 20),
               ],
             ),
-          );
+          ),
+        ),
+      );
         },
       ),
     );

@@ -28,26 +28,32 @@ class MeusProdutosPage extends StatelessWidget {
 
             if (produtos.isEmpty) {
               return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.storefront_outlined, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Nenhum produto cadastrado',
-                        style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey),
-                      ),
-                    ],
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 650),
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.storefront_outlined, size: 64, color: Colors.grey),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Nenhum produto cadastrado',
+                          style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
             }
 
-            return ListView.builder(
-              padding: const EdgeInsets.all(24.0),
-              itemCount: produtos.length,
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 650),
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(24.0),
+                  itemCount: produtos.length,
               itemBuilder: (context, index) {
                 final produto = produtos[index];
                 return Padding(
@@ -111,7 +117,9 @@ class MeusProdutosPage extends StatelessWidget {
                   ),
                 );
               },
-            );
+            ),
+          ),
+        );
           }
 
           return const Center(child: Text('Erro ao carregar produtos.'));

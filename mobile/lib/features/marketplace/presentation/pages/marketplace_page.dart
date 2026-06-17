@@ -283,10 +283,13 @@ class _MarketplacePageState extends State<MarketplacePage> {
             child: RefreshIndicator(
               onRefresh: () => context.read<ProductsCubit>().loadProducts(),
               color: AppColors.primary,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1000),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _buildLocationHeader(isDark),
                     _buildSearchBar(isDark),
@@ -411,12 +414,15 @@ class _MarketplacePageState extends State<MarketplacePage> {
                               );
                             }
 
+                            final screenWidth = MediaQuery.of(context).size.width;
+                            final crossAxisCount = screenWidth >= 950 ? 4 : (screenWidth >= 650 ? 3 : 2);
+
                             return GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               padding: const EdgeInsets.symmetric(vertical: 10.0),
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: crossAxisCount,
                                 mainAxisSpacing: 14,
                                 crossAxisSpacing: 14,
                                 childAspectRatio: 0.64,
@@ -444,7 +450,9 @@ class _MarketplacePageState extends State<MarketplacePage> {
               ),
             ),
           ),
-        );
+        ),
+      ),
+    );
       },
     );
   }
@@ -671,7 +679,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
         itemBuilder: (context, index) {
           final b = banners[index];
           return Container(
-            width: MediaQuery.of(context).size.width * 0.78,
+            width: MediaQuery.of(context).size.width >= 600 ? 400 : MediaQuery.of(context).size.width * 0.78,
             margin: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),

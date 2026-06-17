@@ -69,8 +69,11 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
             final rating = produto.avaliacaoMedia ?? 4.7;
             final storeName = produto.nomeLoja ?? 'Petshop Parceiro';
 
-            return Stack(
-              children: [
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 650),
+                child: Stack(
+                  children: [
                 // Conteúdo Principal Rolável
                 Positioned.fill(
                   child: SingleChildScrollView(
@@ -413,7 +416,9 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                     ),
                   ),
                 ),
-              ],
+                  ],
+                ),
+              ),
             );
           }
 

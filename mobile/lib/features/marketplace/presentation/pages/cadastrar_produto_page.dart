@@ -101,9 +101,12 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
       appBar: AppBar(
         title: Text(isEdit ? 'Editar Produto' : 'Cadastrar Produto'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 650),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -196,6 +199,8 @@ class _CadastrarProdutoPageState extends State<CadastrarProdutoPage> {
           ),
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }
