@@ -29,7 +29,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of tickets; track item.id) {
+          @for (item of ticketsPaginados; track item.id) {
             <tr>
               <td class="bold-text">{{ item.id }}</td>
               <td>{{ item.assunto }}</td>

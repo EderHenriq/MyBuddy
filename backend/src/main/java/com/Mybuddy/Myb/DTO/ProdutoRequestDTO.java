@@ -34,4 +34,10 @@ public class ProdutoRequestDTO {
     private Long subCategoriaId;
 
     private List<String> imagens;
+
+    private String marca;
+    private String origem;
+    private String porteRaca;
+    private String peso;
+    private String idade;
 }

@@ -7,6 +7,7 @@ import {
   provideRouter,
   withViewTransitions,
   withComponentInputBinding,
+  withInMemoryScrolling,
 } from "@angular/router";
 
 import { routes } from "./app.routes";
@@ -30,7 +31,12 @@ import { retryInterceptor } from "./core/interceptors/retry.interceptor";
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
+    provideRouter(
+      routes,
+      withComponentInputBinding(),
+      withViewTransitions(),
+      withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
+    ),
     provideClientHydration(withEventReplay()),
     provideHttpClient(
       withFetch(),

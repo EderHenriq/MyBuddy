@@ -2,42 +2,73 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 1.2rem 0.5rem;
-  min-width: 160px;
-  max-width: 190px;
-  border-radius: 16px;
+  gap: 0.8rem;
+  padding: 1.25rem 1rem;
+  min-width: 170px;
+  max-width: 240px;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-card);
+  border: 1.5px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 
   &:hover {
-    transform: scale(1.02);
-    background-color: #ffffff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+    box-shadow: 0 12px 28px rgba(255, 123, 0, 0.1);
+
+    .loja-logo {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.loja-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 8px;
+  border-radius: var(--radius-max);
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em;
+
+  &.frete-gratis {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.aberta {
+    background-color: #e8f5e9;
+    color: #2e7d32;
   }
 }
 
 .loja-logo {
-  width: 90px;
-  height: 90px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 2px solid #ffffff;
+  box-shadow: var(--shadow-md);
+  border: 3px solid var(--surface-card);
+  transition: transform 0.3s ease;
 }
 
 .loja-info {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   width: 100%;
 }
 
 .loja-name {
   font-size: 1rem;
-  font-weight: 800;
-  color: #1e1e1e;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--text-color);
   margin: 0;
   text-align: center;
   white-space: nowrap;
@@ -50,25 +81,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-  color: #777;
+  gap: 0.35rem;
+  font-size: var(--font-size-xs);
+  color: #888;
   width: 100%;
 
   .rating {
     display: flex;
     align-items: center;
     gap: 0.2rem;
-    font-weight: 600;
-    color: #333;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-color);
     
     i {
       color: #ffc107;
+      font-size: 0.7rem;
     }
   }
 
   .dot {
-    font-size: 0.5rem;
+    font-size: 0.4rem;
     color: #ccc;
   }
 
@@ -77,4 +109,7 @@
   }
 }
 
-.delivery-fee { font-weight: 600; color: #555; }
+.delivery-fee {
+  font-weight: var(--font-weight-semibold);
+  color: #666;
+}

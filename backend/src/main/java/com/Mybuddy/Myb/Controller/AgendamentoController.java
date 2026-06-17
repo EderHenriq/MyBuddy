@@ -22,6 +22,7 @@ import java.util.List;
 @RequestMapping("/api/agendamentos")
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("null")
 public class AgendamentoController {
 
     private final AgendamentoService agendamentoService;

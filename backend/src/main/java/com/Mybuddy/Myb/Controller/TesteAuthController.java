@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/teste")
+@SuppressWarnings("null")
 public class TesteAuthController {
 
     @GetMapping("/autenticado")

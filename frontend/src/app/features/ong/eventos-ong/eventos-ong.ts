@@ -17,12 +17,18 @@ export class EventosOng implements OnInit {
   private ongService = inject(OngService);
 
   currentPage = 1;
-  totalPages = 13;
+  totalPages = 1;
 
   ngOnInit() {
     this.ongService.buscarEventos().subscribe((data) => {
       this.eventos = data;
+      this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get eventosPaginados() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.eventos.slice(startIndex, startIndex + 10);
   }
 
   onSearch(term: string) {

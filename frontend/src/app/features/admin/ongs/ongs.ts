@@ -17,12 +17,18 @@ export class Ongs implements OnInit {
   private adminService = inject(AdminService);
 
   currentPage = 1;
-  totalPages = 5;
+  totalPages = 1;
 
   ngOnInit() {
     this.adminService.buscarOngs().subscribe((data) => {
       this.parcerias = data;
+      this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get parceriasPaginadas() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.parcerias.slice(startIndex, startIndex + 10);
   }
 
   onSearch(term: string) {

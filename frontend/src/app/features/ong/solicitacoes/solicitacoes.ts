@@ -17,12 +17,18 @@ export class Solicitacoes implements OnInit {
   private ongService = inject(OngService);
 
   currentPage = 1;
-  totalPages = 5;
+  totalPages = 1;
 
   ngOnInit() {
     this.ongService.buscarSolicitacoes().subscribe((data) => {
       this.pedidos = data;
+      this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get pedidosPaginados() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.pedidos.slice(startIndex, startIndex + 10);
   }
 
   onSearch(term: string) {

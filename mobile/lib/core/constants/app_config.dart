@@ -15,7 +15,7 @@ class AppConfig {
     switch (flavor) {
       case Flavor.dev:
         final host = (!kIsWeb && Platform.isAndroid) ? '10.0.2.2' : 'localhost';
-        apiBaseUrl = 'http://$host/api/';
+        apiBaseUrl = 'http://$host:8081/api/';
         keycloakUrl = 'http://$host:8080';
         showLogs = true;
       case Flavor.prod:

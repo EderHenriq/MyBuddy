@@ -34,7 +34,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of pets; track item.nome) {
+          @for (item of petsPaginados; track item.nome) {
             <tr>
               <td class="bold-text">{{ item.nome }}</td>
               <td>{{ item.especie }}</td>

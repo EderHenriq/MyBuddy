@@ -17,12 +17,18 @@ export class Suporte implements OnInit {
   private adminService = inject(AdminService);
 
   currentPage = 1;
-  totalPages = 5;
+  totalPages = 1;
 
   ngOnInit() {
     this.adminService.buscarTicketsSuporte().subscribe((data) => {
       this.tickets = data;
+      this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get ticketsPaginados() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.tickets.slice(startIndex, startIndex + 10);
   }
 
   onSearch(term: string) {

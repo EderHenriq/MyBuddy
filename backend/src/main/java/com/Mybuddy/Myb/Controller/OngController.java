@@ -21,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/ong")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class OngController {
 
     private final InteresseAdocaoRepository interesseAdocaoRepository;

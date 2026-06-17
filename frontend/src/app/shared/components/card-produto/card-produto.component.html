@@ -2,7 +2,10 @@
   <div class="produto-image-container">
     <img [src]="urlImagem" [alt]="titulo" class="produto-image" />
     @if (badgeDesconto) {
-      <span class="discount-badge">{{ badgeDesconto }}</span>
+      <span class="discount-badge"
+        [class.badge-frete-gratis]="badgeDesconto === 'Frete Grátis'"
+        [class.badge-esgotado]="badgeDesconto === 'Esgotado'"
+      >{{ badgeDesconto }}</span>
     }
     <button
       class="favorite-btn"

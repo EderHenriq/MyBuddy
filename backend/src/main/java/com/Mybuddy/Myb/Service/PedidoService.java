@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;

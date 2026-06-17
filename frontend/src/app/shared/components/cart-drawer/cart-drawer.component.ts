@@ -1,5 +1,6 @@
 import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { Router } from "@angular/router";
 import { CartService } from "@core/services/cart.service";
 
 @Component({
@@ -11,6 +12,7 @@ import { CartService } from "@core/services/cart.service";
 })
 export class CartDrawerComponent {
   carrinhoService = inject(CartService);
+  private router = inject(Router);
 
   get aberto() {
     return this.carrinhoService.gavetaAberta();
@@ -38,5 +40,10 @@ export class CartDrawerComponent {
 
   atualizarQuantidade(id: number, quantidade: number) {
     this.carrinhoService.atualizarQuantidade(id, quantidade);
+  }
+
+  finalizarCompra() {
+    this.fechar();
+    this.router.navigate(["/checkout"]);
   }
 }

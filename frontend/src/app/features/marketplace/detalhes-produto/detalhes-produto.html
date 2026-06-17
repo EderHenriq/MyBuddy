@@ -1,1 +1,172 @@
-<p>detalhes-produto works!</p>;
+<main class="detalhes-page">
+  @if (produto()) {
+    <div class="breadcrumbs">
+      <a routerLink="/home">Home</a>
+      <span class="separator">/</span>
+      <a routerLink="/produtos">Marketplace</a>
+      <span class="separator">/</span>
+      <span class="current-category">{{ produto()!.categoria }}</span>
+      <span class="separator">/</span>
+      <span class="current-product">{{ produto()!.titulo }}</span>
+    </div>
+
+    <div class="detalhes-wrapper">
+      <!-- Coluna da Esquerda: Galeria de Fotos -->
+      <div class="galeria-container">
+        <div class="foto-principal-box">
+          <img [src]="fotoAtiva()" [alt]="produto()!.titulo" class="foto-principal" />
+        </div>
+        <div class="thumbnails-row">
+          @for (foto of produto()!.fotos; track foto) {
+            <button 
+              type="button" 
+              class="thumbnail-btn" 
+              [class.active]="foto === fotoAtiva()" 
+              (click)="alterarFoto(foto)"
+            >
+              <img [src]="foto" alt="Miniatura" />
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Coluna da Direita: Informações e Compra -->
+      <div class="info-compra-container">
+        <div class="categoria-badge">{{ produto()!.categoria }}</div>
+        <h1 class="produto-titulo">{{ produto()!.titulo }}</h1>
+        
+        <div class="loja-vendedora">
+          <span class="material-icons store-icon">storefront</span>
+          Vendido e entregue por: <strong class="loja-nome">{{ produto()!.nomeLoja }}</strong>
+        </div>
+
+        <div class="avaliacao-resumo">
+          <div class="estrelas">
+            <span class="material-icons star filled">star</span>
+            <span class="nota-media">{{ produto()!.avaliacaoMedia }}</span>
+          </div>
+          <span class="divisor">|</span>
+          <span class="total-avaliacoes">{{ produto()!.totalAvaliacoes }} avaliações</span>
+        </div>
+
+        <div class="preco-container">
+          @if (produto()!.precoAntigo) {
+            <span class="preco-antigo">{{ produto()!.precoAntigo | currency: 'BRL' }}</span>
+          }
+          <div class="preco-principal-row">
+            <h2 class="preco-atual">{{ produto()!.preco | currency: 'BRL' }}</h2>
+            @if (produto()!.precoAntigo) {
+              <span class="badge-desconto">Oferta</span>
+            }
+          </div>
+          <p class="parcelamento">Ou em até 6x de {{ (produto()!.preco / 6) | currency: 'BRL' }} sem juros</p>
+        </div>
+
+        <hr class="divisor-linha" />
+
+        <div class="compra-controles">
+          <div class="quantidade-seletor">
+            <label class="qtde-label">Quantidade:</label>
+            <div class="qtde-botoes">
+              <button type="button" class="btn-qtde" (click)="ajustarQuantidade(-1)" [disabled]="quantidade() <= 1">-</button>
+              <span class="qtde-valor">{{ quantidade() }}</span>
+              <button type="button" class="btn-qtde" (click)="ajustarQuantidade(1)">+</button>
+            </div>
+          </div>
+
+          <button type="button" class="btn-adicionar-carrinho" (click)="adicionarAoCarrinho()">
+            <span class="material-icons">shopping_cart</span>
+            Adicionar ao Carrinho
+          </button>
+        </div>
+
+        <div class="frete-simulador">
+          <span class="material-icons local-shipping-icon">local_shipping</span>
+          <div>
+            <strong>Frete rápido garantido</strong>
+            <p>Receba em minutos em sua residência!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção de Descrição e Especificações -->
+    <div class="descricao-especificacoes-wrapper">
+      <section class="secao-descricao">
+        <h2>Descrição do Produto</h2>
+        <p class="texto-descricao">{{ produto()!.descricao }}</p>
+      </section>
+
+      <section class="secao-especificacoes">
+        <h2>Ficha Técnica</h2>
+        <table class="tabela-especificacoes">
+          <tbody>
+            @for (espec of produto()!.especificacoes; track espec.chave) {
+              <tr>
+                <td class="chave">{{ espec.chave }}</td>
+                <td class="valor">{{ espec.valor }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <!-- Seção de Avaliações (MY-160) -->
+    <section class="avaliacoes-secao">
+      <div class="avaliacoes-header">
+        <h2>Opinião dos Clientes</h2>
+        <div class="rating-box-detalhes">
+          <div class="rating-number">{{ produto()!.avaliacaoMedia }}</div>
+          <div>
+            <div class="estrelas-grandes">
+              <span class="material-icons filled">star</span>
+              <span class="material-icons filled">star</span>
+              <span class="material-icons filled">star</span>
+              <span class="material-icons filled">star</span>
+              <span class="material-icons filled">star</span>
+            </div>
+            <p class="total-text">Média baseada em {{ produto()!.totalAvaliacoes }} avaliações</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="avaliacoes-grid-detalhes">
+        @for (av of produto()!.avaliacoes; track av.autor) {
+          <app-card-avaliacao
+            [nomeCliente]="av.autor"
+            [avaliacao]="av.nota"
+            [comentario]="av.texto"
+            [data]="av.data"
+          ></app-card-avaliacao>
+        }
+      </div>
+    </section>
+
+    <!-- Seção de Recomendados -->
+    @if (produtosRecomendados().length > 0) {
+      <section class="recomendados-secao">
+        <h2>Quem viu este produto, também se interessou por:</h2>
+        <div class="produtos-grid">
+          @for (prodRec of produtosRecomendados(); track prodRec.id) {
+            <app-card-produto
+              [urlImagem]="prodRec.urlImagem"
+              [titulo]="prodRec.titulo"
+              [preco]="prodRec.preco"
+              [nomeLoja]="prodRec.nomeLoja"
+              (cliqueCard)="irParaRecomendado(prodRec.id)"
+            ></app-card-produto>
+          }
+        </div>
+      </section>
+    }
+  } @else {
+    <div class="carregando">
+      <span class="material-icons spin-loader">autorenew</span>
+      <p>Carregando detalhes do produto...</p>
+    </div>
+  }
+</main>
+
+<app-cart-drawer></app-cart-drawer>
+<app-footer></app-footer>

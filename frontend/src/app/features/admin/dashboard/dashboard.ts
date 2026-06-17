@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 interface MetricCard {
@@ -28,9 +28,9 @@ import { PaginatorComponent } from "../../../shared/components/paginator/paginat
   templateUrl: "./dashboard.html",
   styleUrl: "./dashboard.scss",
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
   currentPage = 1;
-  totalPages = 5;
+  totalPages = 1;
 
   metrics: MetricCard[] = [
     {
@@ -98,11 +98,25 @@ export class Dashboard {
     },
   ];
 
+  ngOnInit() {
+    this.recalcularTotalPages();
+  }
+
+  recalcularTotalPages() {
+    this.totalPages = Math.ceil(this.pendingApprovals.length / 10) || 1;
+  }
+
+  get pendingApprovalsPaginados() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.pendingApprovals.slice(startIndex, startIndex + 10);
+  }
+
   approve(item: PendingApproval) {
     console.log(`Aprovando ${item.name}`);
     this.pendingApprovals = this.pendingApprovals.filter(
       (p) => p.id !== item.id,
     );
+    this.recalcularTotalPages();
   }
 
   reject(item: PendingApproval) {
@@ -110,6 +124,7 @@ export class Dashboard {
     this.pendingApprovals = this.pendingApprovals.filter(
       (p) => p.id !== item.id,
     );
+    this.recalcularTotalPages();
   }
 
   onSearch(term: string) {

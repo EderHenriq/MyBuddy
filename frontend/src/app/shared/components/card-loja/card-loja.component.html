@@ -1,4 +1,7 @@
 <div class="loja-card" (click)="cliqueLoja.emit()">
+  @if (taxaEntrega === 0) {
+    <span class="loja-badge frete-gratis">Frete Grátis</span>
+  }
   <img [src]="urlLogo" [alt]="nomeLoja" class="loja-logo" />
   <div class="loja-info">
     <h4 class="loja-name" [title]="nomeLoja">{{ nomeLoja }}</h4>
@@ -9,14 +12,10 @@
       </span>
       <span class="dot">•</span>
       <span class="delivery-time">{{ tempoEntrega }}</span>
-      @if (taxaEntrega !== undefined) {
+      @if (taxaEntrega !== undefined && taxaEntrega !== 0) {
         <span class="dot">•</span>
         <span class="delivery-fee">
-          @if (taxaEntrega === 0) {
-            Grátis
-          } @else {
-            {{ taxaEntrega | currency: "BRL" : "symbol" : "1.2-2" }}
-          }
+          {{ taxaEntrega | currency: "BRL" : "symbol" : "1.2-2" }}
         </span>
       }
     </div>

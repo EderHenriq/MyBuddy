@@ -7,6 +7,7 @@ import { switchMap, takeWhile } from "rxjs/operators";
 
 @Component({
   selector: "app-confirmacao",
+  standalone: true,
   imports: [CommonModule],
   templateUrl: "./confirmacao.html",
   styleUrl: "./confirmacao.scss",
@@ -18,14 +19,30 @@ export class Confirmacao implements OnInit, OnDestroy {
 
   status = signal<"APPROVED" | "PENDING" | "REJECTED" | "loading">("loading");
   paymentId = signal<string | null>(null);
+  
+  // Parâmetros do Marketplace
+  isMarketplace = signal<boolean>(false);
+  pedidoId = signal<number | null>(null);
+  totalPedido = signal<number>(0);
 
   private pollingSub?: Subscription;
 
   ngOnInit() {
     const paymentIdParam = this.route.snapshot.queryParamMap.get("payment_id");
     const statusParam = this.route.snapshot.queryParamMap.get("status");
-    const preferenceIdParam =
-      this.route.snapshot.queryParamMap.get("preference_id");
+    const preferenceIdParam = this.route.snapshot.queryParamMap.get("preference_id");
+
+    // Parâmetros do checkout do marketplace
+    const pedidoIdParam = this.route.snapshot.queryParamMap.get("pedidoId");
+    const totalParam = this.route.snapshot.queryParamMap.get("total");
+
+    if (pedidoIdParam) {
+      this.pedidoId.set(Number(pedidoIdParam));
+      this.totalPedido.set(Number(totalParam || 0));
+      this.isMarketplace.set(true);
+      this.status.set("APPROVED");
+      return;
+    }
 
     if (paymentIdParam) this.paymentId.set(paymentIdParam);
 
@@ -72,7 +89,11 @@ export class Confirmacao implements OnInit, OnDestroy {
     this.router.navigate(["/home"]);
   }
 
-  adotarOutroPet() {
-    this.router.navigate(["/marketplace"]);
+  irParaPedidos() {
+    this.router.navigate(["/meus-pedidos"]);
+  }
+
+  irParaProdutos() {
+    this.router.navigate(["/produtos"]);
   }
 }

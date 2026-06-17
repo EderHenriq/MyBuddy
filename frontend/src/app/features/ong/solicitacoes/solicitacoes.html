@@ -28,7 +28,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of pedidos; track item.id) {
+          @for (item of pedidosPaginados; track item.id) {
             <tr>
               <td>{{ item.id }}</td>
               <td class="bold-text">{{ item.pet.nome }}</td>

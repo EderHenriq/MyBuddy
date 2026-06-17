@@ -17,12 +17,18 @@ export class Pets implements OnInit {
   private adminService = inject(AdminService);
 
   currentPage = 1;
-  totalPages = 5;
+  totalPages = 1;
 
   ngOnInit() {
     this.adminService.buscarPetsDenunciados().subscribe((data) => {
       this.denuncias = data;
+      this.totalPages = Math.ceil(data.length / 10) || 1;
     });
+  }
+
+  get denunciasPaginadas() {
+    const startIndex = (this.currentPage - 1) * 10;
+    return this.denuncias.slice(startIndex, startIndex + 10);
   }
 
   onSearch(term: string) {

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class AgendamentoService {
 
     private final AgendamentoRepository agendamentoRepository;

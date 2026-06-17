@@ -11,6 +11,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "checkout",
+    loadComponent: () =>
+      import("./features/checkout/checkout").then((m) => m.Checkout),
+  },
+  {
     path: "checkout/pagamento",
     loadComponent: () =>
       import("./features/checkout/pagamento/pagamento").then(
@@ -68,6 +73,20 @@ export const routes: Routes = [
     path: "produtos",
     loadComponent: () =>
       import("./features/marketplace/marketplace").then((m) => m.Marketplace),
+  },
+  {
+    path: "produtos/:id",
+    loadComponent: () =>
+      import("./features/marketplace/detalhes-produto/detalhes-produto").then(
+        (m) => m.DetalhesProduto,
+      ),
+  },
+  {
+    path: "meus-pedidos",
+    loadComponent: () =>
+      import("./features/marketplace/meus-pedidos/meus-pedidos").then(
+        (m) => m.MeusPedidos,
+      ),
   },
   {
     path: "doacoes",
@@ -248,6 +267,18 @@ export const routes: Routes = [
         loadComponent: () =>
           import("./features/petshop/chat-clientes/chat-clientes").then(
             (m) => m.ChatClientes,
+          ),
+      },
+      {
+        path: "cupons",
+        loadComponent: () =>
+          import("./features/petshop/cupons/cupons").then((m) => m.Cupons),
+      },
+      {
+        path: "relatorios",
+        loadComponent: () =>
+          import("./features/petshop/relatorios-vendas/relatorios-vendas").then(
+            (m) => m.RelatoriosVendas,
           ),
       },
     ],

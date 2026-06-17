@@ -134,6 +134,16 @@ export class DashboardLayout {
           route: "/petshop-panel/pedidos",
         },
         {
+          label: "Cupons de Desconto",
+          icon: "confirmation_number",
+          route: "/petshop-panel/cupons",
+        },
+        {
+          label: "Relatórios de Vendas",
+          icon: "bar_chart",
+          route: "/petshop-panel/relatorios",
+        },
+        {
           label: "Chat de Clientes",
           icon: "chat",
           route: "/petshop-panel/chat",

@@ -1,6 +1,5 @@
 package com.Mybuddy.Myb.Exception.Handler;
 
-import com.Mybuddy.Myb.Controller.OrganizacaoController;
 import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import org.slf4j.Logger;
@@ -13,12 +12,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @ControllerAdvice
+@SuppressWarnings("null")
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
