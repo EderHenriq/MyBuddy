@@ -18,6 +18,8 @@ import 'package:mybuddy_app/features/pets/presentation/bloc/image_picker_cubit.d
 import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
 import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart';
+import 'package:mybuddy_app/features/adocao/domain/repositories/adocao_repository.dart';
+import 'package:mybuddy_app/features/adocao/data/repositories/adocao_repository_mock.dart';
 import 'package:mybuddy_app/features/marketplace/domain/repositories/products_repository.dart';
 import 'package:mybuddy_app/features/marketplace/data/repositories/products_repository_mock.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
@@ -79,6 +81,10 @@ void _registerPets() {
     () => PetsRepositoryMock(),
   );
 
+  sl.registerLazySingleton<AdocaoRepository>(
+    () => AdocaoRepositoryMock(),
+  );
+
   // Cubits
   sl.registerLazySingleton<FavoritosCubit>(
     () => FavoritosCubit(),
@@ -89,7 +95,7 @@ void _registerPets() {
   );
   
   sl.registerLazySingleton<AdocaoCubit>(
-    () => AdocaoCubit(),
+    () => AdocaoCubit(adocaoRepository: sl()),
   );
 
   // Image Picker Cubit
