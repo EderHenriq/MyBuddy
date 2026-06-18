@@ -350,10 +350,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
     final productsCubit = context.read<ProductsCubit>();
     final cartCubit = context.read<CartCubit>();
 
+    BuildContext? loadingContext;
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+      builder: (dialogCtx) {
+        loadingContext = dialogCtx;
+        return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+      },
     );
 
     Future.delayed(const Duration(milliseconds: 1500), () async {
@@ -365,19 +369,21 @@ class _CheckoutPageState extends State<CheckoutPage> {
           clienteNome,
           item.produto.nome,
           item.produto.preco * item.quantidade,
+          produtoId: item.produto.id,
+          quantidade: item.quantidade,
         );
         if (!success) anyFailed = true;
       }
 
+      if (loadingContext != null && loadingContext!.mounted) {
+        Navigator.pop(loadingContext!); // Fecha o loading dialog
+      }
+
       if (context.mounted) {
-        Navigator.pop(context); // Fecha o loading dialog
-
-        cartCubit.clearCart(); // Limpa o carrinho
-
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) {
+          builder: (dialogContext) {
             return AlertDialog(
               backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -400,8 +406,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   onPressed: () {
-                    Navigator.pop(context); // Fecha dialog de sucesso
-                    context.go('/marketplace'); // Volta ao marketplace
+                    Navigator.pop(dialogContext); // Fecha dialog de sucesso usando o context do próprio dialog
+                    if (context.mounted) {
+                      cartCubit.clearCart(); // Limpa o carrinho
+                      context.go('/marketplace'); // Volta ao marketplace usando o context do CheckoutPage
+                    }
                   },
                   child: const Text('Ok', style: TextStyle(color: Colors.white)),
                 ),

@@ -191,6 +191,8 @@ class ProductsRepositoryMock implements ProductsRepository {
   @override
   Future<Either<Failure, PedidoCompra>> criarPedido(PedidoCompra pedido) async {
     try {
+      final prodId = int.tryParse(pedido.produtoId ?? '') ?? 1;
+      final qty = pedido.quantidade ?? 1;
       final requestData = {
         'petshopId': 1,
         'enderecoEntrega': {
@@ -202,9 +204,8 @@ class ProductsRepositoryMock implements ProductsRepository {
         },
         'itens': [
           {
-            'produtoId': 1,
-            'quantidade': 1,
-            'precoUnitario': pedido.preco,
+            'produtoId': prodId,
+            'quantidade': qty,
           }
         ],
       };

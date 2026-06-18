@@ -68,6 +68,8 @@ class PedidoCompra extends Equatable {
   final double preco;
   final String data;
   final String status;
+  final String? produtoId;
+  final int? quantidade;
 
   const PedidoCompra({
     required this.id,
@@ -76,6 +78,8 @@ class PedidoCompra extends Equatable {
     required this.preco,
     required this.data,
     required this.status,
+    this.produtoId,
+    this.quantidade,
   });
 
   PedidoCompra copyWith({
@@ -85,6 +89,8 @@ class PedidoCompra extends Equatable {
     double? preco,
     String? data,
     String? status,
+    String? produtoId,
+    int? quantidade,
   }) {
     return PedidoCompra(
       id: id ?? this.id,
@@ -93,6 +99,8 @@ class PedidoCompra extends Equatable {
       preco: preco ?? this.preco,
       data: data ?? this.data,
       status: status ?? this.status,
+      produtoId: produtoId ?? this.produtoId,
+      quantidade: quantidade ?? this.quantidade,
     );
   }
 
@@ -104,5 +112,7 @@ class PedidoCompra extends Equatable {
         preco,
         data,
         status,
+        produtoId,
+        quantidade,
       ];
 }

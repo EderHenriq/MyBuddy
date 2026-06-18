@@ -55,7 +55,7 @@ void _registerCore() {
 
   // Token Refresh Service
   sl.registerLazySingleton<TokenRefreshService>(
-    () => TokenRefreshServiceImpl(storage: sl(), dio: sl()),
+    () => TokenRefreshServiceImpl(storage: sl()),
   );
 }
 
