@@ -6,6 +6,7 @@ import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:mybuddy_app/features/pets/domain/entities/pet.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
 import 'package:mybuddy_app/shared/widgets/app_card.dart';
+import 'package:mybuddy_app/shared/widgets/app_image.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -305,13 +306,9 @@ class _HomePageState extends State<HomePage> {
                               Expanded(
                                 child: ClipRRect(
                                   borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                                  child: Image.network(
-                                    pet.imagemUrl,
+                                  child: AppImage(
+                                    imageUrl: pet.imagemUrl,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) => Container(
-                                      color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                                      child: const Icon(Icons.broken_image_outlined),
-                                    ),
                                   ),
                                 ),
                               ),

@@ -6,6 +6,7 @@ import 'package:mybuddy_app/features/marketplace/presentation/bloc/cart_cubit.da
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
 import 'package:mybuddy_app/shared/widgets/app_button.dart';
+import 'package:mybuddy_app/shared/widgets/app_image.dart';
 
 class ProdutoDetalhePage extends StatefulWidget {
   final String productId;
@@ -136,17 +137,11 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      item.produto.imagemUrl,
+                                    child: AppImage(
+                                      imageUrl: item.produto.imagemUrl,
                                       width: 50,
                                       height: 50,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => Container(
-                                        width: 50,
-                                        height: 50,
-                                        color: Colors.grey[200],
-                                        child: const Icon(Icons.shopping_bag_outlined),
-                                      ),
                                     ),
                                   ),
                                   const SizedBox(width: 12),
@@ -293,16 +288,11 @@ class _ProdutoDetalhePageState extends State<ProdutoDetalhePage> {
                         // Imagem com Gradiente de sombra no topo
                         Stack(
                           children: [
-                            Image.network(
-                              produto.imagemUrl,
+                            AppImage(
+                              imageUrl: produto.imagemUrl,
                               height: MediaQuery.of(context).size.height * 0.4 > 350 ? 350.0 : MediaQuery.of(context).size.height * 0.4,
                               width: double.infinity,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Container(
-                                height: MediaQuery.of(context).size.height * 0.4 > 350 ? 350.0 : MediaQuery.of(context).size.height * 0.4,
-                                color: isDark ? AppColors.darkBorder : AppColors.background,
-                                child: const Icon(Icons.shopping_bag_outlined, size: 80, color: AppColors.primary),
-                              ),
                             ),
                             Positioned.fill(
                               child: Container(
