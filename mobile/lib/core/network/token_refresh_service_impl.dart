@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mybuddy_app/core/constants/app_config.dart';
+import 'package:mybuddy_app/core/network/token_refresh_service.dart';
 
-class TokenRefreshServiceImpl {
+class TokenRefreshServiceImpl implements TokenRefreshService {
   final FlutterSecureStorage _storage;
   final Dio _dio;
 

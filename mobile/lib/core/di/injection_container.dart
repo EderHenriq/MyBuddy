@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mybuddy_app/core/cache/cache_service.dart';
 import 'package:mybuddy_app/core/network/dio_client.dart';
+import 'package:mybuddy_app/core/network/token_refresh_service.dart';
 import 'package:mybuddy_app/core/network/token_refresh_service_impl.dart';
 import 'package:mybuddy_app/core/services/image_picker_service.dart';
 import 'package:mybuddy_app/features/auth/data/repositories/auth_repository_mock.dart';
@@ -37,8 +39,13 @@ Future<void> init() async {
 }
 
 void _registerCore() {
+  // Flutter Secure Storage
+  sl.registerLazySingleton<FlutterSecureStorage>(
+    () => const FlutterSecureStorage(),
+  );
+
   // Dio
-  sl.registerLazySingleton<Dio>(() => DioClient.create());
+  sl.registerLazySingleton<Dio>(() => DioClient.create(storage: sl(), tokenRefreshService: sl()));
 
   // Theme
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
@@ -47,8 +54,8 @@ void _registerCore() {
   sl.registerLazySingleton<ImagePickerService>(() => ImagePickerService());
 
   // Token Refresh Service
-  sl.registerLazySingleton<TokenRefreshServiceImpl>(
-    () => TokenRefreshServiceImpl(),
+  sl.registerLazySingleton<TokenRefreshService>(
+    () => TokenRefreshServiceImpl(storage: sl(), dio: sl()),
   );
 }
 
