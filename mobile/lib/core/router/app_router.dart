@@ -16,6 +16,7 @@ import 'package:mybuddy_app/features/pets/presentation/pages/notificacoes_page.d
 import 'package:mybuddy_app/features/pets/presentation/pages/cadastrar_pet_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/meus_pets_page.dart';
 import 'package:mybuddy_app/features/adocao/presentation/pages/solicitacoes_ong_page.dart';
+import 'package:mybuddy_app/features/adocao/presentation/pages/adocao_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/marketplace_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/cadastrar_produto_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/meus_produtos_page.dart';
@@ -174,6 +175,11 @@ class AppRouter {
           path: '/solicitacoes-ong',
           name: 'solicitacoes-ong',
           pageBuilder: (context, state) => _slideRoute(state, const SolicitacoesOngPage()),
+        ),
+        GoRoute(
+          path: '/meus-processos-adocao',
+          name: 'meus-processos-adocao',
+          pageBuilder: (context, state) => _slideRoute(state, const AdocaoPage()),
         ),
         GoRoute(
           path: '/cadastrar-produto',

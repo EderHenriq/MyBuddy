@@ -48,7 +48,7 @@ void _registerCore() {
   sl.registerLazySingleton<Dio>(() => DioClient.create(storage: sl(), tokenRefreshService: sl()));
 
   // Theme
-  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
+  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl()));
 
   // Image Picker Service
   sl.registerLazySingleton<ImagePickerService>(() => ImagePickerService());
@@ -87,7 +87,7 @@ void _registerPets() {
 
   // Cubits
   sl.registerLazySingleton<FavoritosCubit>(
-    () => FavoritosCubit(),
+    () => FavoritosCubit(sl(), sl()),
   );
   
   sl.registerLazySingleton<PetsCubit>(

@@ -5,7 +5,6 @@ import 'package:mybuddy_app/features/auth/domain/entities/user.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
-import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
 import 'package:mybuddy_app/shared/theme/theme_cubit.dart';
 import 'package:mybuddy_app/shared/widgets/app_button.dart';
@@ -44,13 +43,11 @@ class _PerfilPageState extends State<PerfilPage> {
     // Pegando dados do estado de auth se estiver disponível
     final authState = context.read<AuthBloc>().state;
     User? loggedUser;
-    String userId = '';
     String userName = _localName ?? 'Adotante MyBuddy';
     String userEmail = _localEmail ?? 'user@mybuddy.com';
 
     if (authState is AuthAuthenticated) {
       loggedUser = authState.user;
-      userId = authState.user.id;
       userName = _localName ?? authState.user.nome;
       userEmail = _localEmail ?? authState.user.email;
     }
@@ -171,70 +168,7 @@ class _PerfilPageState extends State<PerfilPage> {
       );
     }
 
-    // Modal de Processos de Adoção (Reativo com AdocaoCubit)
-    void showAdoptionProcessesModal() {
-      showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        builder: (context) {
-          return Container(
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkSurface : Colors.white,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            ),
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Processos de Adoção',
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: BlocBuilder<AdocaoCubit, AdocaoState>(
-                    builder: (context, state) {
-                      if (state is AdocaoLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (state is AdocaoLoaded) {
-                        // Filtra por ID do adotante (não por email, que pode ser editado localmente)
-                        final minhasSolicitacoes = userId.isNotEmpty
-                            ? state.solicitacoes.where((s) => s.adotanteId == userId).toList()
-                            : state.solicitacoes.where((s) => s.adotanteEmail == userEmail).toList();
 
-                        if (minhasSolicitacoes.isEmpty) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Text('Nenhum processo de adoção em andamento.'),
-                            ),
-                          );
-                        }
-
-                        return ListView.builder(
-                          itemCount: minhasSolicitacoes.length,
-                          itemBuilder: (context, idx) {
-                            final sol = minhasSolicitacoes[idx];
-                            Color statusColor = Colors.orange;
-                            if (sol.status.contains('Aprovado')) statusColor = AppColors.success;
-                            if (sol.status.contains('Recusado')) statusColor = Colors.red;
-
-                            return _buildProcessItem(sol.petNome, sol.status, statusColor, isDark);
-                          },
-                        );
-                      }
-                      return const Center(child: Text('Erro ao carregar processos.'));
-                    },
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    }
 
     // Modal de Pedidos Realizados (Reativo com ProductsCubit)
     void showPurchasesModal() {
@@ -497,7 +431,7 @@ class _PerfilPageState extends State<PerfilPage> {
               // Adotante (ou Padrão)
               _buildProfileItem(context, Icons.edit_outlined, 'Editar Dados', showEditProfileModal, isDark),
               _buildProfileItem(context, Icons.favorite_outline_rounded, 'Meus Favoritos', () => context.push('/favoritos'), isDark),
-              _buildProfileItem(context, Icons.pets_outlined, 'Meus Processos de Adoção', showAdoptionProcessesModal, isDark),
+              _buildProfileItem(context, Icons.pets_outlined, 'Meus Processos de Adoção', () => context.push('/meus-processos-adocao'), isDark),
               _buildProfileItem(context, Icons.shopping_bag_outlined, 'Minhas Compras', showPurchasesModal, isDark),
               _buildProfileItem(context, Icons.history_rounded, 'Histórico de Doações', showDonationHistoryModal, isDark),
               _buildProfileItem(context, Icons.settings_outlined, 'Configurações', showSettingsModal, isDark),
@@ -576,41 +510,5 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-  Widget _buildProcessItem(String name, String status, Color statusColor, bool isDark) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkBackground : AppColors.background,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            backgroundColor: AppColors.primary,
-            child: Icon(Icons.pets, color: Colors.white, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
-                Text(
-                  status,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Icon(Icons.chevron_right_rounded, color: Colors.grey),
-        ],
-      ),
-    );
-  }
+
 }

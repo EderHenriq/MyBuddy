@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
     final isDark = theme.brightness == Brightness.dark;
 
     // Obter nome do usuário do estado de autenticação
-    final authState = context.read<AuthBloc>().state;
+    final authState = context.watch<AuthBloc>().state;
     String userName = 'Eder Henrique';
     if (authState is AuthAuthenticated) {
       userName = authState.user.nome;
