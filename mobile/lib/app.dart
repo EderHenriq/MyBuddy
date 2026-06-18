@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mybuddy_app/core/di/injection_container.dart' as di;
 import 'package:mybuddy_app/core/router/app_router.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -23,12 +24,14 @@ class MyBuddyApp extends StatefulWidget {
 
 class _MyBuddyAppState extends State<MyBuddyApp> {
   late final AuthBloc _authBloc;
+  late final GoRouter _router;
 
   @override
   void initState() {
     super.initState();
     _authBloc = di.sl<AuthBloc>();
     _authBloc.add(CheckAuthStatus());
+    _router = AppRouter.router();
   }
 
   @override
@@ -63,7 +66,7 @@ class _MyBuddyAppState extends State<MyBuddyApp> {
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             themeMode: themeMode,
-            routerConfig: AppRouter.router(context),
+            routerConfig: _router,
           );
         },
       ),

@@ -230,8 +230,9 @@ class _MarketplacePageState extends State<MarketplacePage> {
                       AppButton(
                         text: 'Finalizar Compra',
                         onPressed: () {
+                          final goRouter = GoRouter.of(context);
                           Navigator.pop(context);
-                          context.push('/checkout');
+                          goRouter.push('/checkout');
                         },
                       ),
                     ],

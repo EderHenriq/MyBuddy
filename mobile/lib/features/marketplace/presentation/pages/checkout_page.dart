@@ -127,12 +127,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: cartState.items.length,
-                  itemBuilder: (context, index) {
-                    final item = cartState.items[index];
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: cartState.items.map((item) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6.0),
                       child: Row(
@@ -163,7 +160,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         ],
                       ),
                     );
-                  },
+                  }).toList(),
                 ),
                 const SizedBox(height: 24),
 

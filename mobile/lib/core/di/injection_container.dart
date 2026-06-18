@@ -54,7 +54,7 @@ void _registerCore() {
 
 void _registerAuth() {
   // BLoC
-  sl.registerFactory<AuthBloc>(
+  sl.registerLazySingleton<AuthBloc>(
     () => AuthBloc(authRepository: sl()),
   );
   
