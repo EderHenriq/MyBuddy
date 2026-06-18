@@ -336,16 +336,20 @@ class ProductsRepositoryMock implements ProductsRepository {
     try {
       final response = await _dio.put('pedidos/$pedidoId/status', queryParameters: {'status': status});
       if (response.statusCode == 200) {
-        final pedido = _pedidos.firstWhere((p) => p.id == pedidoId);
-        pedido.status = status;
+        final index = _pedidos.indexWhere((p) => p.id == pedidoId);
+        if (index != -1) {
+          _pedidos[index] = _pedidos[index].copyWith(status: status);
+        }
         return const Right(null);
       }
     } catch (e) {
       // Fallback
     }
     await Future.delayed(const Duration(milliseconds: 200));
-    final pedido = _pedidos.firstWhere((p) => p.id == pedidoId);
-    pedido.status = status;
+    final index = _pedidos.indexWhere((p) => p.id == pedidoId);
+    if (index != -1) {
+      _pedidos[index] = _pedidos[index].copyWith(status: status);
+    }
     return const Right(null);
   }
 }

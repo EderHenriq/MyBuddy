@@ -14,8 +14,6 @@ import 'package:mybuddy_app/features/auth/data/repositories/user_repository_mock
 import 'package:mybuddy_app/features/auth/domain/repositories/user_repository.dart';
 import 'package:mybuddy_app/features/pets/domain/repositories/pets_repository.dart';
 import 'package:mybuddy_app/features/pets/data/repositories/pets_repository_mock.dart';
-import 'package:mybuddy_app/features/pets/domain/repositories/pet_repository.dart';
-import 'package:mybuddy_app/features/pets/data/repositories/pet_repository_mock.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/image_picker_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
@@ -79,10 +77,6 @@ void _registerPets() {
   // Repositories
   sl.registerLazySingleton<PetsRepository>(
     () => PetsRepositoryMock(),
-  );
-  
-  sl.registerLazySingleton<PetRepository>(
-    () => PetRepositoryMock(),
   );
 
   // Cubits

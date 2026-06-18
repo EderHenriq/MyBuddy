@@ -115,9 +115,32 @@ class PetsRepositoryMock implements PetsRepository {
   };
 
   @override
-  Future<Either<Failure, List<Pet>>> getPets() async {
+  Future<Either<Failure, List<Pet>>> getPets({
+    String? especie,
+    String? porte,
+    String? cidade,
+    String? estado,
+    int page = 0,
+    int size = 10,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return Right(List.from(_pets));
+    
+    var filtered = _pets.where((pet) {
+      if (especie != null && especie.isNotEmpty && pet.especie.toLowerCase() != especie.toLowerCase()) return false;
+      if (porte != null && porte.isNotEmpty && pet.porte.toLowerCase() != porte.toLowerCase()) return false;
+      if (cidade != null && cidade.isNotEmpty && pet.cidade?.toLowerCase() != cidade.toLowerCase()) return false;
+      if (estado != null && estado.isNotEmpty && pet.estado?.toLowerCase() != estado.toLowerCase()) return false;
+      return true;
+    }).toList();
+
+    final startIndex = page * size;
+    if (startIndex >= filtered.length) {
+      return const Right([]);
+    }
+    final endIndex = (startIndex + size) > filtered.length ? filtered.length : (startIndex + size);
+    final paginated = filtered.sublist(startIndex, endIndex);
+
+    return Right(paginated);
   }
 
   @override
