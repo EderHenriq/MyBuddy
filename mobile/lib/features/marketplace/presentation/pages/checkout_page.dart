@@ -189,6 +189,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _isCouponApplied ? AppColors.success : AppColors.primary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        minimumSize: const Size(0, 48),
                       ),
                       onPressed: _isCouponApplied ? null : _applyCoupon,
                       child: Text(_isCouponApplied ? 'Aplicado' : 'Aplicar', style: const TextStyle(color: Colors.white)),
@@ -350,12 +351,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
     final productsCubit = context.read<ProductsCubit>();
     final cartCubit = context.read<CartCubit>();
 
-    BuildContext? loadingContext;
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (dialogCtx) {
-        loadingContext = dialogCtx;
         return const Center(child: CircularProgressIndicator(color: AppColors.primary));
       },
     );
@@ -375,8 +374,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
         if (!success) anyFailed = true;
       }
 
-      if (loadingContext != null && loadingContext!.mounted) {
-        Navigator.pop(loadingContext!); // Fecha o loading dialog
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop(); // Fecha o loading dialog
       }
 
       if (context.mounted) {
@@ -404,6 +403,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.success,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    minimumSize: const Size(0, 48),
                   ),
                   onPressed: () {
                     Navigator.pop(dialogContext); // Fecha dialog de sucesso usando o context do próprio dialog

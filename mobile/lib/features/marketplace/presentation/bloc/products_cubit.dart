@@ -71,7 +71,6 @@ class ProductsCubit extends Cubit<ProductsState> {
     return result.fold(
       (failure) => false,
       (newOrder) {
-        loadProducts();
         return true;
       },
     );

@@ -56,7 +56,7 @@ class ProductsRepositoryMock implements ProductsRepository {
   @override
   Future<Either<Failure, List<Produto>>> getProdutos() async {
     try {
-      final response = await _dio.get('produtos');
+      final response = await _dio.get('produtos', options: Options(receiveTimeout: const Duration(seconds: 2)));
       if (response.statusCode == 200) {
         final data = response.data;
         List<dynamic> content = [];
@@ -94,7 +94,7 @@ class ProductsRepositoryMock implements ProductsRepository {
         'subCategoriaId': _getCategoryId(produto.categoria),
         'imagens': [produto.imagemUrl],
       };
-      final response = await _dio.post('produtos', data: requestData);
+      final response = await _dio.post('produtos', data: requestData, options: Options(receiveTimeout: const Duration(seconds: 2)));
       if (response.statusCode == 200 || response.statusCode == 201) {
         final apiProduct = _mapJsonToProduto(response.data as Map<String, dynamic>);
         _produtos.insert(0, apiProduct);
@@ -129,7 +129,7 @@ class ProductsRepositoryMock implements ProductsRepository {
         'subCategoriaId': _getCategoryId(produto.categoria),
         'imagens': [produto.imagemUrl],
       };
-      final response = await _dio.put('produtos/${produto.id}', data: requestData);
+      final response = await _dio.put('produtos/${produto.id}', data: requestData, options: Options(receiveTimeout: const Duration(seconds: 2)));
       if (response.statusCode == 200) {
         final apiProduct = _mapJsonToProduto(response.data as Map<String, dynamic>);
         final idx = _produtos.indexWhere((p) => p.id == produto.id);
@@ -156,7 +156,7 @@ class ProductsRepositoryMock implements ProductsRepository {
   @override
   Future<Either<Failure, List<PedidoCompra>>> getPedidos() async {
     try {
-      final response = await _dio.get('pedidos/meus');
+      final response = await _dio.get('pedidos/meus', options: Options(receiveTimeout: const Duration(seconds: 2)));
       if (response.statusCode == 200) {
         final List<dynamic> list = response.data as List;
         final apiOrders = list.map((item) {
@@ -209,7 +209,7 @@ class ProductsRepositoryMock implements ProductsRepository {
   @override
   Future<Either<Failure, void>> atualizarStatusPedido(String pedidoId, String status) async {
     try {
-      final response = await _dio.put('pedidos/$pedidoId/status', queryParameters: {'status': status});
+      final response = await _dio.put('pedidos/$pedidoId/status', queryParameters: {'status': status}, options: Options(receiveTimeout: const Duration(seconds: 2)));
       if (response.statusCode == 200) {
         final index = _pedidos.indexWhere((p) => p.id == pedidoId);
         if (index != -1) {
