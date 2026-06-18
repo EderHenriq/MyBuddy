@@ -20,6 +20,7 @@ class Pet extends Equatable {
   final bool microchipado;
   final bool vacinado;
   final bool castrado;
+  final String? adotanteId;
 
   const Pet({
     required this.id,
@@ -41,6 +42,7 @@ class Pet extends Equatable {
     this.microchipado = false,
     this.vacinado = false,
     this.castrado = false,
+    this.adotanteId,
   });
 
   bool get disponivel => statusAdocao == 'DISPONIVEL';
@@ -65,6 +67,7 @@ class Pet extends Equatable {
     bool? microchipado,
     bool? vacinado,
     bool? castrado,
+    String? adotanteId,
   }) {
     return Pet(
       id: id ?? this.id,
@@ -86,6 +89,7 @@ class Pet extends Equatable {
       microchipado: microchipado ?? this.microchipado,
       vacinado: vacinado ?? this.vacinado,
       castrado: castrado ?? this.castrado,
+      adotanteId: adotanteId ?? this.adotanteId,
     );
   }
 
@@ -110,5 +114,6 @@ class Pet extends Equatable {
         microchipado,
         vacinado,
         castrado,
+        adotanteId,
       ];
 }

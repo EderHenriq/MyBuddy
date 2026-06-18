@@ -19,6 +19,7 @@ import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
 import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart';
 import 'package:mybuddy_app/features/adocao/domain/repositories/adocao_repository.dart';
+import 'package:mybuddy_app/features/adocao/data/repositories/adocao_repository_impl.dart';
 import 'package:mybuddy_app/features/adocao/data/repositories/adocao_repository_mock.dart';
 import 'package:mybuddy_app/features/marketplace/domain/repositories/products_repository.dart';
 import 'package:mybuddy_app/features/marketplace/data/repositories/products_repository_mock.dart';
@@ -81,9 +82,15 @@ void _registerPets() {
     () => PetsRepositoryMock(),
   );
 
+  // Mock para testes
   sl.registerLazySingleton<AdocaoRepository>(
     () => AdocaoRepositoryMock(),
   );
+  
+  // API REAL (Troque pelo Mock acima quando o Backend estiver rodando 100%)
+  // sl.registerLazySingleton<AdocaoRepository>(
+  //   () => AdocaoRepositoryImpl(dio: sl()),
+  // );
 
   // Cubits
   sl.registerLazySingleton<FavoritosCubit>(
