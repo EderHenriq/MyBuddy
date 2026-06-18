@@ -58,6 +58,22 @@ class CacheService {
 
   // ===================== GERAL =====================
 
+  Future<void> setString(String key, String value) async {
+    await _prefs.setString(key, value);
+  }
+
+  String? getString(String key) {
+    return _prefs.getString(key);
+  }
+
+  Future<void> setStringList(String key, List<String> value) async {
+    await _prefs.setStringList(key, value);
+  }
+
+  List<String>? getStringList(String key) {
+    return _prefs.getStringList(key);
+  }
+
   Future<void> clearAll() async {
     await _prefs.clear();
   }

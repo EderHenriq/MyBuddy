@@ -6,10 +6,11 @@ import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:mybuddy_app/features/pets/domain/entities/pet.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
+import 'package:mybuddy_app/shared/theme/app_colors.dart';
+import 'package:mybuddy_app/shared/widgets/app_image.dart';
 import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart';
 import 'package:mybuddy_app/shared/widgets/app_button.dart';
 import 'package:mybuddy_app/shared/widgets/app_card.dart';
-import 'package:mybuddy_app/shared/theme/app_colors.dart';
 
 class PetDetailPage extends StatelessWidget {
   final String petId;
@@ -204,15 +205,10 @@ class PetDetailPage extends StatelessWidget {
                     // Hero Image
                     Hero(
                       tag: 'pet_img_${currentPet.id}',
-                      child: Image.network(
-                        currentPet.imagemUrl,
+                      child: AppImage(
+                        imageUrl: currentPet.imagemUrl,
                         height: 380,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          height: 380,
-                          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                          child: const Icon(Icons.broken_image_outlined, size: 80),
-                        ),
                       ),
                     ),
 

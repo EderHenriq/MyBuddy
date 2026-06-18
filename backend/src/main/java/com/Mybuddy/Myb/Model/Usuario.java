@@ -44,6 +44,8 @@ public class Usuario implements Identifiable {
 
     private Long petshopId;
 
+    private Set<Long> petsAdotadosIds = new HashSet<>();
+
     private String keycloakId;
 
     @DocumentReference(lazy = true)

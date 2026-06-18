@@ -1,12 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mybuddy_app/core/constants/app_config.dart';
 import 'package:mybuddy_app/core/network/auth_interceptor.dart';
 import 'package:mybuddy_app/core/network/error_interceptor.dart';
-
+import 'package:mybuddy_app/core/network/token_refresh_service.dart';
 
 class DioClient {
-  static Dio create() {
+  static Dio create({
+    required FlutterSecureStorage storage,
+    required TokenRefreshService tokenRefreshService,
+  }) {
     final dio = Dio(
       BaseOptions(
         baseUrl: AppConfig.apiBaseUrl,
@@ -19,9 +23,12 @@ class DioClient {
       ),
     );
 
-    dio.interceptors.add(AuthInterceptor());
+    dio.interceptors.add(AuthInterceptor(storage: storage));
 
-    dio.interceptors.add(ErrorInterceptor());
+    dio.interceptors.add(ErrorInterceptor(
+      tokenRefreshService: tokenRefreshService,
+      dio: dio,
+    ));
 
     if (AppConfig.showLogs) {
       dio.interceptors.add(

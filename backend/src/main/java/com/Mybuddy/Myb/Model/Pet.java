@@ -60,6 +60,8 @@ public class Pet implements Identifiable {
 
     private String estado;
 
+    private Long adotanteId;
+
     private Double peso;
 
     private String descricao;

@@ -41,6 +41,8 @@ dependencies:
   # UI
   cupertino_icons: ^1.0.8
   google_fonts: ^8.1.0
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
 
   # Cache
   shared_preferences: ^2.3.3
