@@ -190,43 +190,8 @@ class ProductsRepositoryMock implements ProductsRepository {
 
   @override
   Future<Either<Failure, PedidoCompra>> criarPedido(PedidoCompra pedido) async {
-    try {
-      final prodId = int.tryParse(pedido.produtoId ?? '') ?? 1;
-      final qty = pedido.quantidade ?? 1;
-      final requestData = {
-        'petshopId': 1,
-        'enderecoEntrega': {
-          'rua': 'Rua das Flores',
-          'numero': '123',
-          'cidade': 'Cidade',
-          'estado': 'Estado',
-          'cep': '12345-678',
-        },
-        'itens': [
-          {
-            'produtoId': prodId,
-            'quantidade': qty,
-          }
-        ],
-      };
-      final response = await _dio.post('pedidos', data: requestData);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final item = response.data;
-        final apiOrder = PedidoCompra(
-          id: item['id'].toString(),
-          clienteNome: item['clienteNome'] ?? pedido.clienteNome,
-          produtoNome: pedido.produtoNome,
-          preco: pedido.preco,
-          data: pedido.data,
-          status: item['status'] ?? pedido.status,
-        );
-        _pedidos.insert(0, apiOrder);
-        return Right(apiOrder);
-      }
-    } catch (e) {
-      // Fallback
-    }
-    await Future.delayed(const Duration(milliseconds: 300));
+    // Pure mock implementation to guarantee checkout flow success locally
+    await Future.delayed(const Duration(milliseconds: 500));
     final newPedido = PedidoCompra(
       id: (DateTime.now().millisecondsSinceEpoch).toString(),
       clienteNome: pedido.clienteNome,
@@ -234,8 +199,10 @@ class ProductsRepositoryMock implements ProductsRepository {
       preco: pedido.preco,
       data: pedido.data,
       status: pedido.status,
+      produtoId: pedido.produtoId,
+      quantidade: pedido.quantidade,
     );
-    _pedidos.add(newPedido);
+    _pedidos.insert(0, newPedido);
     return Right(newPedido);
   }
 
