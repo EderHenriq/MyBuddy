@@ -16,7 +16,6 @@ import { filter, Subscription } from 'rxjs';
 import { SessionService } from '../../../core/services/session.service';
 import { Role } from '../../../core/models/role.model';
 import { NotificationService } from '../../../core/services/notification.service';
-import { NotificacaoApp } from '../../../core/models/notification.model';
 
 @Component({
   selector: 'app-header-main',
@@ -37,12 +36,20 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   pillVisivel = false;
   mostrarHeader = true;
   indiceHover = -1;
-  papelUsuario: Role | null = null;
-  rotaPainel = '';
-
-  notificacoes: NotificacaoApp[] = [];
-  contadorNaoLidas = 0;
   notificacoesAbertas = false;
+
+  readonly papelUsuario = this.sessionService.userRole;
+  readonly notificacoes = this.notificationService.notificacoes;
+  readonly contadorNaoLidas = this.notificationService.totalNaoLidas;
+
+  readonly rotaPainel = (): string => {
+    const role = this.papelUsuario();
+    if (role === Role.ADMIN) return '/admin/dashboard';
+    if (role === Role.ONG) return '/ong-panel/dashboard';
+    if (role === Role.PETSHOP) return '/petshop-panel/dashboard';
+
+    return '';
+  };
 
   readonly links = [
     { caminho: '/home', rotulo: 'Home' },
@@ -63,21 +70,6 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
         this.verificarRota(event.urlAfterRedirects || event.url);
       });
     }
-
-    this.sessionService.userRole$.subscribe(role => {
-      this.papelUsuario = role;
-      if (role === Role.ADMIN) this.rotaPainel = '/admin/dashboard';
-      else if (role === Role.ONG) this.rotaPainel = '/ong-panel/dashboard';
-      else if (role === Role.PETSHOP) this.rotaPainel = '/petshop-panel/dashboard';
-    });
-
-    this.notificationService.notificacoes$.subscribe(notifs => {
-      this.notificacoes = notifs;
-    });
-
-    this.notificationService.buscarContagemNaoLidas().subscribe(count => {
-      this.contadorNaoLidas = count;
-    });
   }
 
   alternarNotificacoes(): void {

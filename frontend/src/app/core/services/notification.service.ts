@@ -1,7 +1,6 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { NotificacaoApp, HistoricoAtividade } from '../models/notification.model';
 import { SessionService } from './session.service';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Role } from '@core/models/role.model';
 
 @Injectable({
@@ -9,7 +8,7 @@ import { Role } from '@core/models/role.model';
 })
 export class NotificationService {
   private sessionService = inject(SessionService);
-  private readonly roleAtual = toSignal(this.sessionService.userRole$, { initialValue: null });
+  private readonly roleAtual = this.sessionService.userRole;
   private notificacoesSignal = signal<NotificacaoApp[]>([]);
   private historicoSignal = signal<HistoricoAtividade[]>([]);
 

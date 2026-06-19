@@ -31,11 +31,11 @@
       </nav>
 
       <div class="quick-btn">
-        @if (papelUsuario === 'ROLE_ADMIN' || papelUsuario === 'ROLE_ONG' || papelUsuario === 'ROLE_PETSHOP') {
+        @if (papelUsuario() === 'ADMIN' || papelUsuario() === 'ONG' || papelUsuario() === 'PETSHOP') {
           <div class="panel-btn" style="margin-right: 12px; display: flex; align-items: center">
             <button
               class="btn"
-              [routerLink]="rotaPainel"
+              [routerLink]="rotaPainel()"
               title="Acessar Meu Painel"
               style="
                 background-color: var(--primary-color);
@@ -59,8 +59,8 @@
         <div class="notifications-btn" style="position: relative">
           <button class="btn btn-notifications" (click)="alternarNotificacoes()">
             <span class="material-icons">notifications</span>
-            @if (contadorNaoLidas > 0) {
-              <span class="notification-badge">{{ contadorNaoLidas }}</span>
+            @if (contadorNaoLidas() > 0) {
+              <span class="notification-badge">{{ contadorNaoLidas() }}</span>
             }
           </button>
 
@@ -68,18 +68,18 @@
             <div class="notifications-dropdown">
               <div class="dropdown-header">
                 <h4>Notificações</h4>
-                @if (contadorNaoLidas > 0) {
+                @if (contadorNaoLidas() > 0) {
                   <button class="mark-all-btn" (click)="marcarTodasComoLidas($event)">Marcar todas como lidas</button>
                 }
               </div>
               <div class="dropdown-body">
-                @if (notificacoes.length === 0) {
+                @if (notificacoes().length === 0) {
                   <div class="empty-notifications">
                     <span class="material-icons">notifications_none</span>
                     <p>Nenhuma notificação por enquanto</p>
                   </div>
                 }
-                @for (notif of notificacoes; track notif.id) {
+                @for (notif of notificacoes(); track notif.id) {
                   <div class="notification-item" [class.unread]="!notif.lida">
                     <div class="notif-icon" [ngClass]="notif.tipo">
                       <i
