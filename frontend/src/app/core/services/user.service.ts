@@ -44,15 +44,25 @@ export class UserService {
     );
   }
 
+  atualizarPerfil(payload: Partial<Usuario>): Observable<Usuario> {
+    return this.api.put<Usuario>(`${this.endpoint}/meu-perfil`, payload).pipe(
+      tap(perfil => {
+        const roles = perfil.roles ?? [];
+        const role = roles.length > 0 ? (roles[0] as Role) : null;
+        this.sessionService.setRole(role);
+      }),
+    );
+  }
+
   criar(usuario: Partial<Usuario>): Observable<Usuario> {
     return this.api.post<Usuario>(this.endpoint, usuario);
   }
 
   atualizar(id: string, usuario: Partial<Usuario>): Observable<Usuario> {
-    return this.api.put<Usuario>('${this.endpoint}/${id}', usuario);
+    return this.api.put<Usuario>(`${this.endpoint}/${id}`, usuario);
   }
 
   deletar(id: string): Observable<void> {
-    return this.api.delete<void>('${this.endpoint}/${id}');
+    return this.api.delete<void>(`${this.endpoint}/${id}`);
   }
 }
