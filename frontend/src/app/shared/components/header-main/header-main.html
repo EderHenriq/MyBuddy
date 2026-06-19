@@ -31,7 +31,7 @@
       </nav>
 
       <div class="quick-btn">
-        @if (papelUsuario() === 'ADMIN' || papelUsuario() === 'ONG' || papelUsuario() === 'PETSHOP') {
+      @if (papelUsuario() === 'ROLE_ADMIN' || papelUsuario() === 'ROLE_ONG' || papelUsuario() === 'ROLE_PETSHOP') {
           <div class="panel-btn" style="margin-right: 12px; display: flex; align-items: center">
             <button
               class="btn"

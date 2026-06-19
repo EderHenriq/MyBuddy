@@ -38,6 +38,7 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   indiceHover = -1;
   notificacoesAbertas = false;
 
+  readonly Role = Role;
   readonly papelUsuario = this.sessionService.userRole;
   readonly notificacoes = this.notificationService.notificacoes;
   readonly contadorNaoLidas = this.notificationService.totalNaoLidas;
