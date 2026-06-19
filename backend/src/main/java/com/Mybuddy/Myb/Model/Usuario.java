@@ -1,7 +1,7 @@
 package com.Mybuddy.Myb.Model;
 
 import com.Mybuddy.Myb.Security.Role;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -38,7 +38,7 @@ public class Usuario implements Identifiable {
     private String password;
 
     @DocumentReference(lazy = true)
-    @JsonBackReference
+    @JsonIgnoreProperties({"usuarios", "pets"})
     @ToString.Exclude
     private Organizacao organizacao;
 
@@ -48,7 +48,6 @@ public class Usuario implements Identifiable {
 
     private String keycloakId;
 
-    @DocumentReference(lazy = true)
     @ToString.Exclude
     private Set<Role> roles = new HashSet<>();
 

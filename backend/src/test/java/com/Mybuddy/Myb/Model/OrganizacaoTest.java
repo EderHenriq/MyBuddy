@@ -12,6 +12,7 @@ class OrganizacaoTest {
     @BeforeEach
     void setUp() {
         organizacao = Organizacao.builder()
+                .id(1L)
                 .nomeFantasia("ONG Amigos dos Pets")
                 .emailContato("contato@ong.com")
                 .cnpj("12345678000100")
@@ -19,11 +20,14 @@ class OrganizacaoTest {
                 .endereco("Rua das Flores, 100")
                 .descricao("ONG dedicada à adoção")
                 .website("www.amigodospets.com")
+                .latitude(-23.42)
+                .longitude(-51.93)
                 .build();
     }
-//ss
+
     @Test
     void deveCriarOrganizacaoComConstrutorCompleto() {
+        assertThat(organizacao.getId()).isEqualTo(1L);
         assertThat(organizacao.getNomeFantasia()).isEqualTo("ONG Amigos dos Pets");
         assertThat(organizacao.getEmailContato()).isEqualTo("contato@ong.com");
         assertThat(organizacao.getCnpj()).isEqualTo("12345678000100");
@@ -31,55 +35,40 @@ class OrganizacaoTest {
         assertThat(organizacao.getEndereco()).isEqualTo("Rua das Flores, 100");
         assertThat(organizacao.getDescricao()).isEqualTo("ONG dedicada à adoção");
         assertThat(organizacao.getWebsite()).isEqualTo("www.amigodospets.com");
+        assertThat(organizacao.getLatitude()).isEqualTo(-23.42);
+        assertThat(organizacao.getLongitude()).isEqualTo(-51.93);
     }
 
     @Test
-    void deveIniciarComSetsVazios() {
+    void deveIniciarComStatusPendentePorPadrao() {
         Organizacao nova = new Organizacao();
-        assertThat(nova.getPets()).isEmpty();
-        assertThat(nova.getUsuarios()).isEmpty();
+        assertThat(nova.getStatusAprovacao()).isEqualTo(StatusAprovacao.PENDENTE_APROVACAO);
+        assertThat(nova.isPendente()).isTrue();
+        assertThat(nova.isAprovada()).isFalse();
     }
 
     @Test
-    void deveAdicionarPetNaOrganizacao() {
+    void deveAtualizarStatusParaAprovado() {
+        organizacao.setStatusAprovacao(StatusAprovacao.APROVADO);
+        assertThat(organizacao.getStatusAprovacao()).isEqualTo(StatusAprovacao.APROVADO);
+        assertThat(organizacao.isAprovada()).isTrue();
+        assertThat(organizacao.isPendente()).isFalse();
+    }
+
+    @Test
+    void deveAssociarOrganizacaoAoPet() {
         Pet pet = new Pet();
         pet.setNome("Bolinha");
+        pet.setOrganizacao(organizacao);
 
-        organizacao.addPet(pet);
-
-        assertThat(organizacao.getPets()).hasSize(1);
         assertThat(pet.getOrganizacao()).isEqualTo(organizacao);
     }
 
     @Test
-    void deveRemoverPetDaOrganizacao() {
-        Pet pet = new Pet();
-        organizacao.addPet(pet);
-
-        organizacao.removePet(pet);
-
-        assertThat(organizacao.getPets()).isEmpty();
-        assertThat(pet.getOrganizacao()).isNull();
-    }
-
-    @Test
-    void deveAdicionarUsuarioNaOrganizacao() {
+    void deveAssociarOrganizacaoAoUsuario() {
         Usuario usuario = new Usuario("Eder", "eder@mybuddy.com", "44999999999", "senha123");
+        usuario.setOrganizacao(organizacao);
 
-        organizacao.addUsuario(usuario);
-
-        assertThat(organizacao.getUsuarios()).hasSize(1);
         assertThat(usuario.getOrganizacao()).isEqualTo(organizacao);
     }
-
-    @Test
-    void deveRemoverUsuarioDaOrganizacao() {
-        Usuario usuario = new Usuario("Eder", "eder@mybuddy.com", "44999999999", "senha123");
-        organizacao.addUsuario(usuario);
-
-        organizacao.removeUsuario(usuario);
-
-        assertThat(organizacao.getUsuarios()).isEmpty();
-        assertThat(usuario.getOrganizacao()).isNull();
-    }
-}
+}

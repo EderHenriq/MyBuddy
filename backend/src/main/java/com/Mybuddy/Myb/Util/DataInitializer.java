@@ -24,7 +24,6 @@ public class DataInitializer {
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
     private final UsuarioRepository usuarioRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final OrganizacaoRepository organizacaoRepository;
     private final PetRepository petRepository;
@@ -39,31 +38,10 @@ public class DataInitializer {
     public void initData() {
         log.info("Iniciando inicialização de dados...");
 
-        // 1. Garante que as Roles existem no banco de dados
-        // O Lombok @RequiredArgsConstructor na classe Role permite usar new Role(ERole)
-        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                .orElseGet(() -> {
-                    log.info("Criando ROLE_ADMIN...");
-                    return roleRepository.save(new Role(ERole.ROLE_ADMIN));
-                });
-
-        Role ongRole = roleRepository.findByName(ERole.ROLE_ONG)
-                .orElseGet(() -> {
-                    log.info("Criando ROLE_ONG...");
-                    return roleRepository.save(new Role(ERole.ROLE_ONG));
-                });
-
-        Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
-                .orElseGet(() -> {
-                    log.info("Criando ROLE_ADOTANTE...");
-                    return roleRepository.save(new Role(ERole.ROLE_ADOTANTE));
-                });
-
-        Role petshopRole = roleRepository.findByName(ERole.ROLE_PETSHOP)
-                .orElseGet(() -> {
-                    log.info("Criando ROLE_PETSHOP...");
-                    return roleRepository.save(new Role(ERole.ROLE_PETSHOP));
-                });
+        Role adminRole = new Role(ERole.ROLE_ADMIN);
+        Role ongRole = new Role(ERole.ROLE_ONG);
+        Role adotanteRole = new Role(ERole.ROLE_ADOTANTE);
+        Role petshopRole = new Role(ERole.ROLE_PETSHOP);
 
         // 2. Cria uma Organização de teste usando o Padrão BUILDER do Lombok
         Organizacao myBuddyOrg = organizacaoRepository.findByCnpj("11.222.333/0001-44")

@@ -1,6 +1,6 @@
 package com.Mybuddy.Myb.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -46,7 +46,7 @@ public class Pet implements Identifiable {
     private StatusAdocao statusAdocao = StatusAdocao.DISPONIVEL;
 
     @DocumentReference(lazy = true)
-    @JsonBackReference
+    @JsonIgnoreProperties({"usuarios", "pets"})
     @ToString.Exclude
     private Organizacao organizacao;
 

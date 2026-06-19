@@ -1,7 +1,6 @@
 package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Model.Usuario;
-import com.Mybuddy.Myb.Repository.mongo.RoleRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
@@ -21,7 +20,6 @@ import java.util.Set;
 public class KeycloakUserSyncService {
 
     private final UsuarioRepository usuarioRepository;
-    private final RoleRepository roleRepository;
 
     @Transactional
     public Usuario syncUsuario(Jwt jwt) {
@@ -75,7 +73,7 @@ public class KeycloakUserSyncService {
             }
 
             if (eRole != null) {
-                roleRepository.findByName(eRole).ifPresent(roles::add);
+                roles.add(new Role(eRole));
             }
         }
         usuario.setRoles(roles);
