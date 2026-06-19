@@ -38,7 +38,7 @@ public class ProdutoService {
     @Transactional(readOnly = true)
     public Page<ProdutoResponseDTO> buscarComFiltros(
             String busca, Long categoriaId, Long subCategoriaId, Long petshopId,
-            BigDecimal precoMin, BigDecimal precoMax, Pageable pageable) {
+            BigDecimal precoMin, BigDecimal precoMax, Long lastId, Pageable pageable) {
 
         Specification<Produto> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -75,10 +75,25 @@ public class ProdutoService {
                 predicates.add(cb.lessThanOrEqualTo(root.get("preco"), precoMax));
             }
 
+            if (lastId != null) {
+                boolean isAsc = pageable.getSort().getOrderFor("id") != null 
+                        && pageable.getSort().getOrderFor("id").isAscending();
+                if (isAsc) {
+                    predicates.add(cb.greaterThan(root.get("id"), lastId));
+                } else {
+                    predicates.add(cb.lessThan(root.get("id"), lastId));
+                }
+            }
+
             return cb.and(predicates.toArray(new Predicate[0]));
         };
 
-        return produtoRepository.findAll(spec, pageable).map(this::toResponseDTO);
+        Pageable queryPageable = pageable;
+        if (lastId != null) {
+            queryPageable = org.springframework.data.domain.PageRequest.of(0, pageable.getPageSize(), pageable.getSort());
+        }
+
+        return produtoRepository.findAll(spec, queryPageable).map(this::toResponseDTO);
     }
 
     @Transactional(readOnly = true)
