@@ -1,27 +1,26 @@
-import { Injectable, inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
-import { Role } from '@core/models/role.model';
+import { isPlatformBrowser } from "@angular/common";
+import { inject, Injectable, PLATFORM_ID, signal } from "@angular/core";
+import { Role } from "@core/models/role.model";
 
 @Injectable({
   providedIn: 'root',
 })
+
 export class SessionService {
   private platformId = inject(PLATFORM_ID);
-
-  private userRoleSubject = new BehaviorSubject<Role | null>(null);
-  public userRole$ = this.userRoleSubject.asObservable();
+  private roleSignal = signal<Role | null>(null);
+  readonly userRole = this.roleSignal.asReadonly();
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      const storedRole = localStorage.getItem('mockUserRole') as Role;
+      const storedRole = localStorage.getItem('mockUserRole') as Role | null;
       if (storedRole) {
-        this.userRoleSubject.next(storedRole);
+        this.roleSignal.set(storedRole);
       }
     }
   }
 
-  setRole(role: Role | null) {
+  setRole(role: Role | null): void {
     if (isPlatformBrowser(this.platformId)) {
       if (role) {
         localStorage.setItem('mockUserRole', role);
@@ -29,10 +28,11 @@ export class SessionService {
         localStorage.removeItem('mockUserRole');
       }
     }
-    this.userRoleSubject.next(role);
+
+    this.roleSignal.set(role);
   }
 
   getCurrentRole(): Role | null {
-    return this.userRoleSubject.getValue();
+    return this.roleSignal();
   }
 }

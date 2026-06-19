@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { PaymentService, PaymentRequest } from '../../../core/services/PaymentService';
+import { PaymentService, PaymentRequest } from '../../../core/services/payment.service';
 import { MercadoPagoService } from '../../../core/services/mercadopago.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
