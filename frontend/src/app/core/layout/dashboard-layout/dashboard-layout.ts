@@ -1,12 +1,10 @@
-import { Component, inject, HostListener } from '@angular/core';
-import { RouterOutlet, RouterModule, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { SessionService } from '../../services/session.service';
-import { AuthService } from '../../services/auth.service';
+import { Component, inject, computed, HostListener } from '@angular/core';
 import { Role } from '../../models/role.model';
-import { NotificationService } from '../../services/notification.service';
-import { NotificacaoApp } from '../../models/notification.model';
-import { DebounceDirective } from '../../../shared/directives/debounce.directive';
+import { RouterModule, RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { NotificationService } from '@core/services/notification.service';
+import { SessionService } from '@core/services/session.service';
+import { DebounceDirective } from '@shared/directives/debounce.directive';
 
 interface MenuItem {
   label: string;
@@ -22,44 +20,38 @@ interface MenuItem {
   styleUrl: './dashboard-layout.scss',
 })
 export class DashboardLayout {
-  portalName = 'Admin';
-  roleName = 'Administrador';
-  menuItems: MenuItem[] = [];
-
+  private router = inject(Router);
+  private sessionService = inject(SessionService);
   private notificationService = inject(NotificationService);
-  notifications: NotificacaoApp[] = [];
-  unreadCount = 0;
+
+  portalName = 'Admin';
+  menuItems: MenuItem[] = [];
   isNotificationsOpen = false;
 
-  constructor(
-    private router: Router,
-    private sessionService: SessionService,
-  ) {
+  readonly notifications = this.notificationService.notificacoes;
+  readonly unreadCount = this.notificationService.totalNaoLidas;
+  readonly roleName = computed(() => {
+    const role = this.sessionService.userRole();
+    const nomes: Record<Role, string> = {
+      [Role.ADMIN]: 'Administrador Geral',
+      [Role.ONG]: 'Gestor de ONG',
+      [Role.PETSHOP]: 'Lojista',
+      [Role.USER]: 'Adotante',
+    };
+    return nomes[role!] ?? 'Usuário';
+  });
+
+  constructor() {
+    this.updateMenuBasedOnRoute(this.router.url);
+
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updateMenuBasedOnRoute(this.router.url);
       }
     });
-
-    this.sessionService.userRole$.subscribe(role => {
-      if (role === Role.ADMIN) this.roleName = 'Administrador Geral';
-      if (role === Role.ONG) this.roleName = 'Gestor de ONG';
-      if (role === Role.PETSHOP) this.roleName = 'Lojista';
-      if (role === Role.USER) this.roleName = 'Adotante';
-    });
-
-    this.updateMenuBasedOnRoute(this.router.url);
-
-    this.notificationService.notificacoes$.subscribe((notifs: any) => {
-      this.notifications = notifs;
-    });
-
-    this.notificationService.buscarContagemNaoLidas().subscribe((count: any) => {
-      this.unreadCount = count;
-    });
   }
 
-  toggleNotifications(): void {
+  toggleNotification(): void {
     this.isNotificationsOpen = !this.isNotificationsOpen;
   }
 
@@ -79,16 +71,15 @@ export class DashboardLayout {
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event): void {
-    const targetElement = event.target as HTMLElement;
-    if (this.isNotificationsOpen && !targetElement.closest('.icon-btn')) {
+    const target = event.target as HTMLElement;
+    if (this.isNotificationsOpen && !target.closest('.icon-btn')) {
       this.isNotificationsOpen = false;
     }
   }
 
-  private updateMenuBasedOnRoute(url: string) {
+  private updateMenuBasedOnRoute(url: string): void {
     if (url.startsWith('/ong-panel')) {
       this.portalName = 'ONG';
-      this.roleName = 'Gestor de ONG';
       this.menuItems = [
         { label: 'Visão Geral', icon: 'dashboard', route: '/ong-panel/dashboard' },
         { label: 'Meus Animais', icon: 'pets', route: '/ong-panel/pets' },
@@ -97,7 +88,6 @@ export class DashboardLayout {
       ];
     } else if (url.startsWith('/petshop-panel')) {
       this.portalName = 'Petshop';
-      this.roleName = 'Lojista';
       this.menuItems = [
         { label: 'Painel de Vendas', icon: 'storefront', route: '/petshop-panel/dashboard' },
         { label: 'Meus Produtos', icon: 'inventory_2', route: '/petshop-panel/produtos' },
@@ -106,7 +96,6 @@ export class DashboardLayout {
       ];
     } else {
       this.portalName = 'Admin';
-      this.roleName = 'Administrador Geral';
       this.menuItems = [
         { label: 'Dashboard', icon: 'dashboard', route: '/admin/dashboard' },
         { label: 'ONGs e Petshops', icon: 'storefront', route: '/admin/ongs' },
