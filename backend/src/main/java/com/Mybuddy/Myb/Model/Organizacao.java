@@ -1,6 +1,7 @@
 package com.Mybuddy.Myb.Model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class Organizacao implements Identifiable {
 
     private String emailContato;
 
+    @Indexed(unique = true)
     private String cnpj;
 
     private String telefoneContato;

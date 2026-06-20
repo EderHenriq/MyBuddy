@@ -47,6 +47,7 @@ public class Pet implements Identifiable {
     @Indexed
     private StatusAdocao statusAdocao = StatusAdocao.DISPONIVEL;
 
+    @Indexed
     @DocumentReference(lazy = true)
     @JsonIgnoreProperties({"usuarios", "pets"})
     @ToString.Exclude

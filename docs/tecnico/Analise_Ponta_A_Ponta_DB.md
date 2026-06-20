@@ -1,71 +1,164 @@
-# Relatório de Análise de Ponta a Ponta: Banco de Dados MyBuddy (PostgreSQL & MongoDB)
+# Relatório de Auditoria e Prontidão para Produção: Banco de Dados MyBuddy
 
-Realizamos uma auditoria completa na estrutura, mapeamento, índices e integridade dos bancos de dados do MyBuddy. Abaixo detalhamos a avaliação do estado atual e as oportunidades de melhoria identificadas.
-
----
-
-## 1. Arquitetura Híbrida (Veredito Geral)
-A separação de responsabilidades está **100% correta e bem estruturada**:
-* **PostgreSQL:** Usado para entidades relacionais e transacionais (`Produto`, `Pedido`, `Cupom`, `Servico`, `Agendamento`, `Payment`). Garante conformidade ACID, controle rígido de estoque, consistência de preços e histórico de transações financeiras.
-* **MongoDB:** Usado para entidades documentais e de conteúdo dinâmico (`Usuario`, `Pet`, `Organizacao`, `InteresseAdocao`, `Chat`). Oferece flexibilidade para dados de perfil, múltiplos contatos, upload de fotos estruturadas de pets e histórico de conversação sem o peso de JOINS complexos.
+Realizamos um pente-fino minucioso no backend (Spring Boot), frontend (Angular), mobile (Flutter) e nos bancos de dados (PostgreSQL e MongoDB) do MyBuddy. O objetivo foi validar a integridade das ligações de dados, cobertura de índices, redundâncias e prontidão para o ambiente de produção.
 
 ---
 
-## 2. PostgreSQL: Diagnóstico e Oportunidades
+## 1. Avaliação do Modelo Híbrido (PostgreSQL ⬌ MongoDB)
 
-### ⚠️ Tabelas Órfãs/Legadas na Base de Desenvolvimento
-* **Identificação:** Durante a auditoria física das tabelas no banco de dados (`mybuddy-postgres`), identificamos a presença das tabelas `pets`, `organizacoes`, `users`, `roles`, `interesses_adocao` e `user_roles` com dados de maio de 2026.
-* **Causa:** No início do projeto, essas entidades eram JPA/PostgreSQL. Ao serem migradas para MongoDB, as tabelas físicas persistiram no volume Docker do Postgres porque a propriedade `spring.jpa.hibernate.ddl-auto` está configurada como `update` (que apenas cria/altera colunas, nunca remove tabelas antigas).
-* **Impacto:** Poluição visual do esquema, consumo desnecessário de armazenamento e risco de desenvolvedores executarem queries contra as tabelas erradas.
-* **Recomendação:** Executar o script de limpeza abaixo no Postgres de desenvolvimento para remover as tabelas legadas:
-  ```sql
-  DROP TABLE IF EXISTS user_roles CASCADE;
-  DROP TABLE IF EXISTS roles CASCADE;
-  DROP TABLE IF EXISTS interesses_adocao CASCADE;
-  DROP TABLE IF EXISTS pets CASCADE;
-  DROP TABLE IF EXISTS organizacoes CASCADE;
-  DROP TABLE IF EXISTS users CASCADE;
-  DROP TABLE IF EXISTS fotos_pet CASCADE;
-  DROP TABLE IF EXISTS chats CASCADE;
-  DROP TABLE IF EXISTS eventos_ong CASCADE;
-  ```
+A divisão entre **PostgreSQL** (dados transacionais e estruturados) e **MongoDB** (documentos flexíveis e perfis) é conceitualmente correta e adequada para o ecossistema do MyBuddy:
+
+* **PostgreSQL (Transacional):** Gerencia `Petshop`, `Produto`, `Pedido`, `ItemPedido`, `Cupom`, `Agendamento`, `Servico`, `CampanhaDoacao` e `Payment` (controle financeiro e auditoria).
+* **MongoDB (Flexível):** Gerencia `Usuario` (Keycloak Integration), `Pet`, `Organizacao` (ONGs), `InteresseAdocao`, `Chat` e `EventoOng`.
+
+### ⚠️ Risco Crítico: Integridade Referencial Inexistente (Banco ⬌ Banco)
+Como os bancos são fisicamente isolados, **não existem chaves estrangeiras (FK) físicas** entre tabelas relacionais e coleções do MongoDB.
+* Por exemplo: `pedidos.cliente_id` (PostgreSQL) aponta para um `Usuario.id` (MongoDB) e `agendamentos.pet_id` (PostgreSQL) aponta para um `Pet.id` (MongoDB).
+* **Impacto:** Se um `Usuario` ou `Pet` for excluído do MongoDB, o PostgreSQL ficará com registros órfãos, gerando exceções de ponteiro nulo (`NullPointerException`) ou dados corrompidos quando o backend tentar renderizar históricos ou relatórios.
+* **Recomendação:** Implementar **soft delete** (exclusão lógica por campo `ativo = false` ou `deletado_em`) em todas as coleções do MongoDB em vez de exclusão física, protegendo o histórico do PostgreSQL.
 
 ---
 
-## 3. MongoDB: Diagnóstico e Oportunidades
+## 2. Cobertura de Índices e Performance
 
-### 🔴 Ausência de Índices e Risco de Integridade
-* **Identificação:** Ao inspecionar os índices nas coleções do MongoDB (`pets`, `usuarios`, `organizacoes`), constatamos que **apenas o índice padrão `_id` está criado**.
-* **Impacto em Performance:** 
-  * Qualquer consulta filtrando pets por status (`statusAdocao`) ou organização (`organizacao`) na tela de listagem resulta em um **Collection Scan (COLLSCAN)**, forçando o MongoDB a ler todos os documentos da coleção.
-  * Sincronizações de usuários via Keycloak que barrem por email (`email`) ou ID do Keycloak (`keycloakId`) farão buscas sequenciais lentas.
-* **Impacto em Integridade:** Sem um índice único (`unique: true`), o MongoDB não garante fisicamente que dois usuários não se cadastrem com o mesmo e-mail caso haja alguma falha lógica na camada de serviço.
-* **Recomendação:**
-  1. Habilitar a auto-criação de índices no MongoDB adicionando no `application.properties`:
-     ```properties
-     spring.data.mongodb.auto-index-creation=true
-     ```
-  2. Adicionar índices nas classes de modelo do Spring Data:
-     * **`Usuario.java`:**
-       ```java
-       @Indexed(unique = true)
-       private String email;
+Encontramos diversas queries cruciais executadas pelo Backend que **não possuem índices correspondentes no banco**. Em ambiente de produção com milhares de registros, isso resultará em varreduras sequenciais completas (**Seq Scans** no Postgres e **COLLSCAN** no MongoDB), degradando o tempo de resposta das telas e ultrapassando o limite não-funcional de 5 segundos.
 
-       @Indexed(unique = true)
-       private String keycloakId;
-       ```
-     * **`Pet.java`:**
-       ```java
-       @Indexed
-       private StatusAdocao statusAdocao;
+### A. PostgreSQL: Índices Faltantes
 
-       @Indexed
-       private Long adotanteId;
-       ```
+| Tabela | Coluna | Tipo de Índice | Caso de Uso Otimizado |
+| :--- | :--- | :--- | :--- |
+| `payments` | `mp_payment_id` | `B-Tree` | Webhooks do Mercado Pago buscando pagamentos por ID externo em tempo real. |
+| `payments` | `usuario_id` | `B-Tree` | Tela de histórico de transações / doações do usuário logado. |
+| `payments` | `pedido_id` | `B-Tree` | Verificação do status de pagamento de um pedido do Marketplace. |
+| `payments` | `campanha_id` | `B-Tree` | Soma total arrecadada em campanhas de doação. |
+| `pedidos` | `cliente_id` | `B-Tree` | Listagem de pedidos no perfil do cliente (Angular/Flutter). |
+| `pedidos` | `petshop_id` | `B-Tree` | Painel Administrativo do Petshop listando suas vendas. |
+| `pedidos` | `status` | `B-Tree` | Filtro de pedidos pendentes para rotinas automáticas de cancelamento. |
+| `produtos` | `petshop_id` | `B-Tree` | Carregamento de catálogo por Petshop parceiro. |
+| `produtos` | `subcategoria_id` | `B-Tree` | Filtros de navegação por categorias no Marketplace. |
+| `servicos` | `petshop_id` | `B-Tree` | Exibição da lista de serviços oferecidos por um Petshop no checkout. |
+| `agendamentos` | `cliente_id` | `B-Tree` | Meus agendamentos / Histórico do tutor do pet. |
+| `agendamentos` | `pet_id` | `B-Tree` | Validação de conflito de agenda para o mesmo animal. |
+| `agendamentos` | `(data_hora, data_hora_fim)` | `Composite B-Tree` | Busca de sobreposição de horários para profissionais e pets (validação de agenda). |
+| `cupons` | `petshop_id` | `B-Tree` | Listagem e aplicação de cupons vinculados a petshops específicos. |
+| `cupons_usuarios` | `pedido_id` | `B-Tree` | Rastreamento de qual pedido consumiu determinado cupom. |
+
+### B. MongoDB: Índices Faltantes
+
+| Coleção | Campo | Tipo de Índice | Caso de Uso Otimizado |
+| :--- | :--- | :--- | :--- |
+| `pets` | `organizacao` | `{ organizacao: 1 }` | Tela de lista de animais de uma determinada ONG (Dashboard da ONG). |
+| `usuarios` | `petshopId` | `{ petshopId: 1 }` | Vinculação de usuários administradores ao seu respectivo Petshop. |
+| `organizacoes`| `cnpj` | `{ cnpj: 1 } (Unique)` | Garantia física de que não haverá duplicidade de ONGs com o mesmo CNPJ. |
+| `interesses_adocao` | `usuario` | `{ usuario: 1 }` | Listagem de intenções de adoção feitas por um adotante. |
+| `interesses_adocao` | `pet` | `{ pet: 1 }` | Listagem de solicitações recebidas para um pet específico. |
+| `interesses_adocao` | `status` | `{ status: 1 }` | Filtros rápidos do painel administrativo da ONG. |
 
 ---
 
-## 4. Otimizações de Infraestrutura e Cache (Validadas)
-* **HikariCP:** A pool configurada com máximo de 20 conexões e timeouts explícitos evita exaustão de conexões em cenários de picos de carga.
-* **Redis Caching:** O cache transparente de catálogo de produtos está operando corretamente e protegendo o PostgreSQL de queries repetitivas.
-* **Índices de Busca:** O índice trigram GIN em `produtos.nome` resolveu a lentidão em buscas parciais (`LIKE '%...%'`), e o índice B-Tree em `pedidos.status` otimizou os relatórios de vendas.
+## 3. Lacunas de Negócio e Funcionalidades Incompletas
+
+Ao cruzar o código do Frontend/Mobile com as tabelas do PostgreSQL e MongoDB, identificamos as seguintes ausências críticas:
+
+### 🔴 1. Eventos Órfãos (Gargalo de Segurança/Regra)
+* **Status atual:** A coleção `eventos_ong` no MongoDB armazena apenas `id`, `nome`, `local`, `data` e `status`. Não há relacionamento com a `Organizacao`.
+* **Impacto:** O endpoint `/api/ong/eventos` retorna `eventoOngRepository.findAll()`. Ou seja, **todas as ONGs enxergam e podem alterar os eventos de todas as outras ONGs**. Não há separação lógica de quem criou o evento.
+* **Correção:** Adicionar `@DocumentReference` ou `organizacaoId` em `EventoOng.java` e ajustar o controller para filtrar pela organização do usuário logado.
+
+### 🔴 2. Parâmetros de Split de Pagamento do Mercado Pago Inexistentes
+* **Status atual:** O cronograma prevê repasse automático de valores ("X% pra Pet Shop A - Y% comissão pra MyBuddy").
+* **Impacto:** A tabela `petshops` não possui campos para guardar credenciais de recebimento do lojista (ex: `mp_access_token` ou `mp_user_id` do petshop) e nem a taxa de comissão contratada (`comissao_porcentagem`). Sem esses dados persistidos na tabela `petshops`, o backend não consegue realizar o split de pagamento dinamicamente no gateway.
+* **Correção:** Adicionar campos de comissão e integração MP na tabela `petshops`.
+
+### 🟡 3. Persistência do Carrinho de Compras
+* **Status atual:** O carrinho de compras é mantido 100% no estado das aplicações Angular e Flutter.
+* **Impacto:** Se o usuário iniciar a compra no mobile e quiser finalizar no site (ou vice-versa), ou simplesmente trocar de aparelho/limpar o cache, a seleção de produtos é perdida.
+* **Oportunidade:** Para uma experiência premium, criar uma tabela/coleção rápida de `carrinho` ou persistir o carrinho temporariamente no Redis utilizando o ID do usuário como chave.
+
+---
+
+## 4. Riscos de Configuração e Infraestrutura
+
+### ⚠️ spring.jpa.hibernate.ddl-auto=update ativo em Produção
+* **Risco:** Nos arquivos `application.properties` e `application-docker.properties`, a propriedade `ddl-auto` está configurada como `update`. Em produção, o Hibernate pode executar alterações automáticas na estrutura do banco com base nas classes Java. Isso causa travamento de tabelas (Locks), risco de perda de dados e incompatibilidade direta com as migrations controladas pelo **Flyway**.
+* **Mitigação:** Alterar para `none` ou `validate` no perfil de produção/docker.
+
+---
+
+## 5. Propostas de Alteração (Código e SQL)
+
+Abaixo estão os scripts sugeridos para aplicação em uma nova migration do Flyway (`V3__Otimizacoes_E_Indices_Producao.sql`) e as correções nas classes Java.
+
+### Proposta de Script SQL (`V3__Otimizacoes_E_Indices_Producao.sql`)
+```sql
+-- 1. Índices para otimização de Performance nas buscas transacionais
+CREATE INDEX idx_payments_mp_payment_id ON payments (mp_payment_id) WHERE mp_payment_id IS NOT NULL;
+CREATE INDEX idx_payments_usuario_id ON payments (usuario_id);
+CREATE INDEX idx_payments_pedido_id ON payments (pedido_id);
+CREATE INDEX idx_payments_campanha_id ON payments (campanha_id);
+
+CREATE INDEX idx_pedidos_cliente_id ON pedidos (cliente_id);
+CREATE INDEX idx_pedidos_petshop_id ON pedidos (petshop_id);
+CREATE INDEX idx_pedidos_status ON pedidos (status);
+
+CREATE INDEX idx_produtos_petshop_id ON produtos (petshop_id);
+CREATE INDEX idx_produtos_subcategoria_id ON produtos (subcategoria_id);
+
+CREATE INDEX idx_servicos_petshop_id ON servicos (petshop_id);
+
+CREATE INDEX idx_agendamentos_cliente_id ON agendamentos (cliente_id);
+CREATE INDEX idx_agendamentos_pet_id ON agendamentos (pet_id);
+CREATE INDEX idx_agendamentos_datas_conflito ON agendamentos (data_hora, data_hora_fim);
+
+CREATE INDEX idx_cupons_petshop_id ON cupons (petshop_id);
+
+-- 2. Integridade Referencial Faltante no Postgres
+ALTER TABLE cupons_usuarios 
+    ADD CONSTRAINT fk_cupons_usuarios_pedido 
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE SET NULL;
+
+-- 3. Melhoria de Negócio: Campos necessários para Split do Mercado Pago na tabela de Petshops
+ALTER TABLE petshops ADD COLUMN taxa_comissao DECIMAL(5, 2) DEFAULT 10.00; -- default 10% comissão
+ALTER TABLE petshops ADD COLUMN mp_user_id VARCHAR(100); -- ID do vendedor do MP para split
+ALTER TABLE petshops ADD COLUMN mp_merchant_account_id VARCHAR(100);
+```
+
+### Proposta de Alterações MongoDB (Java)
+
+1. **`EventoOng.java`**: Adicionar a referência da ONG dona do evento:
+```java
+@Document(collection = "eventos_ong")
+@Getter @Setter @NoArgsConstructor
+public class EventoOng implements Identifiable {
+    @Id
+    private Long id;
+    
+    private String nome;
+    private String local;
+    private String data;
+    private String status;
+
+    @Indexed
+    @DocumentReference(lazy = true)
+    private Organizacao organizacao; // Vinculação necessária para segurança
+}
+```
+
+2. **`InteresseAdocao.java`**: Incluir indexação nos relacionamentos:
+```java
+@Document(collection = "interesses_adocao")
+public class InteresseAdocao implements Identifiable {
+    // ...
+    @Indexed
+    @DocumentReference(lazy = true)
+    private Usuario usuario;
+
+    @Indexed
+    @DocumentReference(lazy = true)
+    private Pet pet;
+
+    @Indexed
+    private StatusInteresse status;
+    // ...
+}
+```

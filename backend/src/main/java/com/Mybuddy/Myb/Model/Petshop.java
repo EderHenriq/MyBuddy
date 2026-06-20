@@ -55,6 +55,16 @@ public class Petshop {
     @Column(name = "raio_entrega_km")
     private Double raioEntregaKm;
 
+    @Column(name = "taxa_comissao", precision = 5, scale = 2)
+    @Builder.Default
+    private BigDecimal taxaComissao = new BigDecimal("10.00");
+
+    @Column(name = "mp_user_id", length = 100)
+    private String mpUserId;
+
+    @Column(name = "mp_merchant_account_id", length = 100)
+    private String mpMerchantAccountId;
+
     /**
      * Status de aprovação do Petshop na plataforma.
      * Apenas Petshops APROVADOS podem cadastrar produtos e aparecer publicamente.
