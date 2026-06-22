@@ -51,7 +51,7 @@ export class DashboardLayout {
     });
   }
 
-  toggleNotification(): void {
+  toggleNotifications(): void {
     this.isNotificationsOpen = !this.isNotificationsOpen;
   }
 

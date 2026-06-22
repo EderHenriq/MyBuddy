@@ -6,6 +6,9 @@ import { finalize } from 'rxjs';
 import { CardPetComponent } from '@shared/components/card-pet/card-pet';
 import { Footer } from '@shared/components/footer/footer';
 import { AuthService } from '@core/services/auth.service';
+import { UserService } from '@core/services/user.service';
+import { NotificationService } from '@core/services/notification.service';
+import { SessionService } from '@core/services/session.service';
 import { UploadService } from '@core/services/upload.service';
 
 type ProfileTab = 'inicio' | 'dados' | 'pets' | 'favoritos' | 'mensagens' | 'solicitacoes' | 'historico' | 'configuracoes';
@@ -118,8 +121,6 @@ interface ProfileRoleConfig {
   businessDescriptionLabel: string;
 }
 
-import { NotificationService } from '@core/services/notification.service';
-
 @Component({
   selector: 'app-perfil',
   standalone: true,
@@ -129,12 +130,14 @@ import { NotificationService } from '@core/services/notification.service';
 })
 export class Perfil implements OnInit {
   private readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
+  private readonly sessionService = inject(SessionService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
   private readonly uploadService = inject(UploadService);
   private readonly route = inject(ActivatedRoute);
 
-  readonly historico$ = this.notificationService.historico$;
+  readonly historico = this.notificationService.historico;
 
   readonly activeTab = signal<ProfileTab>('inicio');
   readonly isEditing = signal(false);
@@ -439,18 +442,18 @@ export class Perfil implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      if (params['tab']) {
+      if(params['tab']) {
         this.selectTab(params['tab'] as ProfileTab);
       }
     });
 
     const profile = this.authService.usuarioAtual();
-    if (profile) {
+    if(profile) {
       this.setupProfile(profile);
       return;
     }
 
-    this.authService.obterPerfil().subscribe((data: any) => {
+    this.userService.buscarPerfil(this.authService.obterToken() || null).subscribe((data: any) => {
       this.setupProfile(data);
     });
   }
@@ -553,7 +556,7 @@ export class Perfil implements OnInit {
       website: organizationPayload?.website,
     };
 
-    this.authService
+    this.userService
       .atualizarPerfil(payload)
       .pipe(finalize(() => this.isSaving.set(false)))
       .subscribe({
@@ -644,9 +647,11 @@ export class Perfil implements OnInit {
     });
   }
 
+  
   private normalizeRoles(roles: BackendUserProfile['roles']): string[] {
     if (!Array.isArray(roles)) {
-      return this.authService.getUserRoles();
+      const currentRole = this.sessionService.userRole();
+      return currentRole ? [currentRole] : [];
     }
 
     return roles.map(role => {

@@ -31,7 +31,7 @@ interface GrupoFiltro {
 @Component({
   selector: 'app-pets',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CardPetComponent, Footer, InfiniteScrollDirective, DebounceDirective, HeroSectionComponent],
+  imports: [CommonModule, ReactiveFormsModule, CardPetComponent, Footer, InfiniteScrollDirective, HeroSectionComponent],
   templateUrl: './pets.html',
   styleUrl: './pets.scss',
 })

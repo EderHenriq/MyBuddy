@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit, DestroyRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { UserService } from '@core/services/user.service';
 import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -18,6 +19,7 @@ export class Login implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private userService = inject(UserService);
 
   loginForm!: FormGroup;
 
@@ -71,7 +73,7 @@ export class Login implements OnInit {
     this.authService
       .loginComCredenciais(email, password)
       .pipe(
-        switchMap(() => this.authService.obterPerfil()),
+        switchMap(() => this.userService.buscarPerfil(this.authService.obterToken() || null)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
