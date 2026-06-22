@@ -1,7 +1,9 @@
 @use '../../../../styles/mixins' as *;
 
 :host {
-  display: block;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .hero-overlay {
@@ -13,44 +15,55 @@
 
 .hero-container {
   position: relative;
-  min-height: 405px;
   width: 100%;
-  padding: var(--spacing-md) var(--spacing-lg);
+  min-height: 438px;
+  padding: var(--spacing-md) var(--spacing-xxl);
   background-size: cover;
   background-position: center 42%;
   border-radius: 0 0 var(--radius-xxl) var(--radius-xxl);
   box-shadow: var(--shadow-md);
   overflow: hidden;
-  @include flex-center;
   box-sizing: border-box;
+
+  @include flex-column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 960px;
   width: 100%;
-  margin: 0 auto;
-  padding-top: 58px;
   color: var(--text-color-white);
   box-sizing: border-box;
 
   @include flex-column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
 
   .hero-kicker {
     margin: 0;
-    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-xl);
     font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-sm);
+    letter-spacing: -0.05em;
     color: #D9D9D9;
   }
 
   h1 {
+    font-family: var(--font-family-secondary);
     margin: 0;
-    font-size: clamp(2rem, 5.5vw, 4rem);
+    font-size: 80px;
     font-weight: var(--font-weight-extrabold);
     line-height: var(--line-height-sm);
     color: var(--text-color-white);
+    letter-spacing: -0.05em;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 14px;
   }
 
   .highlight {
