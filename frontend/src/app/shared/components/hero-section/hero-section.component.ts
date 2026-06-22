@@ -11,10 +11,12 @@ export class HeroSectionComponent {
   private sanitizer = inject(DomSanitizer);
 
   backgroundImageUrl = input('/assets/imagem/Hero-Section.jpg');
-  kicker = input('');
+  userName = input('Usuário');
   title = input('Conectar, cuidar e');
   highlightedText = input('comemorar');
   subtitle = input('Tudo isso em um só lugar');
+
+  kickerMessage = computed(() => `Seja bem vindo, ${this.userName()}`);
 
   backgroundImageSafe = computed((): SafeStyle => this.sanitizer.bypassSecurityTrustStyle(`url(${this.backgroundImageUrl()})`));
 }

@@ -1,19 +1,21 @@
-<section class="hero" [style.backgroundImage]="backgroundImageSafe()">
+<section class="hero-container" [style.backgroundImage]="backgroundImageSafe()">
   <div class="hero-content">
-    @if (kicker()) {
-      <span class="hero-kicker">{{ kicker() }}</span>
+    @if (userName()) {
+      <span class="hero-kicker">{{ kickerMessage() }}</span>
     }
 
-    <h1 class="hero-title">
-      {{ title() }}
+    <div class="hero-title-wrapper">
+      <h1 class="hero-title">
+        {{ title() }}
 
-      @if (highlightedText()) {
-        <span class="hero-highlight">{{ highlightedText() }}</span>
+        @if (highlightedText()) {
+          <span class="highlight">{{ highlightedText() }}</span>
+        }
+      </h1>
+
+      @if (subtitle()) {
+        <p class="hero-subtitle">{{ subtitle() }}</p>
       }
-    </h1>
-
-    @if (subtitle()) {
-      <p class="hero-subtitle">{{ subtitle() }}</p>
-    }
+    </div>
   </div>
 </section>

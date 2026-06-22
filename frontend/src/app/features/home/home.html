@@ -1,6 +1,6 @@
 <main class="home-page">
   <app-hero-section
-    [kicker]="'Seja bem vindo, ' + (authService.usuarioAtual()?.nome || 'Usuário')"
+    [userName]="authService.usuarioAtual()?.nome || ''"
     [title]="'Conectar, cuidar e'"
     [highlightedText]="'comemorar.'"
     [subtitle]="'Tudo isso em um só lugar'"
