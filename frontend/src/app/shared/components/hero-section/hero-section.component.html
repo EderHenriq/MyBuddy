@@ -1,4 +1,6 @@
 <section class="hero-container" [style.backgroundImage]="backgroundImageSafe()">
+  <div class="hero-overlay"></div>
+
   <div class="hero-content">
     @if (userName()) {
       <span class="hero-kicker">{{ kickerMessage() }}</span>
