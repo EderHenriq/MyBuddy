@@ -11,6 +11,7 @@ import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import com.Mybuddy.Myb.Repository.jpa.AgendamentoRepository;
 import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
+import com.Mybuddy.Myb.Repository.jpa.CampanhaDoacaoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,6 +44,9 @@ class PetServiceTest {
 
     @Mock
     private PaymentRepository paymentRepository;
+    
+    @Mock
+    private CampanhaDoacaoRepository campanhaDoacaoRepository;
 
     @InjectMocks
     private PetService petService;
@@ -240,6 +244,7 @@ class PetServiceTest {
         petService.deletarPet(1L);
 
         verify(paymentRepository, times(1)).nullifyPetId(1L);
+        verify(campanhaDoacaoRepository, times(1)).nullifyPetId(1L);
         verify(petRepository, times(1)).deleteById(1L);
     }
 

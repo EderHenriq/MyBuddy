@@ -17,6 +17,8 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
 
     boolean existsByPetIdAndStatusNot(Long petId, StatusAgendamento status);
 
+    boolean existsByClienteIdAndStatusNot(Long clienteId, StatusAgendamento status);
+
     @Query("""
             select count(a) > 0
             from Agendamento a

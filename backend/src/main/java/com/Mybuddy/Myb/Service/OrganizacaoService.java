@@ -10,6 +10,7 @@ import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import com.Mybuddy.Myb.Repository.mongo.EventoOngRepository;
 import com.Mybuddy.Myb.Repository.jpa.CampanhaDoacaoRepository;
 import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
+import com.Mybuddy.Myb.Repository.jpa.DonationSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class OrganizacaoService {
     private final EventoOngRepository eventoOngRepository;
     private final CampanhaDoacaoRepository campanhaDoacaoRepository;
     private final PaymentRepository paymentRepository;
+    private final DonationSubscriptionRepository donationSubscriptionRepository;
 
     @Transactional
     public Organizacao criarOrganizacao(Organizacao organizacao) {
@@ -168,7 +170,13 @@ public class OrganizacaoService {
             throw new ConflictException("Não é possível deletar a organização pois existem campanhas de doação vinculadas a ela.");
         }
 
-        // 4. Nullificar payments.organizacao_id
+        // 4. Verificar se existem assinaturas de doação ativas (tudo exceto canceladas)
+        if (donationSubscriptionRepository.existsByOrganizacaoIdAndStatusNot(id, "cancelled")) {
+            log.warn("Deleção de organização ID {} falhou: existem assinaturas de doação ativas.", id);
+            throw new ConflictException("Não é possível deletar a organização pois existem assinaturas de doação ativas vinculadas a ela.");
+        }
+
+        // 5. Nullificar payments.organizacao_id
         paymentRepository.nullifyOrganizacaoId(id);
 
         organizacaoRepository.deleteById(id);

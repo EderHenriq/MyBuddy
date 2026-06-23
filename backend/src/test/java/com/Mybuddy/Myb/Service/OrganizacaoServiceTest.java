@@ -10,6 +10,7 @@ import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import com.Mybuddy.Myb.Repository.mongo.EventoOngRepository;
 import com.Mybuddy.Myb.Repository.jpa.CampanhaDoacaoRepository;
 import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
+import com.Mybuddy.Myb.Repository.jpa.DonationSubscriptionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +43,9 @@ class OrganizacaoServiceTest {
 
     @Mock
     private PaymentRepository paymentRepository;
+
+    @Mock
+    private DonationSubscriptionRepository donationSubscriptionRepository;
 
     @InjectMocks
     private OrganizacaoService organizacaoService;
@@ -257,6 +261,7 @@ class OrganizacaoServiceTest {
         when(petRepository.findByOrganizacaoId(1L)).thenReturn(List.of());
         when(eventoOngRepository.findByOrganizacaoId(1L)).thenReturn(List.of());
         when(campanhaDoacaoRepository.existsByOrganizacaoId(1L)).thenReturn(false);
+        when(donationSubscriptionRepository.existsByOrganizacaoIdAndStatusNot(1L, "cancelled")).thenReturn(false);
 
         organizacaoService.deletarOrganizacao(1L);
 
@@ -304,5 +309,18 @@ class OrganizacaoServiceTest {
         assertThatThrownBy(() -> organizacaoService.deletarOrganizacao(1L))
                 .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("Não é possível deletar a organização pois existem campanhas de doação vinculadas");
+    }
+
+    @Test
+    void deveLancarExcecaoAoDeletarOrganizacaoComAssinaturasAtivas() {
+        when(organizacaoRepository.existsById(1L)).thenReturn(true);
+        when(petRepository.findByOrganizacaoId(1L)).thenReturn(List.of());
+        when(eventoOngRepository.findByOrganizacaoId(1L)).thenReturn(List.of());
+        when(campanhaDoacaoRepository.existsByOrganizacaoId(1L)).thenReturn(false);
+        when(donationSubscriptionRepository.existsByOrganizacaoIdAndStatusNot(1L, "cancelled")).thenReturn(true);
+
+        assertThatThrownBy(() -> organizacaoService.deletarOrganizacao(1L))
+                .isInstanceOf(ConflictException.class)
+                .hasMessageContaining("Não é possível deletar a organização pois existem assinaturas de doação ativas");
     }
 }
