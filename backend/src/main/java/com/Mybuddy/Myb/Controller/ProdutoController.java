@@ -42,12 +42,13 @@ public class ProdutoController {
             @RequestParam(required = false) Long petshopId,
             @RequestParam(required = false) BigDecimal precoMin,
             @RequestParam(required = false) BigDecimal precoMax,
+            @RequestParam(required = false) Long lastId,
             @PageableDefault(size = 12, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        log.info("Buscando produtos com filtros: busca={}, categoriaId={}, subCategoriaId={}, petshopId={}, precoMin={}, precoMax={}",
-                busca, categoriaId, subCategoriaId, petshopId, precoMin, precoMax);
+        log.info("Buscando produtos com filtros: busca={}, categoriaId={}, subCategoriaId={}, petshopId={}, precoMin={}, precoMax={}, lastId={}",
+                busca, categoriaId, subCategoriaId, petshopId, precoMin, precoMax, lastId);
 
-        return ResponseEntity.ok(produtoService.buscarComFiltros(busca, categoriaId, subCategoriaId, petshopId, precoMin, precoMax, pageable));
+        return ResponseEntity.ok(produtoService.buscarComFiltros(busca, categoriaId, subCategoriaId, petshopId, precoMin, precoMax, lastId, pageable));
     }
 
     @GetMapping("/{id}")

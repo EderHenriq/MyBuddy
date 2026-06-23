@@ -1,9 +1,10 @@
 package com.Mybuddy.Myb.Model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import lombok.*;
@@ -43,10 +44,12 @@ public class Pet implements Identifiable {
     @ToString.Exclude
     private Set<FotoPet> fotos = new HashSet<>();
 
+    @Indexed
     private StatusAdocao statusAdocao = StatusAdocao.DISPONIVEL;
 
+    @Indexed
     @DocumentReference(lazy = true)
-    @JsonBackReference
+    @JsonIgnoreProperties({"usuarios", "pets"})
     @ToString.Exclude
     private Organizacao organizacao;
 
@@ -60,6 +63,7 @@ public class Pet implements Identifiable {
 
     private String estado;
 
+    @Indexed
     private Long adotanteId;
 
     private Double peso;

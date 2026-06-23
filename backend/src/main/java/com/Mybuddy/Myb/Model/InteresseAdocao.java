@@ -3,6 +3,7 @@ package com.Mybuddy.Myb.Model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import lombok.*;
@@ -25,15 +26,19 @@ public class InteresseAdocao implements Identifiable {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Indexed
     @DocumentReference(lazy = true)
     @ToString.Exclude
     private Usuario usuario;
 
+    @Indexed
     @DocumentReference(lazy = true)
     @ToString.Exclude
     private Pet pet;
 
+    @Indexed
     private StatusInteresse status;
+
 
     private String mensagem;
 

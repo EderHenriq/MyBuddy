@@ -1,10 +1,11 @@
 package com.Mybuddy.Myb.Model;
 
 import com.Mybuddy.Myb.Security.Role;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import lombok.*;
@@ -31,6 +32,7 @@ public class Usuario implements Identifiable {
 
     private String nome;
 
+    @Indexed(unique = true, sparse = true)
     private String email;
 
     private String telefone;
@@ -38,17 +40,18 @@ public class Usuario implements Identifiable {
     private String password;
 
     @DocumentReference(lazy = true)
-    @JsonBackReference
+    @JsonIgnoreProperties({"usuarios", "pets"})
     @ToString.Exclude
     private Organizacao organizacao;
 
+    @Indexed
     private Long petshopId;
 
     private Set<Long> petsAdotadosIds = new HashSet<>();
 
+    @Indexed
     private String keycloakId;
 
-    @DocumentReference(lazy = true)
     @ToString.Exclude
     private Set<Role> roles = new HashSet<>();
 

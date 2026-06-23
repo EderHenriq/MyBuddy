@@ -1,11 +1,9 @@
 package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Exception.ConflictException;
-import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
-import com.Mybuddy.Myb.Repository.mongo.RoleRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
@@ -22,7 +20,6 @@ import java.util.Set;
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final OrganizacaoService organizacaoService;
 
@@ -43,22 +40,16 @@ public class AuthService {
 
         try {
             if (strRoles == null || strRoles.isEmpty()) {
-                Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
-                        .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ADOTANTE não encontrada."));
-                roles.add(adotanteRole);
+                roles.add(new Role(ERole.ROLE_ADOTANTE));
             } else {
                 for (String roleName : strRoles) {
                     switch (roleName.toUpperCase()) {
                         case "ADMIN":
-                            Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                    .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ADMIN não encontrada."));
-                            roles.add(adminRole);
+                            roles.add(new Role(ERole.ROLE_ADMIN));
                             break;
 
                         case "ONG":
-                            Role ongRole = roleRepository.findByName(ERole.ROLE_ONG)
-                                    .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ONG não encontrada."));
-                            roles.add(ongRole);
+                            roles.add(new Role(ERole.ROLE_ONG));
 
                             if (signUpRequest.getOrganizacaoCnpj() == null || signUpRequest.getOrganizacaoCnpj().trim().isEmpty())
                                 throw new RuntimeException("O CNPJ da organização é obrigatório para a role ONG.");
@@ -85,9 +76,7 @@ public class AuthService {
                             break;
 
                         case "ADOTANTE":
-                            Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
-                                    .orElseThrow(() -> new ResourceNotFoundException("Erro: Role ADOTANTE não encontrada."));
-                            roles.add(adotanteRole);
+                            roles.add(new Role(ERole.ROLE_ADOTANTE));
                             break;
 
                         default:

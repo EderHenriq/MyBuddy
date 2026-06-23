@@ -24,6 +24,18 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findByPedidoId(Long pedidoId);
 
+    List<Payment> findByOrganizacaoId(Long organizacaoId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Query("UPDATE Payment p SET p.petId = null WHERE p.petId = :petId")
+    void nullifyPetId(@org.springframework.data.repository.query.Param("petId") Long petId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Query("UPDATE Payment p SET p.organizacaoId = null WHERE p.organizacaoId = :organizacaoId")
+    void nullifyOrganizacaoId(@org.springframework.data.repository.query.Param("organizacaoId") Long organizacaoId);
+
     @org.springframework.data.jpa.repository.Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.status = :status")
     java.math.BigDecimal sumAmountByStatus(PaymentStatus status);
 

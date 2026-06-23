@@ -6,9 +6,13 @@ import com.Mybuddy.Myb.Model.FotoPet;
 import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Model.Pet;
 import com.Mybuddy.Myb.Model.StatusAdocao;
+import com.Mybuddy.Myb.Model.StatusAgendamento;
 import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.PetRepository;
+import com.Mybuddy.Myb.Repository.jpa.AgendamentoRepository;
+import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
+import com.Mybuddy.Myb.Repository.jpa.CampanhaDoacaoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -42,6 +46,9 @@ public class PetService {
     private final InteresseAdocaoRepository interesseRepo;
     private final OrganizacaoRepository organizacaoRepository;
     private final MongoTemplate mongoTemplate;
+    private final AgendamentoRepository agendamentoRepository;
+    private final PaymentRepository paymentRepository;
+    private final CampanhaDoacaoRepository campanhaDoacaoRepository;
 
     @Transactional
     public PetResponse criarPet(PetRequestDTO petRequestDTO) {
@@ -213,6 +220,19 @@ public class PetService {
                     "Não é possível excluir pet com interesses registrados. Total: " + countInteresses
             );
         }
+
+        // 2. Verificar se existem agendamentos ativos no PostgreSQL (tudo exceto CANCELADO)
+        if (agendamentoRepository.existsByPetIdAndStatusNot(id, StatusAgendamento.CANCELADO)) {
+            throw new IllegalStateException(
+                    "Não é possível excluir o pet pois existem agendamentos ativos ou concluídos associados a ele."
+            );
+        }
+
+        // 3. Nullificar referências no PostgreSQL payments.pet_id
+        paymentRepository.nullifyPetId(id);
+
+        // 4. Nullificar referências nas campanhas de doação no PostgreSQL
+        campanhaDoacaoRepository.nullifyPetId(id);
 
         petRepository.deleteById(id);
         log.debug("Pet ID {} excluído com sucesso.", id);

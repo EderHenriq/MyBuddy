@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +39,10 @@ public class ProdutoService {
     private final FotoProdutoRepository fotoProdutoRepository;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "produtos", key = "{#busca, #categoriaId, #subCategoriaId, #petshopId, #precoMin, #precoMax, #lastId, #pageable.pageNumber, #pageable.pageSize}")
     public Page<ProdutoResponseDTO> buscarComFiltros(
             String busca, Long categoriaId, Long subCategoriaId, Long petshopId,
-            BigDecimal precoMin, BigDecimal precoMax, Pageable pageable) {
+            BigDecimal precoMin, BigDecimal precoMax, Long lastId, Pageable pageable) {
 
         Specification<Produto> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -75,10 +79,25 @@ public class ProdutoService {
                 predicates.add(cb.lessThanOrEqualTo(root.get("preco"), precoMax));
             }
 
+            if (lastId != null) {
+                boolean isAsc = pageable.getSort().getOrderFor("id") != null 
+                        && pageable.getSort().getOrderFor("id").isAscending();
+                if (isAsc) {
+                    predicates.add(cb.greaterThan(root.get("id"), lastId));
+                } else {
+                    predicates.add(cb.lessThan(root.get("id"), lastId));
+                }
+            }
+
             return cb.and(predicates.toArray(new Predicate[0]));
         };
 
-        return produtoRepository.findAll(spec, pageable).map(this::toResponseDTO);
+        Pageable queryPageable = pageable;
+        if (lastId != null) {
+            queryPageable = org.springframework.data.domain.PageRequest.of(0, pageable.getPageSize(), pageable.getSort());
+        }
+
+        return produtoRepository.findAll(spec, queryPageable).map(this::toResponseDTO);
     }
 
     @Transactional(readOnly = true)
@@ -88,6 +107,7 @@ public class ProdutoService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "produto", key = "#id")
     public ProdutoResponseDTO buscarPorIdDTO(Long id) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com o ID: " + id));
@@ -95,6 +115,7 @@ public class ProdutoService {
     }
 
     @Transactional
+    @CacheEvict(value = "produtos", allEntries = true)
     public ProdutoResponseDTO criar(ProdutoRequestDTO request, Usuario usuario) {
         if (usuario.getPetshopId() == null) {
             throw new IllegalArgumentException("O usuário logado não possui um petshop cadastrado.");
@@ -143,6 +164,10 @@ public class ProdutoService {
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "produtos", allEntries = true),
+        @CacheEvict(value = "produto", key = "#id")
+    })
     public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO request, Usuario usuario) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
@@ -182,6 +207,10 @@ public class ProdutoService {
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "produtos", allEntries = true),
+        @CacheEvict(value = "produto", key = "#id")
+    })
     public void deletar(Long id, Usuario usuario) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));

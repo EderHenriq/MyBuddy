@@ -1,7 +1,9 @@
 package com.Mybuddy.Myb.Model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import lombok.*;
 
 /**
@@ -26,4 +28,16 @@ public class EventoOng implements Identifiable {
     private String data;
 
     private String status;
+
+    @Indexed
+    @DocumentReference(lazy = true)
+    private Organizacao organizacao;
+
+    public EventoOng(Long id, String nome, String local, String data, String status) {
+        this.id = id;
+        this.nome = nome;
+        this.local = local;
+        this.data = data;
+        this.status = status;
+    }
 }

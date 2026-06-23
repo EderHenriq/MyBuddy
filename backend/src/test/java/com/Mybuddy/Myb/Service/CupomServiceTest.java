@@ -55,9 +55,9 @@ public class CupomServiceTest {
 
     @BeforeEach
     void setUp() {
-        Role roleAdmin = new Role(1L, ERole.ROLE_ADMIN);
-        Role rolePetshop = new Role(2L, ERole.ROLE_PETSHOP);
-        Role roleAdotante = new Role(3L, ERole.ROLE_ADOTANTE);
+        Role roleAdmin = new Role(ERole.ROLE_ADMIN);
+        Role rolePetshop = new Role(ERole.ROLE_PETSHOP);
+        Role roleAdotante = new Role(ERole.ROLE_ADOTANTE);
 
         adminUsuario = new Usuario();
         adminUsuario.setId(101L);

@@ -1,7 +1,6 @@
 package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Model.Usuario;
-import com.Mybuddy.Myb.Repository.mongo.RoleRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
@@ -27,9 +26,6 @@ class KeycloakUserSyncServiceTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
-
-    @Mock
-    private RoleRepository roleRepository;
 
     @InjectMocks
     private KeycloakUserSyncService keycloakUserSyncService;
@@ -132,20 +128,11 @@ class KeycloakUserSyncServiceTest {
         Usuario usuarioNovo = new Usuario();
         usuarioNovo.setKeycloakId("keycloak-id-123");
 
-        Role roleAdmin = new Role();
-        roleAdmin.setId(1L);
-        roleAdmin.setName(ERole.ROLE_ADMIN);
-
-        Role roleOng = new Role();
-        roleOng.setId(2L);
-        roleOng.setName(ERole.ROLE_ONG);
+        Role roleAdmin = new Role(ERole.ROLE_ADMIN);
+        Role roleOng = new Role(ERole.ROLE_ONG);
 
         when(usuarioRepository.findByKeycloakId("keycloak-id-123"))
                 .thenReturn(Optional.empty());
-        when(roleRepository.findByName(ERole.ROLE_ADMIN))
-                .thenReturn(Optional.of(roleAdmin));
-        when(roleRepository.findByName(ERole.ROLE_ONG))
-                .thenReturn(Optional.of(roleOng));
         when(usuarioRepository.save(any(Usuario.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
