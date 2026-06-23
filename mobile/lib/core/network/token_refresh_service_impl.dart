@@ -10,16 +10,18 @@ class TokenRefreshServiceImpl implements TokenRefreshService {
   static const _accessTokenKey = 'access_token';
   static const _refreshTokenKey = 'refresh_token';
 
-  TokenRefreshServiceImpl({
-    FlutterSecureStorage? storage,
-    Dio? dio,
-  })  : _storage = storage ?? const FlutterSecureStorage(),
-        _dio = dio ??
-            Dio(BaseOptions(
+  TokenRefreshServiceImpl({FlutterSecureStorage? storage, Dio? dio})
+    : _storage = storage ?? const FlutterSecureStorage(),
+      _dio =
+          dio ??
+          Dio(
+            BaseOptions(
               connectTimeout: const Duration(seconds: 10),
               receiveTimeout: const Duration(seconds: 10),
-            ));
+            ),
+          );
 
+  @override
   Future<bool> refresh() async {
     try {
       final refreshToken = await _storage.read(key: _refreshTokenKey);
@@ -35,9 +37,7 @@ class TokenRefreshServiceImpl implements TokenRefreshService {
           'client_id': 'mybuddy-backend',
           'refresh_token': refreshToken,
         },
-        options: Options(
-          contentType: 'application/x-www-form-urlencoded',
-        ),
+        options: Options(contentType: 'application/x-www-form-urlencoded'),
       );
 
       final newAccessToken = response.data['access_token'] as String?;
@@ -56,6 +56,7 @@ class TokenRefreshServiceImpl implements TokenRefreshService {
     }
   }
 
+  @override
   Future<String?> getAccessToken() async {
     return _storage.read(key: _accessTokenKey);
   }

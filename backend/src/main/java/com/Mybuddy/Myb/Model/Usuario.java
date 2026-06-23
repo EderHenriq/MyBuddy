@@ -44,6 +44,7 @@ public class Usuario implements Identifiable {
     @ToString.Exclude
     private Organizacao organizacao;
 
+    @Indexed
     private Long petshopId;
 
     private Set<Long> petsAdotadosIds = new HashSet<>();

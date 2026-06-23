@@ -19,7 +19,6 @@ import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
 import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart';
 import 'package:mybuddy_app/features/adocao/domain/repositories/adocao_repository.dart';
-import 'package:mybuddy_app/features/adocao/data/repositories/adocao_repository_impl.dart';
 import 'package:mybuddy_app/features/adocao/data/repositories/adocao_repository_mock.dart';
 import 'package:mybuddy_app/features/marketplace/domain/repositories/products_repository.dart';
 import 'package:mybuddy_app/features/marketplace/data/repositories/products_repository_mock.dart';
@@ -46,7 +45,9 @@ void _registerCore() {
   );
 
   // Dio
-  sl.registerLazySingleton<Dio>(() => DioClient.create(storage: sl(), tokenRefreshService: sl()));
+  sl.registerLazySingleton<Dio>(
+    () => DioClient.create(storage: sl(), tokenRefreshService: sl()),
+  );
 
   // Theme
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl()));
@@ -62,67 +63,47 @@ void _registerCore() {
 
 void _registerAuth() {
   // BLoC
-  sl.registerLazySingleton<AuthBloc>(
-    () => AuthBloc(authRepository: sl()),
-  );
-  
-  sl.registerLazySingleton<UserRepository>(
-    () => UserRepositoryMock(),
-  );
+  sl.registerLazySingleton<AuthBloc>(() => AuthBloc(authRepository: sl()));
+
+  sl.registerLazySingleton<UserRepository>(() => UserRepositoryMock());
 
   // Repository
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryMock(),
-  );
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryMock());
 }
 
 void _registerPets() {
   // Repositories
-  sl.registerLazySingleton<PetsRepository>(
-    () => PetsRepositoryMock(),
-  );
+  sl.registerLazySingleton<PetsRepository>(() => PetsRepositoryMock());
 
   // Mock para testes
-  sl.registerLazySingleton<AdocaoRepository>(
-    () => AdocaoRepositoryMock(),
-  );
-  
+  sl.registerLazySingleton<AdocaoRepository>(() => AdocaoRepositoryMock());
+
   // API REAL (Troque pelo Mock acima quando o Backend estiver rodando 100%)
   // sl.registerLazySingleton<AdocaoRepository>(
   //   () => AdocaoRepositoryImpl(dio: sl()),
   // );
 
   // Cubits
-  sl.registerLazySingleton<FavoritosCubit>(
-    () => FavoritosCubit(sl(), sl()),
-  );
-  
-  sl.registerLazySingleton<PetsCubit>(
-    () => PetsCubit(petsRepository: sl()),
-  );
-  
+  sl.registerLazySingleton<FavoritosCubit>(() => FavoritosCubit(sl(), sl()));
+
+  sl.registerLazySingleton<PetsCubit>(() => PetsCubit(petsRepository: sl()));
+
   sl.registerLazySingleton<AdocaoCubit>(
     () => AdocaoCubit(adocaoRepository: sl()),
   );
 
   // Image Picker Cubit
-  sl.registerFactory<ImagePickerCubit>(
-    () => ImagePickerCubit(service: sl()),
-  );
+  sl.registerFactory<ImagePickerCubit>(() => ImagePickerCubit(service: sl()));
 }
 
 void _registerMarketplace() {
   // Repositories
-  sl.registerLazySingleton<ProductsRepository>(
-    () => ProductsRepositoryMock(),
-  );
+  sl.registerLazySingleton<ProductsRepository>(() => ProductsRepositoryMock());
 
   // Cubits
   sl.registerLazySingleton<ProductsCubit>(
     () => ProductsCubit(productsRepository: sl()),
   );
 
-  sl.registerLazySingleton<CartCubit>(
-    () => CartCubit(),
-  );
+  sl.registerLazySingleton<CartCubit>(() => CartCubit());
 }

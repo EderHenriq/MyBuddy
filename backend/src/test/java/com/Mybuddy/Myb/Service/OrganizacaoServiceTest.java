@@ -6,6 +6,10 @@ import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
+import com.Mybuddy.Myb.Repository.mongo.PetRepository;
+import com.Mybuddy.Myb.Repository.mongo.EventoOngRepository;
+import com.Mybuddy.Myb.Repository.jpa.CampanhaDoacaoRepository;
+import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +30,18 @@ class OrganizacaoServiceTest {
 
     @Mock
     private OrganizacaoRepository organizacaoRepository;
+
+    @Mock
+    private PetRepository petRepository;
+
+    @Mock
+    private EventoOngRepository eventoOngRepository;
+
+    @Mock
+    private CampanhaDoacaoRepository campanhaDoacaoRepository;
+
+    @Mock
+    private PaymentRepository paymentRepository;
 
     @InjectMocks
     private OrganizacaoService organizacaoService;
@@ -238,9 +254,13 @@ class OrganizacaoServiceTest {
     @Test
     void deveDeletarOrganizacaoComSucesso() {
         when(organizacaoRepository.existsById(1L)).thenReturn(true);
+        when(petRepository.findByOrganizacaoId(1L)).thenReturn(List.of());
+        when(eventoOngRepository.findByOrganizacaoId(1L)).thenReturn(List.of());
+        when(campanhaDoacaoRepository.existsByOrganizacaoId(1L)).thenReturn(false);
 
         organizacaoService.deletarOrganizacao(1L);
 
+        verify(paymentRepository, times(1)).nullifyOrganizacaoId(1L);
         verify(organizacaoRepository, times(1)).deleteById(1L);
     }
 
@@ -251,5 +271,38 @@ class OrganizacaoServiceTest {
         assertThatThrownBy(() -> organizacaoService.deletarOrganizacao(99L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Organização não encontrada para deleção com ID: 99");
+    }
+
+    @Test
+    void deveLancarExcecaoAoDeletarOrganizacaoComPetsVinculados() {
+        when(organizacaoRepository.existsById(1L)).thenReturn(true);
+        when(petRepository.findByOrganizacaoId(1L)).thenReturn(List.of(new com.Mybuddy.Myb.Model.Pet()));
+
+        assertThatThrownBy(() -> organizacaoService.deletarOrganizacao(1L))
+                .isInstanceOf(ConflictException.class)
+                .hasMessageContaining("Não é possível deletar a organização pois existem pets vinculados");
+    }
+
+    @Test
+    void deveLancarExcecaoAoDeletarOrganizacaoComEventosVinculados() {
+        when(organizacaoRepository.existsById(1L)).thenReturn(true);
+        when(petRepository.findByOrganizacaoId(1L)).thenReturn(List.of());
+        when(eventoOngRepository.findByOrganizacaoId(1L)).thenReturn(List.of(new com.Mybuddy.Myb.Model.EventoOng()));
+
+        assertThatThrownBy(() -> organizacaoService.deletarOrganizacao(1L))
+                .isInstanceOf(ConflictException.class)
+                .hasMessageContaining("Não é possível deletar a organização pois existem eventos vinculados");
+    }
+
+    @Test
+    void deveLancarExcecaoAoDeletarOrganizacaoComCampanhasVinculadas() {
+        when(organizacaoRepository.existsById(1L)).thenReturn(true);
+        when(petRepository.findByOrganizacaoId(1L)).thenReturn(List.of());
+        when(eventoOngRepository.findByOrganizacaoId(1L)).thenReturn(List.of());
+        when(campanhaDoacaoRepository.existsByOrganizacaoId(1L)).thenReturn(true);
+
+        assertThatThrownBy(() -> organizacaoService.deletarOrganizacao(1L))
+                .isInstanceOf(ConflictException.class)
+                .hasMessageContaining("Não é possível deletar a organização pois existem campanhas de doação vinculadas");
     }
 }

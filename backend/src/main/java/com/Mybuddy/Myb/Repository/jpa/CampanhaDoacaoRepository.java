@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface CampanhaDoacaoRepository extends JpaRepository<CampanhaDoacao, Long> {
     List<CampanhaDoacao> findByOrganizacaoId(Long organizacaoId);
+    boolean existsByOrganizacaoId(Long organizacaoId);
     List<CampanhaDoacao> findByStatus(String status);
     List<CampanhaDoacao> findByCategoriaAndStatus(String categoria, String status);
     List<CampanhaDoacao> findByStatusAndDataExpiracaoBefore(String status, LocalDateTime limite);

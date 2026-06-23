@@ -9,6 +9,8 @@ import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Repository.mongo.PetRepository;
+import com.Mybuddy.Myb.Repository.jpa.AgendamentoRepository;
+import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +37,12 @@ class PetServiceTest {
 
     @Mock
     private OrganizacaoRepository organizacaoRepository;
+
+    @Mock
+    private AgendamentoRepository agendamentoRepository;
+
+    @Mock
+    private PaymentRepository paymentRepository;
 
     @InjectMocks
     private PetService petService;
@@ -227,9 +235,11 @@ class PetServiceTest {
     void deveDeletarPetComSucesso() {
         when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
         when(interesseRepo.countByPetId(1L)).thenReturn(0L);
+        when(agendamentoRepository.existsByPetIdAndStatusNot(1L, com.Mybuddy.Myb.Model.StatusAgendamento.CANCELADO)).thenReturn(false);
 
         petService.deletarPet(1L);
 
+        verify(paymentRepository, times(1)).nullifyPetId(1L);
         verify(petRepository, times(1)).deleteById(1L);
     }
 
@@ -260,5 +270,16 @@ class PetServiceTest {
         assertThatThrownBy(() -> petService.deletarPet(1L))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("interesses registrados");
+    }
+
+    @Test
+    void deveLancarExcecaoAoDeletarPetComAgendamentosAtivos() {
+        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(interesseRepo.countByPetId(1L)).thenReturn(0L);
+        when(agendamentoRepository.existsByPetIdAndStatusNot(1L, com.Mybuddy.Myb.Model.StatusAgendamento.CANCELADO)).thenReturn(true);
+
+        assertThatThrownBy(() -> petService.deletarPet(1L))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Não é possível excluir o pet pois existem agendamentos ativos ou concluídos");
     }
 }

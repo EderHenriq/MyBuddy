@@ -87,9 +87,9 @@ Ao cruzar o código do Frontend/Mobile com as tabelas do PostgreSQL e MongoDB, i
 
 ## 5. Propostas de Alteração (Código e SQL)
 
-Abaixo estão os scripts sugeridos para aplicação em uma nova migration do Flyway (`V3__Otimizacoes_E_Indices_Producao.sql`) e as correções nas classes Java.
+Abaixo estão os scripts sugeridos para aplicação em uma nova migration do Flyway (`V4__Otimizacoes_E_Indices_Producao.java`) e as correções nas classes Java.
 
-### Proposta de Script SQL (`V3__Otimizacoes_E_Indices_Producao.sql`)
+### Proposta de Script Java (`V4__Otimizacoes_E_Indices_Producao.java`)
 ```sql
 -- 1. Índices para otimização de Performance nas buscas transacionais
 CREATE INDEX idx_payments_mp_payment_id ON payments (mp_payment_id) WHERE mp_payment_id IS NOT NULL;
