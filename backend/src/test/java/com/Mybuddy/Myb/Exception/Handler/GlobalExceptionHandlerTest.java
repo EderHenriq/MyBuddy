@@ -57,4 +57,22 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
+
+    @Test
+    void handleBadRequestException_ComIllegalArgumentException_DeveRetornar400() {
+        IllegalArgumentException ex = new IllegalArgumentException("Argumento inválido");
+
+        ResponseEntity<?> response = handler.handleBadRequestException(ex, webRequest);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void handleBadRequestException_ComIllegalStateException_DeveRetornar400() {
+        IllegalStateException ex = new IllegalStateException("Estado inválido da operação");
+
+        ResponseEntity<?> response = handler.handleBadRequestException(ex, webRequest);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
 }
