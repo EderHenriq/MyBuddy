@@ -96,4 +96,13 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
     }
+
+    @Test
+    void handleGlobalException_DeveRetornar500() {
+        Exception ex = new RuntimeException("Erro inesperado no servidor");
+
+        ResponseEntity<?> response = handler.handleGlobalException(ex, webRequest);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
 }
