@@ -1,6 +1,8 @@
 package com.Mybuddy.Myb.Exception.Handler;
 
 import com.Mybuddy.Myb.Exception.ConflictException;
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -74,5 +76,24 @@ class GlobalExceptionHandlerTest {
         ResponseEntity<?> response = handler.handleBadRequestException(ex, webRequest);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void handleMercadoPagoException_ComMPException_DeveRetornar502() throws Exception {
+        MPException ex = new MPException("Falha na integração com Mercado Pago");
+
+        ResponseEntity<?> response = handler.handleMercadoPagoException(ex, webRequest);
+
+        assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
+    }
+
+    @Test
+    void handleMercadoPagoException_ComMPApiException_DeveRetornar502() throws Exception {
+        MPApiException ex = mock(MPApiException.class);
+        when(ex.getMessage()).thenReturn("Erro na API do Mercado Pago");
+
+        ResponseEntity<?> response = handler.handleMercadoPagoException(ex, webRequest);
+
+        assertEquals(HttpStatus.BAD_GATEWAY, response.getStatusCode());
     }
 }
