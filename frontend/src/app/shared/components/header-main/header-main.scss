@@ -38,7 +38,7 @@
   @include flex-center;
   background-color: var(--surface-card);
   height: 56px;
-  padding: var(--spacing-xs) var(--spacing-lg);
+  padding: var(--spacing-xs) 0;
   border-radius: var(--radius-max);
   box-shadow: var(--shadow-navbar);
   overflow: hidden;
@@ -47,7 +47,7 @@
     @include flex-center;
     list-style: none;
     gap: var(--spacing-lg);
-    padding: 0;
+    padding: 0 var(--spacing-sm);
     position: relative;
 
     li {
@@ -72,14 +72,6 @@
 
         &.active {
           color: var(--text-color-white);
-        }
-
-        &.active-hover {
-          color: var(--text-color-white) !important;
-        }
-
-        &.hover-override {
-          color: var(--text-color-black) !important;
         }
       }
     }
@@ -129,6 +121,16 @@
       font-size: var(--font-size-lg);
       color: var(--text-color-black);
     }
+
+    &:hover {
+      color: #9f520a;
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
   }
 
   .profile-img {
@@ -136,6 +138,16 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
+
+    &:hover {
+      color: #9f520a;
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
   }
 }
 
@@ -151,20 +163,19 @@
     color: var(--text-color-white);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
-    width: var(--spacing-lg);
-    height: var(--spacing-lg);
+    width: var(--spacing-md);
+    height: var(--spacing-md);
     border-radius: var(--radius-max);
     box-shadow: var(--shadow-sm);
-    border: 2px solid var(--text-color-white);
   }
 }
 
 .notifications-dropdown {
   position: absolute;
-  top: calc(var(--spacing-xl) + var(--spacing-md));
+  top: var(--spacing-md);
   right: calc(-1 * var(--spacing-xl) * 2);
   width: 350px;
-  background-color: var(--surface-card);
+  background-color: var(--surface-ground);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -205,7 +216,7 @@
       font-weight: var(--font-weight-medium);
 
       &:hover {
-        text-decoration: underline;
+        color: #9f520a;
       }
     }
   }

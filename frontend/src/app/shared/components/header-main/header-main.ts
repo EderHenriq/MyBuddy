@@ -84,12 +84,12 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (!isPlatformBrowser(this.platform)) {
-      return;
-    }
+    if (!isPlatformBrowser(this.platform)) return;
 
-    this.atualizarPosicaoPill();
-    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.atualizarPosicaoPill();
+      this.cdr.detectChanges();
+    }, 0);
 
     this.routerSubscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       setTimeout(() => {
