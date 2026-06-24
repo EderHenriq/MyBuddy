@@ -1,120 +1,93 @@
-@if (mostrarHeader) {
-  <section>
-    <header class="header">
-      <div class="logo-myb">
-        <img src="/assets/logo/logo-provisoria.png" alt="logo-mybuddy" class="logo-myb-img style" />
-        <h1>MyBuddy</h1>
+<section>
+  <header class="header">
+    <div class="logo-myb">
+      <img src="/assets/logo/logo-provisoria.png" alt="logo-mybuddy" class="logo-myb-img style" />
+      <h1>MyBuddy</h1>
+    </div>
+
+    <nav>
+      <div class="quick-links">
+        <ul>
+          <div class="sliding-pills" [class.visible]="pillVisivel" [style.left]="estiloPill.left" [style.width]="estiloPill.width"></div>
+
+          @for (link of links; track link.caminho) {
+            <li>
+              <a #navLink [routerLink]="link.caminho" routerLinkActive="active" (click)="aoClicarLink(navLink)">
+                {{ link.rotulo }}
+              </a>
+            </li>
+          }
+        </ul>
       </div>
+    </nav>
 
-      <nav>
-        <div class="quick-links">
-          <ul (mouseleave)="redefinirPill()">
-            <div class="sliding-pills" [class.visible]="pillVisivel" [style.left]="estiloPill.left" [style.width]="estiloPill.width"></div>
-
-            @for (link of links; track link.caminho; let i = $index) {
-              <li>
-                <a
-                  #navLink
-                  [routerLink]="link.caminho"
-                  routerLinkActive="active"
-                  [class.active-hover]="indiceHover === i"
-                  [class.hover-override]="indiceHover !== -1 && indiceHover !== i"
-                  (mouseenter)="definirIndiceHover(i, navLink)"
-                  (click)="aoClicarLink(navLink)"
-                >
-                  {{ link.rotulo }}
-                </a>
-              </li>
-            }
-          </ul>
-        </div>
-      </nav>
-
-      <div class="quick-btn">
+    <div class="quick-btn">
       @if (papelUsuario() === 'ROLE_ADMIN' || papelUsuario() === 'ROLE_ONG' || papelUsuario() === 'ROLE_PETSHOP') {
-          <div class="panel-btn" style="margin-right: 12px; display: flex; align-items: center">
-            <button
-              class="btn"
-              [routerLink]="rotaPainel()"
-              title="Acessar Meu Painel"
-              style="
-                background-color: var(--primary-color);
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 45px;
-                height: 45px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: background-color 0.2s;
-              "
-            >
-              <span class="material-icons">dashboard</span>
-            </button>
+        <div class="panel-btn">
+          <button class="btn" [routerLink]="rotaPainel()" title="Acessar Meu Painel">
+            <span class="material-icons">dashboard</span>
+          </button>
+        </div>
+      }
+
+      <div class="notifications-btn">
+        <button class="btn btn-notifications" (click)="alternarNotificacoes()">
+          <span class="material-icons">notifications</span>
+          @if (contadorNaoLidas() > 0) {
+            <span class="notification-badge">{{ contadorNaoLidas() }}</span>
+          }
+        </button>
+
+        @if (notificacoesAbertas) {
+          <div class="notifications-dropdown">
+            <div class="dropdown-header">
+              <h4>Notificações</h4>
+              @if (contadorNaoLidas() > 0) {
+                <button class="mark-all-btn" (click)="marcarTodasComoLidas($event)">Marcar todas como lidas</button>
+              }
+            </div>
+            <div class="dropdown-body">
+              @if (notificacoes().length === 0) {
+                <div class="empty-notifications">
+                  <span class="material-icons">notifications_none</span>
+                  <p>Nenhuma nova notificação</p>
+                </div>
+              }
+              @for (notif of notificacoes(); track notif.id) {
+                <div class="notification-item" [class.unread]="!notif.lida">
+                  <div class="notif-icon" [ngClass]="notif.tipo">
+                    <i
+                      class="fas"
+                      [ngClass]="{
+                        'fa-info-circle': notif.tipo === 'info',
+                        'fa-check-circle': notif.tipo === 'success',
+                        'fa-exclamation-triangle': notif.tipo === 'warning',
+                        'fa-times-circle': notif.tipo === 'error',
+                      }"
+                    ></i>
+                  </div>
+                  <div class="notif-content">
+                    <p class="notif-title">{{ notif.titulo }}</p>
+                    <p class="notif-message">{{ notif.mensagem }}</p>
+                    <span class="notif-date">{{ notif.data }}</span>
+                  </div>
+                  @if (!notif.lida) {
+                    <button class="mark-read-btn" (click)="marcarComoLida(notif.id, $event)" title="Marcar como lida">
+                      <i class="fas fa-circle"></i>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
           </div>
         }
-
-        <div class="notifications-btn" style="position: relative">
-          <button class="btn btn-notifications" (click)="alternarNotificacoes()">
-            <span class="material-icons">notifications</span>
-            @if (contadorNaoLidas() > 0) {
-              <span class="notification-badge">{{ contadorNaoLidas() }}</span>
-            }
-          </button>
-
-          @if (notificacoesAbertas) {
-            <div class="notifications-dropdown">
-              <div class="dropdown-header">
-                <h4>Notificações</h4>
-                @if (contadorNaoLidas() > 0) {
-                  <button class="mark-all-btn" (click)="marcarTodasComoLidas($event)">Marcar todas como lidas</button>
-                }
-              </div>
-              <div class="dropdown-body">
-                @if (notificacoes().length === 0) {
-                  <div class="empty-notifications">
-                    <span class="material-icons">notifications_none</span>
-                    <p>Nenhuma notificação por enquanto</p>
-                  </div>
-                }
-                @for (notif of notificacoes(); track notif.id) {
-                  <div class="notification-item" [class.unread]="!notif.lida">
-                    <div class="notif-icon" [ngClass]="notif.tipo">
-                      <i
-                        class="fas"
-                        [ngClass]="{
-                          'fa-info-circle': notif.tipo === 'info',
-                          'fa-check-circle': notif.tipo === 'success',
-                          'fa-exclamation-triangle': notif.tipo === 'warning',
-                          'fa-times-circle': notif.tipo === 'error',
-                        }"
-                      ></i>
-                    </div>
-                    <div class="notif-content">
-                      <p class="notif-title">{{ notif.titulo }}</p>
-                      <p class="notif-message">{{ notif.mensagem }}</p>
-                      <span class="notif-date">{{ notif.data }}</span>
-                    </div>
-                    @if (!notif.lida) {
-                      <button class="mark-read-btn" (click)="marcarComoLida(notif.id, $event)" title="Marcar como lida">
-                        <i class="fas fa-circle"></i>
-                      </button>
-                    }
-                  </div>
-                }
-              </div>
-            </div>
-          }
-        </div>
-
-        <div class="profile-btn">
-          <button class="btn btn-profile" routerLink="/perfil">
-            <span class="material-icons">person</span>
-          </button>
-        </div>
       </div>
-    </header>
-  </section>
-}
+
+      <div class="profile-btn">
+        <button class="btn btn-profile" routerLink="/perfil">
+          <span class="material-icons">person</span>
+        </button>
+      </div>
+    </div>
+  </header>
+</section>

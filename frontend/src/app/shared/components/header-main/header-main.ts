@@ -34,8 +34,6 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
 
   estiloPill: { left: string; width: string } = { left: '0px', width: '0px' };
   pillVisivel = false;
-  mostrarHeader = true;
-  indiceHover = -1;
   notificacoesAbertas = false;
 
   readonly Role = Role;
@@ -63,16 +61,6 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
 
   private routerSubscription!: Subscription;
 
-  constructor() {
-    const isBrowser = isPlatformBrowser(this.platform);
-    if (isBrowser) {
-      this.verificarRota(this.router.url);
-      this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe(event => {
-        this.verificarRota(event.urlAfterRedirects || event.url);
-      });
-    }
-  }
-
   alternarNotificacoes(): void {
     this.notificacoesAbertas = !this.notificacoesAbertas;
   }
@@ -93,13 +81,6 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
     if (this.notificacoesAbertas && !targetElement.closest('.notifications-btn')) {
       this.notificacoesAbertas = false;
     }
-  }
-
-  verificarRota(url: string): void {
-    const publicPaths = ['/auth', '/styleguide', '/institucional'];
-    const isRoot = url === '/' || url === '';
-    const isPublic = publicPaths.some(path => url.startsWith(path));
-    this.mostrarHeader = !isRoot && !isPublic;
   }
 
   ngAfterViewInit(): void {
@@ -130,27 +111,9 @@ export class HeaderMain implements AfterViewInit, OnDestroy {
     this.atualizarPosicaoPill();
   }
 
-  definirIndiceHover(index: number, event: HTMLElement): void {
-    this.indiceHover = index;
-    this.moverPill(event);
-  }
-
-  redefinirPill(): void {
-    this.indiceHover = -1;
-    this.atualizarPosicaoPill();
-  }
-
   atualizarPosicaoPill(): void {
     if (!isPlatformBrowser(this.platform)) {
       return;
-    }
-
-    if (this.indiceHover !== -1) {
-      const hoveredElement = this.navLinks.toArray()[this.indiceHover];
-      if (hoveredElement) {
-        this.moverPill(hoveredElement.nativeElement);
-        return;
-      }
     }
 
     const activeElement = this.navLinks.find(link => link.nativeElement.classList.contains('active'));
