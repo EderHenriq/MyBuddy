@@ -3,6 +3,7 @@ package com.Mybuddy.Myb.Exception.Handler;
 import com.Mybuddy.Myb.Exception.ConflictException;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,5 +46,15 @@ class GlobalExceptionHandlerTest {
         ResponseEntity<?> response = handler.handleOptimisticLockingFailureException(ex, webRequest);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    }
+
+    @Test
+    void handleAuthorizationDeniedException_DeveRetornar403() {
+        AuthorizationDeniedException ex = mock(AuthorizationDeniedException.class);
+        when(ex.getMessage()).thenReturn("Usuário sem permissão");
+
+        ResponseEntity<?> response = handler.handleAuthorizationDeniedException(ex, webRequest);
+
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 }
