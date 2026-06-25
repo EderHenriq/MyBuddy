@@ -66,12 +66,12 @@ const CATEGORIAS: ItemCategoria[] = [
 
 const LEMBRETES: ItemLembrete[] = [
   {
-    urlIcone: '/assets/placeholders/vacina.png',
+    urlIcone: '/assets/placeholders/icons/vacina.png',
     titulo: 'Lembrete: Vacina do seu Buddy',
     texto: 'A vacina antirrábica do Zeus vence em 15 dias. Agende já',
   },
   {
-    urlIcone: '/assets/placeholders/cirurgia.jpg',
+    urlIcone: '/assets/placeholders/icons/cirurgia.png',
     titulo: 'Lembrete: Cirurgia de Castração',
     texto: 'A agenda de cirurgia de castração está disponível.',
   },

@@ -133,5 +133,88 @@
 
 //Estilização da seção de categorias
 .category-grid {
-  @include grid-cols(4, var(--spacing-sm))
+  @include grid-cols(4, var(--spacing-sm));
+  margin-top: var(--spacing-xl);
+}
+
+.category-card {
+  @include flex-center;
+  @include card-hover;
+  position: relative;
+  min-height: 82px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  color: var(--text-color-white);
+  text-decoration: none;
+  box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.44);
+
+  span {
+    position: relative;
+    z-index: 1;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-extrabold);
+  }
+}
+
+//Estilização da seção de lembretes
+.reminder-grid {
+  @include grid-cols(2, var(--spacing-md));
+  margin-top: var(--spacing-xl);
+}
+
+.reminder-card {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-sm);
+  background: var(--surface-ground);
+  border: 1.5px solid var(--primary-color);
+  border-radius: var(--radius-lg);
+
+  img {
+    width: 54px;
+    height: 54px;
+    object-fit: contain;
+  }
+
+  .reminder-text {
+    @include flex-column;
+    gap: var(--spacing-xxs);
+
+    h3 {
+      margin: 0;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-extrabold);
+      color: var(--text-color);
+    }
+
+    p {
+      margin: 0;
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-md);
+      color: #555;
+    }
+  }
+
+  button {
+    border: none;
+    height: 38px;
+    padding: 0 var(--spacing-sm);
+    border-radius: var(--radius-max);
+    background: var(--primary-color);
+    color: var(--text-color-white);
+    font-family: var(--font-family-primary);
+    font-weight: var(--font-weight-extrabold);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--hover-btn-primary);
+    }
+
+  }
 }
