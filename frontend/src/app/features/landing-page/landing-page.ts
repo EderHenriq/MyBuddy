@@ -8,7 +8,7 @@ import { Pet } from '@core/models/pet.model';
 //Imports de Componentes
 import { HeaderLandingPage } from '@shared/components/header-landing-page/header-landing-page';
 import { CardCategoriaComponent } from '@shared/components/card-categoria/card-categoria.component';
-import { CardPetComponent } from '@shared/components/card-pet/card-pet';
+import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
 import { Footer } from '@shared/components/footer/footer';
 
 interface Services {
