@@ -3,12 +3,12 @@
 :host {
   display: block;
   background: var(--surface-ground);
+  overflow-x: hidden;
 }
 
 //Estilização do layout principal da página
 .home-page {
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
 .home-shell {
@@ -20,28 +20,35 @@
 //Estilização do Painel de buscas
 .search-panel {
   display: grid;
-  grid-template-columns: minmax(280px, 380px) 1px 1fr;
+  grid-template-columns: 384px 1px 1fr;
   align-items: center;
-  gap: var(--spacing-lg);
-  min-height: 72px;
+  gap: var(--spacing-md);
+  width: 100%;
+  min-height: 71px;
   margin: -34px auto var(--spacing-xl);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--surface-ground);
+  padding: 0 var(--spacing-md) 0 17px;
+  background: var(--surface-card);
   border-radius: var(--radius-xl);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-lg);
+  box-sizing: border-box;
   position: relative;
   z-index: 5;
 }
 
 .search-box {
   @include flex-start;
+  gap: var(--spacing-xs);
+  width: 100%;
   height: 44px;
-  padding: 0 var(--spacing-sm);
+  padding: 12px var(--spacing-sm);
   background: var(--surface-ground);
   border-radius: var(--radius-md);
   cursor: text;
+  box-sizing: border-box;
+  flex-shrink: 0;
 
   input {
+    flex: 1;
     width: 100%;
     border: none;
     outline: none;
@@ -52,49 +59,73 @@
     font-weight: var(--font-weight-medium);
 
     &::placeholder {
-      color: #777;
+      color: #737373;
     }
   }
 
   .material-icons {
-    color: var(--text-color);
-    font-size: 21px;
+    color: #737373;
+    font-size: 20px;
     flex-shrink: 0;
   }
 }
 
 .panel-divider {
   height: 46px;
+  width: 1px;
   background: var(--border-color);
 }
 
-.quick-action-bar {
-  @include grid-cols(4, var(--spacing-sm));
-}
+.quick-actions-bar {
+  @include flex-between;
+  flex-direction: row;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: auto;
 
-.quick-action {
-  @include flex-center;
-  gap: var(--spacing-xxs);
-  height: 42px;
-  padding: 0 var(--spacing-sm);
-  background: var(--surface-ground);
-  border-radius: var(--radius-md);
-  color: var(--text-color);
-  text-decoration: none;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  white-space: nowrap;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+  scrollbar-width: none;
 
-  &:hover {
-    background: #e6e4e4;
-    transform: translateY(-1px);
+  &::-webkit-scrollbar {
+    display: none;
   }
 
-  .material-icons {
-    font-size: 18px;
+  .quick-action {
+    @include flex-center;
+    gap: var(--spacing-xs);
+    flex: 1;
+    gap: var(--spacing-xs);
+    height: 39px;
+    padding: 10px var(--spacing-sm);
+    background: var(--surface-ground);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    box-sizing: border-box;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      background: #e6e4e4;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    span:not(.material-icons) {
+      color: var(--text-color);
+      font-weight: var(--font-weight-medium);
+      font-size: var(--font-size-sm);
+      @include truncate;
+    }
+
+    .material-icons {
+      color: var(--text-color);
+      font-size: var(--font-size-md);
+      flex-shrink: 0;
+    }
   }
 }
 
@@ -139,7 +170,6 @@
 
 .category-card {
   @include flex-center;
-  @include card-hover;
   position: relative;
   min-height: 82px;
   border-radius: var(--radius-xl);
@@ -150,6 +180,18 @@
   text-decoration: none;
   box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.44);
 
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.44);
+    border-radius: inherit;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
   span {
     position: relative;
     z-index: 1;
@@ -159,7 +201,7 @@
 }
 
 //Estilização da seção de lembretes
-.reminder-grid {
+.reminders-grid {
   @include grid-cols(2, var(--spacing-md));
   margin-top: var(--spacing-xl);
 }
@@ -219,7 +261,7 @@
 }
 
 //Estilização da seção de pets
-.pet-grid {
+.pets-grid {
   @include grid-cols(3, var(--spacing-lg));
   width: min(100%, 960px);
   margin: 0 auto;
@@ -262,8 +304,7 @@
   border-radius: var(--radius-lg);
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.42)),
-    url('/assets/placeholders/pets/crianca-coelho.jpg'),
-    center 42% / cover no-repeat;
+    url('/assets/placeholders/pets/crianca-coelho.jpg') center 62% / cover no-repeat;
   box-shadow: var(--shadow-md);
   color: var(--text-color-white);
 
@@ -311,6 +352,10 @@
 
 //Estilização da seção de evento
 .events-grid {
+  @include grid-cols(2, var(--spacing-md));
+}
+
+.event-card {
   display: grid;
   grid-template-columns: 76px 1fr;
   align-items: center;
@@ -492,7 +537,7 @@
   text-align: center;
 }
 
-.products-headling {
+.products-heading {
   max-width: 520px;
   margin: 0 auto var(--spacing-xxl);
 
@@ -536,7 +581,7 @@
   }
 }
 
-.product-button {
+.products-button {
   @include flex-center;
   display: inline-flex;
   height: 44px;

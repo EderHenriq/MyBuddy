@@ -9,7 +9,7 @@ import { CardPetComponent } from '@shared/components/card-pet/card-pet.component
 import { Footer } from '@shared/components/footer/footer';
 import { HeaderMain } from '@shared/components/header-main/header-main';
 import { HeroSectionComponent } from '@shared/components/hero-section/hero-section.component';
-import { map } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 
 interface AcaoRapidas {
   rotulo: string;
@@ -146,15 +146,19 @@ export class Home implements AfterViewInit, OnDestroy {
 
   private map: L.Map | null = null;
 
-  private readonly petsResponse = toSignal(this.petService.buscarRecentes().pipe(map((res: { content: Pet[] }) => res.content.slice(0, 3))), {
-    initialValue: null,
-  });
+  private readonly petsResponse = toSignal(
+    this.petService.buscarRecentes().pipe(
+      map((res: { content: Pet[] }) => res.content?.slice(0, 3) ?? []),
+      catchError(() => of([])),
+    ),
+    { initialValue: null },
+  );
 
   readonly pets = () => this.petsResponse() ?? [];
   readonly carregandoPets = () => this.petsResponse() === null;
 
   async ngAfterViewInit(): Promise<void> {
-    if(!isPlatformBrowser(this.platformId)) return;
+    if (!isPlatformBrowser(this.platformId)) return;
     await this.initMap();
   }
 
@@ -181,15 +185,15 @@ export class Home implements AfterViewInit, OnDestroy {
   }
 
   private loadMapByUserLocation(): void {
-    if(!navigator.geolocation) return;
+    if (!navigator.geolocation) return;
 
     navigator.geolocation.getCurrentPosition(
-      ({coords}) => {
+      ({ coords }) => {
         this.map?.setView([coords.latitude, coords.longitude], 14);
-      }, 
+      },
       error => {
         console.warn('Geolocalização indisponível, mantendo padrão de Maringá: ', error.message);
-      }
-    )
+      },
+    );
   }
 }
