@@ -1,11 +1,17 @@
-import { Component, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, Component, inject, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { PetService } from '@core/services/pet.service';
+import { Pet } from '@core/models/pet.model';
+import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
 import { Footer } from '@shared/components/footer/footer';
 import { HeaderMain } from '@shared/components/header-main/header-main';
 import { HeroSectionComponent } from '@shared/components/hero-section/hero-section.component';
+import { map } from 'rxjs';
 
-interface AcaoRapida {
+interface AcaoRapidas {
   rotulo: string;
   tab: string;
   icone: string;
@@ -44,7 +50,7 @@ interface ItemProduto {
 }
 
 //Dados estáticos da UI
-const ACOES_RAPIDA: AcaoRapida[] = [
+const ACOES_RAPIDA: AcaoRapidas[] = [
   { rotulo: 'Meus Pets', tab: 'pets', icone: 'pets' },
   { rotulo: 'Favoritos', tab: 'favoritos', icone: 'favorite' },
   { rotulo: 'Mensagens', tab: 'mensagens', icone: 'chat_bubble_outline' },
@@ -55,12 +61,12 @@ const CATEGORIAS: ItemCategoria[] = [
   { rotulo: 'Pets', rota: '/pets', urlImagem: '/assets/imagem/Cat-Dog.jpg' },
   { rotulo: 'Veterinários', rota: '/servicos', urlImagem: '/assets/imagem/Veterinario.jpg' },
   { rotulo: 'Eventos', rota: '/eventos', urlImagem: '/assets/imagem/Eventos.jpg' },
-  { rotulo: 'Produtos', rota: '/produtoss', urlImagem: '/assets/imagem/Petshop.jpg' },
+  { rotulo: 'Produtos', rota: '/produtos', urlImagem: '/assets/imagem/Petshop.jpg' },
 ];
 
 const LEMBRETES: ItemLembrete[] = [
   {
-    urlIcone: '/assets/placeholders/vacina',
+    urlIcone: '/assets/placeholders/vacina.png',
     titulo: 'Lembrete: Vacina do seu Buddy',
     texto: 'A vacina antirrábica do Zeus vence em 15 dias. Agende já',
   },
@@ -122,11 +128,68 @@ const DEFAULT_LNG = -51.9375;
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, HeaderMain, Footer, HeroSectionComponent],
+  imports: [RouterLink, HeaderMain, Footer, HeroSectionComponent, CardPetComponent],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home {
-  public authService = inject(AuthService);
+export class Home implements AfterViewInit, OnDestroy {
+  readonly authService = inject(AuthService);
+  private readonly petService = inject(PetService);
+  private readonly platformId = inject(PLATFORM_ID);
 
+  readonly acoesRapidas = ACOES_RAPIDA;
+  readonly categorias = CATEGORIAS;
+  readonly lembretes = LEMBRETES;
+  readonly eventos = EVENTOS;
+  readonly veterinarios = VETERINARIOS;
+  readonly produtos = PRODUTOS;
+
+  private map: L.Map | null = null;
+
+  private readonly petsResponse = toSignal(this.petService.buscarRecentes().pipe(map((res: { content: Pet[] }) => res.content.slice(0, 3))), {
+    initialValue: null,
+  });
+
+  readonly pets = () => this.petsResponse() ?? [];
+  readonly carregandoPets = () => this.petsResponse() === null;
+
+  async ngAfterViewInit(): Promise<void> {
+    if(!isPlatformBrowser(this.platformId)) return;
+    await this.initMap();
+  }
+
+  ngOnDestroy(): void {
+    this.map?.remove();
+    this.map = null;
+  }
+
+  private async initMap(lat = DEFAULT_LAT, lng = DEFAULT_LNG): Promise<void> {
+    const L = await import('leaflet');
+
+    this.map = L.map('leaflet-map', {
+      center: [lat, lng],
+      zoom: 14,
+      zoomControl: false,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap',
+    }).addTo(this.map);
+
+    this.loadMapByUserLocation();
+  }
+
+  private loadMapByUserLocation(): void {
+    if(!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+      ({coords}) => {
+        this.map?.setView([coords.latitude, coords.longitude], 14);
+      }, 
+      error => {
+        console.warn('Geolocalização indisponível, mantendo padrão de Maringá: ', error.message);
+      }
+    )
+  }
 }
