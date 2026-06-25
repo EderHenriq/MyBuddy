@@ -215,6 +215,101 @@
     &:hover {
       background: var(--hover-btn-primary);
     }
+  }
+}
 
+//Estilização da seção de pets
+.pet-grid {
+  @include grid-cols(3, var(--spacing-lg));
+  width: min(
+    $numbers: (
+      100%,
+      960px,
+    )
+  );
+  margin: 0 auto;
+}
+
+.loading-state {
+  @include flex-column;
+  @include flex-center;
+  padding: var(--spacing-xl);
+  color: #666;
+  width: 100%;
+
+  .loading-icon {
+    font-size: var(--font-size-xxl);
+    color: var(--primary-color);
+    animation: spin 1s linear infinite;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+//Estilização do banner de doação
+.donation-banner {
+  @include flex-between;
+  gap: var(--spacing-md);
+  min-height: 126px;
+  margin: var(--spacing-xl) 0;
+  padding: var(--spacing-lg) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.42)),
+    url('/assets/placeholders/pets/crianca-coelho.jpg'),
+    center 52% / cover no-repeat;
+  box-shadow: var(--shadow-md);
+  color: var(--text-color-white);
+
+  .donation-text {
+    @include flex-column;
+    gap: var(--spacing-xxs);
+
+    h2 {
+      margin: 0;
+      font-size: var(--font-size-xxl);
+      font-weight: var(--font-weight-extrabold);
+      color: var(--text-color-white);
+    }
+
+    p {
+      margin: 0;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-semibold);
+      color: rgba(255, 255, 255, 0.92);
+    }
+  }
+
+  .donation-cta {
+    @include flex-center;
+    gap: var(--spacing-xxs);
+    height: 42px;
+    padding: 0 var(--spacing-sm);
+    border-radius: var(--radius-max);
+    background: var(--primary-color);
+    color: var(--text-color-white);
+    text-decoration: none;
+    font-weight: var(--font-weight-extrabold);
+    white-space: nowrap;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--hover-btn-primary);
+    }
+
+    .material-icons {
+      font-size: 17px;
+    }
   }
 }
