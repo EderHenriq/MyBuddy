@@ -156,9 +156,30 @@
             Milhares de Buddies estão esperando por um novo capítulo. Descubra quem combina mais com a sua rotina e comece uma história de amizade
             hoje.
           </p>
+
+          <a routerLink="/public/eventos">Ver no mapa</a>
         </div>
       </article>
     </section>
+
+    <section class="products-section">
+      <div class="products-heading">
+        <h2>Conheça nossos produtos</h2>
+        <p>Tudo o que seu pet precisa para uma vida cheia de alegria, saúde e muito amor.</p>
+      </div>
+
+      <div class="products-grid">
+        @for (produto of produtos; track produto.rotulo) {
+          <a routerLink="/marketplace" class="product-card">
+            <img [src]="produto.urlImagem" [alt]="produto.rotulo" />
+            <span>{{ produto.rotulo }}</span>
+          </a>
+        }
+      </div>
+
+      <a routerLink="/marketplace" class="products-button">Veja mais produtos</a>
+    </section>
+    
   </section>
 </main>
 
