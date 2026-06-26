@@ -38,7 +38,7 @@ jobs:
         with:
           java-version: "21"
           distribution: "temurin"
-      - name: Rodar testes e verificar cobertura JaCoCo (mínimo 70%)
+      - name: Rodar testes e verificar cobertura JaCoCo (mínimo 61%)
         run: mvn verify "-Dsurefire.excludes=**/KeycloakIntegrationTest.java,**/PetRepositoryContainerTest.java,**/AuthControllerIntegrationTest.java"
         working-directory: backend
         env:
