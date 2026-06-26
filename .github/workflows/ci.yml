@@ -38,8 +38,8 @@ jobs:
         with:
           java-version: "21"
           distribution: "temurin"
-      - name: Rodar testes com Maven
-        run: mvn test "-Dsurefire.excludes=**/KeycloakIntegrationTest.java,**/PetRepositoryContainerTest.java,**/AuthControllerIntegrationTest.java"
+      - name: Rodar testes e verificar cobertura JaCoCo (mínimo 70%)
+        run: mvn verify "-Dsurefire.excludes=**/KeycloakIntegrationTest.java,**/PetRepositoryContainerTest.java,**/AuthControllerIntegrationTest.java"
         working-directory: backend
         env:
           MERCADOPAGO_ACCESS_TOKEN: ${{ secrets.MERCADOPAGO_ACCESS_TOKEN }}

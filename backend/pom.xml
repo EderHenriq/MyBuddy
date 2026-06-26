@@ -230,9 +230,10 @@
                         </goals>
                     </execution>
 
-                    <!-- 3. NOVO: Falha o build se cobertura < 30% -->
+                    <!-- 3. Falha o build se cobertura de linha < 70% -->
                     <execution>
                         <id>check</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -244,7 +245,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.30</minimum>
+                                            <minimum>0.70</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
