@@ -3,19 +3,23 @@ package com.Mybuddy.Myb.Controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.Mybuddy.Myb.Config.TestSecurityConfig;
 import com.Mybuddy.Myb.Payload.Request.SignupRequest;
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -24,7 +28,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import(TestSecurityConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@ActiveProfiles("test")
 class AuthControllerIntegrationTest {
+
+    @MockBean
+    UsuarioRepository usuarioRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,12 +40,10 @@ class AuthControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
     @BeforeEach
     void setUp() {
-        mongoTemplate.dropCollection(com.Mybuddy.Myb.Model.Usuario.class);
+        when(usuarioRepository.existsByEmail(anyString())).thenReturn(false);
+        when(usuarioRepository.existsByTelefone(anyString())).thenReturn(false);
     }
 
     // ===================== /api/auth/cadastro =====================
@@ -66,6 +72,9 @@ class AuthControllerIntegrationTest {
         request.setTelefone("44988888888");
         request.setPassword("senha123");
         request.setRoles(Set.of("ADOTANTE"));
+
+        // Primeira chamada: e-mail livre; segunda: já cadastrado
+        when(usuarioRepository.existsByEmail("duplicado@mybuddy.com")).thenReturn(false, true);
 
         mockMvc.perform(post("/api/auth/cadastro")
                 .contentType(MediaType.APPLICATION_JSON)
