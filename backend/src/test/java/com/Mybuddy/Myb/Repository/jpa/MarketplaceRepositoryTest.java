@@ -1,9 +1,11 @@
 package com.Mybuddy.Myb.Repository.jpa;
 
+import com.Mybuddy.Myb.Config.TestSecurityConfig;
 import com.Mybuddy.Myb.Model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+@Import(TestSecurityConfig.class)
 public class MarketplaceRepositoryTest {
 
     @Autowired
