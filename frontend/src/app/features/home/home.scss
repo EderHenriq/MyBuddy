@@ -12,9 +12,27 @@
 }
 
 .home-shell {
-  width: min(100% - var(--spacing-xxl), 1160px);
+  width: 100%;
+  max-width: 1920px;
   margin: 0 auto;
-  padding-bottom: var(--spacing-xxxl);
+  padding: 0 var(--spacing-md) var(--spacing-xxxl);
+  box-sizing: border-box;
+
+  @include devices('desktop-sm') {
+    padding: 0 50px var(--spacing-xxxl);
+  }
+
+  @include devices('desktop-md') {
+    padding: 0 80px var(--spacing-xxxl);
+  }
+
+  @include devices('desktop-lg') {
+    padding: 0 120px var(--spacing-xxxl);
+  }
+
+  @include devices('desktop-xl') {
+    padding: 0 200px var(--spacing-xxxl);
+  }
 }
 
 //Estilização do Painel de buscas
@@ -25,7 +43,7 @@
   gap: var(--spacing-md);
   width: 100%;
   min-height: 71px;
-  margin: -34px auto var(--spacing-xl);
+  margin: 34px 0 var(--spacing-xl);
   padding: 0 var(--spacing-md) 0 17px;
   background: var(--surface-card);
   border-radius: var(--radius-xl);
@@ -33,6 +51,19 @@
   box-sizing: border-box;
   position: relative;
   z-index: 5;
+
+  @include devices('desktop-md') {
+    grid-template-columns: 480px 1px 1fr;
+  }
+
+  @include devices('desktop-lg') {
+    grid-template-columns: 560px 1px 1fr;
+  }
+
+  @include devices('desktop-xl') {
+    grid-template-columns: 640px 1px 1fr;
+  }
+
 }
 
 .search-box {
