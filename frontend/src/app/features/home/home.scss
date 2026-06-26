@@ -127,7 +127,7 @@
     gap: var(--spacing-xs);
     flex: 1;
     gap: var(--spacing-xs);
-    height: 39px;
+    height: 44px;
     padding: 10px var(--spacing-sm);
     background: var(--surface-ground);
     border-radius: var(--radius-md);
@@ -168,7 +168,7 @@
 .section-title {
   margin: 0;
   font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-extrabold);
+  font-weight: var(--font-weight-semibold);
   color: var(--text-color);
   line-height: var(--line-height-sm);
 }
@@ -176,7 +176,7 @@
 .section-heading-row {
   @include flex-between;
   gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
 }
 
 .text-link {
@@ -196,13 +196,13 @@
 //Estilização da seção de categorias
 .category-grid {
   @include grid-cols(4, var(--spacing-sm));
-  margin-top: var(--spacing-xl);
+  margin-top: var(--spacing-md);
 }
 
 .category-card {
   @include flex-center;
   position: relative;
-  min-height: 82px;
+  min-height: 91px;
   border-radius: var(--radius-xl);
   overflow: hidden;
   background-size: cover;
@@ -215,19 +215,25 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.44);
+    background: rgba(0, 0, 0, 0.5);
     border-radius: inherit;
+    z-index: 1;
+    transition: background 0.2s ease;
   }
 
   &:hover {
     transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    &::before {
+      background: rgba(0,0,0,0.4);
+    }
   }
 
   span {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-extrabold);
+    font-weight: var(--font-weight-semibold);
   }
 }
 
@@ -239,51 +245,56 @@
 
 .reminder-card {
   display: grid;
-  grid-template-columns: 72px 1fr auto;
+  grid-template-columns: 56px 1fr auto;
   align-items: center;
   gap: var(--spacing-md);
   padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-sm);
-  background: var(--surface-ground);
-  border: 1.5px solid var(--primary-color);
-  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--radius-xl);
 
   img {
-    width: 54px;
-    height: 54px;
-    object-fit: contain;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
   }
 
   .reminder-text {
     @include flex-column;
-    gap: var(--spacing-xxs);
+    gap: var(--spacing-xxxs);
 
     h3 {
       margin: 0;
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-extrabold);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
       color: var(--text-color);
     }
 
     p {
       margin: 0;
       font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-regular);
       line-height: var(--line-height-md);
       color: #555;
     }
   }
 
   button {
-    border: none;
+    @include flex-center;
     height: 38px;
+    border: none;
+    border-radius: var(--radius-md);
     padding: 0 var(--spacing-sm);
-    border-radius: var(--radius-max);
     background: var(--primary-color);
     color: var(--text-color-white);
     font-family: var(--font-family-primary);
     font-weight: var(--font-weight-extrabold);
+    font-size: var(--font-size-sm);
     cursor: pointer;
     white-space: nowrap;
     transition: background 0.2s ease;
+    margin: 12px;
 
     &:hover {
       background: var(--hover-btn-primary);
