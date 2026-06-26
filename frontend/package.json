@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:coverage": "ng test --code-coverage --watch=false",
     "serve:ssr:mybuddy": "node dist/mybuddy/server/server.mjs",
     "lint": "ng lint",
     "e2e": "playwright test",
@@ -56,6 +57,7 @@
     "prettier": "^3.8.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.56.1",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.8",
+    "@vitest/coverage-istanbul": "^4.0.8"
   }
 }
