@@ -101,8 +101,8 @@ $breakpoints: (
 
 @mixin heading-x1 {
   font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 700;
-  line-height: 1.2;
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-sm);
 }
 
 @mixin text-highlight {

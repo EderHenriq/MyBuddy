@@ -473,86 +473,117 @@
 
 //Estilização da seção de Veterinários e o mapa
 .services-map-grid {
-  @include grid-cols(2, var(--spacing-lg));
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 32px;
   margin-top: var(--spacing-xxxl);
+  height: 569px;
+  width: 100%;
 }
 
-.nearby-vets-card,
+.nearby-vets-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 46px;
+  width: 585px;
+  flex-shrink: 0;
+  height: 100%;
+  padding: 50px 40px;
+  background: var(--surface-card);
+  border-radius: var(--radius-xxl);
+  box-shadow: var(--shadow-md);
+  box-sizing: border-box;
+  overflow: hidden;
+
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-color);
+    line-height: 20px;
+  }
+}
+
+.title-line {
+  height: 1px;
+  margin: 0;
+  background: #8f8f8f;
+}
+
+.vet-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.vet-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-max);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .vet-info {
+    flex: 1;
+
+    h3 {
+      margin: 0 0 var(--spacing-xxs);
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-color);
+      line-height: 20px;
+    }
+
+    p {
+      margin: 0;
+      font-size: var(--font-size-md);
+      color: #383838;
+    }
+  }
+
+  .vet-rating {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--spacing-xxs);
+    padding: 0 10px;
+    font-size: var(--font-size-md);
+    color: var(--text-color);
+
+    .material-icons {
+      font-size: var(--font-size-xl);
+    }
+  }
+}
+
 .map-card {
-  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
   background: var(--surface-card);
   border-radius: var(--radius-xxl);
   box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
-.nearby-vets-card {
-  padding: var(--spacing-xl) var(--spacing-lg);
-
-  h2 {
-    margin: 0;
-    font-size: var(--font-size-xxl);
-    font-weight: var(--font-weight-extrabold);
-    color: var(--text-color);
-  }
-}
-
-.title-line {
-  height: 1px;
-  margin: var(--spacing-md) 0 var(--spacing-lg);
-  background: #8f8f8f;
-}
-
-.vet-list {
-  @include flex-column;
-  gap: var(--spacing-lg);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.vet-item {
-  display: grid;
-  grid-template-columns: 70px 1fr auto;
-  align-items: center;
-  gap: var(--spacing-sm);
-
-  img {
-    width: 60px;
-    height: 60px;
-    border-radius: var(--radius-max);
-    object-fit: cover;
-  }
-
-  .vet-info {
-    h3 {
-      margin: 0 0 var(--spacing-xxs);
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-extrabold);
-      color: var(--text-color);
-    }
-
-    p {
-      margin: 0;
-      font-size: var(--font-size-md);
-      color: #4f4f4f;
-    }
-  }
-
-  .vet-rating {
-    @include flex-center;
-    gap: var(--spacing-xxs);
-    font-size: var(--font-size-md);
-    color: var(--text-color);
-
-    .material-icons {
-      font-size: 23px;
-    }
-  }
-}
-
 .map-frame {
-  height: 260px;
+  flex: 1;
   overflow: hidden;
 
   #leaflet-map {
@@ -563,31 +594,39 @@
 }
 
 .map-card-body {
-  padding: var(--spacing-lg) var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  padding: 30px 20px;
+  border-radius: 0 0 var(--radius-xxl) var(--radius-xxl);
 
   h2 {
-    margin: 0 0 var(--spacing-lg);
+    margin: 0;
     font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-extrabold);
+    font-weight: var(--font-weight-semibold);
     color: var(--text-color);
+    line-height: 20px;
   }
 
   p {
-    margin: 0 0 var(--spacing-lg);
-    color: #666;
+    margin: 0;
+    color: #585858;
     font-size: var(--font-size-md);
     line-height: var(--line-height-md);
   }
 
   a {
     @include flex-center;
-    height: 42px;
+    height: 47px;
+    width: 100%;
     border-radius: var(--radius-max);
     background: var(--primary-color);
+    border: 1px solid var(--primary-color);
     color: var(--text-color-white);
     text-decoration: none;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-extrabold);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
     transition: background 0.2s ease;
 
     &:hover {
