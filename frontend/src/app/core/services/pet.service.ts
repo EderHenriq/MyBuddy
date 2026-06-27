@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { Pet } from '../models/pet.model';
 import { Observable, of, delay, catchError, take } from 'rxjs';
+import { IGNORE_ERROR_401 } from '../interceptors/error.interceptor';
+import { HttpContext } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +17,7 @@ export class PetService {
   }
 
   buscarRecentes(): Observable<any> {
-    return this.api.get<any>(`${this.endpoint}?sort=id,desc&size=3`).pipe(
+    return this.api.get<any>(`${this.endpoint}?sort=id,desc&size=3`, undefined, new HttpContext().set(IGNORE_ERROR_401, true)).pipe(
       take(1),
       catchError(() =>
         of({
