@@ -15,6 +15,7 @@ interface AcaoRapidas {
   rotulo: string;
   tab: string;
   icone: string;
+  tipoIcone: 'material' | 'fa';
 }
 
 interface ItemCategoria {
@@ -51,10 +52,10 @@ interface ItemProduto {
 
 //Dados estáticos da UI
 const ACOES_RAPIDA: AcaoRapidas[] = [
-  { rotulo: 'Meus Pets', tab: 'pets', icone: 'pets' },
-  { rotulo: 'Favoritos', tab: 'favoritos', icone: 'favorite' },
-  { rotulo: 'Mensagens', tab: 'mensagens', icone: 'chat_bubble_outline' },
-  { rotulo: 'Solicitações', tab: 'solicitacoes', icone: 'assignment' },
+  { rotulo: 'Meus Pets', tab: 'pets', icone: 'fa-solid fa-cat', tipoIcone: 'fa' },
+  { rotulo: 'Favoritos', tab: 'favoritos', icone: 'favorite', tipoIcone: 'material' },
+  { rotulo: 'Mensagens', tab: 'mensagens', icone: 'fa-regular fa-comment', tipoIcone: 'fa' },
+  { rotulo: 'Solicitações', tab: 'solicitacoes', icone: 'fa-regular fa-clipboard', tipoIcone: 'fa' },
 ];
 
 const CATEGORIAS: ItemCategoria[] = [

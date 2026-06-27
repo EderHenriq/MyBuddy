@@ -22,7 +22,12 @@
         @for (acao of acoesRapidas; track acao.rotulo) {
           <a [routerLink]="['/perfil']" [queryParams]="{ tab: acao.tab }" class="quick-action">
             <span>{{ acao.rotulo }}</span>
-            <span class="material-icons">{{ acao.icone }}</span>
+
+            @if (acao.tipoIcone === 'material') {
+              <span class="material-icons">{{ acao.icone }}</span>
+            } @else {
+              <i [class]="acao.icone + ' action-icon'"></i>
+            }
           </a>
         }
       </nav>
@@ -90,7 +95,7 @@
     <section class="section-block">
       <div class="section-heading-row">
         <h2 class="section-title">Próximos eventos de Pets</h2>
-        <a routerLink="/public/eventos" class="text-link">
+        <a routerLink="/eventos" class="text-link">
           Explore mais eventos
           <span class="material-icons">keyboard_arrow_right</span>
         </a>
@@ -167,7 +172,7 @@
             hoje.
           </p>
 
-          <a routerLink="/public/eventos">Ver no mapa</a>
+          <a routerLink="/eventos">Ver no mapa</a>
         </div>
       </article>
     </section>
@@ -180,14 +185,14 @@
 
       <div class="products-grid">
         @for (produto of produtos; track produto.rotulo) {
-          <a routerLink="/marketplace" class="product-card">
+          <a routerLink="/produtos" class="product-card">
             <img [src]="produto.urlImagem" [alt]="produto.rotulo" />
             <span>{{ produto.rotulo }}</span>
           </a>
         }
       </div>
 
-      <a routerLink="/marketplace" class="products-button">Veja mais produtos</a>
+      <a routerLink="/produtos" class="products-button">Veja mais produtos</a>
     </section>
   </section>
 </main>

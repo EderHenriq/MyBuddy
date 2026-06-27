@@ -92,9 +92,15 @@
     }
   }
 
-  .material-icons {
-    color: #737373;
+  .action-icon {
+    color: var(--text-color);
     font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .action-icon {
+    color: var(--text-color);
+    font-size: var(--font-size-md);
     flex-shrink: 0;
   }
 }
@@ -134,6 +140,11 @@
     transition:
       background-color 0.2s ease,
       transform 0.2s ease;
+    color: var(--text-color);
+
+    &:visited {
+      color: var(--text-color);
+    }
 
     &:hover {
       background: #e6e4e4;
