@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { Pet } from '../models/pet.model';
-import { Observable, of, delay, catchError } from 'rxjs';
+import { Observable, of, delay, catchError, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,7 @@ export class PetService {
 
   buscarRecentes(): Observable<any> {
     return this.api.get<any>(`${this.endpoint}?sort=id,desc&size=3`).pipe(
+      take(1),
       catchError(() =>
         of({
           content: [

@@ -1,9 +1,8 @@
 @use '../../../../styles/mixins' as *;
 
 :host {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  display: block;
+  margin-top: -100px;
 }
 
 .hero-overlay {
@@ -16,8 +15,8 @@
 .hero-container {
   position: relative;
   width: 100%;
-  min-height: 438px;
-  padding: var(--spacing-md) var(--spacing-xxl);
+  min-height: 70vh;
+  padding: calc(100px + var(--spacing-xl)) var(--spacing-xxl) var(--spacing-xl);
   background-size: cover;
   background-position: center 42%;
   border-radius: 0 0 var(--radius-xxl) var(--radius-xxl);

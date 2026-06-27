@@ -1,17 +1,21 @@
 @use '../../../../styles/mixins' as *;
 
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
 .header {
   @include flex-between;
   padding: 0 50px;
   background-color: rgba(244, 244, 244, 0.65);
   backdrop-filter: blur(8.75px);
   -webkit-backdrop-filter: blur(8.75px);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  width: 100%;
   height: 100px;
-
+ 
   @include devices('desktop-sm') {
     padding: 0 50px;
   }
