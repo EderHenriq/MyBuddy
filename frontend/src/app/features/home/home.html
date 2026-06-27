@@ -97,19 +97,37 @@
       </div>
 
       <div class="events-grid">
-        @for (evento of eventos; track evento.titulo) {
-          <article class="event-card">
-            <time class="event-date">
-              <strong>{{ evento.dia }}</strong>
-              <span>{{ evento.mes }}</span>
-            </time>
+        <div class="events-row">
+          @for (evento of eventos.slice(0,2); track evento.titulo) {
+            <article class="event-card">
+              <time class="event-date">
+                <strong>{{ evento.dia }}</strong>
+                <span>{{ evento.mes }}</span>
+              </time>
 
-            <div class="event-info">
-              <h3>{{ evento.titulo }}</h3>
-              <p>{{ evento.local }}</p>
-            </div>
-          </article>
-        }
+              <div class="event-info">
+                <h3>{{ evento.titulo }}</h3>
+                <p>{{ evento.local }}</p>
+              </div>
+            </article>
+          }
+        </div>
+
+        <div class="events-row">
+          @for (evento of eventos.slice(2, 4); track evento.titulo) {
+            <article class="event-card">
+              <time class="event-date">
+                <strong>{{ evento.dia }}</strong>
+                <span>{{ evento.mes }}</span>
+              </time>
+
+              <div class="event-info">
+                <h3>{{ evento.titulo }}</h3>
+                <p>{{ evento.local }}</p>
+              </div>
+            </article>
+          }
+        </div>
       </div>
     </section>
 
@@ -171,7 +189,6 @@
 
       <a routerLink="/marketplace" class="products-button">Veja mais produtos</a>
     </section>
-
   </section>
 </main>
 

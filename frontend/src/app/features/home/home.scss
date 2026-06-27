@@ -181,7 +181,7 @@
 
 .text-link {
   @include flex-between;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xs);
   color: var(--primary-color);
   text-decoration: none;
   font-size: var(--font-size-md);
@@ -401,41 +401,57 @@
 
 //Estilização da seção de evento
 .events-grid {
-  @include grid-cols(2, var(--spacing-md));
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+.events-row {
+  padding: var(--spacing-xs);
+  display: flex;
+  flex-direction: row;
+  gap: 28px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .event-card {
-  display: grid;
-  grid-template-columns: 76px 1fr;
+  display: flex;
+  flex-direction: row;
   align-items: center;
   gap: var(--spacing-md);
-  min-height: 92px;
   padding: var(--spacing-xs) var(--spacing-sm);
+  height: 100px;
+  flex: 1;
   background: var(--surface-card);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+  border: 2px solid #fff0e6;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 
   .event-date {
-    @include flex-column;
-    @include flex-center;
-    width: 68px;
-    height: 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: 70px;
+    height: 90%;
     background: #fff0e6;
-    border: 1.5px solid var(--primary-color);
-    border-radius: var(--radius-sm);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--radius-md);
     color: var(--primary-color);
-    gap: 0;
+    box-sizing: border-box;
 
     strong {
       font-size: var(--font-size-xxl);
-      font-weight: var(--font-weight-medium);
+      font-weight: var(--font-weight-semibold);
       line-height: 1;
     }
 
     span {
-      margin-top: var(--spacing-xxs);
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-extrabold);
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-semibold);
     }
   }
 
@@ -443,13 +459,13 @@
     h3 {
       margin: 0 0 var(--spacing-xxs);
       font-size: var(--font-size-md);
-      font-weight: var(--font-weight-extrabold);
+      font-weight: var(--font-weight-bold);
       color: var(--text-color);
     }
 
     p {
       margin: 0;
-      color: #555;
+      color: #4b4949;
       font-size: var(--font-size-md);
     }
   }
