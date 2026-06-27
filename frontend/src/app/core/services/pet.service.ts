@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { Pet } from '../models/pet.model';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay, catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,41 @@ export class PetService {
   }
 
   buscarRecentes(): Observable<any> {
-    return this.api.get<any>(`${this.endpoint}?sort=id,desc&size=3`);
+    return this.api.get<any>(`${this.endpoint}?sort=id,desc&size=3`).pipe(
+      catchError(() =>
+        of({
+          content: [
+            {
+              id: '1',
+              name: 'Kira',
+              age: 5,
+              breed: 'Vira Lata',
+              gender: 'Fêmea',
+              isVaccinated: true,
+              imageUrl: '/assets/placeholders/pets/Kira.jpg',
+            },
+            {
+              id: '2',
+              name: 'Pêssego',
+              age: 2,
+              breed: 'Vira Lata',
+              gender: 'Macho',
+              isVaccinated: true,
+              imageUrl: '/assets/placeholders/pets/Pessego.jpg',
+            },
+            {
+              id: '3',
+              name: 'Jade',
+              age: 1,
+              breed: 'Mini Lop',
+              gender: 'Fêmea',
+              isVaccinated: true,
+              imageUrl: '/assets/placeholders/pets/Armindo.png',
+            },
+          ],
+        }),
+      ),
+    );
   }
 
   buscarPorId(id: string): Observable<Pet> {

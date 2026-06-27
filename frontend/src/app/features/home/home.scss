@@ -63,7 +63,6 @@
   @include devices('desktop-xl') {
     grid-template-columns: 640px 1px 1fr;
   }
-
 }
 
 .search-box {
@@ -176,7 +175,8 @@
 .section-heading-row {
   @include flex-between;
   gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  margin: var(--spacing-md);
+  padding: var(--spacing-lg) 0;
 }
 
 .text-link {
@@ -225,7 +225,7 @@
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
     &::before {
-      background: rgba(0,0,0,0.4);
+      background: rgba(0, 0, 0, 0.4);
     }
   }
 
@@ -304,9 +304,16 @@
 
 //Estilização da seção de pets
 .pets-grid {
-  @include grid-cols(3, var(--spacing-lg));
-  width: min(100%, 960px);
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 350px);
+  justify-content: center;
+  gap: var(--spacing-lg);
+  width: 100%;
+  margin-top: var(--spacing-md);
+
+  app-card-pet {
+    height: 452px;
+  }
 }
 
 .loading-state {
@@ -343,7 +350,7 @@
   min-height: 126px;
   margin: var(--spacing-xl) 0;
   padding: var(--spacing-lg) var(--spacing-lg);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.74), rgba(0, 0, 0, 0.42)),
     url('/assets/placeholders/pets/crianca-coelho.jpg') center 62% / cover no-repeat;
@@ -357,28 +364,28 @@
     h2 {
       margin: 0;
       font-size: var(--font-size-xxl);
-      font-weight: var(--font-weight-extrabold);
+      font-weight: var(--font-weight-bold);
       color: var(--text-color-white);
     }
 
     p {
       margin: 0;
       font-size: var(--font-size-md);
-      font-weight: var(--font-weight-semibold);
+      font-weight: var(--font-weight-medium);
       color: rgba(255, 255, 255, 0.92);
     }
   }
 
   .donation-cta {
     @include flex-center;
-    gap: var(--spacing-xxs);
+    gap: var(--spacing-sm);
     height: 42px;
     padding: 0 var(--spacing-sm);
     border-radius: var(--radius-max);
     background: var(--primary-color);
     color: var(--text-color-white);
     text-decoration: none;
-    font-weight: var(--font-weight-extrabold);
+    font-weight: var(--font-weight-semibold);
     white-space: nowrap;
     transition: background 0.2s ease;
 
