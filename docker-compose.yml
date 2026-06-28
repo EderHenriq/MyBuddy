@@ -206,6 +206,11 @@ services:
 
     networks:
       - mybuddy-network
+    
+    environment:
+      KEYCLOAK_URL: ${KEYCLOAK_URL:-http://localhost:8080}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost}
+      MP_PUBLIC_KEY: ${MP_PUBLIC_KEY:-APP_USR-112696f3-3603-4175-826f-167cf58606b2}
 
 # ── MY-243: Declaração dos volumes ───────────────────────────
 # Dados salvos mesmo após "docker compose down"
