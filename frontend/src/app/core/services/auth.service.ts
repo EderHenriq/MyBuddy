@@ -6,9 +6,8 @@ import { SessionService } from './session.service';
 import { UserService } from './user.service';
 import { Usuario } from '@core/models/user.model';
 import { isPlatformBrowser } from '@angular/common';
-import { catchError, delay, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { environment } from '@env/environment';
-import { Role } from '@core/models/role.model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,21 +35,7 @@ export class AuthService {
 
     this.tokenEmMemoria = token;
 
-    if (token.startsWith('mock-jwt-token')) {
-      const papel = this.sessionService.getCurrentRole();
-
-      if (papel) {
-        this.usuarioAtual.set({
-          id: 99,
-          nome: 'Usuário Teste (' + papel + ')',
-          email: 'teste@mybuddy.com',
-          roles: [papel],
-        } as Usuario);
-      }
-      return;
-    }
-
-    this.userService.buscarPerfil(this.tokenEmMemoria).subscribe({
+    this.userService.buscarPerfil().subscribe({
       next: perfil => this.usuarioAtual.set(perfil),
       error: () => this.sair(),
     });
@@ -74,22 +59,6 @@ export class AuthService {
   }
 
   loginComCredenciais(email: string, senha: string): Observable<any> {
-    if (environment.mockApi || senha === 'Senha123' || senha === 'senha123') {
-      const mockData = this.resolverMockPorEmail(email);
-
-      if (mockData) {
-        const { role, profile } = mockData;
-        const mockToken = `mock-jwt-token-for-${role}`;
-
-        this.tokenEmMemoria = mockToken;
-        this.definirCookie('mybuddy_session', mockToken, 3600);
-        this.sessionService.setRole(role);
-        this.usuarioAtual.set(profile);
-
-        return of({ access_token: mockToken, profile, isMock: true }).pipe(delay(800));
-      }
-    }
-
     const tokenUrl = `${environment.keycloak.url}/realms/${environment.keycloak.realm}/protocol/openid-connect/token`;
 
     const payload = new HttpParams()
@@ -106,7 +75,6 @@ export class AuthService {
         this.tokenEmMemoria = resposta.access_token;
         this.definirCookie('mybuddy_session', resposta.access_token, 3600);
       }),
-
       catchError(erro => {
         console.error('Erro na autenticação:', erro);
         return throwError(() => erro);
@@ -131,25 +99,6 @@ export class AuthService {
     } else {
       this.router.navigate(['/home']);
     }
-  }
-
-  private resolverMockPorEmail(email: string): { role: Role; profile: Usuario } | null {
-    const emailLower = email.toLowerCase();
-    const mocks: Record<string, { role: Role; nome: string }> = {
-      'admin@mybuddy.com': { role: Role.ADMIN, nome: 'Admin Master' },
-      'ong@mybuddy.com': { role: Role.ONG, nome: 'ONG Anjos' },
-      'petshop@mybuddy.com': { role: Role.PETSHOP, nome: 'Petshop Feliz' },
-      'user@mybuddy.com': { role: Role.USER, nome: 'Adotante João' },
-      'adotante@mybuddy.com': { role: Role.USER, nome: 'Adotante João' },
-    };
-
-    const found = mocks[emailLower];
-    if (!found) return null;
-
-    return {
-      role: found.role,
-      profile: { id: 99, nome: found.nome, email, roles: [found.role] } as Usuario,
-    };
   }
 
   private definirCookie(nome: string, valor: string, maxAgeSeconds: number): void {

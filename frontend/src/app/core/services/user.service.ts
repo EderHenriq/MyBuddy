@@ -1,9 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { SessionService } from './session.service';
-import { Observable, of, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Usuario } from '@core/models/user.model';
-import { environment } from '@env/environment';
 import { Role } from '@core/models/role.model';
 
 @Injectable({
@@ -22,19 +21,7 @@ export class UserService {
     return this.api.get<Usuario>(`${this.endpoint}/${id}`);
   }
 
-  buscarPerfil(tokenEmMemoria: string | null): Observable<Usuario> {
-    if (environment.mockApi || tokenEmMemoria?.startsWith('mock-jwt-token')) {
-      const papel = this.sessionService.getCurrentRole() ?? Role.USER;
-      const perfilFalso = {
-        id: 99,
-        nome: 'Usuário Teste (' + papel + ')',
-        email: 'teste@mybuddy.com',
-        roles: [papel],
-      } as Usuario;
-
-      return of(perfilFalso);
-    }
-
+  buscarPerfil(): Observable<Usuario> {
     return this.api.get<Usuario>(`${this.endpoint}/meu-perfil`).pipe(
       tap(perfil => {
         const roles = perfil.roles ?? [];

@@ -73,7 +73,7 @@ export class Login implements OnInit {
     this.authService
       .loginComCredenciais(email, password)
       .pipe(
-        switchMap(() => this.userService.buscarPerfil(this.authService.obterToken() || null)),
+        switchMap(() => this.userService.buscarPerfil()),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({

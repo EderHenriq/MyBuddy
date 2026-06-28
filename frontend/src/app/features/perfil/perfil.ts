@@ -453,7 +453,7 @@ export class Perfil implements OnInit {
       return;
     }
 
-    this.userService.buscarPerfil(this.authService.obterToken() || null).subscribe((data: any) => {
+    this.userService.buscarPerfil().subscribe((data: any) => {
       this.setupProfile(data);
     });
   }
