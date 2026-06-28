@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Service;
 
+import com.Mybuddy.Myb.DTO.DadosUsuarioExportDTO;
 import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Usuario;
@@ -56,6 +57,41 @@ public class UsuarioService {
         usuarioExistente.setUrlAvatar(dadosUsuario.getUrlAvatar());
 
         return usuarioRepository.save(usuarioExistente);
+    }
+
+    @Transactional(readOnly = true)
+    public DadosUsuarioExportDTO exportarDadosUsuario(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com ID " + id + " não encontrado."));
+
+        List<DadosUsuarioExportDTO.InteresseExportDTO> interesses = interesseAdocaoRepository.findByUsuarioId(id)
+                .stream()
+                .map(i -> new DadosUsuarioExportDTO.InteresseExportDTO(
+                        i.getId(),
+                        i.getPet() != null ? i.getPet().getId() : null,
+                        i.getStatus() != null ? i.getStatus().name() : null,
+                        i.getCriadoEm()
+                ))
+                .toList();
+
+        List<DadosUsuarioExportDTO.PedidoExportDTO> pedidos = pedidoRepository.findByClienteId(id)
+                .stream()
+                .map(p -> new DadosUsuarioExportDTO.PedidoExportDTO(
+                        p.getId(),
+                        p.getStatus() != null ? p.getStatus().name() : null,
+                        p.getDataCriacao()
+                ))
+                .toList();
+
+        return new DadosUsuarioExportDTO(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getTelefone(),
+                usuario.getDataCriacao(),
+                interesses,
+                pedidos
+        );
     }
 
     @Transactional
