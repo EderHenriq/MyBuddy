@@ -1,7 +1,9 @@
 package com.Mybuddy.Myb.Payload.Request;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -32,6 +34,10 @@ public class SignupRequest {
     private String password;
 
     private Set<String> roles;
+
+    @NotNull(message = "O aceite dos termos é obrigatório")
+    @AssertTrue(message = "Você deve aceitar os termos de uso e a política de privacidade para se cadastrar (LGPD Art. 7º)")
+    private Boolean aceitaTermos;
 
     // Campos opcionais para cadastro de ONG
     private String organizacaoCnpj;
