@@ -7,21 +7,23 @@ public final class InteresseAdocaoMapper {
     private InteresseAdocaoMapper() {}
 
     public static InteresseResponse toResponse(InteresseAdocao i) {
+        UsuarioResponse usuarioResponse = i.getUsuario() != null
+                ? new UsuarioResponse(i.getUsuario().getId(), i.getUsuario().getNome())
+                : null;
+
+        PetResumoResponse petResponse = i.getPet() != null
+                ? new PetResumoResponse(i.getPet().getId(), i.getPet().getNome())
+                : null;
+
         return new InteresseResponse(
                 i.getId(),
-                new UsuarioResponse(
-                        i.getUsuario().getId(),
-                        i.getUsuario().getNome()
-                ),
-                new PetResumoResponse(
-                        i.getPet().getId(),
-                        i.getPet().getNome()
-                ),
+                usuarioResponse,
+                petResponse,
                 i.getStatus(),
                 i.getMensagem(),
                 i.getCriadoEm(),
                 i.getAtualizadoEm(),
-                i.getCpfAdotante(),
+                mascararCpf(i.getCpfAdotante()),
                 i.getIdadeAdotante(),
                 i.getMotivoAdocao(),
                 i.getTipoResidencia(),
@@ -29,7 +31,15 @@ public final class InteresseAdocaoMapper {
                 i.getOutrosAnimais(),
                 i.getTempoSozinhoHoras(),
                 i.getTodosCientes(),
-                i.getEspacoAdequado()
+                i.getEspacoAdequado(),
+                i.getConsentimentoLgpd()
         );
+    }
+
+    private static String mascararCpf(String cpf) {
+        if (cpf == null || cpf.isBlank()) return null;
+        String digits = cpf.replaceAll("[^\\d]", "");
+        if (digits.length() != 11) return "***.***.***-**";
+        return "***.***.%s-%s".formatted(digits.substring(6, 9), digits.substring(9));
     }
 }
