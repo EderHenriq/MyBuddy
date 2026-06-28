@@ -104,7 +104,20 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "codeCoverage": true,
+            "codeCoverageExclude": [
+              "src/environments/**",
+              "src/main.ts",
+              "src/main.server.ts",
+              "src/server.ts",
+              "src/app/app.config.ts",
+              "src/app/app.config.server.ts",
+              "src/app/app.routes.ts"
+            ]
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
