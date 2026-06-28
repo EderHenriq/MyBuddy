@@ -6,6 +6,7 @@ import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -21,21 +22,25 @@ public class AdminController {
     private final UsuarioRepository usuarioRepository;
 
     @GetMapping("/ongs")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Organizacao>> getOngs() {
         return ResponseEntity.ok(organizacaoRepository.findAll());
     }
 
     @GetMapping("/usuarios")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Usuario>> getUsuarios() {
         return ResponseEntity.ok(usuarioRepository.findAll());
     }
 
     @GetMapping("/denuncias")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Object>> getDenuncias() {
         return ResponseEntity.ok(Collections.emptyList());
     }
 
     @GetMapping("/tickets")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Object>> getTickets() {
         return ResponseEntity.ok(Collections.emptyList());
     }
