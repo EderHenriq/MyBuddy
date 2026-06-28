@@ -38,7 +38,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/payments/preference/**").permitAll()
@@ -47,8 +46,6 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/categorias/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/petshop/**").permitAll()
                         .anyRequest().authenticated())
-                .headers(headers -> headers
-                        .frameOptions(frame -> frame.sameOrigin()))
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)));
 
