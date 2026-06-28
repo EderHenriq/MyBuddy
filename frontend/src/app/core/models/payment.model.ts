@@ -1,8 +1,8 @@
-import { Usuario } from './user.model';
-import { Pet } from './pet.model';
-import { Pedido } from './petshop.model';
+import { Usuario } from "./user.model";
+import { Pet } from "./pet.model";
+import { Pedido } from "./petshop.model";
 
-export type PaymentStatus = 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED" | "CANCELLED";
 
 export interface Payment {
   id: number;

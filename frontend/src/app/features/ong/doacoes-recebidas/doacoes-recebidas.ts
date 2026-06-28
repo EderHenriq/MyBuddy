@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-doacoes-recebidas',
+  selector: "app-doacoes-recebidas",
   imports: [],
-  templateUrl: './doacoes-recebidas.html',
-  styleUrl: './doacoes-recebidas.scss',
+  templateUrl: "./doacoes-recebidas.html",
+  styleUrl: "./doacoes-recebidas.scss",
 })
 export class DoacoesRecebidas {}

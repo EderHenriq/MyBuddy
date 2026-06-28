@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api/cupons")
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("null")
 public class CupomController {
 
     private final CupomService cupomService;

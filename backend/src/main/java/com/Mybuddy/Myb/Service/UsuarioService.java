@@ -9,20 +9,27 @@ import com.Mybuddy.Myb.Model.InteresseAdocao;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Repository.jpa.PedidoRepository;
 import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
+import com.Mybuddy.Myb.Repository.jpa.AgendamentoRepository;
+import com.Mybuddy.Myb.Repository.jpa.DonationSubscriptionRepository;
+import com.Mybuddy.Myb.Model.DonationSubscription;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class UsuarioService {
 
     public static final String KeycloakUserSyncService = null;
     private final UsuarioRepository usuarioRepository;
     private final PedidoRepository pedidoRepository;
     private final InteresseAdocaoRepository interesseAdocaoRepository;
+    private final AgendamentoRepository agendamentoRepository;
+    private final DonationSubscriptionRepository donationSubscriptionRepository;
 
     public Usuario criarUsuario(Usuario usuario) {
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
@@ -51,9 +58,34 @@ public class UsuarioService {
         return usuarioRepository.save(usuarioExistente);
     }
 
+    @Transactional
     public void deletarUsuario(Long id) {
         if (!usuarioRepository.existsById(id)) {
             throw new ResourceNotFoundException("Usuário com ID " + id + " não encontrado.");
+        }
+
+        // 0.1 Verificar se existem agendamentos ativos no PostgreSQL (tudo exceto cancelados)
+        if (agendamentoRepository.existsByClienteIdAndStatusNot(id, com.Mybuddy.Myb.Model.StatusAgendamento.CANCELADO)) {
+            throw new ConflictException("Não é possível deletar o usuário pois existem agendamentos ativos vinculados a ele.");
+        }
+
+        // 0.2 Buscar assinaturas de doações ativas, tentar cancelar no Mercado Pago e remover localmente
+        List<DonationSubscription> assinaturas = donationSubscriptionRepository.findByUsuarioId(id);
+        for (DonationSubscription assinatura : assinaturas) {
+            if (!"cancelled".equals(assinatura.getStatus())) {
+                try {
+                    com.mercadopago.client.preapproval.PreapprovalClient client = new com.mercadopago.client.preapproval.PreapprovalClient();
+                    com.mercadopago.client.preapproval.PreapprovalUpdateRequest cancelRequest = 
+                            com.mercadopago.client.preapproval.PreapprovalUpdateRequest.builder()
+                                    .status("cancelled")
+                                    .build();
+                    client.update(assinatura.getMpPreapprovalId(), cancelRequest);
+                } catch (Exception e) {
+                    org.slf4j.LoggerFactory.getLogger(UsuarioService.class)
+                            .error("Erro ao cancelar assinatura no Mercado Pago: " + assinatura.getMpPreapprovalId(), e);
+                }
+            }
+            donationSubscriptionRepository.delete(assinatura);
         }
 
         // 1. Anonimizar dados pessoais nos pedidos históricos do usuário

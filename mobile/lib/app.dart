@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mybuddy_app/core/di/injection_container.dart' as di;
 import 'package:mybuddy_app/core/router/app_router.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
 import 'package:mybuddy_app/features/adocao/presentation/bloc/adocao_cubit.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/bloc/cart_cubit.dart';
 import 'package:mybuddy_app/shared/theme/app_theme.dart';
 import 'package:mybuddy_app/shared/theme/theme_cubit.dart';
 
@@ -22,12 +24,14 @@ class MyBuddyApp extends StatefulWidget {
 
 class _MyBuddyAppState extends State<MyBuddyApp> {
   late final AuthBloc _authBloc;
+  late final GoRouter _router;
 
   @override
   void initState() {
     super.initState();
     _authBloc = di.sl<AuthBloc>();
     _authBloc.add(CheckAuthStatus());
+    _router = AppRouter.router();
   }
 
   @override
@@ -50,6 +54,9 @@ class _MyBuddyAppState extends State<MyBuddyApp> {
         BlocProvider<AdocaoCubit>(
           create: (context) => di.sl<AdocaoCubit>()..loadSolicitacoes(),
         ),
+        BlocProvider<CartCubit>(
+          create: (context) => di.sl<CartCubit>(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {
@@ -59,7 +66,7 @@ class _MyBuddyAppState extends State<MyBuddyApp> {
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             themeMode: themeMode,
-            routerConfig: AppRouter.router(context),
+            routerConfig: _router,
           );
         },
       ),

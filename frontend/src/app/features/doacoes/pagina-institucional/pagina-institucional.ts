@@ -1,17 +1,28 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { DonationService, CampanhaDoacao, DonationStats, OngParceira } from '../../../core/services/donation.service';
-import { HeroSectionComponent } from '../../../shared/components/hero-section/hero-section.component';
-import { Footer } from '../../../shared/components/footer/footer';
-import { ModalDoacao } from '../modal-doacao/modal-doacao';
+import { Component, OnInit, inject, signal } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import {
+  DonationService,
+  CampanhaDoacao,
+  DonationStats,
+  OngParceira,
+} from "../../../core/services/donation.service";
+import { HeroSectionComponent } from "../../../shared/components/hero-section/hero-section.component";
+import { Footer } from "../../../shared/components/footer/footer";
+import { ModalDoacao } from "../modal-doacao/modal-doacao";
 
 @Component({
-  selector: 'app-pagina-institucional',
+  selector: "app-pagina-institucional",
   standalone: true,
-  imports: [CommonModule, FormsModule, HeroSectionComponent, Footer, ModalDoacao],
-  templateUrl: './pagina-institucional.html',
-  styleUrl: './pagina-institucional.scss',
+  imports: [
+    CommonModule,
+    FormsModule,
+    HeroSectionComponent,
+    Footer,
+    ModalDoacao,
+  ],
+  templateUrl: "./pagina-institucional.html",
+  styleUrl: "./pagina-institucional.scss",
 })
 export class PaginaInstitucional implements OnInit {
   private donationService = inject(DonationService);
@@ -25,10 +36,17 @@ export class PaginaInstitucional implements OnInit {
   campanhas = signal<CampanhaDoacao[]>([]);
   ongs = signal<OngParceira[]>([]);
 
-  categorias = ['Todos', 'Pets em tratamento', 'Ração e alimentação', 'Cirurgias', 'Abrigo / ONG', 'Urgente'];
-  categoriaSelecionada = signal<string>('Todos');
-  searchText = '';
-  frequenciaRecorrente = signal<'mensal' | 'semanal' | 'unica'>('mensal');
+  categorias = [
+    "Todos",
+    "Pets em tratamento",
+    "Ração e alimentação",
+    "Cirurgias",
+    "Abrigo / ONG",
+    "Urgente",
+  ];
+  categoriaSelecionada = signal<string>("Todos");
+  searchText = "";
+  frequenciaRecorrente = signal<"mensal" | "semanal" | "unica">("mensal");
 
   showModal = signal<boolean>(false);
   selectedCampanha = signal<CampanhaDoacao | null>(null);
@@ -44,7 +62,7 @@ export class PaginaInstitucional implements OnInit {
 
   carregarStats() {
     this.carregandoStats.set(true);
-    this.donationService.getStats().subscribe(data => {
+    this.donationService.getStats().subscribe((data) => {
       this.stats.set(data);
       this.carregandoStats.set(false);
     });
@@ -52,14 +70,16 @@ export class PaginaInstitucional implements OnInit {
 
   carregarCampanhas() {
     this.carregandoCampanhas.set(true);
-    this.donationService.getCampaigns(this.categoriaSelecionada()).subscribe(data => {
-      this.campanhas.set(data);
-      this.carregandoCampanhas.set(false);
-    });
+    this.donationService
+      .getCampaigns(this.categoriaSelecionada())
+      .subscribe((data) => {
+        this.campanhas.set(data);
+        this.carregandoCampanhas.set(false);
+      });
   }
 
   carregarOngs() {
-    this.donationService.getOngsParceiras().subscribe(data => {
+    this.donationService.getOngsParceiras().subscribe((data) => {
       this.ongs.set(data);
     });
   }
@@ -72,13 +92,13 @@ export class PaginaInstitucional implements OnInit {
   abrirModalDoacao(campanha?: CampanhaDoacao) {
     this.selectedCampanha.set(campanha || null);
     this.showModal.set(true);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   }
 
   fecharModal() {
     this.showModal.set(false);
     this.selectedCampanha.set(null);
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
   }
 
   getPorcentagemArrecadada(c: CampanhaDoacao): number {
@@ -95,13 +115,16 @@ export class PaginaInstitucional implements OnInit {
     if (!this.searchText.trim()) return this.campanhas();
     const q = this.searchText.toLowerCase();
     return this.campanhas().filter(
-      c => c.titulo.toLowerCase().includes(q) || c.descricao.toLowerCase().includes(q) || c.localizacao?.toLowerCase().includes(q),
+      (c) =>
+        c.titulo.toLowerCase().includes(q) ||
+        c.descricao.toLowerCase().includes(q) ||
+        c.localizacao?.toLowerCase().includes(q),
     );
   }
 
   scrollToCampanhas() {
-    const el = document.querySelector('.filter-section');
-    el?.scrollIntoView({ behavior: 'smooth' });
+    const el = document.querySelector(".filter-section");
+    el?.scrollIntoView({ behavior: "smooth" });
   }
 
   formatarValor(valor: number): string {

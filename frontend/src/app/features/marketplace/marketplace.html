@@ -3,185 +3,449 @@
     [title]="'Tudo para o seu pet,'"
     [highlightedText]="'entregue em minutos.'"
     [subtitle]="'Rações, brinquedos, medicamentos e muito mais'"
-    [backgroundImageUrl]="'https://images.unsplash.com/photo-1516734212829-9e86c07513eb?auto=format&fit=crop&q=80&w=2000'"
-  ></app-hero-section>
+    [backgroundImageUrl]="'/assets/landing-page/pet-shop.jpg'"
+  >
+  </app-hero-section>
+
+  <!-- CTA flutuante sobre o hero -->
+  <div class="hero-cta-wrapper animate-fade-up">
+    <app-btn-outline variant="solid" size="lg" icon="storefront" (clicked)="rolarParaOfertas()">
+      Explorar Ofertas
+    </app-btn-outline>
+  </div>
 
   <div class="marketplace-content">
-    <section class="search-panel" aria-label="Busca e endereço">
-      <label class="search-field">
-        <input type="search" placeholder="Busque por item ou loja" />
-        <span class="material-icons">search</span>
+    <section class="search-panel animate-fade-up" aria-label="Busca e endereço">
+      <label class="search-field" [class.focused]="searchFocused">
+        <span class="material-icons search-icon" [class.active]="searchFocused">search</span>
+        <input
+          type="search"
+          placeholder="Busque por item ou loja"
+          [value]="searchQuery"
+          (input)="onSearchInput($event)"
+          (focus)="searchFocused = true"
+          (blur)="searchFocused = false"
+        />
       </label>
 
       <span class="panel-divider" aria-hidden="true"></span>
 
       <div class="quick-filter-list">
-        <button type="button" class="quick-filter delivery-location-btn">
+        <button type="button" class="quick-filter delivery-location-btn" (click)="informarEnderecoEmBreve()">
           <span>Entregar em:</span>
           <span class="address-text">{{ enderecoAtual }}</span>
           <span class="material-icons">keyboard_arrow_down</span>
         </button>
-        <button type="button" class="quick-filter">
-          <span>Ordenar</span>
-          <span class="material-icons">sort</span>
-        </button>
-        <button type="button" class="quick-filter">
-          <span>Filtros</span>
-          <span class="material-icons">tune</span>
-        </button>
-      </div>
-    </section>
 
-    <app-category-carousel [categorias]="categorias" (cliqueCategoria)="abrirCategoria($event)"></app-category-carousel>
-
-    <section class="banners-promocionais">
-      <div class="carousel-wrapper">
-        <button class="scroll-arrow left" (click)="rolarCarrossel(bannerTrack, 'left')"><span class="material-icons">chevron_left</span></button>
-        <div class="banner-track" #bannerTrack>
-          <div class="banner-item" style="background-color: #ffecd6">
-            <div class="banner-text">
-              <h3>Frete Grátis</h3>
-              <p>Nas compras acima de R$150</p>
-            </div>
-            <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=400" alt="Cães felizes" />
-          </div>
-          <div class="banner-item" style="background-color: #e6f4ea">
-            <div class="banner-text">
-              <h3>Mês do Cachorro Louco</h3>
-              <p>Até 30% OFF em rações</p>
-            </div>
-            <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=400" alt="Cachorro" />
+        <div class="dropdown-filter" [class.open]="filtroAberto === 'ordenacao'">
+          <button
+            type="button"
+            class="quick-filter"
+            [class.active]="!!activeSort"
+            [attr.aria-expanded]="filtroAberto === 'ordenacao'"
+            (click)="alternarDropdown('ordenacao')"
+          >
+            <span>Ordenar</span>
+            <span class="material-icons">sort</span>
+            @if (activeSort) {
+              <span class="filter-dot"></span>
+            }
+          </button>
+          <div class="dropdown-content">
+            <button (click)="setOrdenacao('menor_preco')" [class.selected]="activeSort === 'menor_preco'">Menor Preço</button>
+            <button (click)="setOrdenacao('maior_preco')" [class.selected]="activeSort === 'maior_preco'">Maior Preço</button>
+            <button (click)="setOrdenacao('avaliacao')" [class.selected]="activeSort === 'avaliacao'">Avaliação</button>
+            <button (click)="setOrdenacao('desconto')" [class.selected]="activeSort === 'desconto'">Melhores Ofertas</button>
           </div>
         </div>
-        <button class="scroll-arrow right" (click)="rolarCarrossel(bannerTrack, 'right')"><span class="material-icons">chevron_right</span></button>
-      </div>
-      <div class="banner-pagination">
-        <span class="dot active"></span>
-        <span class="dot"></span>
+
+        <div class="dropdown-filter" [class.open]="filtroAberto === 'categoria'">
+          <button
+            type="button"
+            class="quick-filter"
+            [class.active]="!!selectedCategoryName"
+            [attr.aria-expanded]="filtroAberto === 'categoria'"
+            (click)="alternarDropdown('categoria')"
+          >
+            <span>Categorias</span>
+            <span class="material-icons">tune</span>
+            @if (selectedCategoryName) {
+              <span class="filter-dot"></span>
+            }
+          </button>
+          <div class="dropdown-content">
+            @for (cat of categorias; track cat.id) {
+              <button (click)="abrirCategoria(cat)" [class.selected]="selectedCategoryName === cat.nome">{{ cat.nome }}</button>
+            }
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="lojas-section">
-      <div class="section-header">
-        <h2>Lojas Próximas</h2>
-        <a routerLink="/produtos" class="see-all">Ver todas</a>
-      </div>
+    @if (isSearching) {
+      <!-- Seção do catálogo de busca -->
+      <section class="catalogo-resultados animate-fade-up">
+        <div class="catalogo-header">
+          <app-btn-outline variant="ghost" icon="arrow_back" (clicked)="limparFiltros()">
+            Voltar para Destaques
+          </app-btn-outline>
+          <h2>{{ tituloCatalogo }} ({{ filteredProdutos.length }})</h2>
+        </div>
 
-      <div class="carousel-wrapper">
-        <button class="scroll-arrow left" (click)="rolarCarrossel(lojasTrack, 'left')"><span class="material-icons">chevron_left</span></button>
-        <div class="lojas-track" #lojasTrack>
-          @for (loja of lojas; track loja.id) {
-            <app-card-loja
-              [urlLogo]="loja.urlLogo"
-              [nomeLoja]="loja.nome"
-              [avaliacao]="loja.avaliacao"
-              [tempoEntrega]="loja.tempoEntrega"
-              [taxaEntrega]="loja.taxaEntrega"
-              (cliqueLoja)="abrirLoja(loja)"
-            ></app-card-loja>
+        <div class="active-filters">
+          @if (selectedCategoryName) {
+            <span class="filter-tag">
+              Categoria: {{ selectedCategoryName }}
+              <button class="remove-filter-btn" (click)="selectedCategoryName = ''; filtrarProdutos()"><span class="material-icons">close</span></button>
+            </span>
+          }
+          @if (searchQuery) {
+            <span class="filter-tag">
+              Busca: "{{ searchQuery }}"
+              <button class="remove-filter-btn" (click)="searchQuery = ''; filtrarProdutos()"><span class="material-icons">close</span></button>
+            </span>
+          }
+          @if (activeSort) {
+            <span class="filter-tag">
+              Ordenação: {{ activeSort === 'menor_preco' ? 'Menor Preço' : activeSort === 'maior_preco' ? 'Maior Preço' : activeSort === 'desconto' ? 'Ofertas Especiais' : 'Avaliação' }}
+              <button class="remove-filter-btn" (click)="activeSort = ''; filtrarProdutos()"><span class="material-icons">close</span></button>
+            </span>
+          }
+          @if (selectedCategoryName || searchQuery || activeSort) {
+            <button class="btn-clear-all" (click)="limparFiltros()">Limpar Tudo</button>
           }
         </div>
-        <button class="scroll-arrow right" (click)="rolarCarrossel(lojasTrack, 'right')"><span class="material-icons">chevron_right</span></button>
-      </div>
-    </section>
 
-    <section class="marcas-section">
-      <div class="section-header">
-        <h2>Marcas em Destaque</h2>
-      </div>
-      <div class="marcas-grid">
-        @for (marca of marcasDestaque; track marca.id) {
-          <div class="marca-item">
-            <img [src]="marca.urlLogo" [alt]="marca.nome" />
+        @if (filteredProdutos.length === 0) {
+          <div class="no-results">
+            <span class="material-icons">search_off</span>
+            <h3>Nenhum produto encontrado</h3>
+            <p>Tente buscar com palavras diferentes ou limpe os filtros ativos.</p>
+            <app-btn-outline variant="solid" (clicked)="limparFiltros()">Ver Todos os Produtos</app-btn-outline>
+          </div>
+        } @else {
+          <div class="produtos-grid">
+            @for (produto of filteredProdutos; track produto.id; let i = $index) {
+              <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
+                <app-card-produto
+                  [urlImagem]="produto.urlImagem"
+                  [titulo]="produto.titulo"
+                  [preco]="produto.preco"
+                  [precoAntigo]="produto.precoAntigo"
+                  [nomeLoja]="produto.nomeLoja"
+                  [badgeDesconto]="produto.badgeDesconto"
+                  [favorito]="produto.favorito || false"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
+                  (cliqueCard)="verProduto(produto)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
+                  (cliqueFavorito)="alternarFavorito(produto)"
+                ></app-card-produto>
+              </div>
+            }
           </div>
         }
-      </div>
-    </section>
+      </section>
+    } @else {
+      <!-- Conteúdo Padrão do Marketplace -->
+      <app-category-carousel [categorias]="categorias" (cliqueCategoria)="abrirCategoria($event)"></app-category-carousel>
 
-    <section class="produtos-section">
-      <div class="section-header">
-        <h2>Ofertas Especiais</h2>
-        <a routerLink="/produtos" class="see-all">Ver mais</a>
-      </div>
-      <div class="produtos-grid">
-        @for (produto of produtosOferta; track produto.id) {
-          <app-card-produto
-            [urlImagem]="produto.urlImagem"
-            [titulo]="produto.titulo"
-            [preco]="produto.preco"
-            [precoAntigo]="produto.precoAntigo"
-            [nomeLoja]="produto.nomeLoja"
-            [badgeDesconto]="produto.badgeDesconto"
-            [favorito]="produto.favorito || false"
-            (cliqueCard)="verProduto(produto)"
-            (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
-            (cliqueFavorito)="alternarFavorito(produto)"
-          ></app-card-produto>
-        }
-      </div>
-    </section>
-
-    <section class="produtos-section banner-intersticial">
-      <div
-        class="intersticial-content"
-        style="background-image: url('https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?auto=format&fit=crop&q=80&w=1200')"
-      >
-        <div class="overlay">
-          <h2>Tudo para o seu Gato</h2>
-          <p>As melhores marcas com até 40% de desconto</p>
-          <button class="btn-primary">Aproveitar</button>
+      <section class="banners-promocionais">
+        <div class="carousel-wrapper">
+          <button class="scroll-arrow left" (click)="rolarCarrossel(bannerTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+          <div class="banner-track" #bannerTrack (scroll)="onBannerScroll(bannerTrack)">
+            <div class="banner-item" style="background: linear-gradient(135deg, #fff0e0 0%, #ffe4c4 100%)">
+              <div class="banner-text">
+                <span class="banner-tag">Promoção</span>
+                <h3>Frete Grátis</h3>
+                <p>Nas compras acima de R$150</p>
+                <app-btn-outline variant="solid" size="sm" (clicked)="buscarPorTermo('Frete Grátis')">Aproveitar</app-btn-outline>
+              </div>
+              <img src="/assets/placeholders/pets/purebred-dog-being-cute-studio.jpg" alt="Cães felizes" />
+            </div>
+            <div class="banner-item" style="background: linear-gradient(135deg, #e6f4ea 0%, #c8e6c9 100%)">
+              <div class="banner-text">
+                <span class="banner-tag">Oferta do Mês</span>
+                <h3>Mês do Cachorro Louco</h3>
+                <p>Até 30% OFF em rações</p>
+                <app-btn-outline variant="solid" size="sm" (clicked)="aplicarFiltroCategoria('Rações')">Ver Rações</app-btn-outline>
+              </div>
+              <img src="/assets/placeholders/pets/Border Collie 01.webp" alt="Cachorro" />
+            </div>
+            <div class="banner-item" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)">
+              <div class="banner-text">
+                <span class="banner-tag">Novidade</span>
+                <h3>Primeira Compra</h3>
+                <p>15% OFF usando o cupom MYBUDDY15</p>
+                <app-btn-outline variant="solid" size="sm" (clicked)="mostrarCatalogoCompleto()">Comprar Agora</app-btn-outline>
+              </div>
+              <img src="/assets/placeholders/pets/Armindo.png" alt="Cachorro fofo" />
+            </div>
+            <div class="banner-item" style="background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%)">
+              <div class="banner-text">
+                <span class="banner-tag">Especial</span>
+                <h3>Tudo para Gatos</h3>
+                <p>As melhores marcas com até 40% OFF</p>
+                <app-btn-outline variant="solid" size="sm" (clicked)="buscarPorTermo('Gato')">Conferir</app-btn-outline>
+              </div>
+              <img src="/assets/placeholders/pets/gato-laranja-e1748043537291.webp" alt="Gato" />
+            </div>
+          </div>
+          <button class="scroll-arrow right" (click)="rolarCarrossel(bannerTrack, 'right')"><span class="material-icons">chevron_right</span></button>
         </div>
-      </div>
-    </section>
+        <div class="banner-pagination">
+          @for (dot of bannerDots; track dot; let i = $index) {
+            <span class="dot" [class.active]="i === activeBannerIndex" (click)="irParaBanner(bannerTrack, i)"></span>
+          }
+        </div>
+      </section>
 
-    <section class="produtos-section">
-      <div class="section-header">
-        <h2>Mais Vendidos</h2>
-        <a routerLink="/produtos" class="see-all">Ver mais</a>
-      </div>
-      <div class="produtos-grid">
-        @for (produto of maisVendidos; track produto.id) {
-          <app-card-produto
-            [urlImagem]="produto.urlImagem"
-            [titulo]="produto.titulo"
-            [preco]="produto.preco"
-            [precoAntigo]="produto.precoAntigo"
-            [nomeLoja]="produto.nomeLoja"
-            [badgeDesconto]="produto.badgeDesconto"
-            [favorito]="produto.favorito || false"
-            (cliqueCard)="verProduto(produto)"
-            (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
-            (cliqueFavorito)="alternarFavorito(produto)"
-          ></app-card-produto>
-        }
-      </div>
-    </section>
+      <section class="lojas-section">
+        <div class="section-header">
+          <h2>Lojas Próximas</h2>
+          <app-btn-outline variant="outline" size="sm" (clicked)="mostrarCatalogoCompleto()">Ver produtos</app-btn-outline>
+        </div>
 
-    <section class="produtos-section">
-      <div class="section-header">
-        <h2>Para Você</h2>
-      </div>
-      <div class="produtos-grid">
-        @for (produto of todosProdutos; track produto.id) {
-          <app-card-produto
-            [urlImagem]="produto.urlImagem"
-            [titulo]="produto.titulo"
-            [preco]="produto.preco"
-            [precoAntigo]="produto.precoAntigo"
-            [nomeLoja]="produto.nomeLoja"
-            [badgeDesconto]="produto.badgeDesconto"
-            [favorito]="produto.favorito || false"
-            (cliqueCard)="verProduto(produto)"
-            (adicionarAoCarrinho)="adicionarAoCarrinho(produto, $event)"
-            (cliqueFavorito)="alternarFavorito(produto)"
-          ></app-card-produto>
+        <div class="carousel-wrapper">
+          <button class="scroll-arrow left" (click)="rolarCarrossel(lojasTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+          <div class="lojas-track" #lojasTrack>
+            @for (loja of lojas; track loja.id; let i = $index) {
+              <div class="animate-stagger" [style.animation-delay]="(i * 0.06) + 's'">
+                <app-card-loja
+                  [urlLogo]="loja.urlLogo"
+                  [nomeLoja]="loja.nome"
+                  [avaliacao]="loja.avaliacao"
+                  [tempoEntrega]="loja.tempoEntrega"
+                  [taxaEntrega]="loja.taxaEntrega"
+                  (cliqueLoja)="abrirLoja(loja)"
+                ></app-card-loja>
+              </div>
+            }
+          </div>
+          <button class="scroll-arrow right" (click)="rolarCarrossel(lojasTrack, 'right')"><span class="material-icons">chevron_right</span></button>
+        </div>
+      </section>
+
+      @if (favoritosExibir.length > 0) {
+        <section class="produtos-section animate-fade-up">
+          <div class="section-header">
+            <h2>Meus Favoritos</h2>
+          </div>
+          <div class="produtos-grid">
+            @for (produto of favoritosExibir; track produto.id; let i = $index) {
+              <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
+                <app-card-produto
+                  [urlImagem]="produto.urlImagem"
+                  [titulo]="produto.titulo"
+                  [preco]="produto.preco"
+                  [precoAntigo]="produto.precoAntigo"
+                  [nomeLoja]="produto.nomeLoja"
+                  [badgeDesconto]="produto.badgeDesconto"
+                  [favorito]="true"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
+                  (cliqueCard)="verProduto(produto)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
+                  (cliqueFavorito)="alternarFavorito(produto)"
+                ></app-card-produto>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <section class="marcas-destaque">
+        <div class="section-header">
+          <h2>Marcas em Destaque</h2>
+        </div>
+        <div class="marcas-grid">
+          @for (marca of marcasDestaque; track marca.id; let i = $index) {
+            <div class="marca-wrapper animate-stagger" [style.animation-delay]="(i * 0.06) + 's'">
+              <div class="marca-item" (click)="buscarPorTermo(marca.nome)" style="cursor: pointer;">
+                <img [src]="marca.urlLogo" [alt]="marca.nome" />
+              </div>
+              <span class="marca-nome">{{ marca.nome }}</span>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="produtos-section" id="ofertas-especiais">
+        <div class="section-header">
+          <h2>Ofertas Especiais</h2>
+          <app-btn-outline variant="outline" size="sm" (clicked)="setOrdenacao('desconto')">Ver mais</app-btn-outline>
+        </div>
+        <div class="carousel-wrapper">
+          <button class="scroll-arrow left" (click)="rolarCarrossel(ofertasTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+          <div class="produtos-track" #ofertasTrack>
+            @for (produto of produtosOferta; track produto.id; let i = $index) {
+              <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
+                <app-card-produto
+                  [urlImagem]="produto.urlImagem"
+                  [titulo]="produto.titulo"
+                  [preco]="produto.preco"
+                  [precoAntigo]="produto.precoAntigo"
+                  [nomeLoja]="produto.nomeLoja"
+                  [badgeDesconto]="produto.badgeDesconto"
+                  [favorito]="produto.favorito || false"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
+                  (cliqueCard)="verProduto(produto)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
+                  (cliqueFavorito)="alternarFavorito(produto)"
+                ></app-card-produto>
+              </div>
+            }
+          </div>
+          <button class="scroll-arrow right" (click)="rolarCarrossel(ofertasTrack, 'right')"><span class="material-icons">chevron_right</span></button>
+        </div>
+      </section>
+
+      <section class="produtos-section banner-intersticial">
+        <div
+          class="intersticial-content"
+          style="background-image: url('/assets/placeholders/pets/kitty-with-monochrome-wall-her.jpg')"
+        >
+          <div class="overlay">
+            <h2>Tudo para o seu Gato</h2>
+            <p>As melhores marcas com até 40% de desconto</p>
+            <app-btn-outline variant="solid" size="lg" icon="pets" (clicked)="buscarPorTermo('Gato')">Aproveitar</app-btn-outline>
+          </div>
+        </div>
+      </section>
+
+      <section class="produtos-section">
+        <div class="section-header">
+          <h2>Mais Vendidos</h2>
+          <app-btn-outline variant="outline" size="sm" (clicked)="setOrdenacao('avaliacao')">Ver mais</app-btn-outline>
+        </div>
+        <div class="carousel-wrapper">
+          <button class="scroll-arrow left" (click)="rolarCarrossel(vendidosTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+          <div class="produtos-track" #vendidosTrack>
+            @for (produto of maisVendidos; track produto.id; let i = $index) {
+              <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
+                <app-card-produto
+                  [urlImagem]="produto.urlImagem"
+                  [titulo]="produto.titulo"
+                  [preco]="produto.preco"
+                  [precoAntigo]="produto.precoAntigo"
+                  [nomeLoja]="produto.nomeLoja"
+                  [badgeDesconto]="produto.badgeDesconto"
+                  [favorito]="produto.favorito || false"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
+                  (cliqueCard)="verProduto(produto)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
+                  (cliqueFavorito)="alternarFavorito(produto)"
+                ></app-card-produto>
+              </div>
+            }
+          </div>
+          <button class="scroll-arrow right" (click)="rolarCarrossel(vendidosTrack, 'right')"><span class="material-icons">chevron_right</span></button>
+        </div>
+      </section>
+
+      <section class="produtos-section secao-para-voce">
+        <div class="section-header">
+          <h2>Seleção Rápida</h2>
+          <span class="section-subtitle">Produtos em destaque no marketplace</span>
+        </div>
+        <div class="carousel-wrapper">
+          <button class="scroll-arrow left" (click)="rolarCarrossel(paraVoceTrack, 'left')"><span class="material-icons">chevron_left</span></button>
+          <div class="produtos-track" #paraVoceTrack>
+            @for (produto of todosProdutos.slice(0, 6); track produto.id; let i = $index) {
+              <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
+                <app-card-produto
+                  [urlImagem]="produto.urlImagem"
+                  [titulo]="produto.titulo"
+                  [preco]="produto.preco"
+                  [precoAntigo]="produto.precoAntigo"
+                  [nomeLoja]="produto.nomeLoja"
+                  [badgeDesconto]="produto.badgeDesconto"
+                  [favorito]="produto.favorito || false"
+                  [quantidade]="obterQuantidadeCarrinho(produto.id)"
+                  (cliqueCard)="verProduto(produto)"
+                  (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
+                  (cliqueFavorito)="alternarFavorito(produto)"
+                ></app-card-produto>
+              </div>
+            }
+          </div>
+          <button class="scroll-arrow right" (click)="rolarCarrossel(paraVoceTrack, 'right')"><span class="material-icons">chevron_right</span></button>
+        </div>
+      </section>
+
+      <section class="produtos-section">
+        <div class="section-header">
+          <h2>Todos os Produtos</h2>
+        </div>
+        <div class="produtos-grid">
+          @for (produto of todosProdutos.slice(0, limiteProdutosTodos); track produto.id; let i = $index) {
+            <div class="animate-stagger" [style.animation-delay]="(i * 0.04) + 's'">
+              <app-card-produto
+                [urlImagem]="produto.urlImagem"
+                [titulo]="produto.titulo"
+                [preco]="produto.preco"
+                [precoAntigo]="produto.precoAntigo"
+                [nomeLoja]="produto.nomeLoja"
+                [badgeDesconto]="produto.badgeDesconto"
+                [favorito]="produto.favorito || false"
+                [quantidade]="obterQuantidadeCarrinho(produto.id)"
+                (cliqueCard)="verProduto(produto)"
+                (adicionarAoCarrinho)="atualizarQuantidadeCarrinho(produto, $event)"
+                (cliqueFavorito)="alternarFavorito(produto)"
+              ></app-card-produto>
+            </div>
+          }
+        </div>
+        @if (limiteProdutosTodos < todosProdutos.length) {
+          <div class="ver-mais-produtos-wrapper animate-fade-up">
+            <app-btn-outline variant="solid" size="lg" (clicked)="carregarMaisProdutos()">
+              Carregar mais produtos
+            </app-btn-outline>
+          </div>
         }
-      </div>
-    </section>
+      </section>
+
+      <section class="faq-section animate-fade-up">
+        <h2 class="faq-title">Perguntas Frequentes</h2>
+        <div class="faq-grid">
+          <details class="faq-item">
+            <summary>Como funciona a entrega do marketplace MyBuddy?</summary>
+            <p>O MyBuddy conecta você aos melhores pet shops da sua região. As entregas são realizadas pelos próprios estabelecimentos ou por parceiros logísticos em poucos minutos ou no mesmo dia.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Quais são as formas de pagamento aceitas?</summary>
+            <p>Aceitamos Pix, cartões de crédito (Visa, Mastercard, Elo, etc.) e cartões de débito. Toda a transação é feita de forma segura dentro da nossa plataforma.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Posso agendar a entrega dos produtos?</summary>
+            <p>Sim! Muitos dos nossos pet shops parceiros oferecem a opção de entrega agendada. Você pode escolher o melhor horário para receber a ração, medicamentos ou brinquedos do seu pet no checkout.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Como faço para devolver um produto ou solicitar reembolso?</summary>
+            <p>Caso precise devolver algum produto por arrependimento ou defeito, você pode entrar em contato com o suporte do MyBuddy em até 7 dias após o recebimento para iniciar o processo de devolução.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Os produtos vendidos são originais?</summary>
+            <p>Sim, todos os produtos anunciados em nosso marketplace vêm de distribuidores oficiais e pet shops credenciados, garantindo a procedência de rações, antipulgas e acessórios.</p>
+          </details>
+        </div>
+      </section>
+    }
   </div>
 </main>
 
-<button class="floating-cart-btn" aria-label="Abrir carrinho" (click)="carrinhoService.alternarGaveta()">
+<!-- Toast de feedback -->
+@if (toastVisivel) {
+  <div class="toast-carrinho" [class.show]="toastVisivel">
+    <span class="material-icons toast-icon">check_circle</span>
+    <span class="toast-text">{{ toastMensagem }}</span>
+  </div>
+}
+
+<button
+  class="floating-cart-btn"
+  [class.bounce]="cartBounce"
+  aria-label="Abrir carrinho"
+  (click)="carrinhoService.alternarGaveta()"
+>
   <span class="material-icons">shopping_cart</span>
   @if (carrinhoService.totalItens() > 0) {
     <span class="cart-badge">{{ carrinhoService.totalItens() }}</span>

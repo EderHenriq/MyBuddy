@@ -16,9 +16,19 @@
   <ng-template pTemplate="footer">
     @if (showFooter) {
       @if (cancelLabel) {
-        <p-button [label]="cancelLabel" severity="secondary" [outlined]="true" (onClick)="onCancel()"></p-button>
+        <p-button
+          [label]="cancelLabel"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="onCancel()"
+        ></p-button>
       }
-      <p-button [label]="confirmLabel" [severity]="confirmSeverity" [loading]="loading" (onClick)="onConfirm()"></p-button>
+      <p-button
+        [label]="confirmLabel"
+        [severity]="confirmSeverity"
+        [loading]="loading"
+        (onClick)="onConfirm()"
+      ></p-button>
     }
   </ng-template>
 </p-dialog>

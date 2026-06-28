@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mybuddy_app/features/pets/domain/entities/pet.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/pets_cubit.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart';
 import 'package:mybuddy_app/shared/widgets/app_card.dart';
 import 'package:mybuddy_app/shared/widgets/app_input.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
+import 'package:mybuddy_app/shared/widgets/app_image.dart';
 
 class PetsPage extends StatefulWidget {
   const PetsPage({super.key});
@@ -199,7 +199,11 @@ class _PetsPageState extends State<PetsPage> {
                           );
                         }
 
-                        return GridView.builder(
+                        return RefreshIndicator(
+                          onRefresh: () async {
+                            await context.read<PetsCubit>().loadPets();
+                          },
+                          child: GridView.builder(
                           padding: const EdgeInsets.all(24),
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -219,47 +223,43 @@ class _PetsPageState extends State<PetsPage> {
                               },
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  // Pet Image & Favorite Icon
-                                  Expanded(
-                                    child: Stack(
-                                      fit: StackFit.expand,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                                          child: Image.network(
-                                            pet.imagemUrl,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) => Container(
-                                              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                                              child: const Icon(Icons.broken_image_outlined, size: 40),
+                                  children: [
+                                    // Pet Image & Favorite Icon
+                                    Expanded(
+                                      child: Stack(
+                                        fit: StackFit.expand,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                                            child: AppImage(
+                                              imageUrl: pet.imagemUrl,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
-                                        ),
-                                        Positioned(
-                                          top: 8,
-                                          right: 8,
-                                          child: Material(
-                                            color: Colors.white.withAlpha(200),
-                                            shape: const CircleBorder(),
-                                            elevation: 2,
-                                            child: IconButton(
-                                              icon: Icon(
-                                                isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                                                color: isFav ? AppColors.primary : AppColors.textLight,
-                                                size: 20,
+                                          Positioned(
+                                            top: 8,
+                                            right: 8,
+                                            child: Material(
+                                              color: Colors.white.withAlpha(200),
+                                              shape: const CircleBorder(),
+                                              elevation: 2,
+                                              child: IconButton(
+                                                icon: Icon(
+                                                  isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                                  color: isFav ? AppColors.primary : AppColors.textLight,
+                                                  size: 20,
+                                                ),
+                                                onPressed: () {
+                                                  context.read<FavoritosCubit>().toggleFavorito(pet);
+                                                },
+                                                constraints: const BoxConstraints(),
+                                                padding: const EdgeInsets.all(6),
                                               ),
-                                              onPressed: () {
-                                                context.read<FavoritosCubit>().toggleFavorito(pet);
-                                              },
-                                              constraints: const BoxConstraints(),
-                                              padding: const EdgeInsets.all(6),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
                                   // Pet Information
                                   Padding(
                                     padding: const EdgeInsets.all(12),
@@ -326,9 +326,10 @@ class _PetsPageState extends State<PetsPage> {
                               ),
                             );
                           },
-                        );
-                      },
-                    );
+                        ),
+                      );
+                    },
+                  );
                   }
 
                   return const Center(child: Text('Erro ao carregar os animais.'));

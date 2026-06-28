@@ -10,7 +10,6 @@ import 'package:mybuddy_app/shared/theme/app_colors.dart';
 import 'package:mybuddy_app/shared/widgets/app_button.dart';
 import 'package:mybuddy_app/shared/widgets/app_input.dart';
 import 'dart:io';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mybuddy_app/core/di/injection_container.dart';
 import 'package:mybuddy_app/features/pets/presentation/bloc/image_picker_cubit.dart';
 import 'package:mybuddy_app/shared/widgets/image_picker_widget.dart';
@@ -30,7 +29,6 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
   final _idadeController = TextEditingController();
   final _cidadeController = TextEditingController();
   final _estadoController = TextEditingController();
-  final _imagemUrlController = TextEditingController();
   File? _selectedImageFile;
 
   String _especie = 'Cachorro';
@@ -156,7 +154,7 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
 
               // Espécie (Dropdown)
               DropdownButtonFormField<String>(
-                value: _especie,
+                initialValue: _especie,
                 decoration: InputDecoration(
                   labelText: 'Espécie',
                   prefixIcon: const Icon(Icons.category_outlined, color: AppColors.primary),
@@ -212,7 +210,7 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
 
               // Sexo (Dropdown)
               DropdownButtonFormField<String>(
-                value: _sexo,
+                initialValue: _sexo,
                 decoration: InputDecoration(
                   labelText: 'Sexo',
                   prefixIcon: const Icon(Icons.transgender_outlined, color: AppColors.primary),
@@ -230,7 +228,7 @@ class _CadastrarPetPageState extends State<CadastrarPetPage> {
 
               // Porte (Dropdown)
               DropdownButtonFormField<String>(
-                value: _porte,
+                initialValue: _porte,
                 decoration: InputDecoration(
                   labelText: 'Porte',
                   prefixIcon: const Icon(Icons.height_outlined, color: AppColors.primary),

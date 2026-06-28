@@ -4,7 +4,7 @@ export interface NotificacaoApp {
   mensagem: string;
   data: string;
   lida: boolean;
-  tipo: 'info' | 'success' | 'warning' | 'error';
+  tipo: "info" | "success" | "warning" | "error";
   link?: string;
 }
 
@@ -14,5 +14,5 @@ export interface HistoricoAtividade {
   descricao: string;
   data: string;
   icone: string;
-  tipo: 'auth' | 'pet' | 'system' | 'adoption';
+  tipo: "auth" | "pet" | "system" | "adoption";
 }

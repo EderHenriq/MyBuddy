@@ -1,7 +1,11 @@
-import { Usuario } from './user.model';
-import { Pet } from './pet.model';
+import { Usuario } from "./user.model";
+import { Pet } from "./pet.model";
 
-export type StatusInteresse = 'PENDENTE' | 'APROVADO' | 'REJEITADO' | 'CANCELADO';
+export type StatusInteresse =
+  | "PENDENTE"
+  | "APROVADO"
+  | "REJEITADO"
+  | "CANCELADO";
 
 export interface InteresseAdocao {
   id: number;

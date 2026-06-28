@@ -2,7 +2,7 @@ package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.CampanhaDoacao;
-import com.Mybuddy.Myb.Repository.mongo.CampanhaDoacaoRepository;
+import com.Mybuddy.Myb.Repository.jpa.CampanhaDoacaoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

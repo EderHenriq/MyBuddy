@@ -1,9 +1,9 @@
 export interface Parceria {
   id: number;
   nome: string;
-  tipo: 'ONG' | 'Petshop';
+  tipo: "ONG" | "Petshop";
   cidade: string;
-  status: 'Ativo' | 'Pendente' | 'Bloqueado';
+  status: "Ativo" | "Pendente" | "Bloqueado";
   dataCadastro: string;
 }
 
@@ -12,7 +12,7 @@ export interface AdminUsuario {
   nome: string;
   email: string;
   cidade: string;
-  status: 'Ativo' | 'Inativo';
+  status: "Ativo" | "Inativo";
   dataCadastro: string;
 }
 
@@ -22,14 +22,14 @@ export interface PetDenuncia {
   ong: string;
   motivo: string;
   dataDenuncia: string;
-  status: 'Pendente' | 'Analisado';
+  status: "Pendente" | "Analisado";
 }
 
 export interface Ticket {
   id: number;
   assunto: string;
   usuario: string;
-  prioridade: 'Alta' | 'Média' | 'Baixa';
-  status: 'Aberto' | 'Em Andamento' | 'Resolvido';
+  prioridade: "Alta" | "Média" | "Baixa";
+  status: "Aberto" | "Em Andamento" | "Resolvido";
   data: string;
 }

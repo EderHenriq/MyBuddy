@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { Styleguide } from './styleguide';
+import { Styleguide } from "./styleguide";
 
-describe('Styleguide', () => {
+describe("Styleguide", () => {
   let component: Styleguide;
   let fixture: ComponentFixture<Styleguide>;
 
@@ -16,7 +16,7 @@ describe('Styleguide', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

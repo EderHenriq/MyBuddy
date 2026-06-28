@@ -2,7 +2,7 @@ package com.Mybuddy.Myb.Service;
 
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.CampanhaDoacao;
-import com.Mybuddy.Myb.Repository.mongo.CampanhaDoacaoRepository;
+import com.Mybuddy.Myb.Repository.jpa.CampanhaDoacaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class CampanhaDoacaoService {
 
     private final CampanhaDoacaoRepository repository;

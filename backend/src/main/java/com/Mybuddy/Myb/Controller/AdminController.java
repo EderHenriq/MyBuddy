@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class AdminController {
 
     private final OrganizacaoRepository organizacaoRepository;

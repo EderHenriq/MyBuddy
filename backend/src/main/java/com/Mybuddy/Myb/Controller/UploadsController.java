@@ -1,6 +1,5 @@
 package com.Mybuddy.Myb.Controller;
 
-import com.Mybuddy.Myb.Model.Arquivo;
 import com.Mybuddy.Myb.Repository.mongo.ArquivoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class UploadsController {
 
     private static final Logger log = LoggerFactory.getLogger(UploadsController.class);

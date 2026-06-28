@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-editar-pet',
+  selector: "app-editar-pet",
   imports: [],
-  templateUrl: './editar-pet.html',
-  styleUrl: './editar-pet.scss',
+  templateUrl: "./editar-pet.html",
+  styleUrl: "./editar-pet.scss",
 })
 export class EditarPet {}

@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api/servicos")
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("null")
 public class ServicoController {
 
     private final ServicoService servicoService;

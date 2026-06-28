@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class CupomService {
 
     private final CupomRepository cupomRepository;

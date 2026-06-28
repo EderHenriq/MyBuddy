@@ -11,13 +11,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.context.annotation.Profile;
+
+/**
+ * Seed de dados para ambiente de desenvolvimento.
+ * NÃO é executado em produção (profile docker/prod).
+ * Usuários criados aqui usam senha local "Senha123" — 
+ * em produção a autenticação é exclusivamente via Keycloak.
+ */
 
 @Configuration
+@Profile("dev")
 @RequiredArgsConstructor
 @SuppressWarnings("null")
 public class DataInitializer {
@@ -25,7 +32,6 @@ public class DataInitializer {
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
     private final UsuarioRepository usuarioRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final OrganizacaoRepository organizacaoRepository;
     private final PetRepository petRepository;
@@ -40,31 +46,10 @@ public class DataInitializer {
     public void initData() {
         log.info("Iniciando inicialização de dados...");
 
-        // 1. Garante que as Roles existem no banco de dados
-        // O Lombok @RequiredArgsConstructor na classe Role permite usar new Role(ERole)
-        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                .orElseGet(() -> {
-                    log.info("Criando ROLE_ADMIN...");
-                    return roleRepository.save(new Role(ERole.ROLE_ADMIN));
-                });
-
-        Role ongRole = roleRepository.findByName(ERole.ROLE_ONG)
-                .orElseGet(() -> {
-                    log.info("Criando ROLE_ONG...");
-                    return roleRepository.save(new Role(ERole.ROLE_ONG));
-                });
-
-        Role adotanteRole = roleRepository.findByName(ERole.ROLE_ADOTANTE)
-                .orElseGet(() -> {
-                    log.info("Criando ROLE_ADOTANTE...");
-                    return roleRepository.save(new Role(ERole.ROLE_ADOTANTE));
-                });
-
-        Role petshopRole = roleRepository.findByName(ERole.ROLE_PETSHOP)
-                .orElseGet(() -> {
-                    log.info("Criando ROLE_PETSHOP...");
-                    return roleRepository.save(new Role(ERole.ROLE_PETSHOP));
-                });
+        Role adminRole = new Role(ERole.ROLE_ADMIN);
+        Role ongRole = new Role(ERole.ROLE_ONG);
+        Role adotanteRole = new Role(ERole.ROLE_ADOTANTE);
+        Role petshopRole = new Role(ERole.ROLE_PETSHOP);
 
         // 2. Cria uma Organização de teste usando o Padrão BUILDER do Lombok
         Organizacao myBuddyOrg = organizacaoRepository.findByCnpj("11.222.333/0001-44")
@@ -209,7 +194,6 @@ public class DataInitializer {
             log.info("Garantindo Pets reais no banco de dados...");
             if (petRepository.findByNome("Zeus").isEmpty()) {
                 Pet p1 = new Pet("Zeus", "SRD", 2, Especie.CAO, Porte.MEDIO, "Marrom", "Curta", "Macho", myBuddyOrg, true, true, true, "São Paulo", "SP");
-                p1.setId(1L);
                 p1.setDescricao("Zeus é um cãozinho muito alegre, dócil e companheiro. Adora correr em espaços abertos e se dá muito bem com outros cachorros.");
                 FotoPet f1 = new FotoPet();
                 f1.setUrl("https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600");
@@ -220,7 +204,6 @@ public class DataInitializer {
             }
             if (petRepository.findByNome("Mia").isEmpty()) {
                 Pet p2 = new Pet("Mia", "Persa", 1, Especie.GATO, Porte.PEQUENO, "Branco", "Longa", "Fêmea", myBuddyOrg, true, true, false, "São Paulo", "SP");
-                p2.setId(2L);
                 p2.setDescricao("Mia é uma gatinha calma, carinhosa e muito dorminhoca. Perfeita para apartamentos. Gosta de ser escovada e receber carinho.");
                 FotoPet f2 = new FotoPet();
                 f2.setUrl("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=600");
@@ -231,7 +214,6 @@ public class DataInitializer {
             }
             if (petRepository.findByNome("Thor").isEmpty()) {
                 Pet p3 = new Pet("Thor", "Golden Retriever", 1, Especie.CAO, Porte.GRANDE, "Dourado", "Longa", "Macho", myBuddyOrg, true, true, true, "São Paulo", "SP");
-                p3.setId(3L);
                 p3.setDescricao("Thor é um Golden Retriever brincalhão, inteligente e cheio de energia. Ideal para famílias ativas que adoram passear.");
                 FotoPet f3 = new FotoPet();
                 f3.setUrl("https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=600");

@@ -5,17 +5,19 @@ import com.Mybuddy.Myb.Model.StatusAgendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
 
     List<Agendamento> findByClienteIdOrderByDataHoraInicioDesc(Long clienteId);
 
     List<Agendamento> findByServicoPetshopIdOrderByDataHoraInicioDesc(Long petshopId);
+
+    boolean existsByPetIdAndStatusNot(Long petId, StatusAgendamento status);
+
+    boolean existsByClienteIdAndStatusNot(Long clienteId, StatusAgendamento status);
 
     @Query("""
             select count(a) > 0

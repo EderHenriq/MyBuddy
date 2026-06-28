@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-catalogo',
+  selector: "app-catalogo",
   imports: [],
-  templateUrl: './catalogo.html',
-  styleUrl: './catalogo.scss',
+  templateUrl: "./catalogo.html",
+  styleUrl: "./catalogo.scss",
 })
 export class Catalogo {}

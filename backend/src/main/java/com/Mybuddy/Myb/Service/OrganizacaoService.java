@@ -6,6 +6,11 @@ import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Repository.mongo.OrganizacaoRepository;
+import com.Mybuddy.Myb.Repository.mongo.PetRepository;
+import com.Mybuddy.Myb.Repository.mongo.EventoOngRepository;
+import com.Mybuddy.Myb.Repository.jpa.CampanhaDoacaoRepository;
+import com.Mybuddy.Myb.Repository.jpa.PaymentRepository;
+import com.Mybuddy.Myb.Repository.jpa.DonationSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +23,17 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class OrganizacaoService {
 
     private static final Logger log = LoggerFactory.getLogger(OrganizacaoService.class);
 
     private final OrganizacaoRepository organizacaoRepository;
+    private final PetRepository petRepository;
+    private final EventoOngRepository eventoOngRepository;
+    private final CampanhaDoacaoRepository campanhaDoacaoRepository;
+    private final PaymentRepository paymentRepository;
+    private final DonationSubscriptionRepository donationSubscriptionRepository;
 
     @Transactional
     public Organizacao criarOrganizacao(Organizacao organizacao) {
@@ -140,6 +151,34 @@ public class OrganizacaoService {
             log.warn("Deleção de organização falhou: Organização não encontrada com ID: {}", id);
             throw new ResourceNotFoundException("Organização não encontrada para deleção com ID: " + id);
         }
+
+        // 1. Verificar se existem Pets vinculados
+        if (!petRepository.findByOrganizacaoId(id).isEmpty()) {
+            log.warn("Deleção de organização ID {} falhou: existem pets vinculados.", id);
+            throw new ConflictException("Não é possível deletar a organização pois existem pets vinculados a ela.");
+        }
+
+        // 2. Verificar se existem EventoOng vinculados
+        if (!eventoOngRepository.findByOrganizacaoId(id).isEmpty()) {
+            log.warn("Deleção de organização ID {} falhou: existem eventos vinculados.", id);
+            throw new ConflictException("Não é possível deletar a organização pois existem eventos vinculados a ela.");
+        }
+
+        // 3. Verificar se existem CampanhasDoacao vinculadas
+        if (campanhaDoacaoRepository.existsByOrganizacaoId(id)) {
+            log.warn("Deleção de organização ID {} falhou: existem campanhas de doação vinculadas.", id);
+            throw new ConflictException("Não é possível deletar a organização pois existem campanhas de doação vinculadas a ela.");
+        }
+
+        // 4. Verificar se existem assinaturas de doação ativas (tudo exceto canceladas)
+        if (donationSubscriptionRepository.existsByOrganizacaoIdAndStatusNot(id, "cancelled")) {
+            log.warn("Deleção de organização ID {} falhou: existem assinaturas de doação ativas.", id);
+            throw new ConflictException("Não é possível deletar a organização pois existem assinaturas de doação ativas vinculadas a ela.");
+        }
+
+        // 5. Nullificar payments.organizacao_id
+        paymentRepository.nullifyOrganizacaoId(id);
+
         organizacaoRepository.deleteById(id);
         log.info("Organização com ID {} deletada com sucesso.", id);
     }

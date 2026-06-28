@@ -160,11 +160,23 @@ class OngControllerTest {
     }
 
     @Test
-    void deveRetornarTodosOsEventosParaOng() throws Exception {
-        when(eventoOngRepository.findAll()).thenReturn(List.of(evento));
+    void deveRetornarEventosFiltradosParaOng() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(ongUser);
+        when(eventoOngRepository.findByOrganizacaoId(10L)).thenReturn(List.of(evento));
 
         mockMvc.perform(get("/api/ong/eventos")
                         .with(jwt().authorities(() -> "ROLE_ONG")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].nome").value("Feira de Adoção"));
+    }
+
+    @Test
+    void deveRetornarTodosOsEventosParaAdmin() throws Exception {
+        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(adminUser);
+        when(eventoOngRepository.findAll()).thenReturn(List.of(evento));
+
+        mockMvc.perform(get("/api/ong/eventos")
+                        .with(jwt().authorities(() -> "ROLE_ADMIN")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].nome").value("Feira de Adoção"));
     }

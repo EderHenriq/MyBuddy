@@ -1,76 +1,71 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mybuddy_app/core/cache/cache_service.dart';
 import 'package:mybuddy_app/features/pets/domain/entities/pet.dart';
+import 'package:mybuddy_app/features/pets/domain/repositories/pets_repository.dart';
 
-class FavoritosState {
+class FavoritosState extends Equatable {
   final List<Pet> favoritos;
   const FavoritosState(this.favoritos);
+
+  @override
+  List<Object?> get props => [favoritos];
 }
 
 class FavoritosCubit extends Cubit<FavoritosState> {
-  FavoritosCubit() : super(FavoritosState(_mockPets));
+  final CacheService _cacheService;
+  final PetsRepository _petsRepository;
+  static const _favsKey = 'favoritos_ids';
 
-  void toggleFavorito(Pet pet) {
+  FavoritosCubit(this._cacheService, this._petsRepository)
+      : super(const FavoritosState([])) {
+    _loadFavoritos();
+  }
+
+  Future<void> _loadFavoritos() async {
+    final cachedIds = _cacheService.getStringList(_favsKey);
+    if (cachedIds == null) {
+      // Valores mock iniciais na primeira inicialização
+      final initialIds = ['1', '2', '3'];
+      await _cacheService.setStringList(_favsKey, initialIds);
+      final result = await _petsRepository.getPets();
+      result.fold(
+        (failure) {},
+        (allPets) {
+          final initialPets = allPets.where((p) => initialIds.contains(p.id)).toList();
+          emit(FavoritosState(initialPets));
+        },
+      );
+      return;
+    }
+
+    final result = await _petsRepository.getPets();
+    result.fold(
+      (failure) {},
+      (allPets) {
+        final favPets = allPets.where((p) => cachedIds.contains(p.id)).toList();
+        emit(FavoritosState(favPets));
+      },
+    );
+  }
+
+  Future<void> toggleFavorito(Pet pet) async {
+    final cachedIds = _cacheService.getStringList(_favsKey) ?? [];
     final list = List<Pet>.from(state.favoritos);
+
     if (list.any((p) => p.id == pet.id)) {
       list.removeWhere((p) => p.id == pet.id);
+      cachedIds.remove(pet.id);
     } else {
       list.add(pet);
+      cachedIds.add(pet.id);
     }
+    
+    await _cacheService.setStringList(_favsKey, cachedIds);
     emit(FavoritosState(list));
   }
 
   bool isFavorito(Pet pet) {
     return state.favoritos.any((p) => p.id == pet.id);
   }
-
-  static final List<Pet> _mockPets = [
-    const Pet(
-      id: '1',
-      nome: 'Pipoca',
-      especie: 'Cachorro',
-      raca: 'Golden Retriever',
-      idade: 2,
-      sexo: 'Macho',
-      porte: 'Grande',
-      cor: 'Dourado',
-      statusAdocao: 'DISPONIVEL',
-      cidade: 'Maringá',
-      estado: 'PR',
-      imagemUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=400&auto=format&fit=crop',
-      vacinado: true,
-      castrado: true,
-    ),
-    const Pet(
-      id: '2',
-      nome: 'Mia',
-      especie: 'Gato',
-      raca: 'Siamês',
-      idade: 1,
-      sexo: 'Fêmea',
-      porte: 'Pequeno',
-      cor: 'Branco',
-      statusAdocao: 'DISPONIVEL',
-      cidade: 'Sarandi',
-      estado: 'PR',
-      imagemUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=400&auto=format&fit=crop',
-      vacinado: true,
-      castrado: false,
-    ),
-    const Pet(
-      id: '3',
-      nome: 'Bidu',
-      especie: 'Cachorro',
-      raca: 'Poodle',
-      idade: 4,
-      sexo: 'Macho',
-      porte: 'Médio',
-      cor: 'Branco',
-      statusAdocao: 'DISPONIVEL',
-      cidade: 'Maringá',
-      estado: 'PR',
-      imagemUrl: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=400&auto=format&fit=crop',
-      vacinado: false,
-      castrado: true,
-    ),
-  ];
 }

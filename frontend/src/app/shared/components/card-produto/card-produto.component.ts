@@ -1,16 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from "@angular/common";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
-  selector: 'app-card-produto',
+  selector: "app-card-produto",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './card-produto.component.html',
-  styleUrl: './card-produto.component.scss',
+  templateUrl: "./card-produto.component.html",
+  styleUrl: "./card-produto.component.scss",
 })
 export class CardProdutoComponent {
-  @Input() urlImagem = '';
-  @Input() titulo = '';
+  @Input() urlImagem = "";
+  @Input() titulo = "";
   @Input() preco!: number;
   @Input() precoAntigo?: number;
   @Input() nomeLoja!: string;

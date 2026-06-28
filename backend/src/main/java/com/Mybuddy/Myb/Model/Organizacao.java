@@ -1,13 +1,9 @@
 package com.Mybuddy.Myb.Model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Entidade Organizacao (ONG) adaptada para o MongoDB.
@@ -31,6 +27,7 @@ public class Organizacao implements Identifiable {
 
     private String emailContato;
 
+    @Indexed(unique = true)
     private String cnpj;
 
     private String telefoneContato;
@@ -62,44 +59,4 @@ public class Organizacao implements Identifiable {
         return StatusAprovacao.PENDENTE_APROVACAO == this.statusAprovacao;
     }
 
-    @DocumentReference(lazy = true)
-    @JsonManagedReference
-    @ToString.Exclude
-    @Builder.Default
-    private Set<Pet> pets = new HashSet<>();
-
-    @DocumentReference(lazy = true)
-    @JsonManagedReference
-    @ToString.Exclude
-    @Builder.Default
-    private Set<Usuario> usuarios = new HashSet<>();
-
-    // Métodos de negócio para gerenciar os relacionamentos bidirecionais
-    public void addPet(Pet pet) {
-        this.pets.add(pet);
-        if (pet != null) {
-            pet.setOrganizacao(this);
-        }
-    }
-
-    public void removePet(Pet pet) {
-        this.pets.remove(pet);
-        if (pet != null) {
-            pet.setOrganizacao(null);
-        }
-    }
-
-    public void addUsuario(Usuario usuario) {
-        this.usuarios.add(usuario);
-        if (usuario != null) {
-            usuario.setOrganizacao(this);
-        }
-    }
-
-    public void removeUsuario(Usuario usuario) {
-        this.usuarios.remove(usuario);
-        if (usuario != null) {
-            usuario.setOrganizacao(null);
-        }
-    }
 }

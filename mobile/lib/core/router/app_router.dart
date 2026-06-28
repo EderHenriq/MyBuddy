@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mybuddy_app/features/auth/presentation/bloc/auth_state.dart';
@@ -17,13 +16,19 @@ import 'package:mybuddy_app/features/pets/presentation/pages/notificacoes_page.d
 import 'package:mybuddy_app/features/pets/presentation/pages/cadastrar_pet_page.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/meus_pets_page.dart';
 import 'package:mybuddy_app/features/adocao/presentation/pages/solicitacoes_ong_page.dart';
+import 'package:mybuddy_app/features/adocao/presentation/pages/adocao_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/marketplace_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/cadastrar_produto_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/meus_produtos_page.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/pages/pedidos_petshop_page.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/pages/produto_detalhe_page.dart';
+import 'package:mybuddy_app/features/marketplace/presentation/pages/checkout_page.dart';
+import 'package:mybuddy_app/features/marketplace/domain/entities/produto.dart';
 import 'package:mybuddy_app/features/pets/presentation/pages/admin_dashboard_page.dart';
 import 'package:mybuddy_app/features/adocao/presentation/pages/eventos_page.dart';
 import 'package:mybuddy_app/shared/widgets/main_scaffold.dart';
+
+import 'package:mybuddy_app/core/di/injection_container.dart' as di;
 
 class AppRouter {
   static CustomTransitionPage<void> _fadeRoute(GoRouterState state, Widget child) {
@@ -52,12 +57,18 @@ class AppRouter {
     );
   }
 
-  static GoRouter router(BuildContext context) {
-    return GoRouter(
+  static GoRouter? _routerInstance;
+
+  static GoRouter router() {
+    if (_routerInstance != null) return _routerInstance!;
+
+    final authBloc = di.sl<AuthBloc>();
+
+    _routerInstance = GoRouter(
       initialLocation: '/splash',
-      refreshListenable: GoRouterRefreshStream(context.read<AuthBloc>().stream),
+      refreshListenable: GoRouterRefreshStream(authBloc.stream),
       redirect: (context, state) {
-        final authState = context.read<AuthBloc>().state;
+        final authState = authBloc.state;
         final isAuthenticated = authState is AuthAuthenticated;
         final location = state.matchedLocation;
 
@@ -166,9 +177,30 @@ class AppRouter {
           pageBuilder: (context, state) => _slideRoute(state, const SolicitacoesOngPage()),
         ),
         GoRoute(
+          path: '/meus-processos-adocao',
+          name: 'meus-processos-adocao',
+          pageBuilder: (context, state) => _slideRoute(state, const AdocaoPage()),
+        ),
+        GoRoute(
           path: '/cadastrar-produto',
           name: 'cadastrar-produto',
-          pageBuilder: (context, state) => _slideRoute(state, const CadastrarProdutoPage()),
+          pageBuilder: (context, state) {
+            final product = state.extra as Produto?;
+            return _slideRoute(state, CadastrarProdutoPage(produtoToEdit: product));
+          },
+        ),
+        GoRoute(
+          path: '/produto-detalhe/:id',
+          name: 'produto-detalhe',
+          pageBuilder: (context, state) {
+            final id = state.pathParameters['id'] ?? '1';
+            return _slideRoute(state, ProdutoDetalhePage(productId: id));
+          },
+        ),
+        GoRoute(
+          path: '/checkout',
+          name: 'checkout',
+          pageBuilder: (context, state) => _slideRoute(state, const CheckoutPage()),
         ),
         GoRoute(
           path: '/meus-produtos',
@@ -207,6 +239,7 @@ class AppRouter {
         ),
       ),
     );
+    return _routerInstance!;
   }
 }
 

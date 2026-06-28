@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mybuddy_app/features/marketplace/presentation/bloc/products_cubit.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
 import 'package:mybuddy_app/shared/widgets/app_card.dart';
@@ -27,26 +28,32 @@ class MeusProdutosPage extends StatelessWidget {
 
             if (produtos.isEmpty) {
               return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.storefront_outlined, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Nenhum produto cadastrado',
-                        style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey),
-                      ),
-                    ],
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 650),
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.storefront_outlined, size: 64, color: Colors.grey),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Nenhum produto cadastrado',
+                          style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
             }
 
-            return ListView.builder(
-              padding: const EdgeInsets.all(24.0),
-              itemCount: produtos.length,
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 650),
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(24.0),
+                  itemCount: produtos.length,
               itemBuilder: (context, index) {
                 final produto = produtos[index];
                 return Padding(
@@ -99,27 +106,20 @@ class MeusProdutosPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withAlpha(20),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'Ativo',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                        IconButton(
+                          icon: const Icon(Icons.edit_rounded, color: AppColors.primary),
+                          onPressed: () {
+                            context.push('/cadastrar-produto', extra: produto);
+                          },
                         ),
                       ],
                     ),
                   ),
                 );
               },
-            );
+            ),
+          ),
+        );
           }
 
           return const Center(child: Text('Erro ao carregar produtos.'));

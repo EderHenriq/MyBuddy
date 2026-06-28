@@ -6,6 +6,9 @@ import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
 import com.Mybuddy.Myb.Repository.jpa.PedidoRepository;
 import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
+import com.Mybuddy.Myb.Repository.jpa.AgendamentoRepository;
+import com.Mybuddy.Myb.Repository.jpa.DonationSubscriptionRepository;
+import com.Mybuddy.Myb.Model.DonationSubscription;
 import com.Mybuddy.Myb.Model.Pedido;
 import com.Mybuddy.Myb.Model.EnderecoEntrega;
 import com.Mybuddy.Myb.Model.InteresseAdocao;
@@ -35,6 +38,12 @@ class UsuarioServiceTest {
 
     @Mock
     private InteresseAdocaoRepository interesseAdocaoRepository;
+
+    @Mock
+    private AgendamentoRepository agendamentoRepository;
+
+    @Mock
+    private DonationSubscriptionRepository donationSubscriptionRepository;
 
     @InjectMocks // cria o service real, e coloca o mock dentro dele
     private UsuarioService usuarioService;
@@ -153,6 +162,8 @@ class UsuarioServiceTest {
     void deveDeletarUsuarioComSucesso() {
         // Arrange
         when(usuarioRepository.existsById(1L)).thenReturn(true);
+        when(agendamentoRepository.existsByClienteIdAndStatusNot(1L, com.Mybuddy.Myb.Model.StatusAgendamento.CANCELADO)).thenReturn(false);
+        when(donationSubscriptionRepository.findByUsuarioId(1L)).thenReturn(Collections.emptyList());
         when(pedidoRepository.findByClienteId(1L)).thenReturn(Collections.emptyList());
         when(interesseAdocaoRepository.findByUsuarioId(1L)).thenReturn(Collections.emptyList());
 
@@ -177,9 +188,50 @@ class UsuarioServiceTest {
     }
 
     @Test
+    void deveLancarExcecaoAoDeletarUsuarioComAgendamentosAtivos() {
+        // Arrange
+        when(usuarioRepository.existsById(1L)).thenReturn(true);
+        when(agendamentoRepository.existsByClienteIdAndStatusNot(1L, com.Mybuddy.Myb.Model.StatusAgendamento.CANCELADO)).thenReturn(true);
+
+        // Act & Assert
+        assertThatThrownBy(() -> usuarioService.deletarUsuario(1L))
+                .isInstanceOf(ConflictException.class)
+                .hasMessage("Não é possível deletar o usuário pois existem agendamentos ativos vinculados a ele.");
+
+        verify(usuarioRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void deveDeletarUsuarioECancelarAssinaturasAtivas() {
+        // Arrange
+        when(usuarioRepository.existsById(1L)).thenReturn(true);
+        when(agendamentoRepository.existsByClienteIdAndStatusNot(1L, com.Mybuddy.Myb.Model.StatusAgendamento.CANCELADO)).thenReturn(false);
+        
+        DonationSubscription assinatura = DonationSubscription.builder()
+                .id(10L)
+                .mpPreapprovalId("pre-123")
+                .usuarioId(1L)
+                .status("authorized")
+                .build();
+                
+        when(donationSubscriptionRepository.findByUsuarioId(1L)).thenReturn(List.of(assinatura));
+        when(pedidoRepository.findByClienteId(1L)).thenReturn(Collections.emptyList());
+        when(interesseAdocaoRepository.findByUsuarioId(1L)).thenReturn(Collections.emptyList());
+
+        // Act
+        usuarioService.deletarUsuario(1L);
+
+        // Assert
+        verify(donationSubscriptionRepository, times(1)).delete(assinatura);
+        verify(usuarioRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
     void deveDeletarUsuarioEAnonimizarPedidosEInteresses() {
         // Arrange
         when(usuarioRepository.existsById(1L)).thenReturn(true);
+        when(agendamentoRepository.existsByClienteIdAndStatusNot(1L, com.Mybuddy.Myb.Model.StatusAgendamento.CANCELADO)).thenReturn(false);
+        when(donationSubscriptionRepository.findByUsuarioId(1L)).thenReturn(Collections.emptyList());
         
         Pedido pedido = new Pedido();
         pedido.setId(10L);

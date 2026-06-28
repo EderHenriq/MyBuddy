@@ -266,7 +266,7 @@ class _SocialButton extends StatelessWidget {
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (states) {
               if (states.contains(WidgetState.pressed)) {
-                return (isDark ? Colors.white : Colors.black).withOpacity(0.05);
+                return (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05);
               }
               return null;
             },

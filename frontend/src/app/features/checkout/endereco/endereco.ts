@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-endereco',
+  selector: "app-endereco",
   imports: [],
-  templateUrl: './endereco.html',
-  styleUrl: './endereco.scss',
+  templateUrl: "./endereco.html",
+  styleUrl: "./endereco.scss",
 })
 export class Endereco {}

@@ -19,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/campanhas")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class CampanhaDoacaoController {
 
     private final CampanhaDoacaoService service;

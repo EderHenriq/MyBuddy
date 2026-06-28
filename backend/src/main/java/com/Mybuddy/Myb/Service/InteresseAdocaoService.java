@@ -17,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class InteresseAdocaoService {
 
     private final InteresseAdocaoRepository interesseRepo;
@@ -83,9 +84,17 @@ public class InteresseAdocaoService {
 
         if (novoStatus == StatusInteresse.APROVADO) {
             Pet pet = interesse.getPet();
+            Usuario adotante = interesse.getUsuario();
             if (pet != null) {
                 pet.setStatusAdocao(StatusAdocao.ADOTADO);
+                pet.setAdotanteId(adotante.getId());
                 petRepo.save(pet);
+
+                if (adotante.getPetsAdotadosIds() == null) {
+                    adotante.setPetsAdotadosIds(new java.util.HashSet<>());
+                }
+                adotante.getPetsAdotadosIds().add(pet.getId());
+                usuarioRepo.save(adotante);
 
                 List<InteresseAdocao> outros = interesseRepo.findByPetId(pet.getId());
                 for (InteresseAdocao outro : outros) {

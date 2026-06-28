@@ -1,23 +1,23 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-skeleton',
+  selector: "app-skeleton",
   imports: [CommonModule],
-  templateUrl: './skeleton.html',
-  styleUrl: './skeleton.scss',
+  templateUrl: "./skeleton.html",
+  styleUrl: "./skeleton.scss",
 })
 export class Skeleton {
-  @Input() width = '100%';
-  @Input() height = '20px';
-  @Input() shape: 'rectangle' | 'circle' = 'rectangle';
-  @Input() borderRadius = '8px';
+  @Input() width = "100%";
+  @Input() height = "20px";
+  @Input() shape: "rectangle" | "circle" = "rectangle";
+  @Input() borderRadius = "8px";
 
   get computedStyle() {
     return {
       width: this.width,
       height: this.height,
-      borderRadius: this.shape === 'circle' ? '50%' : this.borderRadius,
+      borderRadius: this.shape === "circle" ? "50%" : this.borderRadius,
     };
   }
 }

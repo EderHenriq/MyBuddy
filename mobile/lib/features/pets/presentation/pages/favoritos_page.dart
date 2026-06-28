@@ -6,6 +6,7 @@ import 'package:mybuddy_app/features/pets/presentation/bloc/favoritos_cubit.dart
 import 'package:mybuddy_app/shared/widgets/app_card.dart';
 import 'package:mybuddy_app/shared/widgets/app_button.dart';
 import 'package:mybuddy_app/shared/theme/app_colors.dart';
+import 'package:mybuddy_app/shared/widgets/app_image.dart';
 
 class FavoritosPage extends StatelessWidget {
   const FavoritosPage({super.key});
@@ -111,25 +112,9 @@ class FavoritosPage extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: Image.network(
-                    pet.imagemUrl,
+                  child: AppImage(
+                    imageUrl: pet.imagemUrl,
                     fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                      child: const Icon(Icons.broken_image_outlined, size: 40),
-                    ),
                   ),
                 ),
                 // Botão de Favorito (Sempre preenchido aqui porque está na tela de favoritos)

@@ -33,7 +33,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (item of usuarios; track item.id) {
+          @for (item of usuariosPaginados; track item.id) {
             <tr>
               <td>#{{ item.id }}</td>
               <td class="bold-text">{{ item.nome }}</td>

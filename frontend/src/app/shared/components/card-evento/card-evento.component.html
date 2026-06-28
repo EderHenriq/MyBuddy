@@ -36,8 +36,14 @@
     <p class="evento-description">{{ description }}</p>
 
     <div class="evento-actions">
-      <button class="btn-details" (click)="detailsClick.emit()">Ver Detalhes do Evento</button>
-      <button class="btn-favorite" [class.active]="isFavorite" (click)="favoriteClick.emit()">
+      <button class="btn-details" (click)="detailsClick.emit()">
+        Ver Detalhes do Evento
+      </button>
+      <button
+        class="btn-favorite"
+        [class.active]="isFavorite"
+        (click)="favoriteClick.emit()"
+      >
         <i class="fa-heart" [ngClass]="isFavorite ? 'fas' : 'far'"></i>
       </button>
     </div>

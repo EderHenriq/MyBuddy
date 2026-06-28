@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-politica-privacidade',
+  selector: "app-politica-privacidade",
   imports: [],
-  templateUrl: './politica-privacidade.html',
-  styleUrl: './politica-privacidade.scss',
+  templateUrl: "./politica-privacidade.html",
+  styleUrl: "./politica-privacidade.scss",
 })
 export class PoliticaPrivacidade {}

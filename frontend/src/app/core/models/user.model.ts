@@ -1,6 +1,6 @@
-import { Role } from './role.model';
-import { Organizacao } from './organizacao.model';
-import { Petshop } from './petshop.model';
+import { Role } from "./role.model";
+import { Organizacao } from "./organizacao.model";
+import { Petshop } from "./petshop.model";
 
 export interface Usuario {
   id: number;

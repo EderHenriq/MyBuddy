@@ -52,7 +52,7 @@ public class ProdutoServiceTest {
 
     @BeforeEach
     void setUp() {
-        requestDTO = new ProdutoRequestDTO("Ração Premier", "Ração super premium", new BigDecimal("150.00"), 10, 1L, List.of("url1", "url2"));
+        requestDTO = new ProdutoRequestDTO("Ração Premier", "Ração super premium", new BigDecimal("150.00"), 10, 1L, List.of("url1", "url2"), null, null, null, null, null);
         
         usuario = new Usuario();
         usuario.setId(1L);
@@ -164,5 +164,20 @@ public class ProdutoServiceTest {
 
         assertThrows(AuthorizationDeniedException.class, () -> produtoService.criar(requestDTO, usuario));
         verify(produtoRepository, never()).save(any(Produto.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void buscarProdutosComFiltros_ComKeysetPagination_ComSucesso() {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(1, 10, org.springframework.data.domain.Sort.by("id").descending());
+        org.springframework.data.domain.Page<Produto> page = new org.springframework.data.domain.PageImpl<>(List.of(produto));
+        when(produtoRepository.findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Pageable.class))).thenReturn(page);
+
+        org.springframework.data.domain.Page<ProdutoResponseDTO> response = produtoService.buscarComFiltros(
+                "Premier", null, null, null, null, null, 25L, pageable);
+
+        assertNotNull(response);
+        assertEquals(1, response.getContent().size());
+        verify(produtoRepository, times(1)).findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Pageable.class));
     }
 }

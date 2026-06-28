@@ -43,6 +43,21 @@ public class Produto {
     @Column(nullable = false)
     private Integer estoque;
 
+    @Column(name = "marca")
+    private String marca;
+
+    @Column(name = "origem")
+    private String origem;
+
+    @Column(name = "porte_raca")
+    private String porteRaca;
+
+    @Column(name = "peso")
+    private String peso;
+
+    @Column(name = "idade")
+    private String idade;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private StatusProduto status = StatusProduto.ATIVO;

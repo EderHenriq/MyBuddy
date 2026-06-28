@@ -1,16 +1,21 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
-import { Footer } from '@shared/components/footer/footer';
-import { UploadService } from '@core/services/upload.service';
+import { CommonModule } from "@angular/common";
+import { Component } from "@angular/core";
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
+import { RouterModule, Router } from "@angular/router";
+import { Footer } from "@shared/components/footer/footer";
+import { UploadService } from "@core/services/upload.service";
 
 @Component({
-  selector: 'app-cadastrar-pet',
+  selector: "app-cadastrar-pet",
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, Footer],
-  templateUrl: './cadastrar-pet.html',
-  styleUrl: './cadastrar-pet.scss',
+  templateUrl: "./cadastrar-pet.html",
+  styleUrl: "./cadastrar-pet.scss",
 })
 export class CadastrarPet {
   petForm: FormGroup;
@@ -26,16 +31,16 @@ export class CadastrarPet {
     private uploadService: UploadService,
   ) {
     this.petForm = this.fb.group({
-      nome: ['', Validators.required],
-      especie: ['', Validators.required],
-      raca: ['', Validators.required],
-      idade: ['', [Validators.required, Validators.min(0)]],
-      sexo: ['', Validators.required],
-      porte: ['', Validators.required],
-      cor: ['', Validators.required],
-      pelagem: [''],
-      cidade: ['', Validators.required],
-      estado: ['', Validators.required],
+      nome: ["", Validators.required],
+      especie: ["", Validators.required],
+      raca: ["", Validators.required],
+      idade: ["", [Validators.required, Validators.min(0)]],
+      sexo: ["", Validators.required],
+      porte: ["", Validators.required],
+      cor: ["", Validators.required],
+      pelagem: [""],
+      cidade: ["", Validators.required],
+      estado: ["", Validators.required],
       vacinado: [false],
       castrado: [false],
       microchipado: [false],
@@ -64,7 +69,7 @@ export class CadastrarPet {
   onFileChange(event: any): void {
     this.processFiles(event.target.files);
 
-    event.target.value = '';
+    event.target.value = "";
   }
 
   private processFiles(files: FileList | null | undefined): void {
@@ -76,8 +81,8 @@ export class CadastrarPet {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
 
-      if (!file.type.startsWith('image/')) {
-        this.uploadError = 'Apenas arquivos de imagem são permitidos.';
+      if (!file.type.startsWith("image/")) {
+        this.uploadError = "Apenas arquivos de imagem são permitidos.";
         return;
       }
 
@@ -87,13 +92,13 @@ export class CadastrarPet {
       }
 
       if (this.selectedFiles.length >= 3) {
-        this.uploadError = 'Você só pode adicionar até 3 imagens.';
+        this.uploadError = "Você só pode adicionar até 3 imagens.";
         return;
       }
 
       this.selectedFiles.push(file);
       const reader = new FileReader();
-      reader.onload = e => this.uploadedImages.push(reader.result as string);
+      reader.onload = (e) => this.uploadedImages.push(reader.result as string);
       reader.readAsDataURL(file);
     }
   }
@@ -107,29 +112,29 @@ export class CadastrarPet {
   onSubmit(): void {
     if (this.petForm.valid) {
       if (this.selectedFiles.length === 0) {
-        this.uploadError = 'Adicione ao menos uma foto do pet.';
+        this.uploadError = "Adicione ao menos uma foto do pet.";
         return;
       }
 
-      console.log('Dados do Pet (Formulário):', this.petForm.value);
+      console.log("Dados do Pet (Formulário):", this.petForm.value);
       this.isSaving = true;
       this.uploadError = null;
 
       this.uploadService.uploadImages(this.selectedFiles).subscribe({
-        next: urls => {
-          console.log('Imagens mockadas salvas com sucesso! URLs:', urls);
+        next: (urls) => {
+          console.log("Imagens mockadas salvas com sucesso! URLs:", urls);
 
           this.isSaving = false;
-          this.router.navigate(['/ong/pets']);
+          this.router.navigate(["/ong/pets"]);
         },
-        error: err => {
-          console.error('Erro no upload das imagens', err);
-          this.uploadError = 'Erro ao processar imagens. Tente novamente.';
+        error: (err) => {
+          console.error("Erro no upload das imagens", err);
+          this.uploadError = "Erro ao processar imagens. Tente novamente.";
           this.isSaving = false;
         },
       });
     } else {
-      Object.keys(this.petForm.controls).forEach(key => {
+      Object.keys(this.petForm.controls).forEach((key) => {
         const control = this.petForm.get(key);
         control?.markAsTouched();
       });

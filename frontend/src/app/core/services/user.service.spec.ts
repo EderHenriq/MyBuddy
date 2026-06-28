@@ -1,12 +1,15 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { TestBed } from '@angular/core/testing';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
-import { UserService } from './user.service';
-import { environment } from '../../../environments/environment';
-import { Usuario } from '../models/user.model';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { TestBed } from "@angular/core/testing";
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from "@angular/common/http/testing";
+import { provideHttpClient } from "@angular/common/http";
+import { UserService } from "./user.service";
+import { environment } from "../../../environments/environment";
+import { Usuario } from "../models/user.model";
 
-describe('UserService', () => {
+describe("UserService", () => {
   let service: UserService;
   let httpMock: HttpTestingController;
 
@@ -22,12 +25,14 @@ describe('UserService', () => {
     httpMock.verify();
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch users', () => {
-    const mockUsers: Usuario[] = [{ id: 1, nome: 'Eder', email: 'eder@test.com' }];
+  it("should fetch users", () => {
+    const mockUsers: Usuario[] = [
+      { id: 1, nome: "Eder", email: "eder@test.com" },
+    ];
 
     service.buscarTodos().subscribe((users: Usuario[]) => {
       expect(users.length).toBe(1);
@@ -35,7 +40,7 @@ describe('UserService', () => {
     });
 
     const req = httpMock.expectOne(`${environment.apiUrl}usuarios`);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe("GET");
     req.flush(mockUsers);
   });
 });

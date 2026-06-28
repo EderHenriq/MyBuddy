@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mybuddy_app/core/constants/app_config.dart';
@@ -10,9 +11,11 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 class AuthRepositoryImpl implements AuthRepository {
   final FlutterAppAuth _appAuth;
   final FlutterSecureStorage _storage;
+  final Dio _dio;
 
   static const _accessTokenKey = 'access_token';
   static const _refreshTokenKey = 'refresh_token';
+  static const _idTokenKey = 'id_token';
   static const _clientId = 'mybuddy-frontend';
   static const _redirectUrl = 'com.mybuddy.app://callback';
   static const _scopes = ['openid', 'profile', 'email'];
@@ -20,14 +23,58 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({
     FlutterAppAuth? appAuth,
     FlutterSecureStorage? storage,
+    Dio? dio,
   })  : _appAuth = appAuth ?? const FlutterAppAuth(),
-        _storage = storage ?? const FlutterSecureStorage();
+        _storage = storage ?? const FlutterSecureStorage(),
+        _dio = dio ?? Dio();
 
   String get _issuer =>
       '${AppConfig.keycloakUrl}/realms/mybuddy';
 
   @override
   Future<Either<Failure, User>> login(String email, String password) async {
+    try {
+      final response = await _dio.post(
+        '${AppConfig.keycloakUrl}/realms/mybuddy/protocol/openid-connect/token',
+        data: {
+          'grant_type': 'password',
+          'client_id': _clientId,
+          'username': email,
+          'password': password,
+          'scope': _scopes.join(' '),
+        },
+        options: Options(
+          contentType: 'application/x-www-form-urlencoded',
+        ),
+      );
+
+      final accessToken = response.data['access_token'] as String?;
+      final refreshToken = response.data['refresh_token'] as String?;
+      final idToken = response.data['id_token'] as String?;
+
+      if (accessToken == null) {
+        return const Left(AuthFailure('Token de acesso não recebido.'));
+      }
+
+      await _storage.write(key: _accessTokenKey, value: accessToken);
+      if (refreshToken != null) {
+        await _storage.write(key: _refreshTokenKey, value: refreshToken);
+      }
+      if (idToken != null) {
+        await _storage.write(key: _idTokenKey, value: idToken);
+      }
+
+      return Right(_parseUser(accessToken));
+    } on DioException catch (e) {
+      final message = e.response?.data['error_description'] ?? e.message ?? e.toString();
+      return Left(AuthFailure('Erro ao fazer login: $message'));
+    } catch (e) {
+      return Left(AuthFailure('Erro ao fazer login: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, User>> loginWithKeycloak() async {
     try {
       final result = await _appAuth.authorizeAndExchangeCode(
         AuthorizationTokenRequest(
@@ -39,30 +86,39 @@ class AuthRepositoryImpl implements AuthRepository {
         ),
       );
 
-      if (result == null) {
-        return const Left(AuthFailure('Login cancelado pelo usuário'));
+      final accessToken = result.accessToken;
+      final refreshToken = result.refreshToken;
+      final idToken = result.idToken;
+
+      if (accessToken == null) {
+        return const Left(AuthFailure('Login cancelado ou falhou.'));
       }
 
-      await _storage.write(key: _accessTokenKey, value: result.accessToken);
-      await _storage.write(key: _refreshTokenKey, value: result.refreshToken);
+      await _storage.write(key: _accessTokenKey, value: accessToken);
+      if (refreshToken != null) {
+        await _storage.write(key: _refreshTokenKey, value: refreshToken);
+      }
+      if (idToken != null) {
+        await _storage.write(key: _idTokenKey, value: idToken);
+      }
 
-      return Right(_parseUser(result.accessToken!));
+      return Right(_parseUser(accessToken));
     } catch (e) {
-      return Left(AuthFailure('Erro ao fazer login: ${e.toString()}'));
+      return Left(AuthFailure('Erro ao fazer login com Keycloak: ${e.toString()}'));
     }
   }
 
   @override
   Future<Either<Failure, void>> logout() async {
     try {
-      final token = await _storage.read(key: _accessTokenKey);
+      final idToken = await _storage.read(key: _idTokenKey);
       await _storage.deleteAll();
 
-      if (token != null) {
+      if (idToken != null) {
         await _appAuth.endSession(
           EndSessionRequest(
             issuer: _issuer,
-            idTokenHint: token,
+            idTokenHint: idToken,
             postLogoutRedirectUrl: _redirectUrl,
           ),
         );
@@ -125,14 +181,21 @@ class AuthRepositoryImpl implements AuthRepository {
         ),
       );
 
-      if (result?.accessToken == null) return null;
+      final accessToken = result.accessToken;
+      final newRefreshToken = result.refreshToken;
+      final idToken = result.idToken;
 
-      await _storage.write(key: _accessTokenKey, value: result!.accessToken);
-      if (result.refreshToken != null) {
-        await _storage.write(key: _refreshTokenKey, value: result.refreshToken);
+      if (accessToken == null) return null;
+
+      await _storage.write(key: _accessTokenKey, value: accessToken);
+      if (newRefreshToken != null) {
+        await _storage.write(key: _refreshTokenKey, value: newRefreshToken);
+      }
+      if (idToken != null) {
+        await _storage.write(key: _idTokenKey, value: idToken);
       }
 
-      return result.accessToken;
+      return accessToken;
     } catch (_) {
       await _storage.deleteAll();
       return null;
