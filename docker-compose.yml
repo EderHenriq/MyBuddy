@@ -176,6 +176,34 @@ services:
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost}
       MP_PUBLIC_KEY: ${MP_PUBLIC_KEY:-APP_USR-112696f3-3603-4175-826f-167cf58606b2}
 
+# ── Caddy (Reverse Proxy + HTTPS) ──────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: mybuddy-caddy
+    restart: unless-stopped
+
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-localhost}
+
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+      - caddy-config:/config
+
+    depends_on:
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_healthy
+
+    networks:
+      - mybuddy-network
+
 # ── MY-243: Declaração dos volumes ───────────────────────────
 # Dados salvos mesmo após "docker compose down"
 # Para apagar tudo: docker compose down -v
@@ -188,6 +216,12 @@ volumes:
 
   backend-uploads:
     name: mybuddy_backend_uploads
+
+  caddy-data:
+    name: mybuddy_caddy_data
+
+  caddy-config:
+    name: mybuddy_caddy_config
 
 networks:
   mybuddy-network:

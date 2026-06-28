@@ -1,0 +1,28 @@
+{$SITE_ADDRESS:localhost} {
+    # Frontend Angular
+    reverse_proxy frontend:80
+
+    # Backend API
+    handle /api/* {
+        reverse_proxy backend:8081
+    }
+
+    # Keycloak
+    handle /realms/* {
+        reverse_proxy keycloak:8080
+    }
+    handle /resources/* {
+        reverse_proxy keycloak:8080
+    }
+    handle /admin/* {
+        reverse_proxy keycloak:8080
+    }
+    handle /js/* {
+        reverse_proxy keycloak:8080
+    }
+
+    # Uploads do backend
+    handle /uploads/* {
+        reverse_proxy backend:8081
+    }
+}
