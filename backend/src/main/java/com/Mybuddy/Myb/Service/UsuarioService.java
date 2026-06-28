@@ -93,13 +93,15 @@ public class UsuarioService {
         for (Pedido pedido : pedidos) {
             EnderecoEntrega endereco = pedido.getEnderecoEntrega();
             if (endereco != null) {
-                endereco.setLogradouro("CLIENTE ANONIMIZADO");
-                endereco.setNumero("ANONIMIZADO");
-                endereco.setComplemento("ANONIMIZADO");
+                endereco.setLogradouro("ANONIMIZADO");
+                endereco.setNumero("0");
+                endereco.setComplemento(null);
                 endereco.setBairro("ANONIMIZADO");
                 endereco.setCep("00000000");
                 endereco.setCidade("ANONIMIZADO");
                 endereco.setEstado("AN");
+                endereco.setLatitude(null);
+                endereco.setLongitude(null);
             }
             pedidoRepository.save(pedido);
         }
@@ -107,9 +109,16 @@ public class UsuarioService {
         // 2. Anonimizar dados pessoais nas triagens de adoção
         List<InteresseAdocao> interesses = interesseAdocaoRepository.findByUsuarioId(id);
         for (InteresseAdocao interesse : interesses) {
-            interesse.setCpfAdotante("00000000000");
-            interesse.setMensagem("CONTEÚDO ANONIMIZADO PARA LGPD");
-            interesse.setMotivoAdocao("CONTEÚDO ANONIMIZADO PARA LGPD");
+            interesse.setCpfAdotante(null);
+            interesse.setIdadeAdotante(null);
+            interesse.setMensagem(null);
+            interesse.setMotivoAdocao(null);
+            interesse.setTipoResidencia(null);
+            interesse.setPossuiTelasProtecao(null);
+            interesse.setOutrosAnimais(null);
+            interesse.setTempoSozinhoHoras(null);
+            interesse.setTodosCientes(null);
+            interesse.setEspacoAdequado(null);
             interesse.setUsuario(null);
             interesseAdocaoRepository.save(interesse);
         }
