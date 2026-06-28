@@ -1,0 +1,16 @@
+services:
+  mongodb:
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+  redis:
+    ports:
+      - "6379:6379"
+  postgres:
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+  keycloak:
+    ports:
+      - "${KEYCLOAK_PORT:-8080}:8080"
+  backend:
+    ports:
+      - "8081:8081"
