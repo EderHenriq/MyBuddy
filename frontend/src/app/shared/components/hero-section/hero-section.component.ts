@@ -1,18 +1,22 @@
-import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, inject, input, computed } from '@angular/core';
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 @Component({
-  selector: "app-hero-section",
+  selector: 'app-hero-section',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: "./hero-section.component.html",
-  styleUrl: "./hero-section.component.scss",
+  templateUrl: './hero-section.component.html',
+  styleUrl: './hero-section.component.scss',
 })
 export class HeroSectionComponent {
-  @Input() backgroundImageUrl =
-    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=1800";
-  @Input() kicker = "";
-  @Input() title = "Conectar, cuidar e";
-  @Input() highlightedText = "comemorar.";
-  @Input() subtitle = "Tudo isso em um só lugar";
+  private sanitizer = inject(DomSanitizer);
+
+  backgroundImageUrl = input('/assets/imagem/Hero-Section.jpg');
+  userName = input('Usuário');
+  title = input('Conectar, cuidar e');
+  highlightedText = input('comemorar');
+  subtitle = input('Tudo isso em um só lugar');
+
+  kickerMessage = computed(() => `Seja bem vindo, ${this.userName()}`);
+
+  backgroundImageSafe = computed((): SafeStyle => this.sanitizer.bypassSecurityTrustStyle(`url(${this.backgroundImageUrl()})`));
 }

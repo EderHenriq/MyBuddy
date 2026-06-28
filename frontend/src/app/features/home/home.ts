@@ -1,45 +1,43 @@
-import { Component, OnInit, inject, signal } from "@angular/core";
-import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
-import { RouterLink } from "@angular/router";
-import { AuthService } from "@core/services/auth.service";
-import { Footer } from "@shared/components/footer/footer";
-import { PetService } from "@core/services/pet.service";
-import { CardPetComponent } from "@shared/components/card-pet/card-pet.component";
-import { HeroSectionComponent } from "@shared/components/hero-section/hero-section.component";
+import { isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, Component, inject, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
+import { PetService } from '@core/services/pet.service';
+import { Pet } from '@core/models/pet.model';
+import { CardPetComponent } from '@shared/components/card-pet/card-pet.component';
+import { Footer } from '@shared/components/footer/footer';
+import { HeaderMain } from '@shared/components/header-main/header-main';
+import { HeroSectionComponent } from '@shared/components/hero-section/hero-section.component';
+import { catchError, map, of } from 'rxjs';
 
-interface CartaoCategoria {
+interface AcaoRapidas {
+  rotulo: string;
+  tab: string;
+  icone: string;
+  tipoIcone: 'material' | 'fa';
+}
+
+interface ItemCategoria {
   rotulo: string;
   urlImagem: string;
   rota: string;
 }
 
-interface Lembrete {
+interface ItemLembrete {
   urlIcone: string;
   titulo: string;
   texto: string;
 }
 
-interface CartaoPet {
-  nome: string;
-  idade: number;
-  raca: string;
-  sexo: string;
-  vacinado: boolean;
-  castrado: boolean;
-  porte: string;
-  cor: string;
-  pelagem: string;
-  fotosUrls?: string[];
-}
-
-interface CartaoEvento {
+interface ItemEvento {
   dia: string;
   mes: string;
   titulo: string;
   local: string;
 }
 
-interface CartaoVeterinario {
+interface ItemVeterinario {
   nome: string;
   distancia: string;
   status: string;
@@ -47,162 +45,156 @@ interface CartaoVeterinario {
   urlAvatar: string;
 }
 
-interface CategoriaProduto {
+interface ItemProduto {
   rotulo: string;
   urlImagem: string;
 }
 
+//Dados estáticos da UI
+const ACOES_RAPIDA: AcaoRapidas[] = [
+  { rotulo: 'Meus Pets', tab: 'pets', icone: 'fa-solid fa-cat', tipoIcone: 'fa' },
+  { rotulo: 'Favoritos', tab: 'favoritos', icone: 'favorite', tipoIcone: 'material' },
+  { rotulo: 'Mensagens', tab: 'mensagens', icone: 'fa-regular fa-comment', tipoIcone: 'fa' },
+  { rotulo: 'Solicitações', tab: 'solicitacoes', icone: 'fa-regular fa-clipboard', tipoIcone: 'fa' },
+];
+
+const CATEGORIAS: ItemCategoria[] = [
+  { rotulo: 'Pets', rota: '/pets', urlImagem: '/assets/imagem/Cat-Dog.jpg' },
+  { rotulo: 'Veterinários', rota: '/servicos', urlImagem: '/assets/imagem/Veterinario.jpg' },
+  { rotulo: 'Eventos', rota: '/eventos', urlImagem: '/assets/imagem/Eventos.jpg' },
+  { rotulo: 'Produtos', rota: '/produtos', urlImagem: '/assets/imagem/Petshop.jpg' },
+];
+
+const LEMBRETES: ItemLembrete[] = [
+  {
+    urlIcone: '/assets/placeholders/icons/vacina.png',
+    titulo: 'Lembrete: Vacina do seu Buddy',
+    texto: 'A vacina antirrábica do Zeus vence em 15 dias. Agende já',
+  },
+  {
+    urlIcone: '/assets/placeholders/icons/cirurgia.png',
+    titulo: 'Lembrete: Cirurgia de Castração',
+    texto: 'A agenda de cirurgia de castração está disponível.',
+  },
+];
+
+const EVENTOS: ItemEvento[] = [
+  { dia: '26', mes: 'JUL', titulo: 'Feira de Adoção - Parque do Ingá', local: 'Maringá, PR · 9h às 16h' },
+  { dia: '02', mes: 'AGO', titulo: 'Campanha de Vacinação Gratuita', local: 'Clínica VetAmigos, Maringá · 9h às 16h' },
+  { dia: '15', mes: 'AGO', titulo: 'Passeio Pet Friendly', local: 'Euro Garden, Maringá · 9h às 16h' },
+  { dia: '20', mes: 'AGO', titulo: 'Campanha de Castração Gratuita', local: 'Clínica VetAmigos, Maringá · 9h às 16h' },
+];
+
+const VETERINARIOS: ItemVeterinario[] = [
+  {
+    nome: 'Dr. Carlos Melo',
+    distancia: '1,2km',
+    status: 'Aberto agora',
+    avaliacao: '4.9',
+    urlAvatar: '/assets/placeholders/profiles/Jorge.png',
+  },
+  {
+    nome: 'Dra. Paula Schneider',
+    distancia: '3,2km',
+    status: 'Abre às 09h',
+    avaliacao: '4.1',
+    urlAvatar: '/assets/placeholders/profiles/Josie.jpg',
+  },
+  {
+    nome: 'Dr. Heitor Krisraff',
+    distancia: '500m',
+    status: 'Aberto 24h',
+    avaliacao: '4.7',
+    urlAvatar: '/assets/placeholders/profiles/Jorge.png',
+  },
+  {
+    nome: 'Dra. Camila Rhett',
+    distancia: '5km',
+    status: 'Fechado',
+    avaliacao: '4.3',
+    urlAvatar: '/assets/placeholders/profiles/Josie.jpg',
+  },
+];
+
+const PRODUTOS: ItemProduto[] = [
+  { rotulo: 'Acessórios', urlImagem: '/assets/placeholders/marketplace/Acessorios.jpg' },
+  { rotulo: 'Alimentação', urlImagem: '/assets/placeholders/marketplace/Alimentacao.jpg' },
+  { rotulo: 'Mochilas', urlImagem: '/assets/placeholders/marketplace/Mochilas.jpg' },
+  { rotulo: 'Roupas', urlImagem: '/assets/placeholders/marketplace/Roupas.jpg' },
+];
+
+const DEFAULT_LAT = -23.4273;
+const DEFAULT_LNG = -51.9375;
+
 @Component({
-  selector: "app-home",
-  imports: [RouterLink, Footer, CardPetComponent, HeroSectionComponent],
-  templateUrl: "./home.html",
-  styleUrl: "./home.scss",
+  selector: 'app-home',
+  standalone: true,
+  imports: [RouterLink, HeaderMain, Footer, HeroSectionComponent, CardPetComponent],
+  templateUrl: './home.html',
+  styleUrl: './home.scss',
 })
-export class Home implements OnInit {
-  public authService = inject(AuthService);
-  private sanitizer = inject(DomSanitizer);
-  private petService = inject(PetService);
+export class Home implements AfterViewInit, OnDestroy {
+  readonly authService = inject(AuthService);
+  private readonly petService = inject(PetService);
+  private readonly platformId = inject(PLATFORM_ID);
 
-  readonly carregandoPets = signal<boolean>(true);
-  readonly pets = signal<CartaoPet[]>([]);
+  readonly acoesRapidas = ACOES_RAPIDA;
+  readonly categorias = CATEGORIAS;
+  readonly lembretes = LEMBRETES;
+  readonly eventos = EVENTOS;
+  readonly veterinarios = VETERINARIOS;
+  readonly produtos = PRODUTOS;
 
-  readonly urlMapa: SafeResourceUrl =
-    this.sanitizer.bypassSecurityTrustResourceUrl(
-      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14629.742352528775!2d-46.666666!3d-23.555555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDMzJzIwLjAiUyA0NsKwMzknNTkuOSJX!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr",
-    );
+  private map: L.Map | null = null;
 
-  readonly categorias: CartaoCategoria[] = [
-    {
-      rotulo: "Pets",
-      urlImagem:
-        "https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&q=80&w=600",
-      rota: "/pets",
-    },
-    {
-      rotulo: "Veterinários",
-      urlImagem:
-        "https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&q=80&w=600",
-      rota: "/servicos",
-    },
-    {
-      rotulo: "Eventos",
-      urlImagem:
-        "https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?auto=format&fit=crop&q=80&w=600",
-      rota: "/eventos",
-    },
-    {
-      rotulo: "Produtos",
-      urlImagem:
-        "https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?auto=format&fit=crop&q=80&w=600",
-      rota: "/produtos",
-    },
-  ];
+  private readonly petsResponse = toSignal(
+    this.petService.buscarRecentes().pipe(
+      map((res: { content: Pet[] }) => res.content?.slice(0, 3) ?? []),
+      catchError(() => of([])),
+    ),
+    { initialValue: null },
+  );
 
-  readonly lembretes: Lembrete[] = [
-    {
-      urlIcone: "https://cdn-icons-png.flaticon.com/512/4151/4151022.png",
-      titulo: "Lembrete: Vacina do seu Buddy",
-      texto: "A vacina antirrábica do Zeus vence em 15 dias. Agende já!",
-    },
-    {
-      urlIcone: "https://cdn-icons-png.flaticon.com/512/3209/3209072.png",
-      titulo: "Lembrete: Cirurgia de Castração",
-      texto: "A agenda de cirurgia de castração está disponível.",
-    },
-  ];
+  readonly pets = () => this.petsResponse() ?? [];
+  readonly carregandoPets = () => this.petsResponse() === null;
 
-  ngOnInit(): void {
-    this.petService.buscarRecentes().subscribe({
-      next: (dados: any) => {
-        const todosPets = dados.content || [];
-        this.pets.set(todosPets.slice(0, 3));
-        this.carregandoPets.set(false);
-      },
-      error: (erro) => {
-        console.error("Erro ao buscar pets recentes", erro);
-        this.carregandoPets.set(false);
-      },
-    });
+  async ngAfterViewInit(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
+    await this.initMap();
   }
 
-  readonly eventos: CartaoEvento[] = [
-    {
-      dia: "26",
-      mes: "ABR",
-      titulo: "Feira de Adoção - Parque do Ingá",
-      local: "Maringá, Pr - 9h às 16h",
-    },
-    {
-      dia: "02",
-      mes: "MAI",
-      titulo: "Campanha de Vacinação Gratuita",
-      local: "Clínica VetAmigos, Maringá - 9h às 16h",
-    },
-    {
-      dia: "15",
-      mes: "MAI",
-      titulo: "Passeio Pet Friendly",
-      local: "Euro Garden, Maringá - 9h às 16h",
-    },
-    {
-      dia: "20",
-      mes: "MAI",
-      titulo: "Campanha de Castração Gratuita",
-      local: "Clínica VetAmigos, Maringá - 9h às 16h",
-    },
-  ];
+  ngOnDestroy(): void {
+    this.map?.remove();
+    this.map = null;
+  }
 
-  readonly veterinarios: CartaoVeterinario[] = [
-    {
-      nome: "Dr. Carlos Melo",
-      distancia: "1,2km",
-      status: "Aberto agora",
-      avaliacao: "4.9",
-      urlAvatar: "https://cdn-icons-png.flaticon.com/512/387/387561.png",
-    },
-    {
-      nome: "Dra. Paula Schneider",
-      distancia: "3,2km",
-      status: "Abre as 09hrs",
-      avaliacao: "4.1",
-      urlAvatar: "https://cdn-icons-png.flaticon.com/512/387/387569.png",
-    },
-    {
-      nome: "Dr. Heitor Krisraff",
-      distancia: "500m",
-      status: "Aberto 24h",
-      avaliacao: "4.7",
-      urlAvatar: "https://cdn-icons-png.flaticon.com/512/387/387561.png",
-    },
-    {
-      nome: "Dra. Camila Rhett",
-      distancia: "5km",
-      status: "Fechado",
-      avaliacao: "4.3",
-      urlAvatar: "https://cdn-icons-png.flaticon.com/512/387/387569.png",
-    },
-  ];
+  private async initMap(lat = DEFAULT_LAT, lng = DEFAULT_LNG): Promise<void> {
+    const L = await import('leaflet');
 
-  readonly produtos: CategoriaProduto[] = [
-    {
-      rotulo: "Acessorios",
-      urlImagem:
-        "https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?auto=format&fit=crop&q=80&w=600",
-    },
-    {
-      rotulo: "Alimentação",
-      urlImagem:
-        "https://images.unsplash.com/photo-1559715541-5daf8a0296d0?auto=format&fit=crop&q=80&w=600",
-    },
-    {
-      rotulo: "Mochilas",
-      urlImagem:
-        "https://images.unsplash.com/photo-1546975490-a79abdd54533?auto=format&fit=crop&q=80&w=600",
-    },
-    {
-      rotulo: "Roupas",
-      urlImagem:
-        "https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?auto=format&fit=crop&q=80&w=600",
-    },
-  ];
+    this.map = L.map('leaflet-map', {
+      center: [lat, lng],
+      zoom: 14,
+      zoomControl: false,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap',
+    }).addTo(this.map);
+
+    this.loadMapByUserLocation();
+  }
+
+  private loadMapByUserLocation(): void {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        this.map?.setView([coords.latitude, coords.longitude], 14);
+      },
+      error => {
+        console.warn('Geolocalização indisponível, mantendo padrão de Maringá: ', error.message);
+      },
+    );
+  }
 }
