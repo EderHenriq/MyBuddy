@@ -3,7 +3,7 @@ import { isPlatformBrowser } from "@angular/common";
 import Keycloak from "keycloak-js";
 import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { Observable, tap, catchError, throwError, of, delay } from "rxjs";
+import { Observable, tap, catchError, throwError} from "rxjs";
 import { Router } from "@angular/router";
 import { SessionService } from "./session.service";
 import { Role } from "../models/role.model";
@@ -21,7 +21,7 @@ export class AuthService {
 
   private tokenEmMemoria: string | null = null;
 
-  usuarioAtual = signal<Usuario | any | null>(null);
+  usuarioAtual = signal<Usuario | null>(null);
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -33,20 +33,6 @@ export class AuthService {
     const token = this.obterCookie("mybuddy_session");
     if (token) {
       this.tokenEmMemoria = token;
-
-      if (token.startsWith("mock-jwt-token-")) {
-        const papelArmazenado = this.sessionService.getCurrentRole();
-        if (papelArmazenado) {
-          const perfilFalso = {
-            id: "99",
-            nome: "Usuário Teste (" + papelArmazenado + ")",
-            email: "teste@mybuddy.com",
-            roles: [papelArmazenado],
-          };
-          this.usuarioAtual.set(perfilFalso);
-          return;
-        }
-      }
 
       this.obterPerfil().subscribe({
         next: (perfil) => {
@@ -64,11 +50,14 @@ export class AuthService {
   }
 
   obterPapeisUsuario(): string[] {
-    if (this.usuarioAtual()) {
-      const papeis = this.usuarioAtual().roles ?? [];
+
+    const usuario = this.usuarioAtual();
+    if (usuario) {
+      const papeis = usuario.roles ?? [];
       return papeis.map((r: any) => (typeof r === "string" ? r : r.name));
     }
     return this.keycloak?.realmAccess?.roles ?? [];
+    
   }
 
   obterToken(): string | undefined {
@@ -76,59 +65,6 @@ export class AuthService {
   }
 
   loginComCredenciais(email: string, senha: string): Observable<any> {
-    // --- LÓGICA DE MOCK PARA DESENVOLVIMENTO/TESTES SEM KEYCLOAK ---
-    if (environment.mockApi || senha === "Senha123" || senha === "senha123") {
-      let mockRole: Role | null = null;
-      let mockProfile: any = null;
-
-      const emailLower = email.toLowerCase();
-      if (emailLower === "admin@mybuddy.com") {
-        mockRole = Role.ADMIN;
-        mockProfile = {
-          id: 99,
-          nome: "Admin Master",
-          email,
-          roles: [Role.ADMIN],
-        };
-      } else if (emailLower === "ong@mybuddy.com") {
-        mockRole = Role.ONG;
-        mockProfile = { id: 99, nome: "ONG Anjos", email, roles: [Role.ONG] };
-      } else if (emailLower === "petshop@mybuddy.com") {
-        mockRole = Role.PETSHOP;
-        mockProfile = {
-          id: 99,
-          nome: "Petshop Feliz",
-          email,
-          roles: [Role.PETSHOP],
-        };
-      } else if (
-        emailLower === "user@mybuddy.com" ||
-        emailLower === "adotante@mybuddy.com"
-      ) {
-        mockRole = Role.USER;
-        mockProfile = {
-          id: 99,
-          nome: "Adotante João",
-          email,
-          roles: [Role.USER],
-        };
-      }
-
-      if (mockRole) {
-        const mockToken = "mock-jwt-token-for-" + mockRole;
-        this.tokenEmMemoria = mockToken;
-        this.definirCookie("mybuddy_session", mockToken, 3600);
-
-        this.sessionService.setRole(mockRole);
-        this.usuarioAtual.set(mockProfile);
-
-        return of({
-          access_token: mockToken,
-          profile: mockProfile,
-          isMock: true,
-        }).pipe(delay(800));
-      }
-    }
 
     const tokenUrl = `${environment.keycloak.url}/realms/${environment.keycloak.realm}/protocol/openid-connect/token`;
 
@@ -162,20 +98,6 @@ export class AuthService {
   }
 
   obterPerfil(): Observable<Usuario> {
-    if (
-      environment.mockApi ||
-      (this.tokenEmMemoria && this.tokenEmMemoria.startsWith("mock-jwt-token-"))
-    ) {
-      const papelArmazenado = this.sessionService.getCurrentRole() || Role.USER;
-      const perfilFalso = {
-        id: 99,
-        nome: "Usuário Teste (" + papelArmazenado + ")",
-        email: "teste@mybuddy.com",
-        roles: [papelArmazenado],
-      };
-      this.usuarioAtual.set(perfilFalso as Usuario);
-      return of(perfilFalso as Usuario);
-    }
 
     const profileUrl = `${environment.apiUrl}usuarios/meu-perfil`;
     return this.http.get<Usuario>(profileUrl).pipe(
@@ -185,10 +107,17 @@ export class AuthService {
         const role = roles.length > 0 ? (roles[0] as Role) : null;
         this.sessionService.setRole(role);
       }),
+      catchError((erro) => {
+        console.error("Erro ao obter perfil:", erro);
+        this.sair();
+        return throwError(() => erro);
+      }),
     );
+
   }
 
   atualizarPerfil(payload: any): Observable<any> {
+
     const profileUrl = `${environment.apiUrl}usuarios/meu-perfil`;
     return this.http.put<any>(profileUrl, payload).pipe(
       tap((perfil) => {
@@ -198,6 +127,7 @@ export class AuthService {
         this.sessionService.setRole(role);
       }),
     );
+
   }
 
   sair() {
