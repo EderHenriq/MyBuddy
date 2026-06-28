@@ -30,7 +30,8 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   final prefs = await SharedPreferences.getInstance();
-  sl.registerLazySingleton<CacheService>(() => CacheService(prefs));
+  const secureStorage = FlutterSecureStorage();
+  sl.registerLazySingleton<CacheService>(() => CacheService(prefs, secureStorage));
 
   _registerCore();
   _registerAuth();
