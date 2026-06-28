@@ -56,6 +56,7 @@ class AuthControllerIntegrationTest {
         request.setTelefone("44999999999");
         request.setPassword("senha123");
         request.setRoles(Set.of("ADOTANTE"));
+        request.setAceitaTermos(true);
 
         mockMvc.perform(post("/api/auth/cadastro")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -72,6 +73,7 @@ class AuthControllerIntegrationTest {
         request.setTelefone("44988888888");
         request.setPassword("senha123");
         request.setRoles(Set.of("ADOTANTE"));
+        request.setAceitaTermos(true);
 
         // Primeira chamada: e-mail livre; segunda: já cadastrado
         when(usuarioRepository.existsByEmail("duplicado@mybuddy.com")).thenReturn(false, true);

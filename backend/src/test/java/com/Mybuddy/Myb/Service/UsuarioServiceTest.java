@@ -262,13 +262,15 @@ class UsuarioServiceTest {
 
         // Assert
         // Pedido anonimizado
-        assertThat(pedido.getEnderecoEntrega().getLogradouro()).isEqualTo("CLIENTE ANONIMIZADO");
+        assertThat(pedido.getEnderecoEntrega().getLogradouro()).isEqualTo("ANONIMIZADO");
         assertThat(pedido.getEnderecoEntrega().getCep()).isEqualTo("00000000");
+        assertThat(pedido.getEnderecoEntrega().getLatitude()).isNull();
+        assertThat(pedido.getEnderecoEntrega().getLongitude()).isNull();
         verify(pedidoRepository, times(1)).save(pedido);
 
         // Interesse anonimizado
-        assertThat(interesse.getCpfAdotante()).isEqualTo("00000000000");
-        assertThat(interesse.getMensagem()).isEqualTo("CONTEÚDO ANONIMIZADO PARA LGPD");
+        assertThat(interesse.getCpfAdotante()).isNull();
+        assertThat(interesse.getMensagem()).isNull();
         assertThat(interesse.getUsuario()).isNull();
         verify(interesseAdocaoRepository, times(1)).save(interesse);
 
