@@ -1,18 +1,20 @@
 package com.Mybuddy.Myb.Controller;
 
 import com.Mybuddy.Myb.Config.SecurityConfig;
+import com.Mybuddy.Myb.DTO.PetResponse;
 import com.Mybuddy.Myb.Model.EventoOng;
 import com.Mybuddy.Myb.Model.InteresseAdocao;
 import com.Mybuddy.Myb.Model.Organizacao;
 import com.Mybuddy.Myb.Model.Pet;
+import com.Mybuddy.Myb.Model.StatusAdocao;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Security.ERole;
 import com.Mybuddy.Myb.Security.Role;
 import com.Mybuddy.Myb.Security.JwtAuthConverter;
 import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
+import com.Mybuddy.Myb.Service.PetService;
 import com.Mybuddy.Myb.Repository.mongo.EventoOngRepository;
 import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
-import com.Mybuddy.Myb.Repository.mongo.PetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,7 @@ class OngControllerTest {
     private EventoOngRepository eventoOngRepository;
 
     @MockitoBean
-    private PetRepository petRepository;
+    private PetService petService;
 
     @MockitoBean
     private KeycloakUserSyncService keycloakUserSyncService;
@@ -54,6 +56,7 @@ class OngControllerTest {
     private Usuario adminUser;
     private Usuario ongUser;
     private Pet pet;
+    private PetResponse petResponse;
     private InteresseAdocao interesse;
     private EventoOng evento;
 
@@ -74,6 +77,9 @@ class OngControllerTest {
         pet.setId(100L);
         pet.setNome("Bidu");
         pet.setOrganizacao(org);
+
+        petResponse = new PetResponse(100L, "Bidu", null, null, null, null, null, null, null,
+                List.of(), null, StatusAdocao.DISPONIVEL, "Org", 10L, false, false, false, null, null, null);
 
         interesse = new InteresseAdocao();
         interesse.setId(1000L);
@@ -140,7 +146,7 @@ class OngControllerTest {
     @Test
     void deveRetornarPetsFiltradosParaOng() throws Exception {
         when(keycloakUserSyncService.syncUsuario(any())).thenReturn(ongUser);
-        when(petRepository.findByOrganizacaoId(10L)).thenReturn(List.of(pet));
+        when(petService.buscarPetsPorOrganizacaoId(10L)).thenReturn(List.of(petResponse));
 
         mockMvc.perform(get("/api/ong/pets")
                         .with(jwt().authorities(() -> "ROLE_ONG")))
@@ -151,7 +157,7 @@ class OngControllerTest {
     @Test
     void deveRetornarTodosOsPetsParaAdmin() throws Exception {
         when(keycloakUserSyncService.syncUsuario(any())).thenReturn(adminUser);
-        when(petRepository.findAll()).thenReturn(List.of(pet));
+        when(petService.listarTodosDTO()).thenReturn(List.of(petResponse));
 
         mockMvc.perform(get("/api/ong/pets")
                         .with(jwt().authorities(() -> "ROLE_ADMIN")))

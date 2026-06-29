@@ -94,16 +94,10 @@ class PetshopControllerTest {
     }
 
     @Test
-    void deveRetornar200QuandoBuscarProdutosComUsuarioComum() throws Exception {
-        when(keycloakUserSyncService.syncUsuario(any())).thenReturn(regularUser);
-        when(produtoRepository.findAll()).thenReturn(List.of(produto));
-
+    void deveRetornar403QuandoBuscarProdutosComUsuarioComum() throws Exception {
         mockMvc.perform(get("/api/petshop/produtos")
                         .with(jwt().authorities(() -> "ROLE_ADOTANTE")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].nome").value("Ração Premium"));
-
-        verify(produtoRepository, times(1)).findAll();
+                .andExpect(status().isForbidden());
     }
 
     @Test
