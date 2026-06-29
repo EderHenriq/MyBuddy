@@ -53,6 +53,7 @@ public class InteresseAdocaoService {
         interesse.setTempoSozinhoHoras(req.tempoSozinhoHoras());
         interesse.setTodosCientes(req.todosCientes());
         interesse.setEspacoAdequado(req.espacoAdequado());
+        interesse.setConsentimentoLgpd(req.consentimentoLgpd());
         interesse.setStatus(StatusInteresse.PENDENTE);
         interesse.setCriadoEm(LocalDateTime.now());
 

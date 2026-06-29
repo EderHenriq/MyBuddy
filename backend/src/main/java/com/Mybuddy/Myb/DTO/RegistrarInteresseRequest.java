@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.DTO;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -43,5 +44,9 @@ public record RegistrarInteresseRequest(
         Boolean todosCientes,
 
         @NotNull(message = "A confirmação de espaço adequado é obrigatória.")
-        Boolean espacoAdequado
+        Boolean espacoAdequado,
+
+        @NotNull(message = "O consentimento para uso dos dados é obrigatório.")
+        @AssertTrue(message = "Você deve consentir com o uso dos dados pessoais para registrar interesse de adoção (LGPD Art. 7º).")
+        Boolean consentimentoLgpd
 ) {}

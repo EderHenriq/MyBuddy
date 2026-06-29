@@ -19,5 +19,6 @@ public record InteresseResponse(
         String outrosAnimais,
         Integer tempoSozinhoHoras,
         Boolean todosCientes,
-        Boolean espacoAdequado
+        Boolean espacoAdequado,
+        Boolean consentimentoLgpd
 ) {}

@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Controller;
 
+import com.Mybuddy.Myb.DTO.DadosUsuarioExportDTO;
 import com.Mybuddy.Myb.Model.Usuario;
 import com.Mybuddy.Myb.Service.FotoPetService;
 import com.Mybuddy.Myb.Service.KeycloakUserSyncService;
@@ -52,6 +53,13 @@ public class UsuarioController {
         usuario.setTelefone(dadosUsuario.getTelefone());
         Usuario usuarioAtualizado = usuarioService.atualizarUsuario(usuario.getId(), usuario);
         return ResponseEntity.ok(usuarioAtualizado);
+    }
+
+    @GetMapping("/meu-perfil/dados")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<DadosUsuarioExportDTO> exportarMeusDados(@AuthenticationPrincipal Jwt jwt) {
+        Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
+        return ResponseEntity.ok(usuarioService.exportarDadosUsuario(usuario.getId()));
     }
 
     @PostMapping("/meu-perfil/avatar")

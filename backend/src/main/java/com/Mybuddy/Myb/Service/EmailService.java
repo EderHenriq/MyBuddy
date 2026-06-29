@@ -10,6 +10,6 @@ public class EmailService {
     private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 
     public void enviarEmail(String destinatario, String assunto, String corpo) {
-        log.info("Simulando envio de e-mail para: {} | Assunto: {} | Conteúdo: {}", destinatario, assunto, corpo);
+        log.info("Simulando envio de e-mail | Assunto: {}", assunto);
     }
 }

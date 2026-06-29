@@ -36,7 +36,7 @@ public class InteresseAdocaoController {
             @RequestBody @Valid RegistrarInteresseRequest req,
             @AuthenticationPrincipal Jwt jwt) {
         Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
-        logger.debug("manifestarInteresse: Usuario ID: {}, Email: {}", usuario.getId(), usuario.getEmail());
+        logger.debug("manifestarInteresse: Usuario ID: {}", usuario.getId());
         var resp = service.manifestarInteresse(usuario.getId(), req);
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }

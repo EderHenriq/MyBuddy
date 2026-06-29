@@ -169,7 +169,7 @@ public class PetController {
             }
         }
 
-        log.info("Buscando pets da organização por ID: {} - solicitado por: {}", organizacaoId, usuario.getEmail());
+        log.info("Buscando pets da organização por ID: {} - solicitado por usuario ID: {}", organizacaoId, usuario.getId());
         return ResponseEntity.ok(petService.buscarPetsPorOrganizacaoId(organizacaoId));
     }
 }

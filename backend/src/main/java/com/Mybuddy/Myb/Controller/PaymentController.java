@@ -187,7 +187,7 @@ public class PaymentController {
             @RequestHeader(value = "x-signature", required = false) String xSignature,
             @RequestHeader(value = "x-request-id", required = false) String xRequestId){
 
-        log.info("Webhook MP recebido: {}", payload);
+        log.info("Webhook MP recebido: topic={}, type={}", payload.get("topic"), payload.get("type"));
         
         String dataId = null;
         if (payload.get("data") instanceof Map<?, ?> data) {

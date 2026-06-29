@@ -81,6 +81,7 @@ class InteresseAdocaoServiceTest {
                 "Um cachorro pequeno",
                 4,
                 true,
+                true,
                 true
         );
     }
@@ -127,6 +128,7 @@ class InteresseAdocaoServiceTest {
                 true,
                 "Um cachorro pequeno",
                 4,
+                true,
                 true,
                 true
         );

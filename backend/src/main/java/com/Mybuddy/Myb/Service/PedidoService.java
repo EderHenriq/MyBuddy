@@ -329,10 +329,7 @@ public class PedidoService {
     }
 
     private BigDecimal calcularFrete(EnderecoEntrega endereco, BigDecimal subtotal, Petshop petshop) {
-        log.info("calcularFrete: petshopLat={}, petshopLon={}, enderecoLat={}, enderecoLon={}, raio={}",
-                petshop.getLatitude(), petshop.getLongitude(),
-                endereco.getLatitude(), endereco.getLongitude(),
-                petshop.getRaioEntregaKm());
+        log.debug("calcularFrete: petshopId={}, raio={}", petshop.getId(), petshop.getRaioEntregaKm());
 
         // Se o petshop e o endereço possuem latitude e longitude, calcula a distância real
         if (petshop.getLatitude() != null && petshop.getLongitude() != null 

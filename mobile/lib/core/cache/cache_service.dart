@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CacheService {
@@ -8,8 +9,9 @@ class CacheService {
   static const _cacheDuration = Duration(hours: 1);
 
   final SharedPreferences _prefs;
+  final FlutterSecureStorage _secureStorage;
 
-  CacheService(this._prefs);
+  CacheService(this._prefs, this._secureStorage);
 
   // ===================== PETS =====================
 
@@ -34,26 +36,34 @@ class CacheService {
     await _prefs.remove('$_petsKey$_cacheTimestampSuffix');
   }
 
-  // ===================== USER =====================
+  // ===================== USER (armazenamento seguro) =====================
 
   Future<void> saveUser(Map<String, dynamic> user) async {
     final json = jsonEncode(user);
-    await _prefs.setString(_userKey, json);
-    await _saveTimestamp(_userKey);
+    await _secureStorage.write(key: _userKey, value: json);
+    final now = DateTime.now().millisecondsSinceEpoch.toString();
+    await _secureStorage.write(key: '$_userKey$_cacheTimestampSuffix', value: now);
   }
 
-  Map<String, dynamic>? getUser() {
-    if (!_isCacheValid(_userKey)) return null;
+  Future<Map<String, dynamic>?> getUser() async {
+    final timestampStr = await _secureStorage.read(key: '$_userKey$_cacheTimestampSuffix');
+    if (timestampStr == null) return null;
 
-    final json = _prefs.getString(_userKey);
+    final timestamp = int.tryParse(timestampStr);
+    if (timestamp == null) return null;
+
+    final cacheTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    if (DateTime.now().difference(cacheTime) >= _cacheDuration) return null;
+
+    final json = await _secureStorage.read(key: _userKey);
     if (json == null) return null;
 
     return jsonDecode(json) as Map<String, dynamic>;
   }
 
   Future<void> clearUser() async {
-    await _prefs.remove(_userKey);
-    await _prefs.remove('$_userKey$_cacheTimestampSuffix');
+    await _secureStorage.delete(key: _userKey);
+    await _secureStorage.delete(key: '$_userKey$_cacheTimestampSuffix');
   }
 
   // ===================== GERAL =====================
@@ -76,6 +86,7 @@ class CacheService {
 
   Future<void> clearAll() async {
     await _prefs.clear();
+    await _secureStorage.deleteAll();
   }
 
   // ===================== HELPERS =====================

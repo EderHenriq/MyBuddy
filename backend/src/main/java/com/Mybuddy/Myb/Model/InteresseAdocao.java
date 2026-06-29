@@ -60,6 +60,8 @@ public class InteresseAdocao implements Identifiable {
 
     private Boolean espacoAdequado;
 
+    private Boolean consentimentoLgpd;
+
     @CreatedDate
     private LocalDateTime criadoEm;
 

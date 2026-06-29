@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Service;
 
+import com.Mybuddy.Myb.DTO.DadosUsuarioExportDTO;
 import com.Mybuddy.Myb.Exception.ConflictException;
 import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
 import com.Mybuddy.Myb.Model.Usuario;
@@ -58,6 +59,41 @@ public class UsuarioService {
         return usuarioRepository.save(usuarioExistente);
     }
 
+    @Transactional(readOnly = true)
+    public DadosUsuarioExportDTO exportarDadosUsuario(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com ID " + id + " não encontrado."));
+
+        List<DadosUsuarioExportDTO.InteresseExportDTO> interesses = interesseAdocaoRepository.findByUsuarioId(id)
+                .stream()
+                .map(i -> new DadosUsuarioExportDTO.InteresseExportDTO(
+                        i.getId(),
+                        i.getPet() != null ? i.getPet().getId() : null,
+                        i.getStatus() != null ? i.getStatus().name() : null,
+                        i.getCriadoEm()
+                ))
+                .toList();
+
+        List<DadosUsuarioExportDTO.PedidoExportDTO> pedidos = pedidoRepository.findByClienteId(id)
+                .stream()
+                .map(p -> new DadosUsuarioExportDTO.PedidoExportDTO(
+                        p.getId(),
+                        p.getStatus() != null ? p.getStatus().name() : null,
+                        p.getDataCriacao()
+                ))
+                .toList();
+
+        return new DadosUsuarioExportDTO(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getTelefone(),
+                usuario.getDataCriacao(),
+                interesses,
+                pedidos
+        );
+    }
+
     @Transactional
     public void deletarUsuario(Long id) {
         if (!usuarioRepository.existsById(id)) {
@@ -93,13 +129,15 @@ public class UsuarioService {
         for (Pedido pedido : pedidos) {
             EnderecoEntrega endereco = pedido.getEnderecoEntrega();
             if (endereco != null) {
-                endereco.setLogradouro("CLIENTE ANONIMIZADO");
-                endereco.setNumero("ANONIMIZADO");
-                endereco.setComplemento("ANONIMIZADO");
+                endereco.setLogradouro("ANONIMIZADO");
+                endereco.setNumero("0");
+                endereco.setComplemento(null);
                 endereco.setBairro("ANONIMIZADO");
                 endereco.setCep("00000000");
                 endereco.setCidade("ANONIMIZADO");
                 endereco.setEstado("AN");
+                endereco.setLatitude(null);
+                endereco.setLongitude(null);
             }
             pedidoRepository.save(pedido);
         }
@@ -107,9 +145,16 @@ public class UsuarioService {
         // 2. Anonimizar dados pessoais nas triagens de adoção
         List<InteresseAdocao> interesses = interesseAdocaoRepository.findByUsuarioId(id);
         for (InteresseAdocao interesse : interesses) {
-            interesse.setCpfAdotante("00000000000");
-            interesse.setMensagem("CONTEÚDO ANONIMIZADO PARA LGPD");
-            interesse.setMotivoAdocao("CONTEÚDO ANONIMIZADO PARA LGPD");
+            interesse.setCpfAdotante(null);
+            interesse.setIdadeAdotante(null);
+            interesse.setMensagem(null);
+            interesse.setMotivoAdocao(null);
+            interesse.setTipoResidencia(null);
+            interesse.setPossuiTelasProtecao(null);
+            interesse.setOutrosAnimais(null);
+            interesse.setTempoSozinhoHoras(null);
+            interesse.setTodosCientes(null);
+            interesse.setEspacoAdequado(null);
             interesse.setUsuario(null);
             interesseAdocaoRepository.save(interesse);
         }
