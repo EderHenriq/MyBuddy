@@ -1,0 +1,83 @@
+<div class="confirmacao-container">
+  <div class="confirmacao-card">
+    <!-- Badge de Simulação (Mock) -->
+    <div class="mock-badge" style="background: #fff8e1; border: 1px dashed #ffe082; padding: 6px 12px; border-radius: 8px; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 6px; color: #b78103; font-size: 0.8rem; font-weight: 700; width: 100%; justify-content: center;">
+      <span class="material-icons" style="font-size: 16px;">warning</span>
+      MODO DE SIMULAÇÃO DE PAGAMENTO (MOCK)
+    </div>
+
+    @if (status() === 'loading') {
+      <div class="status-icon loading">
+        <span class="material-icons">hourglass_empty</span>
+      </div>
+      <h2>Verificando pagamento...</h2>
+    }
+
+    @if (status() === 'APPROVED') {
+      <div class="status-icon approved">
+        <span class="material-icons">check_circle</span>
+      </div>
+      
+      @if (isMarketplace()) {
+        <h2>Pedido Realizado!</h2>
+        <p class="subtitle">Seu pedido #{{ pedidoId() }} no valor total de <strong>{{ totalPedido() | currency: 'BRL' }}</strong> foi registrado e enviado ao Petshop.</p>
+      } @else {
+        <h2>Pagamento Aprovado!</h2>
+        <p class="subtitle">Sua adoção foi confirmada com sucesso. Em breve você receberá mais informações.</p>
+      }
+    }
+
+    @if (status() === 'PENDING') {
+      <div class="status-icon pending">
+        <span class="material-icons">schedule</span>
+      </div>
+      <h2>Pagamento em Processamento</h2>
+      <p class="subtitle">Seu pagamento está sendo processado. Você será notificado quando for confirmado.</p>
+    }
+
+    @if (status() === 'REJECTED') {
+      <div class="status-icon rejected">
+        <span class="material-icons">cancel</span>
+      </div>
+      <h2>Pagamento Não Aprovado</h2>
+      <p class="subtitle">Houve um problema com seu pagamento. Tente novamente ou use outro meio de pagamento.</p>
+    }
+
+    @if (paymentId() && !isMarketplace()) {
+      <div class="payment-info">
+        <span class="label">Código da operação</span>
+        <span class="value">#{{ paymentId() }}</span>
+      </div>
+    }
+
+    <div class="confirmacao-actions">
+      @if (isMarketplace()) {
+        <button class="btn-primary" (click)="irParaPedidos()">
+          <span class="material-icons">shopping_bag</span>
+          Ver meus pedidos
+        </button>
+        <button class="btn-secondary" (click)="irParaProdutos()">
+          <span class="material-icons">arrow_back</span>
+          Continuar comprando
+        </button>
+      } @else {
+        @if (status() === 'APPROVED') {
+          <button class="btn-primary" (click)="irParaProdutos()">
+            <span class="material-icons">pets</span>
+            Ver mais pets
+          </button>
+        }
+        @if (status() === 'REJECTED') {
+          <button class="btn-primary" (click)="voltarParaInicio()">
+            <span class="material-icons">refresh</span>
+            Tentar novamente
+          </button>
+        }
+        <button class="btn-secondary" (click)="voltarParaInicio()">
+          <span class="material-icons">home</span>
+          Voltar ao início
+        </button>
+      }
+    </div>
+  </div>
+</div>

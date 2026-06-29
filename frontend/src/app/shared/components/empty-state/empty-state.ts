@@ -1,0 +1,21 @@
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+
+@Component({
+  selector: "app-empty-state",
+  standalone: true,
+  imports: [],
+  templateUrl: "./empty-state.html",
+  styleUrls: ["./empty-state.scss"],
+})
+export class EmptyState {
+  @Input() icon?: string;
+  @Input() imageUrl?: string;
+  @Input() title = "Nenhum resultado encontrado";
+  @Input() description?: string;
+  @Input() actionLabel?: string;
+  @Output() actionClick = new EventEmitter<void>();
+
+  onActionClick() {
+    this.actionClick.emit();
+  }
+}

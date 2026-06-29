@@ -1,0 +1,289 @@
+package com.Mybuddy.Myb.Service;
+
+import com.Mybuddy.Myb.DTO.InteresseResponse;
+import com.Mybuddy.Myb.DTO.RegistrarInteresseRequest;
+import com.Mybuddy.Myb.Model.*;
+import com.Mybuddy.Myb.Repository.mongo.InteresseAdocaoRepository;
+import com.Mybuddy.Myb.Repository.mongo.PetRepository;
+import com.Mybuddy.Myb.Exception.ResourceNotFoundException;
+import com.Mybuddy.Myb.Repository.mongo.UsuarioRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class InteresseAdocaoServiceTest {
+
+    @Mock
+    private InteresseAdocaoRepository interesseRepo;
+
+    @Mock
+    private UsuarioRepository usuarioRepo;
+
+    @Mock
+    private PetRepository petRepo;
+
+    @InjectMocks
+    private InteresseAdocaoService interesseAdocaoService;
+
+    private Usuario usuario;
+    private Pet pet;
+    private InteresseAdocao interesse;
+    private RegistrarInteresseRequest request;
+
+    @BeforeEach
+    void setUp() {
+        usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setNome("João");
+        usuario.setEmail("joao@email.com");
+
+        pet = new Pet();
+        pet.setId(1L);
+        pet.setNome("Rex");
+        pet.setStatusAdocao(StatusAdocao.DISPONIVEL);
+
+        interesse = new InteresseAdocao();
+        interesse.setId(1L);
+        interesse.setUsuario(usuario);
+        interesse.setPet(pet);
+        interesse.setMensagem("Quero adotar!");
+        interesse.setCpfAdotante("12345678901");
+        interesse.setIdadeAdotante(25);
+        interesse.setMotivoAdocao("Quero um companheiro");
+        interesse.setTipoResidencia("CASA");
+        interesse.setPossuiTelasProtecao(true);
+        interesse.setOutrosAnimais("Um cachorro pequeno");
+        interesse.setTempoSozinhoHoras(4);
+        interesse.setTodosCientes(true);
+        interesse.setEspacoAdequado(true);
+        interesse.setStatus(StatusInteresse.PENDENTE);
+
+        request = new RegistrarInteresseRequest(
+                1L,
+                "Quero adotar!",
+                "12345678901",
+                25,
+                "Quero um companheiro",
+                "CASA",
+                true,
+                "Um cachorro pequeno",
+                4,
+                true,
+                true,
+                true
+        );
+    }
+
+    // ===================== MANIFESTAR INTERESSE =====================
+
+    @Test
+    void deveManifestrarInteresseComSucesso() {
+        when(usuarioRepo.findById(1L)).thenReturn(Optional.of(usuario));
+        when(petRepo.findById(1L)).thenReturn(Optional.of(pet));
+        when(interesseRepo.existsByUsuarioAndPet(usuario, pet)).thenReturn(false);
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.manifestarInteresse(1L, request);
+
+        assertThat(result).isNotNull();
+        assertThat(result.tipoResidencia()).isEqualTo("CASA");
+        assertThat(result.possuiTelasProtecao()).isTrue();
+        assertThat(result.outrosAnimais()).isEqualTo("Um cachorro pequeno");
+        assertThat(result.tempoSozinhoHoras()).isEqualTo(4);
+        assertThat(result.todosCientes()).isTrue();
+        assertThat(result.espacoAdequado()).isTrue();
+        verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
+    }
+
+    @Test
+    void deveLancarExcecaoAoManifestarInteresseComUsuarioInexistente() {
+        when(usuarioRepo.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(99L, request))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Usuário não encontrado: 99");
+    }
+
+    @Test
+    void deveLancarExcecaoAoManifestarInteresseComPetInexistente() {
+        RegistrarInteresseRequest requestComPetInexistente = new RegistrarInteresseRequest(
+                99L,
+                "mensagem",
+                "12345678901",
+                25,
+                "Quero um companheiro",
+                "CASA",
+                true,
+                "Um cachorro pequeno",
+                4,
+                true,
+                true,
+                true
+        );
+        when(usuarioRepo.findById(1L)).thenReturn(Optional.of(usuario));
+        when(petRepo.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(1L, requestComPetInexistente))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Pet não encontrado: 99");
+    }
+
+    @Test
+    void deveLancarExcecaoAoManifestarInteresseComPetIndisponivel() {
+        pet.setStatusAdocao(StatusAdocao.ADOTADO);
+
+        when(usuarioRepo.findById(1L)).thenReturn(Optional.of(usuario));
+        when(petRepo.findById(1L)).thenReturn(Optional.of(pet));
+
+        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(1L, request))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Pet não está disponível para adoção");
+    }
+
+    @Test
+    void deveLancarExcecaoAoManifestarInteresseDuplicado() {
+        when(usuarioRepo.findById(1L)).thenReturn(Optional.of(usuario));
+        when(petRepo.findById(1L)).thenReturn(Optional.of(pet));
+        when(interesseRepo.existsByUsuarioAndPet(usuario, pet)).thenReturn(true);
+
+        assertThatThrownBy(() -> interesseAdocaoService.manifestarInteresse(1L, request))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Você já manifestou interesse neste pet");
+    }
+
+    // ===================== ATUALIZAR STATUS =====================
+
+    @Test
+    void deveAtualizarStatusInteresseComSucesso() {
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.REJEITADO);
+
+        assertThat(result).isNotNull();
+        verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtualizarStatusDeInteresseInexistente() {
+        when(interesseRepo.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> interesseAdocaoService.atualizarStatus(99L, StatusInteresse.APROVADO))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Interesse não encontrado: 99");
+    }
+
+    // ===================== LISTAR =====================
+
+    @Test
+    void deveListarInteressesPorUsuario() {
+        when(interesseRepo.findByUsuarioIdWithFetch(1L)).thenReturn(List.of(interesse));
+
+        List<InteresseResponse> result = interesseAdocaoService.listarPorUsuario(1L);
+
+        assertThat(result).hasSize(1);
+        verify(interesseRepo, times(1)).findByUsuarioIdWithFetch(1L);
+    }
+
+    @Test
+    void deveListarTodosInteresses() {
+        when(interesseRepo.findAllWithFetch()).thenReturn(List.of(interesse));
+
+        List<InteresseResponse> result = interesseAdocaoService.listarTodos();
+
+        assertThat(result).hasSize(1);
+        verify(interesseRepo, times(1)).findAllWithFetch();
+    }
+
+    @Test
+    void deveListarInteressesPorOrganizacao() {
+        when(interesseRepo.findByPetOrganizacaoIdWithFetch(1L)).thenReturn(List.of(interesse));
+
+        List<InteresseResponse> result = interesseAdocaoService.listarInteressesPorOrganizacao(1L);
+
+        assertThat(result).hasSize(1);
+        verify(interesseRepo, times(1)).findByPetOrganizacaoIdWithFetch(1L);
+    }
+
+    @Test
+    void deveRetornarListaVaziaQuandoNaoHouverInteressesPorUsuario() {
+        when(interesseRepo.findByUsuarioIdWithFetch(99L)).thenReturn(List.of());
+
+        List<InteresseResponse> result = interesseAdocaoService.listarPorUsuario(99L);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void deveAtualizarStatusInteresseQuandoForAdmin() {
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.REJEITADO, null, true);
+
+        assertThat(result).isNotNull();
+        verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
+    }
+
+    @Test
+    void deveAtualizarStatusInteresseQuandoForDonoDoPet() {
+        Organizacao org = new Organizacao();
+        org.setId(10L);
+        pet.setOrganizacao(org);
+
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.REJEITADO, 10L, false);
+
+        assertThat(result).isNotNull();
+        verify(interesseRepo, times(1)).save(any(InteresseAdocao.class));
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtualizarStatusQuandoNaoForDonoDoPet() {
+        Organizacao org = new Organizacao();
+        org.setId(10L);
+        pet.setOrganizacao(org);
+
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+
+        assertThatThrownBy(() -> interesseAdocaoService.atualizarStatus(1L, StatusInteresse.APROVADO, 20L, false))
+                .isInstanceOf(org.springframework.security.authorization.AuthorizationDeniedException.class)
+                .hasMessageContaining("Você não tem permissão para alterar o status deste interesse de adoção.");
+
+        verify(interesseRepo, never()).save(any());
+    }
+
+    @Test
+    void deveAtualizarStatusInteresseParaAprovadoEAtualizarPetERejeitarOutros() {
+        InteresseAdocao outroInteresse = new InteresseAdocao();
+        outroInteresse.setId(2L);
+        outroInteresse.setStatus(StatusInteresse.PENDENTE);
+
+        when(interesseRepo.findById(1L)).thenReturn(Optional.of(interesse));
+        when(petRepo.save(any(Pet.class))).thenReturn(pet);
+        when(interesseRepo.findByPetId(1L)).thenReturn(List.of(interesse, outroInteresse));
+        when(interesseRepo.save(any(InteresseAdocao.class))).thenReturn(interesse);
+
+        InteresseResponse result = interesseAdocaoService.atualizarStatus(1L, StatusInteresse.APROVADO, null, true);
+
+        assertThat(result).isNotNull();
+        assertThat(pet.getStatusAdocao()).isEqualTo(StatusAdocao.ADOTADO);
+        assertThat(outroInteresse.getStatus()).isEqualTo(StatusInteresse.REJEITADO);
+        verify(petRepo, times(1)).save(pet);
+        verify(interesseRepo, atLeastOnce()).save(any(InteresseAdocao.class));
+    }
+}

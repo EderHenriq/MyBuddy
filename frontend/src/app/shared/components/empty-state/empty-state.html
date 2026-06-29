@@ -1,0 +1,21 @@
+<div class="empty-state-container">
+  <div class="empty-state-visual">
+    @if (imageUrl) {
+      <img [src]="imageUrl" alt="Ilustração do Empty State" class="empty-state-img" />
+    } @else if (icon) {
+      <span class="material-icons empty-state-icon">{{ icon }}</span>
+    }
+  </div>
+
+  <div class="empty-state-content">
+    <h3 class="empty-state-title">{{ title }}</h3>
+
+    @if (description) {
+      <p class="empty-state-description">{{ description }}</p>
+    }
+  </div>
+
+  @if (actionLabel) {
+    <button class="btn-primary empty-state-action" (click)="onActionClick()">{{ actionLabel }}</button>
+  }
+</div>

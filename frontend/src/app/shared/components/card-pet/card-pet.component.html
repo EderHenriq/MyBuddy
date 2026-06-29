@@ -1,0 +1,101 @@
+<div class="card">
+  <div class="card-img">
+    <img [src]="cardImageUrl" [alt]="cardName" />
+
+    @if (cardBadgeText) {
+      <span class="pet-badge" [ngClass]="cardBadgeType">{{
+        cardBadgeText
+      }}</span>
+    }
+  </div>
+
+  <div class="card-header">
+    <h2>{{ cardName }}</h2>
+  </div>
+
+  <div class="card-informations">
+    <ul>
+      <li>Idade: {{ cardAge }}</li>
+      <li>Raça: {{ cardBreed }}</li>
+      <li>Sexo: {{ cardSex }}</li>
+      <li>Vacinado: {{ cardVaccinated }}</li>
+    </ul>
+  </div>
+
+  <footer class="card-actions">
+    @if (ongMode) {
+      <button class="btn-admin edit" (click)="editClick.emit($event)">
+        <span class="material-icons">edit</span>
+        Editar
+      </button>
+
+      <button class="btn-admin delete" (click)="deleteClick.emit($event)">
+        <span class="material-icons">delete</span>
+        Excluir
+      </button>
+    } @else {
+      <button class="infos" (click)="openModal()">
+        Mais informações
+        <span class="material-icons">keyboard_arrow_right</span>
+      </button>
+
+      @if (showFavoriteButton || cardIsFavorite) {
+        <button
+          class="favorite"
+          [class.active]="cardIsFavorite"
+          (click)="favoriteClick.emit($event); cliqueFavorito.emit($event)"
+        >
+          <span class="material-icons">{{
+            cardIsFavorite ? "favorite" : "favorite_border"
+          }}</span>
+        </button>
+      }
+    }
+  </footer>
+</div>
+
+@if (isModalVisible) {
+  <app-modal
+    [(visible)]="isModalVisible"
+    [title]="'Sobre o ' + cardName"
+    width="550px"
+    [showFooter]="true"
+    confirmLabel="Quero Adotar"
+    [backdropBlur]="true"
+    (confirm)="handleAdopt()"
+  >
+    <div class="pet-modal-content">
+      <div class="modal-image-wrapper">
+        <img [src]="cardImageUrl" [alt]="cardName" class="modal-image" />
+      </div>
+
+      <div class="modal-info">
+        <div class="modal-description">
+          <h4>Apresentação</h4>
+          <p>{{ cardDescription }}</p>
+        </div>
+
+        <h3 class="info-title">Informações</h3>
+
+        <div class="modal-tags">
+          <span class="tag">
+            <strong>Idade:</strong>
+            {{ cardAge }}
+          </span>
+          <span class="tag">
+            <strong>Raça:</strong>
+            {{ cardBreed }}
+          </span>
+          <span class="tag">
+            <strong>Sexo:</strong>
+            {{ cardSex }}
+          </span>
+          <span class="tag">
+            <strong>Vacinado:</strong>
+            {{ cardVaccinated }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+}

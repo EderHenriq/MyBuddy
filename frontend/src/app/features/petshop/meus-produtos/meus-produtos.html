@@ -1,0 +1,209 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Meus Produtos</h1>
+    <p>Gerencie o catálogo de produtos da sua loja.</p>
+  </div>
+
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Estoque Atual</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar produto..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+        <button
+          class="view-all-btn"
+          style="background-color: var(--primary-color, #ff7900); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700;"
+          (click)="abrirModalNovo()"
+        >
+          + Novo Produto
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Categoria</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of produtosPaginados; track item.id) {
+            <tr>
+              <td class="bold-text">{{ item.nome }}</td>
+              <td>{{ item.categoriaNome || item.subCategoriaNome || 'Geral' }}</td>
+              <td>{{ item.preco | currency: 'BRL' }}</td>
+              <td>
+                <span [style.color]="item.estoque === 0 ? '#c62828' : 'inherit'" [style.fontWeight]="item.estoque === 0 ? '700' : 'normal'">
+                  {{ item.estoque }} un
+                </span>
+              </td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.active]="item.status === 'ATIVO'"
+                  [class.pending]="item.status === 'INATIVO'"
+                  [class.blocked]="item.status === 'ESGOTADO'"
+                >
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell" style="display: flex; gap: 8px;">
+                <button class="action-btn" title="Editar Produto" (click)="abrirModalEditar(item)">
+                  <span class="material-icons">edit</span>
+                </button>
+                <button class="action-btn delete-btn" title="Excluir Produto" (click)="deletarProduto(item.id)">
+                  <span class="material-icons">delete</span>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
+  </section>
+
+  <!-- Modal de Adicionar/Editar Produto -->
+  @if (isModalAberto) {
+    <div class="modal-overlay">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2>{{ modoEdicao ? 'Editar Produto' : 'Cadastrar Novo Produto' }}</h2>
+          <button type="button" class="close-btn" (click)="fecharModal()">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        
+        <form (ngSubmit)="salvarProduto()" #prodForm="ngForm" class="modal-form">
+          <div class="form-group">
+            <label for="nome">Nome do Produto *</label>
+            <input type="text" id="nome" name="nome" [(ngModel)]="formProduto.nome" required placeholder="Ex: Ração Premier 15kg" />
+          </div>
+
+          <div class="form-row-grid grid-2">
+            <div class="form-group">
+              <label for="preco">Preço (R$) *</label>
+              <input type="number" id="preco" name="preco" [(ngModel)]="formProduto.preco" required min="0.01" step="0.01" placeholder="149.90" />
+            </div>
+            <div class="form-group">
+              <label for="estoque">Estoque (unidades) *</label>
+              <input type="number" id="estoque" name="estoque" [(ngModel)]="formProduto.estoque" required min="0" placeholder="10" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subCategoriaId">Subcategoria *</label>
+            <select id="subCategoriaId" name="subCategoriaId" [(ngModel)]="formProduto.subCategoriaId" required>
+              <option value="" disabled selected>Selecione uma subcategoria</option>
+              @for (cat of categorias; track cat.id) {
+                <optgroup [label]="cat.nome">
+                  @for (sub of cat.subcategorias; track sub.id) {
+                    <option [value]="sub.id">{{ sub.nome }}</option>
+                  }
+                </optgroup>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" name="descricao" [(ngModel)]="formProduto.descricao" rows="3" placeholder="Detalhes sobre o produto..."></textarea>
+          </div>
+
+          <!-- Ficha Técnica -->
+          <div class="ficha-tecnica-section">
+            <h3>Ficha Técnica</h3>
+            
+            <div class="form-row-grid grid-2">
+              <div class="form-group">
+                <label for="marca">Marca</label>
+                <input type="text" id="marca" name="marca" [(ngModel)]="formProduto.marca" placeholder="Ex: Premier, Zee.Dog" />
+              </div>
+              <div class="form-group">
+                <label for="origem">Origem</label>
+                <input type="text" id="origem" name="origem" [(ngModel)]="formProduto.origem" placeholder="Ex: Nacional, Importado" />
+              </div>
+            </div>
+
+            <div class="form-row-grid grid-3">
+              <div class="form-group">
+                <label for="porteRaca">Porte de Raça</label>
+                <input type="text" id="porteRaca" name="porteRaca" [(ngModel)]="formProduto.porteRaca" placeholder="Ex: Médio e Grande" />
+              </div>
+              <div class="form-group">
+                <label for="peso">Peso</label>
+                <input type="text" id="peso" name="peso" [(ngModel)]="formProduto.peso" placeholder="Ex: 15kg, 500g" />
+              </div>
+              <div class="form-group">
+                <label for="idade">Idade Recomendada</label>
+                <input type="text" id="idade" name="idade" [(ngModel)]="formProduto.idade" placeholder="Ex: Adultos, Filhotes" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload de Imagem -->
+          <div class="form-group photo-upload-group">
+            <label>Imagem do Produto</label>
+            
+            <div 
+              class="upload-area" 
+              [class.dragging]="isDragging"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event)"
+              (click)="fileInput.click()"
+            >
+              @if (imagemUrlInput) {
+                <div class="image-preview-wrapper" (click)="$event.stopPropagation()">
+                  <img [src]="imagemUrlInput.startsWith('http') ? imagemUrlInput : 'http://localhost:8081/uploads/' + imagemUrlInput" alt="Preview" />
+                  <button type="button" class="remove-btn" (click)="imagemUrlInput = ''" title="Remover Imagem">
+                    <span class="material-icons">close</span>
+                  </button>
+                </div>
+              } @else {
+                <span class="material-icons upload-icon">cloud_upload</span>
+                <p class="upload-title">Arraste uma imagem aqui ou clique para escolher</p>
+                <p class="upload-subtitle">Formatos suportados: PNG, JPG, JPEG, WEBP</p>
+              }
+              <input #fileInput type="file" id="imagemFile" (change)="onFileSelected($event)" accept="image/*" style="display: none;" />
+            </div>
+
+            <div class="divider-or">
+              <span>ou insira uma URL externa</span>
+            </div>
+
+            <div class="url-input-container">
+              <div class="input-with-icon">
+                <span class="material-icons field-icon">link</span>
+                <input 
+                  type="url" 
+                  id="imagemUrl" 
+                  name="imagemUrl" 
+                  [(ngModel)]="imagemUrlInput" 
+                  placeholder="https://exemplo.com/imagem.jpg" 
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancelar" (click)="fecharModal()">Cancelar</button>
+            <button type="submit" class="btn-salvar" [disabled]="!prodForm.valid">
+              {{ modoEdicao ? 'Salvar Alterações' : 'Cadastrar Produto' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

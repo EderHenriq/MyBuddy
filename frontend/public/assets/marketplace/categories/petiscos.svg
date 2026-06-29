@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
+  <defs>
+    <linearGradient id="boneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffcb77"/>
+      <stop offset="100%" stop-color="#ffa217"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="40" cy="40" r="38" fill="#fff9eb" />
+  <!-- Bone Cookie -->
+  <g transform="translate(10, 10)">
+    <!-- Diagonal Bone -->
+    <path d="M18 10 C14 10, 10 14, 10 18 C10 22, 14 26, 18 26 L42 26 C46 26, 50 22, 50 18 C50 14, 46 10, 42 10 Z" fill="url(#boneGrad)" transform="rotate(45, 30, 30)" />
+    <!-- Ends of bone -->
+    <circle cx="17.5" cy="17.5" r="7.5" fill="url(#boneGrad)" />
+    <circle cx="17.5" cy="32.5" r="7.5" fill="url(#boneGrad)" />
+    <circle cx="42.5" cy="17.5" r="7.5" fill="url(#boneGrad)" />
+    <circle cx="42.5" cy="32.5" r="7.5" fill="url(#boneGrad)" />
+    <!-- Cookie sprinkles/details -->
+    <rect x="26" y="22" width="8" height="2.5" rx="1" fill="#fff" transform="rotate(45, 30, 23)" />
+    <!-- Heart in center -->
+    <path d="M30 22 C29 20, 27 20, 26 21 C25 22, 25 24, 27 26 L30 29 L33 26 C35 24, 35 22, 34 21 C33 20, 31 20, 30 22 Z" fill="#e76f51" />
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
+  <defs>
+    <linearGradient id="pharmaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#52b788"/>
+      <stop offset="100%" stop-color="#2d6a4f"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="40" cy="40" r="38" fill="#e8f7f0" />
+  <!-- Medicine Bottle -->
+  <rect x="26" y="26" width="20" height="28" rx="4" fill="url(#pharmaGrad)" />
+  <rect x="30" y="20" width="12" height="6" rx="1" fill="#74c69d" />
+  <!-- Cross on bottle -->
+  <rect x="34" y="36" width="4" height="10" rx="1" fill="#fff" />
+  <rect x="31" y="39" width="10" height="4" rx="1" fill="#fff" />
+  <!-- Capsule pill -->
+  <g transform="translate(48, 46) rotate(30)">
+    <rect x="0" y="0" width="8" height="16" rx="4" fill="#ff7b00" />
+    <rect x="0" y="8" width="8" height="8" rx="0" fill="#fff" style="clip-path: inset(0px 0px 0px 0px round 0px 0px 4px 4px);"/>
+  </g>
+</svg>

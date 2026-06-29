@@ -1,0 +1,153 @@
+<div class="dashboard-container">
+  <div class="page-header-container">
+    <div class="page-header">
+      <h1>Relatórios de Vendas</h1>
+      <p>Acompanhe a performance financeira e os produtos mais vendidos da sua loja.</p>
+    </div>
+    
+    <div class="filter-actions">
+      <label for="periodo" class="filter-label">Filtrar Período:</label>
+      <select id="periodo" [(ngModel)]="periodoSelecionado" (change)="onPeriodoChange()" class="periodo-select">
+        <option value="7">Últimos 7 dias</option>
+        <option value="30">Últimos 30 dias</option>
+        <option value="90">Histórico Completo</option>
+      </select>
+    </div>
+  </div>
+
+  @if (isSimulationActive) {
+    <div class="simulation-badge">
+      <span class="material-icons">info</span>
+      <span><strong>Simulação Comercial Ativa:</strong> Exibindo métricas compiladas com base nas vendas locais e simulação de histórico.</span>
+    </div>
+  }
+
+  <!-- Grid de Métricas Principais -->
+  <div class="metrics-grid">
+    <div class="metric-card card-faturamento">
+      <div class="metric-icon">
+        <span class="material-icons">trending_up</span>
+      </div>
+      <div class="metric-details">
+        <span class="metric-title">Faturamento Total</span>
+        <h3 class="metric-value">{{ faturamentoTotal | currency: 'BRL' }}</h3>
+        <span class="metric-sub">No período selecionado</span>
+      </div>
+    </div>
+
+    <div class="metric-card card-pedidos">
+      <div class="metric-icon">
+        <span class="material-icons">shopping_bag</span>
+      </div>
+      <div class="metric-details">
+        <span class="metric-title">Total de Pedidos</span>
+        <h3 class="metric-value">{{ totalPedidos }}</h3>
+        <span class="metric-sub">Pedidos aprovados</span>
+      </div>
+    </div>
+
+    <div class="metric-card card-tiquete">
+      <div class="metric-icon">
+        <span class="material-icons">analytics</span>
+      </div>
+      <div class="metric-details">
+        <span class="metric-title">Tíquete Médio</span>
+        <h3 class="metric-value">{{ tiqueMedio | currency: 'BRL' }}</h3>
+        <span class="metric-sub">Valor médio por pedido</span>
+      </div>
+    </div>
+
+    <div class="metric-card card-itens">
+      <div class="metric-icon">
+        <span class="material-icons">inventory_2</span>
+      </div>
+      <div class="metric-details">
+        <span class="metric-title">Itens Vendidos</span>
+        <h3 class="metric-value">{{ totalItensVendidos }} un</h3>
+        <span class="metric-sub">Produtos comercializados</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reports-layout-grid">
+    <!-- Bloco 1: Gráfico Volumétrico 3D de Vendas -->
+    <div class="report-panel-card chart-panel">
+      <div class="panel-header">
+        <h3>Evolução de Vendas</h3>
+        <p>Acompanhamento do faturamento por período</p>
+      </div>
+
+      <div class="chart-outer-container">
+        <div class="chart-y-axis">
+          <span>R$ 20k</span>
+          <span>R$ 15k</span>
+          <span>R$ 10k</span>
+          <span>R$ 5k</span>
+          <span>R$ 0</span>
+        </div>
+        
+        <div class="chart-bars-wrapper-3d">
+          @for (item of dadosVendasMensais; track item.label) {
+            <div class="chart-bar-column">
+              <div class="bar-3d-container">
+                <!-- Wrapper que determina a altura da barra -->
+                <div class="bar-3d-prism-wrapper" [style.height]="item.altura">
+                  <div class="bar-3d-prism">
+                    <!-- Faces 3D da barra -->
+                    <div class="prism-face front"></div>
+                    <div class="prism-face side"></div>
+                    <div class="prism-face top"></div>
+                    <span class="prism-value-tooltip">{{ item.valor | currency: 'BRL': 'symbol': '1.0-0' }}</span>
+                  </div>
+                </div>
+              </div>
+              <span class="bar-label">{{ item.label }}</span>
+            </div>
+          }
+        </div>
+      </div>
+      
+      <div class="chart-legend">
+        <span class="legend-dot"></span>
+        <span class="legend-text">Faturamento Bruto Simulado</span>
+      </div>
+    </div>
+
+    <!-- Bloco 2: Ranking de Produtos Mais Vendidos -->
+    <div class="report-panel-card ranking-panel">
+      <div class="panel-header">
+        <h3>Produtos Mais Populares</h3>
+        <p>Top 5 produtos com maior volume de saídas</p>
+      </div>
+
+      <div class="ranking-list">
+        @for (item of topProdutos(); track item.nome; let idx = $index) {
+          <div class="ranking-item">
+            <div class="ranking-rank" [class.gold]="idx === 0" [class.silver]="idx === 1" [class.bronze]="idx === 2">
+              {{ idx + 1 }}
+            </div>
+            
+            <div class="ranking-info">
+              <div class="ranking-title-row">
+                <span class="ranking-name bold-text">{{ item.nome }}</span>
+                <span class="ranking-qty bold-text">{{ item.quantidade }} un</span>
+              </div>
+              
+              <div class="ranking-bar-wrapper">
+                <div class="ranking-progress-bar" [style.width]="item.percentual + '%'"></div>
+              </div>
+              
+              <div class="ranking-sub-row">
+                <span>Faturamento Gerado: <strong>{{ item.faturamento | currency: 'BRL' }}</strong></span>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-ranking" style="text-align: center; padding: 3rem; color: #888;">
+            Nenhum dado de vendas disponível para ranqueamento.
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

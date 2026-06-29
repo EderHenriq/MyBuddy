@@ -1,0 +1,22 @@
+@use '../dashboard/dashboard.scss';
+
+.status-badge {
+  &.active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  &.blocked {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}
+
+.action-btn {
+  background-color: #f4f6f8;
+  color: #6c757d;
+  &:hover {
+    background-color: #e0e4e8;
+    color: #1e1e2d;
+  }
+}

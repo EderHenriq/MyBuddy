@@ -1,0 +1,23 @@
+<div class="loja-card" (click)="cliqueLoja.emit()">
+  @if (taxaEntrega === 0) {
+    <span class="loja-badge frete-gratis">Frete Grátis</span>
+  }
+  <img [src]="urlLogo" [alt]="nomeLoja" class="loja-logo" />
+  <div class="loja-info">
+    <h4 class="loja-name" [title]="nomeLoja">{{ nomeLoja }}</h4>
+    <div class="loja-stats">
+      <span class="rating">
+        <i class="fas fa-star"></i>
+        {{ avaliacao | number: "1.1-1" }}
+      </span>
+      <span class="dot">•</span>
+      <span class="delivery-time">{{ tempoEntrega }}</span>
+      @if (taxaEntrega !== undefined && taxaEntrega !== 0) {
+        <span class="dot">•</span>
+        <span class="delivery-fee">
+          {{ taxaEntrega | currency: "BRL" : "symbol" : "1.2-2" }}
+        </span>
+      }
+    </div>
+  </div>
+</div>

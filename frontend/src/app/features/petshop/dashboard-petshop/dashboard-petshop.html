@@ -1,0 +1,109 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Painel de Vendas</h1>
+    <p>Acompanhe o desempenho da sua loja no marketplace.</p>
+  </div>
+
+  <section class="metrics-grid">
+    @for (metric of metrics(); track metric.title) {
+      <div class="metric-card">
+        <div class="metric-icon" [style.backgroundColor]="metric.color + '20'" [style.color]="metric.color">
+          <span class="material-icons">{{ metric.icon }}</span>
+        </div>
+        <div class="metric-info">
+          <h3>{{ metric.value }}</h3>
+          <p>{{ metric.title }}</p>
+        </div>
+      </div>
+    }
+  </section>
+
+  <div class="dashboard-row">
+    <!-- Gráfico Faturamento Semanal Sem Bibliotecas -->
+    <section class="dashboard-panel chart-panel">
+      <div class="panel-header">
+        <h2>Faturamento Semanal</h2>
+      </div>
+      <div class="chart-container-custom">
+        <div class="chart-y-axis">
+          <span>R$ 3.000</span>
+          <span>R$ 2.000</span>
+          <span>R$ 1.000</span>
+          <span>R$ 0</span>
+        </div>
+        <div class="chart-bars-wrapper">
+          @for (dado of dadosGrafico; track dado.dia) {
+            <div class="chart-bar-col">
+              <div class="chart-bar-fill-box">
+                <div 
+                  class="chart-bar-fill" 
+                  [style.height.%]="(dado.valor / 3000) * 100"
+                  [attr.title]="dado.valor | currency: 'BRL'"
+                >
+                  <span class="tooltip-val">{{ dado.valor | currency: 'BRL' }}</span>
+                </div>
+              </div>
+              <span class="chart-day-label">{{ dado.dia }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção de Últimos Pedidos Recebidos -->
+    <section class="dashboard-panel ultimos-pedidos-panel">
+      <div class="panel-header">
+        <h2>Últimos Pedidos Recebidos</h2>
+        <button class="view-all-btn" (click)="irPara('/petshop-panel/pedidos')">Ver Todos</button>
+      </div>
+
+      <div class="ultimos-pedidos-list">
+        @if (ultimosPedidos().length === 0) {
+          <div class="no-orders-placeholder">
+            <span class="material-icons">shopping_bag</span>
+            <p>Nenhum pedido recebido ainda.</p>
+          </div>
+        } @else {
+          <div class="mini-table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pedido</th>
+                  <th>Itens</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (ped of ultimosPedidos(); track ped.id) {
+                  <tr>
+                    <td class="bold-text">#{{ ped.id }}</td>
+                    <td class="text-ellipsis">
+                      {{ ped.itens[0]?.produto?.nome || 'Produto' }} 
+                      @if (ped.itens.length > 1) {
+                        (+{{ ped.itens.length - 1 }})
+                      }
+                    </td>
+                    <td>{{ ped.valorTotal | currency: 'BRL' }}</td>
+                    <td>
+                      <span 
+                        class="status-badge-mini"
+                        [class.active]="ped.status === 'DELIVERED' || ped.status === 'ENTREGUE'"
+                        [class.pending]="ped.status === 'PROCESSANDO' || ped.status === 'PENDENTE'"
+                        [class.shipping]="ped.status === 'EM_TRANSITO' || ped.status === 'A_CAMINHO'"
+                        [class.cancelled]="ped.status === 'CANCELADO'"
+                      >
+                        {{ ped.status }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</div>
+

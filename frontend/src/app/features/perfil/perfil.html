@@ -1,0 +1,479 @@
+<div class="profile-page-container">
+  <div class="profile-layout">
+    <aside class="profile-sidebar">
+      <nav class="sidebar-nav" aria-label="Navegação do perfil">
+        @for (item of navItems; track item.id) {
+          <button type="button" class="nav-item" [class.active]="activeTab() === item.id" (click)="selectTab(item.id)">
+            <i [class]="item.icon"></i>
+            <span>{{ item.label }}</span>
+          </button>
+        }
+      </nav>
+    </aside>
+
+    <main class="profile-content">
+      <section class="profile-header-card">
+        <div class="cover-photo">
+          <img [src]="user().profilePic" alt="" class="cover-photo-blur" aria-hidden="true" />
+        </div>
+        <div class="profile-info-overlay">
+          <div class="avatar-container">
+            <img [src]="user().profilePic" alt="Foto de perfil" class="profile-avatar" />
+          </div>
+          <div class="profile-title">
+            <h1 class="profile-name">{{ user().displayName }}</h1>
+            <p class="profile-role">{{ user().role }}</p>
+          </div>
+          <button type="button" class="btn-edit-profile" (click)="startEditing()">
+            <i class="far fa-pen-to-square"></i>
+            <span>Editar Perfil</span>
+          </button>
+        </div>
+      </section>
+
+      @if (saveMessage()) {
+        <div class="feedback-message" [class.error]="saveMessage().includes('Não foi')">
+          {{ saveMessage() }}
+        </div>
+      }
+
+      @if (activeTab() === 'inicio') {
+        <section class="dashboard-section">
+          <div class="stats-grid">
+            @for (item of stats(); track item.label) {
+              <article class="stat-card">
+                <strong>{{ item.value }}</strong>
+                <span>{{ item.label }}</span>
+              </article>
+            }
+          </div>
+
+          <article class="profile-summary">
+            <div>
+              <p class="eyebrow">Resumo</p>
+              <h2>{{ user().displayName }}</h2>
+              <p>{{ profileDescription() }}</p>
+            </div>
+            <div class="role-chip">
+              <i class="fas fa-shield-heart"></i>
+              <span>{{ user().role }}</span>
+            </div>
+          </article>
+
+          <section class="permissions-panel">
+            <div class="section-heading">
+              <p class="eyebrow">Roles</p>
+              <h2>Permissões ativas</h2>
+            </div>
+            <div class="permission-list">
+              @for (permission of rolePermissions(); track permission.label) {
+                <div class="permission-item" [class.disabled]="!permission.enabled">
+                  <i [class]="permission.enabled ? 'fas fa-check' : 'fas fa-lock'"></i>
+                  <span>{{ permission.label }}</span>
+                </div>
+              }
+            </div>
+          </section>
+        </section>
+      }
+
+      @if (activeTab() === 'dados') {
+        <section class="my-data-card">
+          <div class="section-heading with-action">
+            <div>
+              <p class="eyebrow">Cadastro</p>
+              <h2>Meus Dados</h2>
+            </div>
+            @if (!isEditing()) {
+              <button type="button" class="secondary-action" (click)="startEditing()">
+                <i class="far fa-pen-to-square"></i>
+                <span>Editar</span>
+              </button>
+            }
+          </div>
+
+          @if (!isEditing()) {
+            <div class="data-list">
+              @for (field of userFields(); track field.label) {
+                <div class="data-item">
+                  <span class="data-label">{{ field.label }}</span>
+                  <div class="data-field">
+                    <i [class]="field.icon"></i>
+                    <span class="data-value">{{ field.value }}</span>
+                  </div>
+                </div>
+              }
+              @for (field of roleFields(); track field.label) {
+                <div class="data-item">
+                  <span class="data-label">{{ field.label }}</span>
+                  <div class="data-field">
+                    <i [class]="field.icon"></i>
+                    <span class="data-value">{{ field.value }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+              <div class="form-grid">
+                <label class="form-field">
+                  <span>Nome responsável</span>
+                  <input type="text" formControlName="name" />
+                  @if (isFieldInvalid('name')) {
+                    <small>Informe ao menos 3 caracteres.</small>
+                  }
+                </label>
+
+                <label class="form-field">
+                  <span>E-mail</span>
+                  <input type="email" formControlName="email" />
+                  @if (isFieldInvalid('email')) {
+                    <small>Use um e-mail válido.</small>
+                  }
+                </label>
+
+                <label class="form-field">
+                  <span>Telefone</span>
+                  <input type="tel" formControlName="phone" />
+                  @if (isFieldInvalid('phone')) {
+                    <small>Informe um telefone válido.</small>
+                  }
+                </label>
+
+                <label class="form-field photo-upload-field">
+                  <span>Foto de perfil</span>
+                  <div
+                    class="upload-area"
+                    onclick="document.getElementById('profilePicUpload').click()"
+                    style="
+                      cursor: pointer;
+                      border: 1px dashed var(--border-color, #ccc);
+                      padding: 10px;
+                      border-radius: var(--radius-sm, 6px);
+                      display: flex;
+                      align-items: center;
+                      gap: 10px;
+                    "
+                  >
+                    @if (profilePicPreview()) {
+                      <img [src]="profilePicPreview()" alt="Preview" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover" />
+                    } @else if (user().profilePic) {
+                      <img [src]="user().profilePic" alt="Atual" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover" />
+                    } @else {
+                      <i class="fas fa-camera"></i>
+                    }
+                    <span style="color: var(--text-secondary, #666); font-size: 0.9rem">Clique para alterar a foto</span>
+                  </div>
+                  <input type="file" id="profilePicUpload" hidden accept="image/*" (change)="onProfilePicChange($event)" />
+                  @if (isFieldInvalid('profilePic')) {
+                    <small>É necessário selecionar uma foto de perfil.</small>
+                  }
+                </label>
+              </div>
+
+              @if (isBusinessProfile()) {
+                <div class="role-form-section">
+                  <div class="section-heading">
+                    <p class="eyebrow">{{ user().role }}</p>
+                    <h2>Dados da organização</h2>
+                  </div>
+
+                  <div class="form-grid">
+                    <label class="form-field">
+                      <span>{{ roleConfig().businessNameLabel }}</span>
+                      <input type="text" formControlName="organizationName" />
+                      @if (isFieldInvalid('organizationName')) {
+                        <small>Informe ao menos 3 caracteres.</small>
+                      }
+                    </label>
+
+                    <label class="form-field">
+                      <span>{{ roleConfig().businessDocumentLabel }}</span>
+                      <input type="text" formControlName="organizationCnpj" />
+                      @if (isFieldInvalid('organizationCnpj')) {
+                        <small>Informe o CNPJ.</small>
+                      }
+                    </label>
+
+                    <label class="form-field">
+                      <span>{{ roleConfig().businessEmailLabel }}</span>
+                      <input type="email" formControlName="organizationEmail" />
+                      @if (isFieldInvalid('organizationEmail')) {
+                        <small>Use um e-mail válido.</small>
+                      }
+                    </label>
+
+                    <label class="form-field">
+                      <span>{{ roleConfig().businessPhoneLabel }}</span>
+                      <input type="tel" formControlName="organizationPhone" />
+                      @if (isFieldInvalid('organizationPhone')) {
+                        <small>Informe um telefone válido.</small>
+                      }
+                    </label>
+
+                    <label class="form-field">
+                      <span>{{ roleConfig().businessAddressLabel }}</span>
+                      <input type="text" formControlName="organizationAddress" />
+                      @if (isFieldInvalid('organizationAddress')) {
+                        <small>Informe o endereço.</small>
+                      }
+                    </label>
+
+                    <label class="form-field">
+                      <span>Website</span>
+                      <input type="text" formControlName="organizationWebsite" />
+                    </label>
+                  </div>
+
+                  <label class="form-field full">
+                    <span>{{ roleConfig().businessDescriptionLabel }}</span>
+                    <textarea rows="4" formControlName="organizationDescription"></textarea>
+                    @if (isFieldInvalid('organizationDescription')) {
+                      <small>Use até 500 caracteres.</small>
+                    }
+                  </label>
+                </div>
+              }
+
+              <div class="toggle-grid">
+                <label>
+                  <input type="checkbox" formControlName="acceptsMessages" />
+                  <span>Aceitar mensagens</span>
+                </label>
+                <label>
+                  <input type="checkbox" formControlName="publicProfile" />
+                  <span>Perfil público</span>
+                </label>
+                <label>
+                  <input type="checkbox" formControlName="emailNotifications" />
+                  <span>Notificações por e-mail</span>
+                </label>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="ghost-action" (click)="cancelEditing()" [disabled]="isSaving()">Cancelar</button>
+                <button type="submit" class="primary-action" [disabled]="isSaving()">
+                  {{ isSaving() ? 'Salvando...' : 'Salvar alterações' }}
+                </button>
+              </div>
+            </form>
+          }
+        </section>
+      }
+
+      @if (activeTab() === 'pets') {
+        <section class="my-pets-section">
+          <div class="section-heading with-action">
+            <div>
+              <p class="eyebrow">Pets</p>
+              <h2>{{ buddiesTitle }}</h2>
+            </div>
+            @if (canManagePets()) {
+              <button type="button" class="secondary-action">
+                <i class="fas fa-plus"></i>
+                <span>Novo pet</span>
+              </button>
+            }
+          </div>
+          <div class="pets-grid">
+            @for (pet of isBusinessProfile() ? businessPets() : pets(); track pet.nome) {
+              <app-card-pet
+                [urlImagem]="pet.urlImagem"
+                [nome]="pet.nome"
+                [idade]="pet.idade"
+                [raca]="pet.raca"
+                [sexo]="pet.sexo"
+                [vacinado]="pet.vacinado"
+                [textoBadge]="pet.textoBadge"
+                [tipoBadge]="pet.tipoBadge"
+                [favorito]="pet.favorito"
+                [mostrarCoracaoTop]="pet.mostrarCoracaoTop"
+              ></app-card-pet>
+            }
+          </div>
+        </section>
+      }
+
+      @if (activeTab() === 'favoritos') {
+        <section class="my-pets-section">
+          <div class="section-heading">
+            <p class="eyebrow">Lista salva</p>
+            <h2>Pets Favoritados</h2>
+          </div>
+          <div class="pets-grid">
+            @for (pet of favoritePets(); track pet.nome) {
+              <app-card-pet
+                [urlImagem]="pet.urlImagem"
+                [nome]="pet.nome"
+                [idade]="pet.idade"
+                [raca]="pet.raca"
+                [sexo]="pet.sexo"
+                [vacinado]="pet.vacinado"
+                [textoBadge]="pet.textoBadge"
+                [tipoBadge]="pet.tipoBadge"
+                [favorito]="pet.favorito"
+                [mostrarCoracaoTop]="pet.mostrarCoracaoTop"
+                (cliqueFavorito)="removeFavorite(pet.nome)"
+              ></app-card-pet>
+            }
+          </div>
+        </section>
+      }
+
+      @if (activeTab() === 'mensagens') {
+        <section class="messages-panel">
+          <div class="section-heading with-action">
+            <div>
+              <p class="eyebrow">Conversas</p>
+              <h2>Minhas Mensagens</h2>
+            </div>
+            <button type="button" class="secondary-action" (click)="markAllMessagesAsRead()">
+              <i class="far fa-circle-check"></i>
+              <span>Marcar lidas</span>
+            </button>
+          </div>
+          <div class="message-list">
+            @for (message of messages(); track message.from) {
+              <article class="message-item" [class.unread]="message.unread">
+                <div>
+                  <strong>{{ message.from }}</strong>
+                  <p>{{ message.preview }}</p>
+                </div>
+                <span>{{ message.date }}</span>
+              </article>
+            }
+          </div>
+        </section>
+      }
+
+      @if (activeTab() === 'solicitacoes') {
+        <section class="requests-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Acompanhamento</p>
+            <h2>Minhas Solicitações de Adoção</h2>
+          </div>
+          <div class="requests-list" style="display: flex; flex-direction: column; gap: 1rem">
+            @if (solicitacoes().length === 0) {
+              <div class="empty-state" style="text-align: center; padding: 3rem; color: #666">
+                <i class="fas fa-clipboard-list fa-2x" style="margin-bottom: 1rem; color: #ccc"></i>
+                <p>Nenhuma solicitação de adoção no momento.</p>
+              </div>
+            }
+            @for (req of solicitacoes(); track req.petName) {
+              <article
+                class="request-item"
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 1rem;
+                  padding: 1.5rem;
+                  background: var(--surface-color, #fff);
+                  border-radius: 12px;
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                  border: 1px solid var(--border-color, #eaeaea);
+                "
+              >
+                <img [src]="req.imageUrl" [alt]="req.petName" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover" />
+                <div style="flex: 1">
+                  <h3 style="margin: 0; font-size: 1.25rem; color: var(--text-primary, #333)">{{ req.petName }}</h3>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary, #666); font-size: 0.9rem">ONG: {{ req.ongName }}</p>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary, #666); font-size: 0.85rem">Feita em: {{ req.date }}</p>
+                </div>
+                <div
+                  class="status-badge"
+                  [ngStyle]="{
+                    background:
+                      req.status === 'Em Análise'
+                        ? '#fff3cd'
+                        : req.status === 'Aprovada'
+                          ? '#d4edda'
+                          : req.status === 'Recusada'
+                            ? '#f8d7da'
+                            : '#e2e3e5',
+                    color:
+                      req.status === 'Em Análise'
+                        ? '#856404'
+                        : req.status === 'Aprovada'
+                          ? '#155724'
+                          : req.status === 'Recusada'
+                            ? '#721c24'
+                            : '#383d41',
+                    padding: '0.5rem 1rem',
+                    'border-radius': '20px',
+                    'font-size': '0.85rem',
+                    'font-weight': '600',
+                  }"
+                >
+                  {{ req.status }}
+                </div>
+              </article>
+            }
+          </div>
+        </section>
+      }
+
+      @if (activeTab() === 'historico') {
+        <section class="history-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Atividades</p>
+            <h2>Seu Histórico Recente</h2>
+          </div>
+
+          <div class="timeline-container">
+            @if ((historico().length === 0)) {
+              <div class="empty-state">
+                <i class="fas fa-history"></i>
+                <p>Nenhuma atividade registrada.</p>
+              </div>
+            }
+            @for (item of historico(); track item.id) {
+              <div class="timeline-item">
+                <div class="timeline-icon" [class]="item.tipo">
+                  <i [class]="item.icone"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-header">
+                    <h4>{{ item.acao }}</h4>
+                    <span class="timeline-date">{{ item.data }}</span>
+                  </div>
+                  <p>{{ item.descricao }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      @if (activeTab() === 'configuracoes') {
+        <section class="settings-panel">
+          <div class="section-heading">
+            <p class="eyebrow">Preferências</p>
+            <h2>Configurações</h2>
+          </div>
+          <div class="settings-grid">
+            <div class="setting-item">
+              <span>Mensagens</span>
+              <strong>{{ user().acceptsMessages ? 'Ativas' : 'Inativas' }}</strong>
+            </div>
+            <div class="setting-item">
+              <span>Visibilidade</span>
+              <strong>{{ user().publicProfile ? 'Pública' : 'Privada' }}</strong>
+            </div>
+            <div class="setting-item">
+              <span>E-mail</span>
+              <strong>{{ user().emailNotifications ? 'Recebe notificações' : 'Sem notificações' }}</strong>
+            </div>
+          </div>
+          <div class="settings-actions" style="display: flex; gap: 1rem; margin-top: 1.5rem">
+            <button type="button" class="primary-action compact" (click)="startEditing()">Editar preferências</button>
+            <button type="button" class="secondary-action compact" (click)="logout()" style="border-color: #dc3545; color: #dc3545">
+              <i class="fas fa-sign-out-alt"></i>
+              Sair do Sistema
+            </button>
+          </div>
+        </section>
+      }
+    </main>
+  </div>
+</div>
+<app-footer></app-footer>

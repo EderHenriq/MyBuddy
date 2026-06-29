@@ -112,6 +112,15 @@
         "clientRole": false,
         "containerId": "70a3c4dd-3b5e-4277-a190-5b6cfa6b6907",
         "attributes": {}
+      },
+      {
+        "id": "role-petshop-id",
+        "name": "PETSHOP",
+        "description": "Role para Petshops",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "70a3c4dd-3b5e-4277-a190-5b6cfa6b6907",
+        "attributes": {}
       }
     ],
     "client": {
@@ -503,6 +512,94 @@
       ],
       "notBefore": 0,
       "groups": []
+    },
+    {
+      "id": "user-id-test-0",
+      "username": "admin@mybuddy.com",
+      "email": "admin@mybuddy.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Senha123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ADMIN",
+        "default-roles-mybuddy"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "user-id-test-1",
+      "username": "user@mybuddy.com",
+      "email": "user@mybuddy.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Senha123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "USER",
+        "default-roles-mybuddy"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "user-id-test-2",
+      "username": "ong@mybuddy.com",
+      "email": "ong@mybuddy.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Senha123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ONG",
+        "default-roles-mybuddy"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "user-id-test-3",
+      "username": "petshop@mybuddy.com",
+      "email": "petshop@mybuddy.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Senha123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "PETSHOP",
+        "default-roles-mybuddy"
+      ],
+      "clientRoles": {}
     }
   ],
   "scopeMappings": [
@@ -791,7 +888,9 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://localhost:4200/*"
+        "http://localhost:4200/*",
+        "http://localhost/*",
+        "http://localhost:80/*"
       ],
       "webOrigins": [
         "*"
@@ -801,7 +900,7 @@
       "consentRequired": false,
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
+      "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": false,
       "publicClient": true,
       "frontchannelLogout": true,

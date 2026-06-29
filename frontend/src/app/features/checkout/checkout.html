@@ -1,0 +1,227 @@
+<main class="checkout-page">
+  <div class="checkout-container">
+    <div class="checkout-header">
+      <h1>Finalizar Compra</h1>
+      <p>Preencha os dados de entrega e finalize seu pedido no marketplace.</p>
+    </div>
+
+    <div class="checkout-grid">
+      <!-- Coluna Principal (Esquerda): Endereço e Métodos -->
+      <div class="col-main">
+        <!-- Card 1: Endereço de Entrega -->
+        <section class="checkout-card card-endereco">
+          <div class="card-header">
+            <span class="material-icons card-icon">local_shipping</span>
+            <h2>Endereço de Entrega</h2>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group col-4">
+              <label for="cep">CEP</label>
+              <div class="cep-input-group">
+                <input type="text" id="cep" [(ngModel)]="cep" placeholder="87013-000" maxlength="9" />
+                <button type="button" class="btn-cep-busca" (click)="simularCep()">Buscar</button>
+              </div>
+            </div>
+            <div class="form-group col-8">
+              <label for="rua">Rua/Avenida *</label>
+              <input type="text" id="rua" [(ngModel)]="rua" placeholder="Rua das Flores" required />
+            </div>
+            <div class="form-group col-4">
+              <label for="numero">Número *</label>
+              <input type="text" id="numero" [(ngModel)]="numero" placeholder="123" required />
+            </div>
+            <div class="form-group col-8">
+              <label for="complemento">Complemento</label>
+              <input type="text" id="complemento" [(ngModel)]="complemento" placeholder="Apto 42, Bloco B" />
+            </div>
+            <div class="form-group col-4">
+              <label for="bairro">Bairro *</label>
+              <input type="text" id="bairro" [(ngModel)]="bairro" placeholder="Centro" required />
+            </div>
+            <div class="form-group col-5">
+              <label for="cidade">Cidade *</label>
+              <input type="text" id="cidade" [(ngModel)]="cidade" placeholder="Maringá" required />
+            </div>
+            <div class="form-group col-3">
+              <label for="estado">Estado *</label>
+              <input type="text" id="estado" [(ngModel)]="estado" placeholder="PR" required />
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 2: Método de Pagamento -->
+        <section class="checkout-card card-pagamento">
+          <div class="card-header">
+            <span class="material-icons card-icon">payment</span>
+            <h2>Forma de Pagamento</h2>
+          </div>
+
+          <div class="payment-selector-tabs">
+            <button 
+              type="button" 
+              class="tab-btn" 
+              [class.active]="metodoPagamento === 'pix'" 
+              (click)="metodoPagamento = 'pix'"
+            >
+              <span class="material-icons">qr_code_2</span>
+              Pix (Instântaneo)
+            </button>
+            <button 
+              type="button" 
+              class="tab-btn" 
+              [class.active]="metodoPagamento === 'cartao'" 
+              (click)="metodoPagamento = 'cartao'"
+            >
+              <span class="material-icons">credit_card</span>
+              Cartão de Crédito
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Coluna Lateral (Direita): Resumo e Confirmação -->
+      <div class="col-side">
+        <!-- Card 3: Resumo do Pedido -->
+        <section class="checkout-card card-resumo">
+          <div class="card-header">
+            <h2>Resumo da Compra</h2>
+          </div>
+
+          <div class="resumo-itens-list">
+            @for (grupo of lojasAgrupadas; track grupo.petshopId) {
+              <div class="checkout-grupo-loja" style="margin-bottom: 1.5rem; border-bottom: 1px solid #f0f0f0; padding-bottom: 1rem;">
+                <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--primary-color, #ff7900); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px;">
+                  <span class="material-icons" style="font-size: 18px;">store</span>
+                  Pacote - {{ grupo.lojaNome }} (Taxa: {{ grupo.taxaEntrega | currency: 'BRL' }})
+                </h3>
+                @for (item of grupo.itens; track item.id) {
+                  <div class="resumo-item" style="margin-bottom: 0.75rem;">
+                    <img [src]="item.urlImagem" [alt]="item.nome" class="resumo-img" />
+                    <div class="resumo-info">
+                      <h4>{{ item.nome }}</h4>
+                      <span class="resumo-qty-price">{{ item.quantidade }}x {{ item.preco | currency: 'BRL' }}</span>
+                    </div>
+                    <div class="resumo-total-item">
+                      {{ (item.preco * item.quantidade) | currency: 'BRL' }}
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Seção de Cupom de Desconto -->
+          <div class="checkout-cupom-box" style="margin-top: 1.5rem; background: #f8f9fa; border: 1px solid #eef2f5; border-radius: 12px; padding: 1rem;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: #48484f; display: block; margin-bottom: 6px;">Cupom de Desconto</label>
+            @if (!cupomAplicado) {
+              <div class="cupom-input-group" style="display: flex; gap: 8px;">
+                <input type="text" [(ngModel)]="codigoCupom" placeholder="Ex: BUDDY10" style="flex: 1; height: 38px; padding: 0 10px; border-radius: 8px; border: 1px solid #ddd; text-transform: uppercase;" />
+                <button type="button" (click)="aplicarCupom()" style="background-color: var(--primary-color, #ff7900); color: white; border: none; padding: 0 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.85rem;">Aplicar</button>
+              </div>
+            } @else {
+              <div class="cupom-aplicado-badge" style="display: flex; align-items: center; justify-content: space-between; background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 8px; padding: 6px 12px; color: #2e7d32; font-size: 0.85rem; font-weight: 700;">
+                <span style="display: flex; align-items: center; gap: 4px;">
+                  <span class="material-icons" style="font-size: 16px;">local_offer</span>
+                  {{ cupomAplicado.codigo }} ({{ cupomAplicado.percentualDesconto }}% OFF)
+                </span>
+                <button type="button" (click)="removerCupom()" style="background: transparent; border: none; color: #c62828; cursor: pointer; display: flex; align-items: center;"><span class="material-icons" style="font-size: 18px;">close</span></button>
+              </div>
+            }
+          </div>
+
+          <div class="resumo-valores" style="margin-top: 1.5rem;">
+            <div class="valores-row">
+              <span>Subtotal:</span>
+              <span>{{ totalSubtotal | currency: 'BRL' }}</span>
+            </div>
+            <div class="valores-row">
+              <span>Taxa de Entrega total:</span>
+              <span class="frete-valor">{{ totalFrete | currency: 'BRL' }}</span>
+            </div>
+            @if (totalDesconto > 0) {
+              <div class="valores-row" style="color: #2e7d32; font-weight: 700;">
+                <span>Desconto Cupom:</span>
+                <span>-{{ totalDesconto | currency: 'BRL' }}</span>
+              </div>
+            }
+            <hr class="resumo-divisor" />
+            <div class="valores-row total-row">
+              <span>Total Geral:</span>
+              <strong class="total-valor-geral">{{ totalGeral | currency: 'BRL' }}</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 4: Detalhes do Pagamento / Simulador (Mock) -->
+        <section class="checkout-card card-pagamento-box">
+          <div class="mock-alert-banner">
+            <span class="material-icons">warning</span>
+            <div>
+              <strong>MODO MOCK ATIVO</strong>
+              <p>Simulador de pagamento ativo para testes locais.</p>
+            </div>
+          </div>
+
+          <div class="pagamento-opcao-conteudo">
+            @if (metodoPagamento === 'pix') {
+              <div class="pix-simulacao-box">
+                <div class="qr-code-placeholder">
+                  <span class="material-icons qr-icon">qr_code</span>
+                  <p>QR Code Simulado</p>
+                </div>
+                <p class="pix-instrucoes">Escaneie o QR Code acima ou use a chave Copia e Cola para realizar o pagamento mock.</p>
+                <div class="pix-copia-cola">
+                  <input type="text" value="00020126580014BR.GOV.BCB.PIX0136mybuddy-mock-payment-key" readonly />
+                  <button type="button" class="btn-copy">Copiar</button>
+                </div>
+                <button type="button" class="btn-pagar-principal" (click)="realizarPagamentoMock()">
+                  Confirmar Pagamento Simulado (Pix)
+                </button>
+              </div>
+            }
+
+            @if (metodoPagamento === 'cartao') {
+              <div class="cartao-simulacao-box">
+                <div class="form-group">
+                  <label for="card-num">Número do Cartão *</label>
+                  <input type="text" id="card-num" [(ngModel)]="numeroCartao" placeholder="4562 8794 1234 5678" maxlength="19" required />
+                </div>
+                <div class="form-group">
+                  <label for="card-name">Nome do Titular *</label>
+                  <input type="text" id="card-name" [(ngModel)]="nomeTitular" placeholder="JOÃO S SILVA" required />
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="card-exp">Validade *</label>
+                    <input type="text" id="card-exp" [(ngModel)]="validade" placeholder="12/29" maxlength="5" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="card-cvv">CVV *</label>
+                    <input type="password" id="card-cvv" [(ngModel)]="cvv" placeholder="123" maxlength="3" required />
+                  </div>
+                </div>
+                <button type="button" class="btn-pagar-principal" (click)="realizarPagamentoMock()">
+                  Confirmar Pagamento Simulado (Cartão)
+                </button>
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Processamento/Spinner -->
+  @if (isProcessando) {
+    <div class="processing-overlay">
+      <div class="processing-box">
+        <span class="material-icons spin-loader">autorenew</span>
+        <h3>Processando Pedido</h3>
+        <p>{{ mensagemProgresso }}</p>
+      </div>
+    </div>
+  }
+</main>
+
+<app-footer></app-footer>

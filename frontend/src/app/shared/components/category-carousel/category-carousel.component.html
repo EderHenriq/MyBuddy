@@ -1,0 +1,12 @@
+<div class="category-carousel">
+  <div class="carousel-track">
+    @for (cat of categorias; track cat.id) {
+      <button class="category-item" (click)="cliqueCategoria.emit(cat)">
+        <div class="image-wrapper">
+          <img [src]="cat.urlImagem" [alt]="cat.nome" />
+        </div>
+        <span class="category-name">{{ cat.nome }}</span>
+      </button>
+    }
+  </div>
+</div>

@@ -1,0 +1,222 @@
+<main class="meus-pedidos-page">
+  <div class="pedidos-container">
+    <div class="page-header">
+      <h1>Meus Pedidos</h1>
+      <p>Acompanhe o status e histórico de suas compras no marketplace.</p>
+    </div>
+
+    @if (loading() && pedidos().length === 0) {
+      <div class="loading-state">
+        <span class="material-icons spin-loader">autorenew</span>
+        <p>Buscando histórico de pedidos...</p>
+      </div>
+    } @else if (pedidos().length === 0) {
+      <div class="empty-state-pedidos">
+        <span class="material-icons empty-icon">shopping_bag</span>
+        <h3>Nenhum pedido encontrado</h3>
+        <p>Você ainda não realizou nenhuma compra no marketplace do MyBuddy.</p>
+        <a routerLink="/produtos" class="btn-comprar">Ir para a Loja</a>
+      </div>
+    } @else {
+      <div class="pedidos-grid">
+        <!-- Lista de Pedidos (Esquerda) -->
+        <div class="pedidos-list">
+          @for (pedido of pedidos(); track pedido.id) {
+            <div 
+              class="pedido-card" 
+              [class.active]="pedidoSelecionado()?.id === pedido.id" 
+              (click)="selecionarPedido(pedido)"
+            >
+              <div class="card-top">
+                <span class="pedido-id">Pedido #{{ pedido.id }}</span>
+                <span class="pedido-data">{{ pedido.dataCriacao | date: 'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <div class="card-mid">
+                <div class="loja-info">
+                  <span class="material-icons">storefront</span>
+                  <span>{{ pedido.petshop?.nomeFantasia || 'Petshop Parceiro' }}</span>
+                </div>
+                <div class="total-info">
+                  <span>Total:</span>
+                  <strong>{{ pedido.valorTotal | currency: 'BRL' }}</strong>
+                </div>
+              </div>
+              <div class="card-bottom">
+                <span 
+                  class="status-badge"
+                  [class.processando]="pedido.status === 'PROCESSANDO' || pedido.status === 'PENDENTE'"
+                  [class.transito]="pedido.status === 'EM_TRANSITO' || pedido.status === 'A_CAMINHO'"
+                  [class.entregue]="pedido.status === 'ENTREGUE'"
+                  [class.cancelado]="pedido.status === 'CANCELADO'"
+                >
+                  {{ pedido.status === 'PROCESSANDO' ? 'Processando' : pedido.status === 'PENDENTE' ? 'Pendente' : pedido.status === 'EM_TRANSITO' || pedido.status === 'A_CAMINHO' ? 'A Caminho' : pedido.status === 'ENTREGUE' ? 'Entregue' : 'Cancelado' }}
+                </span>
+                
+                @if (pedido.status === 'PROCESSANDO' || pedido.status === 'PENDENTE') {
+                  <button type="button" class="btn-cancelar-pedido" (click)="cancelarPedido(pedido.id, $event)">
+                    Cancelar
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Detalhes do Pedido Selecionado (Direita) -->
+        <div class="pedido-detalhes-painel">
+          @if (pedidoSelecionado()) {
+            <div class="detalhes-card">
+              <div class="detalhes-header">
+                <h2>Detalhes do Pedido #{{ pedidoSelecionado()!.id }}</h2>
+                <button type="button" class="btn-fechar" (click)="fecharDetalhes()">
+                  <span class="material-icons">close</span>
+                </button>
+              </div>
+
+              <!-- Status Rastreamento (Timeline) -->
+              @if (pedidoSelecionado()!.status !== 'CANCELADO') {
+                <div class="timeline-container">
+                  <h3>Acompanhar Entrega</h3>
+                  <div class="timeline">
+                    <div class="timeline-progress-bar">
+                      <div class="progress-fill" [style.width.%]="obterEtapaTimeline(pedidoSelecionado()!.status) * 33.3"></div>
+                    </div>
+                    <div class="timeline-step" [class.completed]="obterEtapaTimeline(pedidoSelecionado()!.status) >= 0">
+                      <div class="step-circle"><span class="material-icons">receipt</span></div>
+                      <span>Confirmado</span>
+                    </div>
+                    <div class="timeline-step" [class.completed]="obterEtapaTimeline(pedidoSelecionado()!.status) >= 1">
+                      <div class="step-circle"><span class="material-icons">inventory_2</span></div>
+                      <span>Preparando</span>
+                    </div>
+                    <div class="timeline-step" [class.completed]="obterEtapaTimeline(pedidoSelecionado()!.status) >= 2">
+                      <div class="step-circle"><span class="material-icons">local_shipping</span></div>
+                      <span>A Caminho</span>
+                    </div>
+                    <div class="timeline-step" [class.completed]="obterEtapaTimeline(pedidoSelecionado()!.status) >= 3">
+                      <div class="step-circle"><span class="material-icons">done_all</span></div>
+                      <span>Entregue</span>
+                    </div>
+                  </div>
+                </div>
+              } @else {
+                <div class="pedido-cancelado-banner">
+                  <span class="material-icons">cancel</span>
+                  <div>
+                    <strong>Pedido Cancelado</strong>
+                    <p>Este pedido foi cancelado e não prosseguirá com a entrega.</p>
+                  </div>
+                </div>
+              }
+
+              <!-- Lista de Itens do Pedido -->
+              <div class="detalhes-section">
+                <h3>Itens Comprados</h3>
+                <div class="itens-comprados-list">
+                  @for (item of pedidoSelecionado()!.itens; track item.id) {
+                    <div class="compra-item-row" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f9f9f9; padding: 12px 0;">
+                      <div style="display: flex; align-items: center; gap: 12px;">
+                        <img [src]="item.produto?.urlImagem || item.produto?.imagens?.[0]" [alt]="item.produto?.nome" class="item-img" style="width: 48px; height: 48px; border-radius: 8px; object-fit: contain; background: #fafafa; border: 1px solid #eee;" />
+                        <div class="item-info">
+                          <h4 style="margin: 0; font-size: 0.9rem; font-weight: 700; color: #333;">{{ item.produto?.nome }}</h4>
+                          <span class="item-qty-price" style="font-size: 0.8rem; color: #777;">{{ item.quantidade }}x {{ item.precoUnitario | currency: 'BRL' }}</span>
+                        </div>
+                      </div>
+                      <div class="item-total-preco" style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                        <span style="font-weight: 700; color: #333; font-size: 0.9rem;">{{ (item.precoUnitario * item.quantidade) | currency: 'BRL' }}</span>
+                        @if (pedidoSelecionado()!.status === 'ENTREGUE') {
+                          <button type="button" class="btn-avaliar-item" (click)="abrirModalAvaliacao(item.produto)" style="background-color: var(--primary-color, #ff7900); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: background-color 0.2s;">
+                            <span class="material-icons" style="font-size: 14px;">star</span>
+                            Avaliar
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Endereço de Entrega -->
+              <div class="detalhes-section">
+                <h3>Endereço de Entrega</h3>
+                <div class="endereco-box">
+                  <span class="material-icons">place</span>
+                  <p>
+                    {{ pedidoSelecionado()!.enderecoEntrega?.rua || 'Endereço Simulado' }}, Bairro {{ pedidoSelecionado()!.enderecoEntrega?.bairro || 'Centro' }} - {{ pedidoSelecionado()!.enderecoEntrega?.cidade || 'Cidade' }}/{{ pedidoSelecionado()!.enderecoEntrega?.uf || 'UF' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Totais -->
+              <div class="detalhes-section totais-detalhes">
+                <div class="total-row">
+                  <span>Subtotal:</span>
+                  <span>{{ (pedidoSelecionado()!.valorTotal - 15.0) | currency: 'BRL' }}</span>
+                </div>
+                <div class="total-row">
+                  <span>Taxa de Entrega:</span>
+                  <span class="frete-valor">R$ 15,00</span>
+                </div>
+                <hr class="detalhes-divisor" />
+                <div class="total-row grand-total">
+                  <span>Total Geral:</span>
+                  <strong>{{ pedidoSelecionado()!.valorTotal | currency: 'BRL' }}</strong>
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="no-selection-placeholder">
+              <span class="material-icons">info</span>
+              <h3>Nenhum pedido selecionado</h3>
+              <p>Selecione um pedido na lista ao lado para ver o progresso detalhado de entrega e itens comprados.</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Modal de Avaliação de Produto -->
+  @if (isModalAvaliacaoAberto) {
+    <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center;">
+      <div class="modal-container" style="background: white; border-radius: 20px; width: 90%; max-width: 450px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 1.25rem;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 0.75rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0; color: #1a1a1a;">Avaliar Produto</h2>
+          <button type="button" (click)="fecharModalAvaliacao()" style="background: transparent; border: none; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%;"><span class="material-icons">close</span></button>
+        </div>
+
+        <div class="product-mini-info" style="display: flex; align-items: center; gap: 12px; background: #f8f9fa; padding: 10px; border-radius: 10px; border: 1px solid #eef2f5;">
+          <img [src]="produtoParaAvaliar?.urlImagem || produtoParaAvaliar?.imagens?.[0]" [alt]="produtoParaAvaliar?.nome" style="width: 48px; height: 48px; border-radius: 6px; object-fit: contain; background: white; border: 1px solid #eee;" />
+          <h4 style="font-size: 0.9rem; font-weight: 700; margin: 0; color: #333; line-height: 1.3;">{{ produtoParaAvaliar?.nome }}</h4>
+        </div>
+
+        <!-- Seletor de Estrelas -->
+        <div class="star-rating-selector" style="display: flex; justify-content: center; gap: 8px; margin: 0.5rem 0;">
+          @for (star of [1,2,3,4,5]; track star) {
+            <span 
+              class="material-icons" 
+              (click)="notaAvaliacao = star" 
+              style="font-size: 38px; cursor: pointer; transition: color 0.15s; user-select: none;"
+              [style.color]="notaAvaliacao >= star ? '#ffc107' : '#e0e0e0'"
+            >
+              star
+            </span>
+          }
+        </div>
+
+        <!-- Comentário -->
+        <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-weight: 700; font-size: 0.88rem; color: #48484f;">Seu comentário</label>
+          <textarea [(ngModel)]="comentarioAvaliacao" rows="3" placeholder="O que achou deste produto? (Qualidade, entrega, etc.)" style="padding: 12px; border-radius: 10px; border: 2px solid #eef2f5; font: inherit; outline: none; resize: vertical; font-size: 0.9rem; color: #333;"></textarea>
+        </div>
+
+        <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1.25rem;">
+          <button type="button" (click)="fecharModalAvaliacao()" style="background: #f4f6f8; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; color: #555; font-size: 0.9rem;">Cancelar</button>
+          <button type="button" (click)="enviarAvaliacao()" [disabled]="notaAvaliacao === 0" style="background-color: var(--primary-color, #ff7900); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(255, 121, 0, 0.2);" [style.opacity]="notaAvaliacao === 0 ? 0.6 : 1">Enviar Avaliação</button>
+        </div>
+      </div>
+    </div>
+  }
+</main>
+
+<app-footer></app-footer>

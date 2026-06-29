@@ -1,0 +1,21 @@
+<div class="card-avaliacao">
+  <div class="avaliacao-header">
+    <div class="avatar-cliente">
+      {{ inicialNome }}
+    </div>
+    <div class="info-cliente">
+      <div class="nome-cliente">{{ nomeCliente }}</div>
+      <div class="data-avaliacao">{{ data }}</div>
+    </div>
+    <div class="estrelas-container">
+      @for (preenchida of estrelas; track $index) {
+        <span class="material-icons star" [class.filled]="preenchida">
+          {{ preenchida ? 'star' : 'star_border' }}
+        </span>
+      }
+    </div>
+  </div>
+  <div class="avaliacao-body">
+    <p>{{ comentario }}</p>
+  </div>
+</div>

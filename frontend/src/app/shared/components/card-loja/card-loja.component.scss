@@ -1,0 +1,115 @@
+.loja-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.25rem 1rem;
+  min-width: 170px;
+  max-width: 240px;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-card);
+  border: 1.5px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+    box-shadow: 0 12px 28px rgba(255, 123, 0, 0.1);
+
+    .loja-logo {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.loja-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 8px;
+  border-radius: var(--radius-max);
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em;
+
+  &.frete-gratis {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.aberta {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+}
+
+.loja-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-md);
+  border: 3px solid var(--surface-card);
+  transition: transform 0.3s ease;
+}
+
+.loja-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.loja-name {
+  font-size: 1rem;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--text-color);
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.loja-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-size: var(--font-size-xs);
+  color: #888;
+  width: 100%;
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-color);
+    
+    i {
+      color: #ffc107;
+      font-size: 0.7rem;
+    }
+  }
+
+  .dot {
+    font-size: 0.4rem;
+    color: #ccc;
+  }
+
+  .delivery-time {
+    white-space: nowrap;
+  }
+}
+
+.delivery-fee {
+  font-weight: var(--font-weight-semibold);
+  color: #666;
+}

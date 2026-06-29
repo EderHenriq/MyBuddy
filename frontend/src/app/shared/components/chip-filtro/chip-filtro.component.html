@@ -1,0 +1,4 @@
+<button class="chip-btn" [class.active]="active" (click)="chipClick.emit()">
+  <span class="chip-label">{{ label }}</span>
+  <i *ngIf="iconClass" [class]="iconClass" class="chip-icon"></i>
+</button>

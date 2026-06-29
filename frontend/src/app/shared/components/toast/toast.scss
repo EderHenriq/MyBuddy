@@ -1,0 +1,110 @@
+@use '../../../../styles/mixins' as *;
+
+.toast-container {
+  position: fixed;
+  bottom: var(--spacing-md);
+  right: var(--spacing-md);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  pointer-events: none;
+}
+
+.toast-item {
+  display: flex;
+  align-items: flex-start;
+  background-color: var(--surface-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-sm);
+  width: 320px;
+  max-width: calc(100vw - var(--spacing-xl));
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  border-left: 6px solid;
+
+  animation: toastSlideIn 0.3s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(100%) scale(0.95);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toast-icon {
+  @include flex-center;
+  margin-right: var(--spacing-xs);
+
+  .material-icons {
+    font-size: 24px;
+  }
+}
+
+.toast-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  .toast-title {
+    margin: 0 0 var(--spacing-xxs, 4px) 0;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-color);
+  }
+
+  .toast-message {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-color-secondary);
+    line-height: var(--line-height-sm);
+  }
+}
+
+.toast-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  margin-left: var(--spacing-xs);
+  @include flex-center;
+  border-radius: var(--radius-max);
+  transition: background-color 0.2s cubic-bezier(0.4,0,0.2,1), color 0.2s cubic-bezier(0.4,0,0.2,1);
+
+  &:hover {
+    background-color: rgba(0,0,0,0.05);
+    color: var(--text-color);
+  }
+
+  .material-icons {
+    font-size: 18px;
+  }
+}
+
+/* Variations */
+.toast-success {
+  border-left-color: var(--secondary-color);
+  .toast-icon { color: var(--secondary-color); }
+}
+
+.toast-error {
+  border-left-color: #dc3545;
+  .toast-icon { color: #dc3545; }
+}
+
+.toast-warning {
+  border-left-color: #ffc107;
+  .toast-icon { color: #ffc107; }
+}
+
+.toast-info {
+  border-left-color: #17a2b8;
+  .toast-icon { color: #17a2b8; }
+}

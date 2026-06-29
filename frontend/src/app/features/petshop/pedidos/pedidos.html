@@ -1,0 +1,75 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Pedidos</h1>
+    <p>Acompanhe e gerencie as compras feitas na sua loja.</p>
+  </div>
+
+  <section class="dashboard-panel">
+    <div class="panel-header">
+      <h2>Lista de Pedidos</h2>
+      <div class="panel-actions">
+        <div class="panel-search-box">
+          <input type="text" placeholder="Buscar pedido..." appDebounce (debounceOutput)="onSearch($event)" />
+          <span class="material-icons">search</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID Pedido</th>
+            <th>Cliente</th>
+            <th>Valor</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+            @for (item of pedidosPaginados; track item.id) {
+              <tr>
+                <td>#{{ item.id }}</td>
+                <td class="bold-text">{{ item.cliente?.nome || 'Adotante MyBuddy' }}</td>
+                <td>{{ item.valorTotal | currency: 'BRL' }}</td>
+                <td>{{ item.dataCriacao | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.pending]="item.status === 'PROCESSANDO' || item.status === 'PENDENTE'"
+                    [class.active]="item.status === 'ENTREGUE'"
+                    [class.blocked]="item.status === 'EM_TRANSITO' || item.status === 'A_CAMINHO'"
+                    [class.cancelled]="item.status === 'CANCELADO'"
+                  >
+                    {{ item.status === 'PROCESSANDO' ? 'Processando' : item.status === 'PENDENTE' ? 'Pendente' : item.status === 'EM_TRANSITO' || item.status === 'A_CAMINHO' ? 'A Caminho' : item.status === 'ENTREGUE' ? 'Entregue' : 'Cancelado' }}
+                  </span>
+                </td>
+                <td class="actions-cell">
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    @if (item.status === 'PROCESSANDO' || item.status === 'PENDENTE') {
+                      <button class="action-btn" (click)="alterarStatus(item.id, 'EM_TRANSITO')" title="Enviar Pedido" style="color: #ff7900; background: none; border: none; cursor: pointer;">
+                        <span class="material-icons">local_shipping</span>
+                      </button>
+                      <button class="action-btn" (click)="alterarStatus(item.id, 'CANCELADO')" title="Cancelar Pedido" style="color: #c62828; background: none; border: none; cursor: pointer;">
+                        <span class="material-icons">cancel</span>
+                      </button>
+                    } @else if (item.status === 'EM_TRANSITO' || item.status === 'A_CAMINHO') {
+                      <button class="action-btn" (click)="alterarStatus(item.id, 'ENTREGUE')" title="Marcar como Entregue" style="color: #2e7d32; background: none; border: none; cursor: pointer;">
+                        <span class="material-icons">done_all</span>
+                      </button>
+                    } @else {
+                      <span style="font-size: 0.8rem; color: #777; font-weight: 700;">Finalizado</span>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <app-paginator [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></app-paginator>
+  </section>
+</div>

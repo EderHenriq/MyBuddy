@@ -1,0 +1,179 @@
+<app-header-landing-page></app-header-landing-page>
+
+<main class="landing-page-content">
+  <div class="landing-hero-section-wrapper">
+    <section class="landing-hero-section" aria-label="Apresentação Inicial do MyBuddy">
+      <div class="hero-text-col">
+        <h1 class="hero-title">
+          Adote aqui o seu
+          <br />
+          Buddy
+          <span class="highlight">perfeito.</span>
+        </h1>
+
+        <div class="hero-description">
+          <p>Conectamos você a pets que precisam de um lar, feiras de adoção, veterinários e tudo o que seu amigo precisa.</p>
+        </div>
+
+        <div class="hero-actions-btn">
+          <a routerLink="/auth/login" class="btn btn-cta">Encontrar meu Buddy</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="services-section" id="servicos" aria-labelledby="services-title">
+    <header class="section-header">
+      <p class="section-subtitle">Conheça nossos serviços</p>
+      <h2 id="services-title" class="section-title">
+        Tudo o que seu pet
+        <span class="highlight">precisa</span>
+        , em um só lugar.
+      </h2>
+    </header>
+
+    <div class="services-grid-cards">
+      <div class="services-left-col">
+        <app-card-categoria
+          class="services-card-item card-veterinario"
+          [title]="'Veterinários'"
+          [subtitle]="'Encontre clínicas próximas a você.'"
+          [imageUrl]="services[0].imageUrl"
+          variant="landing"
+        ></app-card-categoria>
+
+        <app-card-categoria
+          class="services-card-item card-petshops"
+          [title]="'Petshops'"
+          [subtitle]="'Hotéis, escolas e muito mais.'"
+          [imageUrl]="services[1].imageUrl"
+          variant="landing"
+        ></app-card-categoria>
+      </div>
+
+      <div class="services-right-col">
+        <app-card-categoria
+          class="services-card-item card-eventos"
+          [title]="'Eventos'"
+          [subtitle]="'Feiras de adoção, campanhas de vacina, etc.'"
+          [imageUrl]="services[2].imageUrl"
+          variant="landing"
+        ></app-card-categoria>
+      </div>
+    </div>
+  </section>
+
+  <section class="partners-sections" aria-label="Nossos parceiros">
+    <div class="header-partners">
+      <h2 class="partners-title">Torne-se um parceiro MyBuddy</h2>
+    </div>
+
+    <div class="partners-logos marquee-wrapper">
+      <div class="marquee-inner">
+        @for (logo of logos; track logo.alt) {
+          <img [src]="logo.src" [alt]="logo.alt" class="svg-partner" />
+        }
+
+        @for (logo of logos; track logo.alt) {
+          <img [src]="logo.src" [alt]="logo.alt" class="svg-partner" aria-hidden="true" />
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="pet-section" id="adotar" aria-labelledby="pets-title">
+    <header class="section-header">
+      <p class="section-subtitle">Conheça nossos pets.</p>
+      <h2 id="pets-title" class="section-title">
+        Seu
+        <span class="highlight">novo amigo</span>
+        está esperando por um lar.
+      </h2>
+    </header>
+
+    <div class="carousel-container">
+      <div class="carousel-track" role="region" aria-live="polite" (mouseenter)="stopAutoplay()" (mouseleave)="startAutoplay()">
+        @for (pet of pets; track pet.id; let idx = $index) {
+          <div
+            class="carousel-slide"
+            [ngClass]="getSlideClass(idx)"
+            (click)="setCarouselPet(idx)"
+            (keydown.enter)="setCarouselPet(idx)"
+            role="button"
+            tabindex="0"
+          >
+            <app-card-pet [pet]="pet" [class.card--large]="activePetIndex === idx"></app-card-pet>
+          </div>
+        }
+      </div>
+
+      <nav class="carousel-dots" aria-label="Controle de carrossel">
+        @for (pet of pets; track pet.id; let idx = $index) {
+          <button
+            class="dot"
+            [class.active]="activePetIndex === idx"
+            (click)="setCarouselPet(idx)"
+            [attr.aria-label]="'Ir para o slide ' + (idx + 1)"
+          ></button>
+        }
+      </nav>
+
+      <div class="view-all-container">
+        <a routerLink="/auth/login" class="view-all-link">Ver todos os pets disponíveis</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="map-section" aria-labelledby="map-title">
+    <div class="map-grid">
+      <div class="map-text-col">
+        <div class="map-text-group">
+          <h2 id="map-title" class="map-title">
+            Veja feiras de adoção
+            <span class="highlight">próximas</span>
+            a você!
+          </h2>
+          <p class="map-description">
+            Encontre o evento mais próximo a sua casa. Navegue pelo mapa para localizar os petshops/ongs disponíveis na sua região
+          </p>
+        </div>
+
+        <div class="map-actions">
+          <a routerLink="/auth/login" class="btn btn-cta">Ver no mapa</a>
+        </div>
+      </div>
+
+      <div class="map-visual-col">
+        <div class="map-container-mock">
+          <div id="leaflet-map"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section" aria-labelledby="faq-title">
+    <header class="section-header">
+      <h2 id="faq-title" class="faq-headline">
+        <span class="highlight">Antes</span>
+        de você adotar...
+      </h2>
+    </header>
+
+    <div class="faq-container">
+      @for (faq of faqs; track faq.question; let idx = $index) {
+        <div class="faq-item" [class.expanded]="faq.expanded">
+          <button class="faq-trigger" (click)="toggleFaq(idx)" [aria-expanded]="faq.expanded">
+            <span class="faq-question">{{ faq.question }}</span>
+            <span class="material-icons faq-arrow" aria-hidden="true">{{ faq.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_right' }}</span>
+          </button>
+
+          <div class="faq-content" [hidden]="!faq.expanded">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>

@@ -1,0 +1,48 @@
+<div class="pendente-container">
+  <div class="pendente-card">
+    <div class="status-icon pending">
+      <span class="material-icons">schedule</span>
+    </div>
+
+    @if (paymentType() === 'pix' || paymentType() === 'boleto') {
+      <div class="external-link-section">
+        <span class="material-icons">{{ paymentType() === 'pix' ? 'qr_code_2' : 'receipt_long' }}</span>
+        <p class="caption">
+          Clique no botão abaixo para acessar seu {{ paymentType() === 'pix' ? 'QR Code PIX' : 'boleto bancário' }} no Mercado Pago.
+        </p>
+        @if (externalResourceUrl()) {
+          <a [href]="externalResourceUrl()" target="_blank" class="btn-external">
+            <span class="material-icons">open_in_new</span>
+            {{ paymentType() === 'pix' ? 'Pagar com PIX' : 'Visualizar boleto' }}
+          </a>
+        }
+      </div>
+    }
+
+    @if (paymentType() === 'outro') {
+      <h2>Pagamento em processamento</h2>
+      <p class="subtitle">Seu pagamento está sendo processado. Você será notificado quando for confirmado.</p>
+    }
+
+    @if (paymentId()) {
+      <div class="payment-info">
+        <span class="label">Código da operação</span>
+        <span class="value">#{{ paymentId() }}</span>
+      </div>
+    }
+
+    @if (externalResourceUrl()) {
+      <button class="btn-copy" (click)="copiarCodigo()">
+        <span class="material-icons">content_copy</span>
+        Copiar código
+      </button>
+    }
+
+    <div class="pendente-actions">
+      <button class="btn-secondary" (click)="voltarParaInicio()">
+        <span class="material-icons">home</span>
+        Voltar ao início
+      </button>
+    </div>
+  </div>
+</div>

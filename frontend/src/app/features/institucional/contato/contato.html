@@ -1,0 +1,109 @@
+<app-header-landing-page></app-header-landing-page>
+
+<main class="contact-page">
+  <div class="contact-header">
+    <span class="eyebrow">Fale Conosco</span>
+    <h1>Nós queremos te ouvir</h1>
+    <p>Tem dúvidas, sugestões ou quer se tornar um parceiro? Mande uma mensagem para a nossa equipe.</p>
+  </div>
+
+  <div class="contact-container">
+    <div class="contact-info">
+      <div class="info-card">
+        <div class="icon-wrapper">
+          <i class="far fa-envelope"></i>
+        </div>
+        <div>
+          <h3>E-mail</h3>
+          <p>Mande um e-mail direto para o suporte.</p>
+          <a href="mailto:contato@mybuddy.com">contato&#64;mybuddy.com</a>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="icon-wrapper">
+          <i class="fab fa-whatsapp"></i>
+        </div>
+        <div>
+          <h3>WhatsApp</h3>
+          <p>Fale com a nossa equipe em tempo real.</p>
+          <a href="tel:+5511999999999">(11) 99999-9999</a>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="icon-wrapper">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div>
+          <h3>Sede Administrativa</h3>
+          <p>Avenida Paulista, 1000 - São Paulo, SP</p>
+          <span>Atendimento presencial apenas com agendamento.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-card">
+      <h2>Envie uma Mensagem</h2>
+
+      @if (successMessage()) {
+        <div class="success-alert">
+          <i class="fas fa-check-circle"></i>
+          <p>Mensagem enviada com sucesso! Retornaremos o mais breve possível.</p>
+        </div>
+      }
+
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+        <label class="form-field">
+          <span>Seu Nome</span>
+          <input type="text" formControlName="name" placeholder="Como devemos te chamar?" />
+          @if (isFieldInvalid('name')) {
+            <small class="error-text">O nome é obrigatório (min. 3 caracteres).</small>
+          }
+        </label>
+
+        <label class="form-field">
+          <span>Seu E-mail</span>
+          <input type="email" formControlName="email" placeholder="Para onde enviamos a resposta?" />
+          @if (isFieldInvalid('email')) {
+            <small class="error-text">Insira um e-mail válido.</small>
+          }
+        </label>
+
+        <label class="form-field">
+          <span>Assunto</span>
+          <select formControlName="subject">
+            <option value="" disabled selected>Selecione um assunto</option>
+            <option value="Dúvida">Dúvida sobre adoção</option>
+            <option value="Parceria ONG">Quero cadastrar minha ONG</option>
+            <option value="Parceria Petshop">Quero cadastrar meu Petshop</option>
+            <option value="Problema Técnico">Reportar um problema</option>
+            <option value="Outro">Outro</option>
+          </select>
+          @if (isFieldInvalid('subject')) {
+            <small class="error-text">Selecione um assunto.</small>
+          }
+        </label>
+
+        <label class="form-field">
+          <span>Sua Mensagem</span>
+          <textarea rows="5" formControlName="message" placeholder="Escreva aqui os detalhes..."></textarea>
+          @if (isFieldInvalid('message')) {
+            <small class="error-text">A mensagem deve ter pelo menos 10 caracteres.</small>
+          }
+        </label>
+
+        <button type="submit" class="submit-btn" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <i class="fas fa-circle-notch fa-spin"></i>
+            Enviando...
+          } @else {
+            Enviar Mensagem
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<app-footer></app-footer>

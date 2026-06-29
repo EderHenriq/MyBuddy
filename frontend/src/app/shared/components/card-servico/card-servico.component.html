@@ -1,0 +1,52 @@
+<div class="servico-card">
+  <div class="servico-image" [style.backgroundImage]="'url(' + imageUrl + ')'">
+    @if (type) {
+      <span class="servico-badge">{{ type }}</span>
+    }
+  </div>
+
+  <div class="servico-content">
+    <div class="servico-header-row">
+      <h3 class="servico-title">{{ title }}</h3>
+      <div class="servico-rating">
+        <i class="fas fa-star"></i>
+        <span>{{ rating }}</span>
+        <span class="reviews-count">({{ reviewsCount }})</span>
+      </div>
+    </div>
+
+    <div class="servico-details">
+      <div class="detail-row">
+        <span class="detail-item">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ locationStr }}
+        </span>
+        <span class="detail-item">
+          <i class="fas fa-location-arrow"></i>
+          {{ distanceStr }}
+        </span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-item">
+          <i class="far fa-clock"></i>
+          {{ openHoursStr }}
+        </span>
+      </div>
+    </div>
+
+    <p class="servico-description">{{ description }}</p>
+
+    <div class="servico-actions">
+      <button class="btn-details" (click)="detailsClick.emit()">
+        Ver Serviços
+      </button>
+      <button
+        class="btn-favorite"
+        [class.active]="isFavorite"
+        (click)="favoriteClick.emit()"
+      >
+        <i class="fa-heart" [ngClass]="isFavorite ? 'fas' : 'far'"></i>
+      </button>
+    </div>
+  </div>
+</div>
