@@ -1,5 +1,7 @@
 package com.Mybuddy.Myb.Controller;
 
+import com.Mybuddy.Myb.DTO.InteresseAdocaoMapper;
+import com.Mybuddy.Myb.DTO.InteresseResponse;
 import com.Mybuddy.Myb.Model.EventoOng;
 import com.Mybuddy.Myb.Model.InteresseAdocao;
 import com.Mybuddy.Myb.Model.Pet;
@@ -31,19 +33,17 @@ public class OngController {
 
     @GetMapping("/solicitacoes")
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
-    public ResponseEntity<List<InteresseAdocao>> getSolicitacoes(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<List<InteresseResponse>> getSolicitacoes(@AuthenticationPrincipal Jwt jwt) {
         Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
         boolean isAdmin = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_ADMIN);
-        
-        if (isAdmin) {
-            return ResponseEntity.ok(interesseAdocaoRepository.findAll());
-        }
-        
-        if (usuario.getOrganizacao() == null) {
-            return ResponseEntity.ok(List.of());
-        }
-        
-        return ResponseEntity.ok(interesseAdocaoRepository.findByPetOrganizacaoId(usuario.getOrganizacao().getId()));
+
+        List<InteresseAdocao> entidades = isAdmin
+                ? interesseAdocaoRepository.findAll()
+                : (usuario.getOrganizacao() == null
+                        ? List.of()
+                        : interesseAdocaoRepository.findByPetOrganizacaoId(usuario.getOrganizacao().getId()));
+
+        return ResponseEntity.ok(entidades.stream().map(InteresseAdocaoMapper::toResponse).toList());
     }
 
     @GetMapping("/eventos")
