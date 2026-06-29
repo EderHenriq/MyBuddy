@@ -123,17 +123,17 @@ public class PetshopController {
     // ── LEGACY ENDPOINTS (Compatibilidade com Front) ──────────────────────────
 
     @GetMapping("/produtos")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('PETSHOP', 'ADMIN')")
     public ResponseEntity<List<Produto>> getProdutos(@AuthenticationPrincipal Jwt jwt) {
         Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
-        boolean isPetshop = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_PETSHOP);
-        if (isPetshop) {
-            if (usuario.getPetshopId() != null) {
-                return ResponseEntity.ok(produtoRepository.findByPetshopId(usuario.getPetshopId()));
-            }
-            return ResponseEntity.ok(List.of());
+        boolean isAdmin = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_ADMIN);
+        if (isAdmin) {
+            return ResponseEntity.ok(produtoRepository.findAll());
         }
-        return ResponseEntity.ok(produtoRepository.findAll());
+        if (usuario.getPetshopId() != null) {
+            return ResponseEntity.ok(produtoRepository.findByPetshopId(usuario.getPetshopId()));
+        }
+        return ResponseEntity.ok(List.of());
     }
 
     @GetMapping("/pedidos")
