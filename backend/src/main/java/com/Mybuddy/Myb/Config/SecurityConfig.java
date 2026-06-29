@@ -44,7 +44,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/payments/webhook").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/produtos/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/categorias/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/petshop/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/petshop").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/petshop/{id}").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)));
