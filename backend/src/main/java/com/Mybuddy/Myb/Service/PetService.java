@@ -247,6 +247,12 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
+    public List<PetResponse> listarTodosDTO() {
+        return petRepository.findAll().stream()
+                .map(this::toPetResponse)
+                .collect(Collectors.toList());
+    }
+
     public Page<PetResponse> buscarComFiltrosDTO(PetFiltro filtro, Pageable pageable) {
         log.debug("Buscando pets com filtros no MongoDB: {}", filtro);
         Query query = new Query();
