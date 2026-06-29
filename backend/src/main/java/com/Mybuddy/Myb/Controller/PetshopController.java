@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Controller;
 
+import com.Mybuddy.Myb.DTO.PetshopPublicResponseDTO;
 import com.Mybuddy.Myb.DTO.PetshopRequestDTO;
 import com.Mybuddy.Myb.DTO.PetshopResponseDTO;
 import com.Mybuddy.Myb.Model.Chat;
@@ -50,16 +51,16 @@ public class PetshopController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PetshopResponseDTO> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<PetshopPublicResponseDTO> buscarPorId(@PathVariable Long id) {
         log.info("Buscando petshop por ID: {}", id);
-        return ResponseEntity.ok(petshopService.buscarPorId(id));
+        return ResponseEntity.ok(petshopService.buscarPorIdPublico(id));
     }
 
     /**
-     * Listagem pública: retorna apenas Petshops APROVADOS.
+     * Listagem pública: retorna apenas Petshops APROVADOS, sem dados sensíveis.
      */
     @GetMapping
-    public ResponseEntity<List<PetshopResponseDTO>> listarAprovados() {
+    public ResponseEntity<List<PetshopPublicResponseDTO>> listarAprovados() {
         log.info("Listagem pública de petshops aprovados.");
         return ResponseEntity.ok(petshopService.listarAprovados());
     }
