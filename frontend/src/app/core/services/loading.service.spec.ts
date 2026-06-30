@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { TestBed } from "@angular/core/testing";
-import { LoadingService } from "./loading.service";
+import { describe, it, expect, beforeEach } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { LoadingService } from './loading.service';
 
-describe("LoadingService", () => {
+describe('LoadingService', () => {
   let service: LoadingService;
 
   beforeEach(() => {
@@ -10,26 +10,26 @@ describe("LoadingService", () => {
     service = TestBed.inject(LoadingService);
   });
 
-  it("should be created", () => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it("should start with loading false", () => {
+  it('should start with loading false', () => {
     expect(service.isLoading()).toBe(false);
   });
 
-  it("should set loading true on first show()", () => {
+  it('should set loading true on first show()', () => {
     service.show();
     expect(service.isLoading()).toBe(true);
   });
 
-  it("should keep loading true on multiple show() calls", () => {
+  it('should keep loading true on multiple show() calls', () => {
     service.show();
     service.show();
     expect(service.isLoading()).toBe(true);
   });
 
-  it("should hide loading when all requests complete", () => {
+  it('should hide loading when all requests complete', () => {
     service.show();
     service.show();
     service.hide();
@@ -38,13 +38,13 @@ describe("LoadingService", () => {
     expect(service.isLoading()).toBe(false);
   });
 
-  it("should not go negative on extra hide() calls", () => {
+  it('should not go negative on extra hide() calls', () => {
     service.hide();
     service.hide();
     expect(service.isLoading()).toBe(false);
   });
 
-  it("should cycle correctly: show → hide → show → hide", () => {
+  it('should cycle correctly: show → hide → show → hide', () => {
     service.show();
     expect(service.isLoading()).toBe(true);
     service.hide();

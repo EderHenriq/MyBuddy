@@ -1,9 +1,9 @@
-import { Injectable, inject } from "@angular/core";
-import { Observable } from "rxjs";
-import { ApiService } from "./api.service";
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ApiService } from './api.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class UploadService {
   private api = inject(ApiService);
@@ -15,8 +15,8 @@ export class UploadService {
    */
   uploadImage(file: File): Observable<string> {
     const formData = new FormData();
-    formData.append("file", file);
-    return this.api.post<string>("pets/upload-image", formData);
+    formData.append('file', file);
+    return this.api.post<string>('pets/upload-image', formData);
   }
 
   /**
@@ -24,7 +24,7 @@ export class UploadService {
    */
   uploadImages(files: File[]): Observable<string[]> {
     const formData = new FormData();
-    files.forEach((f) => formData.append("files", f));
-    return this.api.post<string[]>("pets/upload-images", formData);
+    files.forEach(f => formData.append('files', f));
+    return this.api.post<string[]>('pets/upload-images', formData);
   }
 }

@@ -1,8 +1,25 @@
 <div class="confirmacao-container">
   <div class="confirmacao-card">
     <!-- Badge de Simulação (Mock) -->
-    <div class="mock-badge" style="background: #fff8e1; border: 1px dashed #ffe082; padding: 6px 12px; border-radius: 8px; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 6px; color: #b78103; font-size: 0.8rem; font-weight: 700; width: 100%; justify-content: center;">
-      <span class="material-icons" style="font-size: 16px;">warning</span>
+    <div
+      class="mock-badge"
+      style="
+        background: #fff8e1;
+        border: 1px dashed #ffe082;
+        padding: 6px 12px;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #b78103;
+        font-size: 0.8rem;
+        font-weight: 700;
+        width: 100%;
+        justify-content: center;
+      "
+    >
+      <span class="material-icons" style="font-size: 16px">warning</span>
       MODO DE SIMULAÇÃO DE PAGAMENTO (MOCK)
     </div>
 
@@ -17,10 +34,14 @@
       <div class="status-icon approved">
         <span class="material-icons">check_circle</span>
       </div>
-      
+
       @if (isMarketplace()) {
         <h2>Pedido Realizado!</h2>
-        <p class="subtitle">Seu pedido #{{ pedidoId() }} no valor total de <strong>{{ totalPedido() | currency: 'BRL' }}</strong> foi registrado e enviado ao Petshop.</p>
+        <p class="subtitle">
+          Seu pedido #{{ pedidoId() }} no valor total de
+          <strong>{{ totalPedido() | currency: 'BRL' }}</strong>
+          foi registrado e enviado ao Petshop.
+        </p>
       } @else {
         <h2>Pagamento Aprovado!</h2>
         <p class="subtitle">Sua adoção foi confirmada com sucesso. Em breve você receberá mais informações.</p>

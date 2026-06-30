@@ -1,11 +1,11 @@
-import { Usuario } from "./user.model";
-import { Pet } from "./pet.model";
+import { Usuario } from './user.model';
+import { Pet } from './pet.model';
 
 export interface EventoOng {
   nome: string;
   local: string;
   data: string;
-  status: "Agendado" | "Concluído";
+  status: 'Agendado' | 'Concluído';
 }
 
 export interface MeuPetOng {
@@ -13,5 +13,5 @@ export interface MeuPetOng {
   especie: string;
   raca: string;
   idade: string;
-  status: "Disponível" | "Em Processo" | "Adotado";
+  status: 'Disponível' | 'Em Processo' | 'Adotado';
 }

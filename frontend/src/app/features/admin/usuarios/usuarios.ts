@@ -1,16 +1,16 @@
-import { Component, OnInit, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { AdminService } from "../../../core/services/admin.service";
-import { AdminUsuario } from "../../../core/models/admin.model";
-import { DebounceDirective } from "../../../shared/directives/debounce.directive";
-import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AdminService } from '../../../core/services/admin.service';
+import { AdminUsuario } from '../../../core/models/admin.model';
+import { DebounceDirective } from '../../../shared/directives/debounce.directive';
+import { PaginatorComponent } from '../../../shared/components/paginator/paginator.component';
 
 @Component({
-  selector: "app-usuarios",
+  selector: 'app-usuarios',
   standalone: true,
   imports: [CommonModule, DebounceDirective, PaginatorComponent],
-  templateUrl: "./usuarios.html",
-  styleUrl: "./usuarios.scss",
+  templateUrl: './usuarios.html',
+  styleUrl: './usuarios.scss',
 })
 export class Usuarios implements OnInit {
   usuarios: AdminUsuario[] = [];
@@ -20,7 +20,7 @@ export class Usuarios implements OnInit {
   totalPages = 1;
 
   ngOnInit() {
-    this.adminService.buscarUsuarios().subscribe((data) => {
+    this.adminService.buscarUsuarios().subscribe(data => {
       this.usuarios = data;
       this.totalPages = Math.ceil(data.length / 10) || 1;
     });

@@ -1,11 +1,10 @@
-import { isPlatformBrowser } from "@angular/common";
-import { inject, Injectable, PLATFORM_ID, signal } from "@angular/core";
-import { Role } from "@core/models/role.model";
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { Role } from '@core/models/role.model';
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class SessionService {
   private platformId = inject(PLATFORM_ID);
   private roleSignal = signal<Role | null>(null);

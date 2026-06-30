@@ -1,5 +1,5 @@
-import { Pet } from "./pet.model";
-import { Usuario } from "./user.model";
+import { Pet } from './pet.model';
+import { Usuario } from './user.model';
 
 export interface Organizacao {
   id: number;

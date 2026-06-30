@@ -1,6 +1,6 @@
-import { Injectable, inject } from "@angular/core";
-import { Observable } from "rxjs";
-import { ApiService } from "./api.service";
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ApiService } from './api.service';
 
 export interface PaymentRequest {
   petId?: number;
@@ -15,20 +15,20 @@ export interface PaymentResponse {
   usuarioId: number;
   petId: number | null;
   amount: number;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED" | "REFUNDED";
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED' | 'REFUNDED';
   initPoint: string;
   createdAt: string;
   updatedAt: string;
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class PaymentService {
   private api = inject(ApiService);
 
   createPayment(request: PaymentRequest): Observable<PaymentResponse> {
-    return this.api.post<PaymentResponse>("payments/create", request);
+    return this.api.post<PaymentResponse>('payments/create', request);
   }
 
   getPayment(id: number): Observable<PaymentResponse> {

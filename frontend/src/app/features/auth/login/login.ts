@@ -1,25 +1,17 @@
-import { Component, inject, signal, OnInit, DestroyRef } from "@angular/core";
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-} from "@angular/forms";
-import { Router, RouterLink } from "@angular/router";
-import { AuthService } from "@core/services/auth.service";
-import {
-  AutoCompleteCompleteEvent,
-  AutoCompleteModule,
-} from "primeng/autocomplete";
-import { switchMap } from "rxjs";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Component, inject, signal, OnInit, DestroyRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
+import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: "app-login",
+  selector: 'app-login',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, AutoCompleteModule],
-  templateUrl: "./login.html",
-  styleUrl: "./login.scss",
+  templateUrl: './login.html',
+  styleUrl: './login.scss',
 })
 export class Login implements OnInit {
   private fb = inject(FormBuilder);
@@ -35,18 +27,12 @@ export class Login implements OnInit {
   showPassword = signal<boolean>(false);
   emailSuggestions = signal<string[]>([]);
 
-  private readonly defaultDomains = [
-    "gmail.com",
-    "hotmail.com",
-    "outlook.com",
-    "yahoo.com",
-    "icloud.com",
-  ];
+  private readonly defaultDomains = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email: ["", [Validators.required, Validators.email]],
-      password: ["", [Validators.required, Validators.minLength(8)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
@@ -59,22 +45,16 @@ export class Login implements OnInit {
       return;
     }
 
-    if (value.includes("@")) {
-      const [username, domainPart] = value.split("@");
-      this.emailSuggestions.set(
-        this.defaultDomains
-          .filter((d) => d.startsWith(domainPart.toLowerCase()))
-          .map((d) => `${username}@${d}`),
-      );
+    if (value.includes('@')) {
+      const [username, domainPart] = value.split('@');
+      this.emailSuggestions.set(this.defaultDomains.filter(d => d.startsWith(domainPart.toLowerCase())).map(d => `${username}@${d}`));
     } else {
-      this.emailSuggestions.set(
-        this.defaultDomains.map((d) => `${value}@${d}`),
-      );
+      this.emailSuggestions.set(this.defaultDomains.map(d => `${value}@${d}`));
     }
   }
 
   togglePasswordVisibility(): void {
-    this.showPassword.update((v) => !v);
+    this.showPassword.update(v => !v);
   }
 
   onSubmit(): void {
@@ -97,19 +77,15 @@ export class Login implements OnInit {
       .subscribe({
         next: () => {
           this.isLoading.set(false);
-          this.router.navigate(["/home"]);
+          this.router.navigate(['/home']);
         },
-        error: (err) => {
+        error: err => {
           this.isLoading.set(false);
 
           if (err.status === 401 || err.status === 403) {
-            this.errorMessage.set(
-              "E-mail ou senha incorretos. Tente novamente.",
-            );
+            this.errorMessage.set('E-mail ou senha incorretos. Tente novamente.');
           } else {
-            this.errorMessage.set(
-              "Não foi possível conectar ao servidor. Tente novamente mais tarde.",
-            );
+            this.errorMessage.set('Não foi possível conectar ao servidor. Tente novamente mais tarde.');
           }
         },
       });
