@@ -114,6 +114,14 @@ public class ProdutoService {
         return toResponseDTO(produto);
     }
 
+    /**
+     * Cadastra um novo produto para o petshop do usuário autenticado, exigindo que o
+     * petshop já esteja aprovado pela plataforma.
+     *
+     * @param request dados do produto a ser criado
+     * @param usuario usuário autenticado dono do petshop
+     * @return produto criado
+     */
     @Transactional
     @CacheEvict(value = "produtos", allEntries = true)
     public ProdutoResponseDTO criar(ProdutoRequestDTO request, Usuario usuario) {
