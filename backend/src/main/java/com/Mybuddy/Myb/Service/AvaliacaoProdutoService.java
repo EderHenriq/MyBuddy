@@ -28,6 +28,14 @@ public class AvaliacaoProdutoService {
     private final UsuarioRepository usuarioRepository;
     private final PedidoRepository pedidoRepository;
 
+    /**
+     * Registra a avaliação de um produto feita por um cliente que já teve uma compra entregue.
+     *
+     * @param produtoId identificador do produto avaliado
+     * @param request dados da avaliação (nota e comentário)
+     * @param usuario cliente autenticado que está avaliando
+     * @return avaliação criada
+     */
     @Transactional
     public AvaliacaoProdutoResponseDTO criar(Long produtoId, AvaliacaoProdutoRequestDTO request, Usuario usuario) {
         Produto produto = produtoRepository.findById(produtoId)
