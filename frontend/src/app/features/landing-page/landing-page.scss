@@ -643,10 +643,13 @@
       height: 34px;
       border-radius: var(--radius-max);
       background-color: #f1f2f9;
-      box-shadow: 0 0.5px 1px rgba(25,33,61,0.07);
+      box-shadow: 0 0.5px 1px rgba(25, 33, 61, 0.07);
       color: #6f6c8f;
       font-size: var(--font-size-xl);
-      transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+      transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        box-shadow 0.25s ease;
     }
   }
 
@@ -661,5 +664,104 @@
       color: #6f6c8f;
       max-width: 721px;
     }
+  }
+}
+
+//Estilização das medias query para mobile
+
+@media (max-width: 767px) {
+  .btn-cta {
+    height: 46px;
+    font-size: var(--font-size-md);
+  }
+
+  .services-section {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .services-grid-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .services-left-col app-card-categoria,
+  .services-right-col app-card-categoria {
+    height: 109pxpx;
+  }
+
+  .services-left-col {
+    gap: 11px;
+  }
+
+  .pet-section {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .pet-section .section-title {
+    font-size: 26px;
+  }
+
+  .carousel-track {
+    height: 380px;
+  }
+
+  .carousel-slide {
+    &.leftSlide,
+    &.rightSlide {
+      display: none;
+    }
+    &.activeSlide {
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 380px;
+    }
+  }
+
+  .map-section .map-grid {
+    flex-direction: column;
+    gap: var(--spacing-xl);
+    padding: 0 var(--spacing-md);
+  }
+
+  .map-section .map-text-col {
+    width: 100%;
+    padding: var(--spacing-md) 0;
+    align-items: center;
+    text-align: center;
+  }
+
+  .map-section .map-actions {
+    justify-content: center;
+  }
+
+  .map-visual-col {
+    padding: 0;
+    width: 100%;
+  }
+
+  .map-container-mock {
+    height: 280px;
+  }
+
+  .faq-section {
+    padding: var(--spacing-xl) var(--spacing-md);
+  }
+
+  .faq-section .faq-headline {
+    font-size: var(--font-size-xl);
+  }
+
+  .faq-trigger {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .faq-content {
+    padding: 0 var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: var(--font-size-xl);
   }
 }
