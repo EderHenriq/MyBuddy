@@ -8,6 +8,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Representação de um pedido do marketplace retornada pela API, com dados do cliente,
+ * petshop, itens, valores e status para exibição ao usuário.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
