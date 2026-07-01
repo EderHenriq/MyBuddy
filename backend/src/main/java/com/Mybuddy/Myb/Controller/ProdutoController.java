@@ -34,6 +34,13 @@ public class ProdutoController {
     private final KeycloakUserSyncService keycloakUserSyncService;
     private final RecomendacaoService recomendacaoService;
 
+    /**
+     * Busca produtos do marketplace aplicando filtros opcionais de busca, categoria,
+     * subcategoria, petshop e faixa de preço, com paginação.
+     *
+     * @param pageable configuração de paginação e ordenação
+     * @return página de produtos que atendem aos filtros
+     */
     @GetMapping
     public ResponseEntity<Page<ProdutoResponseDTO>> buscarComFiltros(
             @RequestParam(required = false) String busca,
