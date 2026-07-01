@@ -18,6 +18,12 @@ public class SwaggerConfig {
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri:http://localhost:8080/realms/mybuddy}")
     private String issuerUri;
 
+    /**
+     * Configura o documento OpenAPI exibido no Swagger UI, incluindo metadados da API
+     * e o esquema de autenticação OAuth2 via Keycloak.
+     *
+     * @return definição OpenAPI da aplicação
+     */
     @Bean
     public OpenAPI openAPI() {
         final String securitySchemeName = "keycloak";
