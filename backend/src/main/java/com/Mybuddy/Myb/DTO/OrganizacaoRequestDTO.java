@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CNPJ;
 
+/**
+ * Dados de entrada para cadastro ou atualização de uma organização (ONG) parceira.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
