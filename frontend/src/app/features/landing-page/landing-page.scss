@@ -679,29 +679,63 @@
     padding: var(--spacing-xl) var(--spacing-md);
   }
 
-  .services-grid-cards {
-    grid-template-columns: 1fr;
+  .section-title {
+    font-size: 22px;
+    line-height: 1.3;
   }
 
-  .services-left-col app-card-categoria,
-  .services-right-col app-card-categoria {
-    height: 109pxpx;
+  .section-subtitle {
+    font-size: 13px;
+  }
+
+  .services-grid-cards {
+    grid-template-columns: 1fr;
   }
 
   .services-left-col {
     gap: 11px;
   }
 
+  .services-left-col app-card-categoria,
+  .services-right-col app-card-categoria {
+    height: 109px;
+  }
+
+  .partners-sections {
+    padding: var(--spacing-lg) var(--spacing-md);
+    gap: var(--spacing-md);
+  }
+
+  .partners-title {
+    padding: 0;
+    font-size: 13px;
+  }
+
+  .svg-partner {
+    height: 30px;
+    width: 90px;
+    margin: 0 var(--spacing-md);
+  }
+
   .pet-section {
-    padding: var(--spacing-xl) var(--spacing-md);
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-xxl);
+    overflow: hidden;
   }
 
   .pet-section .section-title {
-    font-size: 26px;
+    font-size: 20px;
+  }
+
+  .pet-section .section-subtitle {
+    font-size: 13px;
+  }
+
+  .carousel-container {
+    gap: var(--spacing-md);
   }
 
   .carousel-track {
-    height: 380px;
+    height: 400px;
   }
 
   .carousel-slide {
@@ -721,6 +755,14 @@
     flex-direction: column;
     gap: var(--spacing-xl);
     padding: 0 var(--spacing-md);
+  }
+
+  .map-section .map-title {
+    font-size: 24px;
+  }
+
+  .map-section .map-description {
+    font-size: 13px;
   }
 
   .map-section .map-text-col {
@@ -748,15 +790,23 @@
   }
 
   .faq-section .faq-headline {
-    font-size: var(--font-size-xl);
+    font-size: 20px;
   }
 
   .faq-trigger {
     padding: var(--spacing-sm) var(--spacing-md);
   }
 
+  .faq-trigger .faq-question {
+    font-size: 13px;
+  }
+
   .faq-content {
     padding: 0 var(--spacing-md);
+  }
+
+  .faq-content p {
+    font-size: 13px;
   }
 }
 

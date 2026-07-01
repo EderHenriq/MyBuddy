@@ -3,9 +3,7 @@
     <img [src]="cardImageUrl" [alt]="cardName" />
 
     @if (cardBadgeText) {
-      <span class="pet-badge" [ngClass]="cardBadgeType">{{
-        cardBadgeText
-      }}</span>
+      <span class="pet-badge" [ngClass]="cardBadgeType">{{ cardBadgeText }}</span>
     }
   </div>
 
@@ -40,14 +38,8 @@
       </button>
 
       @if (showFavoriteButton || cardIsFavorite) {
-        <button
-          class="favorite"
-          [class.active]="cardIsFavorite"
-          (click)="favoriteClick.emit($event); cliqueFavorito.emit($event)"
-        >
-          <span class="material-icons">{{
-            cardIsFavorite ? "favorite" : "favorite_border"
-          }}</span>
+        <button class="favorite" [class.active]="cardIsFavorite" (click)="favoriteClick.emit($event); cliqueFavorito.emit($event)">
+          <span class="material-icons">{{ cardIsFavorite ? 'favorite' : 'favorite_border' }}</span>
         </button>
       }
     }
