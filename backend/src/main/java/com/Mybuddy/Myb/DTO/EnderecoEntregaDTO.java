@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Endereço de entrega informado em um pedido do marketplace, incluindo coordenadas
+ * geográficas opcionais usadas no cálculo de frete.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
