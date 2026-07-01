@@ -27,6 +27,13 @@ public class CupomController {
     private final CupomService cupomService;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
+    /**
+     * Cria um novo cupom de desconto vinculado a um petshop.
+     *
+     * @param request dados do cupom
+     * @param jwt token do usuário autenticado
+     * @return cupom criado
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('PETSHOP')")
     public ResponseEntity<CupomResponseDTO> criar(
