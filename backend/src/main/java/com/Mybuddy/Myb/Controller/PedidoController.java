@@ -28,6 +28,13 @@ public class PedidoController {
     private final PedidoService pedidoService;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
+    /**
+     * Realiza uma nova compra no marketplace para o cliente autenticado.
+     *
+     * @param request dados do pedido
+     * @param jwt token do usuário autenticado
+     * @return pedido criado
+     */
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PedidoResponseDTO> criar(
