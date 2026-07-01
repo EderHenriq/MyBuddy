@@ -27,6 +27,14 @@ public class AgendamentoService {
     private final AgendamentoRepository agendamentoRepository;
     private final ServicoService servicoService;
 
+    /**
+     * Cria um novo agendamento para o serviço solicitado, validando disponibilidade
+     * e conflitos de horário para o pet e o profissional envolvidos.
+     *
+     * @param request dados do agendamento
+     * @param usuario cliente que está agendando
+     * @return agendamento criado
+     */
     @Transactional
     public synchronized AgendamentoResponseDTO criar(AgendamentoRequestDTO request, Usuario usuario) {
         if (usuario.getId() == null) {
