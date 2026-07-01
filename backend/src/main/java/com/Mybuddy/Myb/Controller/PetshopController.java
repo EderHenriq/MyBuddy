@@ -1,6 +1,5 @@
 package com.Mybuddy.Myb.Controller;
 
-import com.Mybuddy.Myb.DTO.PetshopPublicResponseDTO;
 import com.Mybuddy.Myb.DTO.PetshopRequestDTO;
 import com.Mybuddy.Myb.DTO.PetshopResponseDTO;
 import com.Mybuddy.Myb.Model.Chat;
@@ -59,16 +58,16 @@ public class PetshopController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PetshopPublicResponseDTO> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<PetshopResponseDTO> buscarPorId(@PathVariable Long id) {
         log.info("Buscando petshop por ID: {}", id);
-        return ResponseEntity.ok(petshopService.buscarPorIdPublico(id));
+        return ResponseEntity.ok(petshopService.buscarPorId(id));
     }
 
     /**
-     * Listagem pública: retorna apenas Petshops APROVADOS, sem dados sensíveis.
+     * Listagem pública: retorna apenas Petshops APROVADOS.
      */
     @GetMapping
-    public ResponseEntity<List<PetshopPublicResponseDTO>> listarAprovados() {
+    public ResponseEntity<List<PetshopResponseDTO>> listarAprovados() {
         log.info("Listagem pública de petshops aprovados.");
         return ResponseEntity.ok(petshopService.listarAprovados());
     }
@@ -132,17 +131,17 @@ public class PetshopController {
     // ── LEGACY ENDPOINTS (Compatibilidade com Front) ──────────────────────────
 
     @GetMapping("/produtos")
-    @PreAuthorize("hasAnyRole('PETSHOP', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<Produto>> getProdutos(@AuthenticationPrincipal Jwt jwt) {
         Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
-        boolean isAdmin = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_ADMIN);
-        if (isAdmin) {
-            return ResponseEntity.ok(produtoRepository.findAll());
+        boolean isPetshop = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_PETSHOP);
+        if (isPetshop) {
+            if (usuario.getPetshopId() != null) {
+                return ResponseEntity.ok(produtoRepository.findByPetshopId(usuario.getPetshopId()));
+            }
+            return ResponseEntity.ok(List.of());
         }
-        if (usuario.getPetshopId() != null) {
-            return ResponseEntity.ok(produtoRepository.findByPetshopId(usuario.getPetshopId()));
-        }
-        return ResponseEntity.ok(List.of());
+        return ResponseEntity.ok(produtoRepository.findAll());
     }
 
     @GetMapping("/pedidos")

@@ -43,7 +43,6 @@ public class PaymentService {
     @Transactional
     public PaymentCreationResult createPayment(Usuario usuario, PaymentRequestDTO request)
             throws MPException, MPApiException {
-        log.info("Criando pagamento para usuário {}", usuario.getId());
 
         var pet = request.petId() != null
                 ? petRepository.findById(request.petId())

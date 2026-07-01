@@ -6,33 +6,33 @@ public final class InteresseAdocaoMapper {
 
     private InteresseAdocaoMapper() {}
 
-    public static InteresseResponse toResponse(InteresseAdocao interesse) {
-        UsuarioResponse usuarioResponse = interesse.getUsuario() != null
-                ? new UsuarioResponse(interesse.getUsuario().getId(), interesse.getUsuario().getNome())
+    public static InteresseResponse toResponse(InteresseAdocao i) {
+        UsuarioResponse usuarioResponse = i.getUsuario() != null
+                ? new UsuarioResponse(i.getUsuario().getId(), i.getUsuario().getNome())
                 : null;
 
-        PetResumoResponse petResponse = interesse.getPet() != null
-                ? new PetResumoResponse(interesse.getPet().getId(), interesse.getPet().getNome())
+        PetResumoResponse petResponse = i.getPet() != null
+                ? new PetResumoResponse(i.getPet().getId(), i.getPet().getNome())
                 : null;
 
         return new InteresseResponse(
-                interesse.getId(),
+                i.getId(),
                 usuarioResponse,
                 petResponse,
-                interesse.getStatus(),
-                interesse.getMensagem(),
-                interesse.getCriadoEm(),
-                interesse.getAtualizadoEm(),
-                mascararCpf(interesse.getCpfAdotante()),
-                interesse.getIdadeAdotante(),
-                interesse.getMotivoAdocao(),
-                interesse.getTipoResidencia(),
-                interesse.getPossuiTelasProtecao(),
-                interesse.getOutrosAnimais(),
-                interesse.getTempoSozinhoHoras(),
-                interesse.getTodosCientes(),
-                interesse.getEspacoAdequado(),
-                interesse.getConsentimentoLgpd()
+                i.getStatus(),
+                i.getMensagem(),
+                i.getCriadoEm(),
+                i.getAtualizadoEm(),
+                mascararCpf(i.getCpfAdotante()),
+                i.getIdadeAdotante(),
+                i.getMotivoAdocao(),
+                i.getTipoResidencia(),
+                i.getPossuiTelasProtecao(),
+                i.getOutrosAnimais(),
+                i.getTempoSozinhoHoras(),
+                i.getTodosCientes(),
+                i.getEspacoAdequado(),
+                i.getConsentimentoLgpd()
         );
     }
 

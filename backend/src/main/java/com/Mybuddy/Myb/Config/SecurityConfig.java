@@ -26,7 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthConverter jwtAuthConverter;
+        private final JwtAuthConverter jwtAuthConverter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,8 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/payments/webhook").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/produtos/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/categorias/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/petshop").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/petshop/{id}").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/petshop/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)));
@@ -53,32 +52,34 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
+                return new BCryptPasswordEncoder();
 
-        String corsOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
-        if (corsOrigins != null && !corsOrigins.isBlank()) {
-            configuration.setAllowedOrigins(List.of(corsOrigins.split(",")));
-        } else {
-            configuration.setAllowedOrigins(List.of(
-                    "http://localhost:4200",
-                    "http://localhost:80",
-                    "http://localhost"));
         }
 
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
-        configuration.setExposedHeaders(List.of("X-Total-Count", "Content-Disposition"));
-        configuration.setAllowCredentials(true);
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration configuration = new CorsConfiguration();
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+                String corsOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
+                if (corsOrigins != null && !corsOrigins.isBlank()) {
+                        configuration.setAllowedOrigins(List.of(corsOrigins.split(",")));
+                } else {
+                        configuration.setAllowedOrigins(List.of(
+                                "http://localhost:4200",
+                                "http://localhost:80",
+                                "http://localhost"));
+                }
+
+                configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+                configuration.setExposedHeaders(List.of("X-Total-Count", "Content-Disposition"));
+                configuration.setAllowCredentials(true);
+
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
+                return source;
+        }
 }
