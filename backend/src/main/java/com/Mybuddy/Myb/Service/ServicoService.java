@@ -25,6 +25,14 @@ public class ServicoService {
     private final ServicoRepository servicoRepository;
     private final PetshopRepository petshopRepository;
 
+    /**
+     * Cadastra um novo serviço para o petshop do usuário autenticado, exigindo que o
+     * petshop já esteja aprovado pela plataforma.
+     *
+     * @param request dados do serviço a ser criado
+     * @param usuario usuário autenticado dono do petshop
+     * @return serviço criado
+     */
     @Transactional
     public ServicoResponseDTO criar(ServicoRequestDTO request, Usuario usuario) {
         if (usuario.getPetshopId() == null) {
