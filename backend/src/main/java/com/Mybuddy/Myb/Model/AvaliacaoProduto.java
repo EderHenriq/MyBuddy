@@ -6,6 +6,10 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
+/**
+ * Entidade que representa a avaliação (nota e comentário) de um cliente sobre um produto
+ * que ele efetivamente comprou e recebeu.
+ */
 @Entity
 @Table(name = "avaliacoes_produto")
 @Getter
