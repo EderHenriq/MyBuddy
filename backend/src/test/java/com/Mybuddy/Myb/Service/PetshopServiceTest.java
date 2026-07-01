@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Service;
 
+import com.Mybuddy.Myb.DTO.PetshopPublicResponseDTO;
 import com.Mybuddy.Myb.DTO.PetshopRequestDTO;
 import com.Mybuddy.Myb.DTO.PetshopResponseDTO;
 import com.Mybuddy.Myb.Exception.ConflictException;
@@ -163,10 +164,10 @@ public class PetshopServiceTest {
         Petshop aprovado = Petshop.builder().id(10L).nomeFantasia("Aprovado").statusAprovacao(StatusAprovacao.APROVADO).build();
         when(petshopRepository.findByStatusAprovacao(StatusAprovacao.APROVADO)).thenReturn(List.of(aprovado));
 
-        List<PetshopResponseDTO> lista = petshopService.listarAprovados();
+        List<PetshopPublicResponseDTO> lista = petshopService.listarAprovados();
 
         assertEquals(1, lista.size());
-        assertEquals(StatusAprovacao.APROVADO, lista.get(0).getStatusAprovacao());
+        assertEquals("Aprovado", lista.get(0).getNomeFantasia());
     }
 
     @Test

@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import org.springframework.context.annotation.Profile;
 
 /**
  * Seed de dados para ambiente de desenvolvimento.
