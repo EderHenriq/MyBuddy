@@ -8,6 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+/**
+ * Dados de entrada para criação de um pedido no marketplace, incluindo endereço de
+ * entrega, itens do carrinho e cupom de desconto opcional.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
