@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
+/**
+ * Dados de entrada para cadastro ou atualização de um petshop parceiro.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
