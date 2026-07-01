@@ -24,6 +24,12 @@ public class AuthService {
     private final OrganizacaoService organizacaoService;
 
     // TODO MY-110: avaliar migração do cadastro para Keycloak Admin API
+    /**
+     * Registra um novo usuário, criando a organização associada quando a role for ONG.
+     * Em caso de falha após a criação da organização, desfaz a organização criada.
+     *
+     * @param signUpRequest dados de cadastro do usuário
+     */
     @Transactional
     public void registerUser(SignupRequest signUpRequest) {
         if (usuarioRepository.existsByEmail(signUpRequest.getEmail())) {

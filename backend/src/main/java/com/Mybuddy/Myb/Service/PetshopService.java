@@ -36,6 +36,14 @@ public class PetshopService {
     private final PetshopRepository petshopRepository;
     private final UsuarioRepository usuarioRepository;
 
+    /**
+     * Cria o perfil de petshop do usuário autenticado, iniciando com status
+     * PENDENTE_APROVACAO até que um administrador o aprove.
+     *
+     * @param request dados do petshop a ser criado
+     * @param usuario usuário autenticado que será vinculado ao petshop
+     * @return petshop criado
+     */
     @Transactional
     public PetshopResponseDTO criar(PetshopRequestDTO request, Usuario usuario) {
         if (petshopRepository.existsByCnpj(request.getCnpj())) {

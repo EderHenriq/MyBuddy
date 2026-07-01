@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+/**
+ * Representação de uma categoria de produtos retornada pela API, incluindo suas subcategorias.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -6,6 +6,9 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Entidade que representa uma categoria de produtos do marketplace, agrupando suas subcategorias.
+ */
 @Entity
 @Table(name = "categorias")
 @Getter

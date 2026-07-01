@@ -50,6 +50,12 @@ public class PetService {
     private final PaymentRepository paymentRepository;
     private final CampanhaDoacaoRepository campanhaDoacaoRepository;
 
+    /**
+     * Cadastra um novo pet disponível para adoção, vinculado a uma organização existente.
+     *
+     * @param petRequestDTO dados do pet a ser criado
+     * @return pet criado
+     */
     @Transactional
     public PetResponse criarPet(PetRequestDTO petRequestDTO) {
         log.debug("Iniciando criação de pet para: {}", petRequestDTO.getNome());

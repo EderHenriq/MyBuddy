@@ -39,6 +39,14 @@ public class PetshopController {
     private final ChatRepository chatRepository;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
+    /**
+     * Cria o perfil de petshop do usuário autenticado, ficando pendente de aprovação
+     * pelo administrador até que possa operar publicamente na plataforma.
+     *
+     * @param request dados do petshop a ser criado
+     * @param jwt token do usuário autenticado
+     * @return petshop criado
+     */
     @PostMapping
     @PreAuthorize("hasRole('PETSHOP') or hasRole('ADMIN')")
     public ResponseEntity<PetshopResponseDTO> criar(

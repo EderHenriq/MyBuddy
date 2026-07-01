@@ -24,6 +24,14 @@ public class InteresseAdocaoService {
     private final UsuarioRepository usuarioRepo;
     private final PetRepository petRepo;
 
+    /**
+     * Registra a manifestação de interesse de um usuário em adotar um pet, validando
+     * que o pet esteja disponível e que o usuário ainda não tenha manifestado interesse nele.
+     *
+     * @param usuarioId identificador do usuário interessado
+     * @param req dados do interesse manifestado
+     * @return interesse registrado
+     */
     @Transactional
     public InteresseResponse manifestarInteresse(Long usuarioId, RegistrarInteresseRequest req) {
         Usuario usuario = usuarioRepo.findById(usuarioId)

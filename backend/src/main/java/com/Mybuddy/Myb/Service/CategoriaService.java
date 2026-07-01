@@ -38,6 +38,12 @@ public class CategoriaService {
         return toResponseDTO(categoria);
     }
 
+    /**
+     * Cria uma nova categoria de produtos, garantindo que o nome seja único.
+     *
+     * @param request dados da categoria a ser criada
+     * @return categoria criada
+     */
     @Transactional
     public CategoriaResponseDTO criar(CategoriaRequestDTO request) {
         if (categoriaRepository.existsByNomeIgnoreCase(request.getNome())) {

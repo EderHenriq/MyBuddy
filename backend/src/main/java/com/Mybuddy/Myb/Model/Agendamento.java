@@ -7,6 +7,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entidade que representa o agendamento de um serviço de um petshop por um cliente.
+ */
 @Entity
 @Table(name = "agendamentos")
 @Getter

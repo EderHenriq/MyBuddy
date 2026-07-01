@@ -17,6 +17,15 @@ public class MercadoPagoWebhookValidator {
     @Value("${mercadopago.webhook-secret}")
     private String webhookSecret;
 
+    /**
+     * Valida a assinatura HMAC-SHA256 de uma notificação de webhook do Mercado Pago,
+     * conferindo o hash calculado com o valor `v1` enviado no cabeçalho `x-signature`.
+     *
+     * @param xSignature cabeçalho x-signature recebido do Mercado Pago
+     * @param xRequestId cabeçalho x-request-id recebido do Mercado Pago
+     * @param dataId identificador do recurso notificado (payment/subscription id)
+     * @return {@code true} se a assinatura for válida, {@code false} caso contrário
+     */
     public boolean isValid(String xSignature, String xRequestId, String dataId) {
         try{
             if(xSignature == null || xSignature.isBlank()) {

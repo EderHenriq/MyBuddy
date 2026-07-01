@@ -8,6 +8,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Entidade que representa uma campanha de arrecadação de doações de uma ONG.
+ * {@code categoria}: CIRURGIA, RACAO, TRATAMENTO ou GERAL.
+ * {@code status}: ATIVA, ENCERRADA ou META_ATINGIDA.
+ */
 @Entity
 @Table(name = "campanhas_doacao")
 @Getter
