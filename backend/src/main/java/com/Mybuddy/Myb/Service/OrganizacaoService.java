@@ -54,6 +54,13 @@ public class OrganizacaoService {
         return savedOrganizacao;
     }
 
+    /**
+     * Cria uma nova organização (ONG) a partir de um DTO de requisição, validando
+     * unicidade de CNPJ e e-mail de contato.
+     *
+     * @param requestDTO dados da organização a ser criada
+     * @return organização criada
+     */
     @Transactional
     public OrganizacaoResponseDTO criarOrganizacao(OrganizacaoRequestDTO requestDTO) {
         log.info("Tentando criar nova organização (via DTO): {}", requestDTO.getNomeFantasia());
