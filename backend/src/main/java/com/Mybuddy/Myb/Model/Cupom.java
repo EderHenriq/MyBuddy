@@ -29,9 +29,11 @@ public class Cupom {
     @EqualsAndHashCode.Include
     private Long id;
 
+    /** Código único do cupom, informado pelo usuário no checkout (case insensitive). */
     @Column(nullable = false, unique = true, length = 100)
     private String codigo;
 
+    /** Percentual de desconto aplicado ao valor do pedido quando o cupom é utilizado. */
     @Column(name = "percentual_desconto", nullable = false, precision = 5, scale = 2)
     private BigDecimal percentualDesconto;
 
