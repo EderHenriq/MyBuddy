@@ -12,6 +12,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Dados de entrada para cadastro ou atualização de um pet disponível para adoção.
+ */
 @Getter
 @Setter
 public class PetRequestDTO {
