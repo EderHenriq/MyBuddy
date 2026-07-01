@@ -28,6 +28,13 @@ public class AgendamentoController {
     private final AgendamentoService agendamentoService;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
+    /**
+     * Cria um novo agendamento de serviço para o cliente autenticado.
+     *
+     * @param request dados do agendamento
+     * @param jwt token do usuário autenticado
+     * @return agendamento criado
+     */
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AgendamentoResponseDTO> criar(
