@@ -26,8 +26,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private final JwtAuthConverter jwtAuthConverter;
+    private final JwtAuthConverter jwtAuthConverter;
 
+    /**
+     * Define a cadeia de filtros de segurança HTTP: CORS, sessão stateless, autenticação
+     * via JWT do Keycloak e as regras de autorização por endpoint.
+     *
+     * @param http builder de configuração de segurança HTTP
+     * @return cadeia de filtros configurada
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -53,34 +60,43 @@ public class SecurityConfig {
         return http.build();
     }
 
-        @Bean
-        public PasswordEncoder passwordEncoder() {
+    /**
+     * Fornece o encoder de senhas usado para o cadastro/validação de usuários locais.
+     *
+     * @return encoder BCrypt
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-                return new BCryptPasswordEncoder();
+    /**
+     * Define as origens, métodos e cabeçalhos permitidos nas requisições CORS,
+     * lendo as origens de {@code CORS_ALLOWED_ORIGINS} quando configurada.
+     *
+     * @return configuração de CORS aplicada a todas as rotas
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
+        String corsOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
+        if (corsOrigins != null && !corsOrigins.isBlank()) {
+            configuration.setAllowedOrigins(List.of(corsOrigins.split(",")));
+        } else {
+            configuration.setAllowedOrigins(List.of(
+                    "http://localhost:4200",
+                    "http://localhost:80",
+                    "http://localhost"));
         }
 
-        @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
-                CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+        configuration.setExposedHeaders(List.of("X-Total-Count", "Content-Disposition"));
+        configuration.setAllowCredentials(true);
 
-                String corsOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
-                if (corsOrigins != null && !corsOrigins.isBlank()) {
-                        configuration.setAllowedOrigins(List.of(corsOrigins.split(",")));
-                } else {
-                        configuration.setAllowedOrigins(List.of(
-                                "http://localhost:4200",
-                                "http://localhost:80",
-                                "http://localhost"));
-                }
-
-                configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
-                configuration.setExposedHeaders(List.of("X-Total-Count", "Content-Disposition"));
-                configuration.setAllowCredentials(true);
-
-                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                source.registerCorsConfiguration("/**", configuration);
-                return source;
-        }
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
