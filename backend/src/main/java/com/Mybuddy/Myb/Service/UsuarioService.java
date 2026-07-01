@@ -94,6 +94,13 @@ public class UsuarioService {
         );
     }
 
+    /**
+     * Exclui o usuário, cancelando assinaturas de doação ativas no Mercado Pago e
+     * anonimizando dados pessoais em pedidos e triagens de adoção históricos (LGPD).
+     * Bloqueia a exclusão caso existam agendamentos ativos vinculados ao usuário.
+     *
+     * @param id identificador do usuário a ser excluído
+     */
     @Transactional
     public void deletarUsuario(Long id) {
         if (!usuarioRepository.existsById(id)) {
