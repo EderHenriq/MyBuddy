@@ -30,6 +30,12 @@ public class OrganizacaoController {
     private final OrganizacaoService organizacaoService;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
+    /**
+     * Cadastra uma nova organização (ONG). Acesso restrito a administradores.
+     *
+     * @param requestDTO dados da organização a ser criada
+     * @return organização criada
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<OrganizacaoResponseDTO> criarOrganizacao(@Valid @RequestBody OrganizacaoRequestDTO requestDTO) {
