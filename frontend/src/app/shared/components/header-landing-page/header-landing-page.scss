@@ -119,3 +119,34 @@
     }
   }
 }
+
+//Estilização do menu mobile
+.mobile-actions {
+  display: none;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  width: 36px;
+  height: 36px;
+  @include flex-center;
+  cursor: pointer;
+  color: var(--text-color-black);
+  font-size: 18px;
+  padding: 0;
+}
+
+.hamburger-btn {
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+
+  span {
+    display: block;
+    width: 20px;
+    height: 2px;
+  }
+}

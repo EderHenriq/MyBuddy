@@ -2,11 +2,7 @@
   <header class="header-landing-page">
     <div class="logo">
       <a routerLink="/">
-        <img
-          src="/assets/logo/logo-provisoria.png"
-          alt="logo-myb"
-          class="logo-img"
-        />
+        <img src="/assets/logo/logo-provisoria.png" alt="logo-myb" class="logo-img" />
         <span class="logo-text">MyBuddy</span>
       </a>
     </div>
@@ -28,12 +24,50 @@
     </nav>
 
     <div class="auth-btns">
-      <a routerLink="/auth/login" class="btn btn-primary">
-        Login
-      </a>
-      <a routerLink="/auth/cadastro" class="btn btn-secondary">
-        Registre-se
-      </a>
+      <a routerLink="/auth/login" class="btn btn-primary">Login</a>
+      <a routerLink="/auth/cadastro" class="btn btn-secondary">Registre-se</a>
+    </div>
+
+    <div class="mobile-actions">
+      <button type="button" class="icon-btn search-btn" aria-label="Buscar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+
+      <button
+        type="button"
+        class="icon-btn hamburger-btn"
+        [class.is-open]="isMobileMenuOpen"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="isMobileMenuOpen"
+        aria-label="Abrir menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <a routerLink="/auth/login" class="btn btn-secondary mobile-login-btn" (click)="closeMobileMenu()">Login</a>
     </div>
   </header>
-</section>;
+
+  <div
+    class="mobile-menu-overlay"
+    [class.is-open]="isMobileMenuOpen"
+    (click)="closeMobileMenu()"
+    (keyup.enter)="closeMobileMenu()"
+    (keydown.space)="closeMobileMenu()"
+    role="button"
+    tabindex="0"
+    aria-label="Fechar menu"
+  ></div>
+
+  <nav class="mobile-menu-panel" [class.is-open]="isMobileMenuOpen">
+    <ul>
+      <li><a href="/" (click)="closeMobileMenu()">Adote um Pet</a></li>
+      <li><a href="/" (click)="closeMobileMenu()">Parceiros</a></li>
+      <li><a href="/" (click)="closeMobileMenu()">Blog</a></li>
+    </ul>
+
+    <a routerLink="/auth/cadastro" class="btn btn-secondary mobile-register-btn" (click)="closeMobileMenu()">Registre-se</a>
+  </nav>
+</section>

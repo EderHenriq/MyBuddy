@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { provideRouter } from "@angular/router";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
-import { HeaderLandingPage } from "./header-landing-page";
+import { HeaderLandingPage } from './header-landing-page';
 
-describe("HeaderLandingPage", () => {
+describe('HeaderLandingPage', () => {
   let component: HeaderLandingPage;
   let fixture: ComponentFixture<HeaderLandingPage>;
 
@@ -18,7 +18,7 @@ describe("HeaderLandingPage", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });
