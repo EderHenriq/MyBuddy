@@ -30,6 +30,13 @@ public class InteresseAdocaoController {
     private final InteresseAdocaoService service;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
+    /**
+     * Registra a manifestação de interesse de um usuário autenticado em adotar um pet.
+     *
+     * @param req dados do interesse manifestado
+     * @param jwt token do usuário autenticado
+     * @return interesse registrado
+     */
     @PostMapping("/interesses")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<InteresseResponse> manifestarInteresse(
