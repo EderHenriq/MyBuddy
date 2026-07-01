@@ -86,7 +86,8 @@ services:
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
  
       KC_HTTP_PORT: 8080
-      KC_HEALTH_ENABLED: "true"
+      KC_HTTP_ENABLED: true
+      KC_HEALTH_ENABLED: true
 
       KC_HOSTNAME: ${KC_HOSTNAME:-localhost}
       KC_PROXY_HEADERS: ${KC_PROXY_HEADERS:-}
