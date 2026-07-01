@@ -18,6 +18,13 @@ public class SequenceGeneratorService {
 
     private final MongoOperations mongoOperations;
 
+    /**
+     * Gera o próximo valor de uma sequência numérica armazenada no MongoDB, usada como
+     * substituto do auto-incremento nativo do SQL para entidades persistidas no Mongo.
+     *
+     * @param seqName nome/identificador da sequência
+     * @return próximo valor da sequência, iniciando em 1 caso ainda não exista
+     */
     public long generateSequence(String seqName) {
         DatabaseSequence counter = mongoOperations.findAndModify(
                 query(where("_id").is(seqName)),
