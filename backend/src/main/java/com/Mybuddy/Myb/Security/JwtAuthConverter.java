@@ -16,6 +16,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Converte um token JWT emitido pelo Keycloak em um {@link AbstractAuthenticationToken}
+ * do Spring Security, combinando as authorities padrão do JWT com as roles do realm.
+ */
 @Component
 @SuppressWarnings({"null", "unchecked"})
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
