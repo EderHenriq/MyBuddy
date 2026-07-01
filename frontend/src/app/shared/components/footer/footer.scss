@@ -110,3 +110,44 @@ i {
     }
   }
 }
+
+//Estilização das medias query
+@media (min-width: 768px) and (max-width: 1024px) {
+  .footer {
+    padding: 0 var(--spacing-xl) var(--spacing-xxl);
+  }
+
+  .footer-container {
+    gap: var(--spacing-xl);
+  }
+
+  .footer-column {
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 767px) {
+  .footer {
+    padding: 0 var(--spacing-lg) var(--spacing-xxl);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  .footer-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xxl);
+    padding: var(--spacing-xl) 0;
+  }
+
+  .footer-infos {
+    gap: var(--spacing-lg);
+    width: 100%;
+  }
+
+  .footer-column {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-lg);
+    width: 100%;
+  }
+}
