@@ -97,18 +97,31 @@ public class Pet implements Identifiable {
         this.statusAdocao = StatusAdocao.DISPONIVEL;
     }
 
+    /**
+     * Adiciona uma foto ao pet, evitando duplicatas.
+     *
+     * @param foto foto a ser adicionada
+     */
     public void addFoto(FotoPet foto) {
         if (foto != null && !this.fotos.contains(foto)) {
             this.fotos.add(foto);
         }
     }
 
+    /**
+     * Remove uma foto do pet, caso ela exista.
+     *
+     * @param foto foto a ser removida
+     */
     public void removeFoto(FotoPet foto) {
         if (foto != null && this.fotos.contains(foto)) {
             this.fotos.remove(foto);
         }
     }
 
+    /**
+     * Remove todas as fotos associadas ao pet.
+     */
     public void clearFotos() {
         this.fotos.clear();
     }
