@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Representação de um agendamento de serviço retornada pela API, com dados do serviço,
+ * petshop, horário e status para exibição ao usuário.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
