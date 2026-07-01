@@ -41,6 +41,13 @@ public class CupomService {
     private final CupomUsuarioRepository cupomUsuarioRepository;
     private final PetshopRepository petshopRepository;
 
+    /**
+     * Cria um novo cupom de desconto, restrito a administradores ou petshops donos do cupom.
+     *
+     * @param request dados do cupom a ser criado
+     * @param usuario usuário autenticado que está criando o cupom
+     * @return cupom criado
+     */
     @Transactional
     public CupomResponseDTO criar(CupomRequestDTO request, Usuario usuario) {
         validarAcessoAdminOuPetshop(usuario);
