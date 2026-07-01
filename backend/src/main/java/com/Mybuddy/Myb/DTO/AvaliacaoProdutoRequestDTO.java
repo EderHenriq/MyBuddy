@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Dados de entrada para o registro de uma avaliação de produto (nota de 1 a 5 e comentário opcional).
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

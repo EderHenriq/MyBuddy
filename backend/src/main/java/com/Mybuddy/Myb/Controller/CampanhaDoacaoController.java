@@ -46,6 +46,13 @@ public class CampanhaDoacaoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Cria uma nova campanha de doação vinculada à organização do usuário autenticado.
+     *
+     * @param campanha dados da campanha a ser criada
+     * @param jwt token do usuário autenticado
+     * @return campanha criada
+     */
     @PostMapping
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
     public ResponseEntity<CampanhaDoacao> criar(

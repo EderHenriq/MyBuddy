@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Service;
 
+import com.Mybuddy.Myb.DTO.PetshopPublicResponseDTO;
 import com.Mybuddy.Myb.DTO.PetshopRequestDTO;
 import com.Mybuddy.Myb.DTO.PetshopResponseDTO;
 import com.Mybuddy.Myb.Exception.ConflictException;
@@ -35,6 +36,14 @@ public class PetshopService {
     private final PetshopRepository petshopRepository;
     private final UsuarioRepository usuarioRepository;
 
+    /**
+     * Cria o perfil de petshop do usuário autenticado, iniciando com status
+     * PENDENTE_APROVACAO até que um administrador o aprove.
+     *
+     * @param request dados do petshop a ser criado
+     * @param usuario usuário autenticado que será vinculado ao petshop
+     * @return petshop criado
+     */
     @Transactional
     public PetshopResponseDTO criar(PetshopRequestDTO request, Usuario usuario) {
         if (petshopRepository.existsByCnpj(request.getCnpj())) {
@@ -75,14 +84,26 @@ public class PetshopService {
     }
 
     /**
-     * Listagem pública: exibe apenas Petshops APROVADOS.
-     * Adotantes/visitantes não veem petshops pendentes ou rejeitados.
+     * Listagem pública: exibe apenas Petshops APROVADOS, sem dados sensíveis.
      */
     @Transactional(readOnly = true)
-    public List<PetshopResponseDTO> listarAprovados() {
+    public List<PetshopPublicResponseDTO> listarAprovados() {
         return petshopRepository.findByStatusAprovacao(StatusAprovacao.APROVADO).stream()
-                .map(this::toResponseDTO)
+                .map(this::toPublicResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Busca pública por ID: retorna apenas petshops APROVADOS, sem dados sensíveis.
+     */
+    @Transactional(readOnly = true)
+    public PetshopPublicResponseDTO buscarPorIdPublico(Long id) {
+        Petshop petshop = petshopRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Petshop não encontrado com o ID: " + id));
+        if (petshop.getStatusAprovacao() != StatusAprovacao.APROVADO) {
+            throw new ResourceNotFoundException("Petshop não encontrado com o ID: " + id);
+        }
+        return toPublicResponseDTO(petshop);
     }
 
     /**
@@ -192,6 +213,18 @@ public class PetshopService {
                 .website(petshop.getWebsite())
                 .valorMinimoFreteGratis(petshop.getValorMinimoFreteGratis())
                 .statusAprovacao(petshop.getStatusAprovacao())
+                .build();
+    }
+
+    private PetshopPublicResponseDTO toPublicResponseDTO(Petshop petshop) {
+        return PetshopPublicResponseDTO.builder()
+                .id(petshop.getId())
+                .nomeFantasia(petshop.getNomeFantasia())
+                .telefoneContato(petshop.getTelefoneContato())
+                .endereco(petshop.getEndereco())
+                .descricao(petshop.getDescricao())
+                .website(petshop.getWebsite())
+                .valorMinimoFreteGratis(petshop.getValorMinimoFreteGratis())
                 .build();
     }
 }

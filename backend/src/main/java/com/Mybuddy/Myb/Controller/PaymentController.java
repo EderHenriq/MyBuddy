@@ -46,6 +46,14 @@ public class PaymentController {
     private final MercadoPagoWebhookValidator webhookValidator;
     private final DonationSubscriptionRepository donationSubscriptionRepository;
 
+    /**
+     * Cria uma preferência de pagamento no Mercado Pago para o usuário autenticado
+     * (compra, doação ou adoção com contribuição).
+     *
+     * @param jwt token do usuário autenticado
+     * @param request dados do pagamento a ser criado
+     * @return pagamento criado, incluindo o link de checkout
+     */
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PaymentResponseDTO> createPayment(

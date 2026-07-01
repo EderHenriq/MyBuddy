@@ -26,6 +26,12 @@ public class UsuarioController {
     private final KeycloakUserSyncService keycloakUserSyncService;
     private final FotoPetService fotoPetService;
 
+    /**
+     * Cria um novo usuário diretamente pelo administrador (fora do fluxo de auto-cadastro).
+     *
+     * @param usuario dados do usuário a ser criado
+     * @return usuário criado
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {

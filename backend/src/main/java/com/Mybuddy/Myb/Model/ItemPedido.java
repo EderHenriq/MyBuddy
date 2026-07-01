@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 
+/**
+ * Entidade que representa um item de produto dentro de um pedido, com a quantidade
+ * e o preço unitário praticado no momento da compra.
+ */
 @Entity
 @Table(name = "itens_pedido")
 @Getter

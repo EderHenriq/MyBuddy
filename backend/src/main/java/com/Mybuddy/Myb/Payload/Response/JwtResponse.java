@@ -5,6 +5,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Resposta de autenticação contendo o token JWT e os dados básicos do usuário autenticado.
+ */
 @Getter
 @Setter
 public class JwtResponse {

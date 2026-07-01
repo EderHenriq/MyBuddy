@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Item individual de um pedido, referenciando o produto e a quantidade desejada.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

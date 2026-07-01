@@ -1,5 +1,6 @@
 package com.Mybuddy.Myb.Controller;
 
+import com.Mybuddy.Myb.DTO.PetshopPublicResponseDTO;
 import com.Mybuddy.Myb.DTO.PetshopRequestDTO;
 import com.Mybuddy.Myb.DTO.PetshopResponseDTO;
 import com.Mybuddy.Myb.Model.Chat;
@@ -38,6 +39,14 @@ public class PetshopController {
     private final ChatRepository chatRepository;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
+    /**
+     * Cria o perfil de petshop do usuário autenticado, ficando pendente de aprovação
+     * pelo administrador até que possa operar publicamente na plataforma.
+     *
+     * @param request dados do petshop a ser criado
+     * @param jwt token do usuário autenticado
+     * @return petshop criado
+     */
     @PostMapping
     @PreAuthorize("hasRole('PETSHOP') or hasRole('ADMIN')")
     public ResponseEntity<PetshopResponseDTO> criar(
@@ -50,16 +59,16 @@ public class PetshopController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PetshopResponseDTO> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<PetshopPublicResponseDTO> buscarPorId(@PathVariable Long id) {
         log.info("Buscando petshop por ID: {}", id);
-        return ResponseEntity.ok(petshopService.buscarPorId(id));
+        return ResponseEntity.ok(petshopService.buscarPorIdPublico(id));
     }
 
     /**
-     * Listagem pública: retorna apenas Petshops APROVADOS.
+     * Listagem pública: retorna apenas Petshops APROVADOS, sem dados sensíveis.
      */
     @GetMapping
-    public ResponseEntity<List<PetshopResponseDTO>> listarAprovados() {
+    public ResponseEntity<List<PetshopPublicResponseDTO>> listarAprovados() {
         log.info("Listagem pública de petshops aprovados.");
         return ResponseEntity.ok(petshopService.listarAprovados());
     }
@@ -123,17 +132,17 @@ public class PetshopController {
     // ── LEGACY ENDPOINTS (Compatibilidade com Front) ──────────────────────────
 
     @GetMapping("/produtos")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('PETSHOP', 'ADMIN')")
     public ResponseEntity<List<Produto>> getProdutos(@AuthenticationPrincipal Jwt jwt) {
         Usuario usuario = keycloakUserSyncService.syncUsuario(jwt);
-        boolean isPetshop = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_PETSHOP);
-        if (isPetshop) {
-            if (usuario.getPetshopId() != null) {
-                return ResponseEntity.ok(produtoRepository.findByPetshopId(usuario.getPetshopId()));
-            }
-            return ResponseEntity.ok(List.of());
+        boolean isAdmin = usuario.getRoles().stream().anyMatch(r -> r.getName() == ERole.ROLE_ADMIN);
+        if (isAdmin) {
+            return ResponseEntity.ok(produtoRepository.findAll());
         }
-        return ResponseEntity.ok(produtoRepository.findAll());
+        if (usuario.getPetshopId() != null) {
+            return ResponseEntity.ok(produtoRepository.findByPetshopId(usuario.getPetshopId()));
+        }
+        return ResponseEntity.ok(List.of());
     }
 
     @GetMapping("/pedidos")

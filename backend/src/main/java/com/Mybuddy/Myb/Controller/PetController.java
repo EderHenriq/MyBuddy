@@ -39,6 +39,14 @@ public class PetController {
     private final FotoPetService fotoPetService;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
+    /**
+     * Cadastra um novo pet disponível para adoção, vinculado à organização informada.
+     * Usuários não administradores só podem cadastrar pets para a própria organização.
+     *
+     * @param petRequestDTO dados do pet a ser criado
+     * @param jwt token do usuário autenticado
+     * @return pet criado
+     */
     @PostMapping
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
     public ResponseEntity<PetResponse> criar(

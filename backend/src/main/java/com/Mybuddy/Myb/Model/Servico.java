@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Entidade que representa um serviço oferecido por um petshop (ex: banho, tosa, consulta).
+ */
 @Entity
 @Table(name = "servicos")
 @Getter

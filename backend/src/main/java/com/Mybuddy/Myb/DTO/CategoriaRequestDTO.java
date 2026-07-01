@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Dados de entrada para cadastro de uma categoria de produtos do marketplace.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

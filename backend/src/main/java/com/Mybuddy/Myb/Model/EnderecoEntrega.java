@@ -3,6 +3,9 @@ package com.Mybuddy.Myb.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Entidade que representa o endereço de entrega associado a um pedido do marketplace.
+ */
 @Entity
 @Table(name = "enderecos_entrega")
 @Getter
