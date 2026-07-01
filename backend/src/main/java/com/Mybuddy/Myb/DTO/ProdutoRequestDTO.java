@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Dados de entrada para cadastro ou atualização de um produto do marketplace.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
