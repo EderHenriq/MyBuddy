@@ -80,30 +80,14 @@ public class Usuario implements Identifiable {
         this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();
     }
 
-    /**
-     * Substitui o conjunto de roles do usuário por uma nova cópia defensiva,
-     * garantindo que o campo nunca fique nulo.
-     *
-     * @param roles novo conjunto de roles, pode ser {@code null}
-     */
     public void setRoles(Set<Role> roles) {
         this.roles = (roles != null) ? new HashSet<>(roles) : new HashSet<>();
     }
 
-    /**
-     * Adiciona uma role ao usuário.
-     *
-     * @param role role a ser adicionada
-     */
     public void addRole(Role role) {
         this.roles.add(role);
     }
 
-    /**
-     * Remove uma role do usuário.
-     *
-     * @param role role a ser removida
-     */
     public void removeRole(Role role) {
         this.roles.remove(role);
     }

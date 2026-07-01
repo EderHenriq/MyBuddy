@@ -37,12 +37,6 @@ public class CampanhaDoacaoService {
         return repository.findById(id);
     }
 
-    /**
-     * Cria uma nova campanha de doação, iniciando o valor arrecadado em zero e o status como ativa.
-     *
-     * @param campanha dados da campanha a ser criada
-     * @return campanha persistida
-     */
     public CampanhaDoacao criar(CampanhaDoacao campanha) {
         campanha.setArrecadado(BigDecimal.ZERO);
         campanha.setStatus("ATIVA");

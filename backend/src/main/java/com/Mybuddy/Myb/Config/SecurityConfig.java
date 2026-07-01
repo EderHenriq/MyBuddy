@@ -28,13 +28,6 @@ public class SecurityConfig {
 
     private final JwtAuthConverter jwtAuthConverter;
 
-    /**
-     * Define a cadeia de filtros de segurança HTTP: CORS, sessão stateless, autenticação
-     * via JWT do Keycloak e as regras de autorização por endpoint.
-     *
-     * @param http builder de configuração de segurança HTTP
-     * @return cadeia de filtros configurada
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -60,22 +53,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * Fornece o encoder de senhas usado para o cadastro/validação de usuários locais.
-     *
-     * @return encoder BCrypt
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Define as origens, métodos e cabeçalhos permitidos nas requisições CORS,
-     * lendo as origens de {@code CORS_ALLOWED_ORIGINS} quando configurada.
-     *
-     * @return configuração de CORS aplicada a todas as rotas
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

@@ -24,11 +24,6 @@ public class DonationStatsController {
     private final OrganizacaoRepository organizacaoRepository;
     private final PaymentRepository paymentRepository;
 
-    /**
-     * Retorna estatísticas agregadas de doações e adoções da plataforma.
-     *
-     * @return pets salvos, ONGs parceiras, total arrecadado e doadores ativos
-     */
     @GetMapping
     public ResponseEntity<DonationStatsResponseDTO> getStats() {
         long petsSalvos = petRepository.countByStatusAdocao(StatusAdocao.ADOTADO);

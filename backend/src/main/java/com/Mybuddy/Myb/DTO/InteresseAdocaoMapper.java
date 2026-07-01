@@ -6,13 +6,6 @@ public final class InteresseAdocaoMapper {
 
     private InteresseAdocaoMapper() {}
 
-    /**
-     * Converte a entidade {@link InteresseAdocao} em um DTO de resposta, mascarando o CPF
-     * do adotante para não expor o dado sensível completo (LGPD).
-     *
-     * @param interesse entidade de interesse em adoção
-     * @return DTO de resposta com o CPF mascarado
-     */
     public static InteresseResponse toResponse(InteresseAdocao interesse) {
         UsuarioResponse usuarioResponse = interesse.getUsuario() != null
                 ? new UsuarioResponse(interesse.getUsuario().getId(), interesse.getUsuario().getNome())
@@ -43,12 +36,6 @@ public final class InteresseAdocaoMapper {
         );
     }
 
-    /**
-     * Mascara o CPF do adotante, exibindo apenas os dígitos centrais e finais.
-     *
-     * @param cpf CPF completo (com ou sem formatação)
-     * @return CPF mascarado no formato {@code ***.***.XXX-XX}, ou {@code null} se vazio
-     */
     private static String mascararCpf(String cpf) {
         if (cpf == null || cpf.isBlank()) return null;
         String digits = cpf.replaceAll("[^\\d]", "");

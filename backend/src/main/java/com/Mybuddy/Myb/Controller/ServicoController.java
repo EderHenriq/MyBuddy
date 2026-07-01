@@ -27,13 +27,6 @@ public class ServicoController {
     private final ServicoService servicoService;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
-    /**
-     * Cadastra um novo serviço oferecido por um petshop.
-     *
-     * @param request dados do serviço a ser criado
-     * @param jwt token do usuário autenticado
-     * @return serviço criado
-     */
     @PostMapping
     @PreAuthorize("hasRole('PETSHOP') or hasRole('ADMIN')")
     public ResponseEntity<ServicoResponseDTO> criar(

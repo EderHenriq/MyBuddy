@@ -21,11 +21,6 @@ public class AdminController {
     private final OrganizacaoRepository organizacaoRepository;
     private final UsuarioRepository usuarioRepository;
 
-    /**
-     * Lista todas as organizações (ONGs) cadastradas. Acesso restrito a administradores.
-     *
-     * @return lista completa de organizações
-     */
     @GetMapping("/ongs")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Organizacao>> getOngs() {

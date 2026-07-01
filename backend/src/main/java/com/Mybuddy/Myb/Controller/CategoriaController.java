@@ -24,11 +24,6 @@ public class CategoriaController {
 
     private final CategoriaService categoriaService;
 
-    /**
-     * Lista todas as categorias cadastradas, incluindo suas subcategorias.
-     *
-     * @return lista de categorias e subcategorias
-     */
     @GetMapping
     public ResponseEntity<List<CategoriaResponseDTO>> listarTodas() {
         log.info("Buscando todas as categorias e subcategorias.");

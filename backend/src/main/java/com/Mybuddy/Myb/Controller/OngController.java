@@ -31,13 +31,6 @@ public class OngController {
     private final PetService petService;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
-    /**
-     * Lista as solicitações de interesse em adoção recebidas pela ONG do usuário logado.
-     * Administradores veem solicitações de todas as organizações.
-     *
-     * @param jwt token do usuário autenticado
-     * @return lista de solicitações de interesse
-     */
     @GetMapping("/solicitacoes")
     @PreAuthorize("hasRole('ONG') or hasRole('ADMIN')")
     public ResponseEntity<List<InteresseResponse>> getSolicitacoes(@AuthenticationPrincipal Jwt jwt) {

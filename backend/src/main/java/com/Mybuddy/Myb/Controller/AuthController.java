@@ -16,12 +16,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    /**
-     * Registra um novo usuário no sistema.
-     *
-     * @param signUpRequest dados de cadastro do usuário
-     * @return mensagem de confirmação do cadastro
-     */
     @PostMapping("/cadastro")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         authService.registerUser(signUpRequest);

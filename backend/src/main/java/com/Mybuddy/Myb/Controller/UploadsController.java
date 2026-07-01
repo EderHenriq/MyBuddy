@@ -20,12 +20,6 @@ public class UploadsController {
 
     private final ArquivoRepository arquivoRepository;
 
-    /**
-     * Serve um arquivo previamente enviado, armazenado no MongoDB.
-     *
-     * @param filename nome do arquivo solicitado
-     * @return conteúdo binário do arquivo, ou 404 se não encontrado
-     */
     @GetMapping("/uploads/{filename:.+}")
     public ResponseEntity<byte[]> serveFile(@PathVariable String filename) {
         log.info("Requisição recebida para baixar o arquivo: {}", filename);

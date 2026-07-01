@@ -21,13 +21,6 @@ public class KeycloakUserSyncService {
 
     private final UsuarioRepository usuarioRepository;
 
-    /**
-     * Sincroniza o usuário autenticado no Keycloak com o registro local no MongoDB,
-     * criando-o caso ainda não exista e atualizando suas roles a partir do token.
-     *
-     * @param jwt token JWT emitido pelo Keycloak
-     * @return usuário local sincronizado
-     */
     @Transactional
     public Usuario syncUsuario(Jwt jwt) {
         String keycloakId = jwt.getSubject();

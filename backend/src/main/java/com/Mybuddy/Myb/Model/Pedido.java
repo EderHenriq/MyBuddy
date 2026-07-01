@@ -67,24 +67,12 @@ public class Pedido {
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
-    /**
-     * Adiciona um item ao pedido, vinculando a referência bidirecional e somando
-     * o subtotal do item ao valor total do pedido.
-     *
-     * @param item item a ser adicionado
-     */
     public void addItem(ItemPedido item) {
         this.itens.add(item);
         item.setPedido(this);
         this.valorTotal = this.valorTotal.add(item.getSubtotal());
     }
 
-    /**
-     * Remove um item do pedido, desvinculando a referência bidirecional e subtraindo
-     * o subtotal do item do valor total do pedido.
-     *
-     * @param item item a ser removido
-     */
     public void removeItem(ItemPedido item) {
         this.itens.remove(item);
         item.setPedido(null);

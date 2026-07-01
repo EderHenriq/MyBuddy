@@ -42,10 +42,6 @@ public class DataInitializer {
     private final CategoriaRepository categoriaRepository;
     private final SubCategoriaRepository subCategoriaRepository;
 
-    /**
-     * Popula o banco de dados com organizações, usuários, petshops, produtos e eventos
-     * de exemplo para facilitar o desenvolvimento e testes manuais.
-     */
     @PostConstruct
     public void initData() {
         log.info("Iniciando inicialização de dados...");

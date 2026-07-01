@@ -55,7 +55,6 @@ public class Petshop {
     @Column(name = "raio_entrega_km")
     private Double raioEntregaKm;
 
-    /** Percentual de comissão da plataforma sobre as vendas do petshop. Padrão: 10%. */
     @Column(name = "taxa_comissao", precision = 5, scale = 2)
     @Builder.Default
     private BigDecimal taxaComissao = new BigDecimal("10.00");

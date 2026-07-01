@@ -27,14 +27,6 @@ public class AvaliacaoProdutoController {
     private final AvaliacaoProdutoService avaliacaoProdutoService;
     private final KeycloakUserSyncService keycloakUserSyncService;
 
-    /**
-     * Registra uma nova avaliação para o produto informado.
-     *
-     * @param produtoId identificador do produto avaliado
-     * @param request dados da avaliação (nota e comentário)
-     * @param jwt token do usuário autenticado
-     * @return avaliação criada
-     */
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AvaliacaoProdutoResponseDTO> criar(

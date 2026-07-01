@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/**
- * Dados de entrada para criação de um agendamento de serviço em um petshop.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
