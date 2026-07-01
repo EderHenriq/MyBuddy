@@ -20,6 +20,14 @@ public class RecomendacaoService {
     private final ProdutoRepository produtoRepository;
     private final ProdutoService produtoService;
 
+    /**
+     * Obtém recomendações de produtos personalizadas com base nos pets pelos quais o
+     * usuário já demonstrou interesse de adoção. Quando não há dados suficientes, retorna
+     * uma lista de produtos de relevância geral como fallback.
+     *
+     * @param usuarioId identificador do usuário, pode ser {@code null} para usuário anônimo
+     * @return lista de até 10 produtos recomendados
+     */
     @Transactional(readOnly = true)
     public List<ProdutoResponseDTO> obterRecomendacoesParaUsuario(Long usuarioId) {
         if (usuarioId == null) {
