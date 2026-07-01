@@ -22,6 +22,12 @@ import java.util.List;
 @org.springframework.data.mongodb.config.EnableMongoAuditing
 public class DbConfig {
 
+    /**
+     * Registra os conversores customizados usados na leitura de documentos do MongoDB,
+     * incluindo a conversão de roles legadas armazenadas como inteiro.
+     *
+     * @return conjunto de conversões customizadas do Spring Data MongoDB
+     */
     @Bean
     public MongoCustomConversions mongoCustomConversions() {
         return new MongoCustomConversions(List.of(new LegacyRoleReadConverter()));
